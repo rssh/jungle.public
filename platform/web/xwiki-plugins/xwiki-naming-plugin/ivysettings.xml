@@ -1,0 +1,115 @@
+<ivysettings>
+        <settings defaultResolver="global.chain" checkUpToDate="false" />
+
+<!-- you can override this property to use mirrors 
+	  http://mirrors.dotsrc.org/maven2
+	  http://ftp.ggi-project.org/pub/packages/maven2
+	  http://mirrors.sunsite.dk/maven2
+	  http://public.planetmirror.com/pub/maven2
+	  http://ibiblio.lsu.edu/main/pub/packages/maven2
+	  http://www.ibiblio.net/pub/packages/maven2
+-->
+<property name="ibiblio-maven2-root" value="http://repo1.maven.org/maven2/" override="false" />
+<property name="xwiki-releases-maven2-root" value="http://maven.xwiki.org/releases" override="false" />
+<property name="xwiki-externals-maven2-root" value="http://maven.xwiki.org/externals" override="false" />
+<property name="ow-maven2-root" value="http://maven.objectweb.org/maven2/" override="false" />
+
+
+<namespaces>
+   <namespace name="maven2">
+        <rule>
+       	 <fromsystem>
+             <src org="org.apache" module="velocity"/>
+             <dest org="org.apache.velocity" module="$m0"/>
+         </fromsystem>
+         <tosystem>
+             <src org="org.apache.velocity" module="velocity" />
+             <dest org="org.apache" module="$m0"/>
+         </tosystem>
+        </rule>
+        <rule>	<!-- imported apache maven1 projects -->
+       	<fromsystem>
+             	<src org="org.apache" module="commons-.+"/>
+             	<src org="org.apache" module="log4j"/>
+                <dest org="$m0" module="$m0"/>
+         </fromsystem>
+         <tosystem>
+             <src org="commons-.+" module="commons-.+" />
+             <src org="log4j" module="log4j" />
+             <dest org="org.apache" module="$m0"/>
+          </tosystem>
+          </rule>
+          <rule> <!-- junit -->
+             <fromsystem>
+	       	<src org="org.junit" module=".+" />
+                <dest org="$m0" module="$m0" />
+              </fromsystem>
+              <tosystem>
+    	     	<src org="junit" module="junit" />
+                <dest org="org.junit" module="$m0" />
+              </tosystem>
+           </rule>
+           <rule> <!-- hsql -->
+             <fromsystem>
+	       	<src org="org.hsqldb" module=".+" />
+                <dest org="$m0" module="$m0" />
+              </fromsystem>
+              <tosystem>
+    	     	<src org="hsqldb" module="hsqldb" />
+                <dest org="org.hsqldb" module="$m0" />
+              </tosystem>
+           </rule>
+    	</namespace>
+        <namespace name="xwiki-releases">
+        <rule>	<!-- imported xwiki-release projects -->
+       	  <fromsystem>
+             <src org="org.xwiki" module="xwiki-core"/>
+             <dest org="com.xpn.xwiki.platform" module="xwiki-core"/>
+       	  </fromsystem>
+          <tosystem>
+    	      <src org="com.xpn.xwiki.platform" module="xwiki-core" />
+    	      <dest org="org.xwiki" module="xwiki-core" />
+          </tosystem>
+        </rule>
+        </namespace>
+        <namespace name="xwiki-externals" />
+        <namespace name="ow"  />
+	</namespaces>
+
+        <resolvers>
+                <ibiblio name="ibiblio" root="${ibiblio-maven2-root}" 
+                         m2compatible="true" namespace="maven2" />
+                <ibiblio name="xwiki-releases" 
+                         root="${xwiki-releases-maven2-root}" 
+                         m2compatible="true" namespace="xwiki-releases" />
+                <ibiblio name="xwiki-externals" 
+                         root="${xwiki-externals-maven2-root}" 
+                         m2compatible="true" namespace="xwiki-externals" />
+                <ibiblio name="ow" 
+                         root="${ow-maven2-root}" 
+                         m2compatible="true" namespace="ow" />
+                <filesystem name="jungle.repo">
+                    <ivy pattern="${repo.home}/[organisation]/[module]/ivys/ivy-[revision].xml"/>
+                    <artifact pattern="${repo.home}/[organisation]/[module]/[type]s/[artifact]-[revision].[ext]"/>
+                </filesystem>
+                <ssh name="outpost.xwikinaming">
+                    <ivy pattern="ssh://outpost.gradsoft.ua/www/xwikinaming.gradsoft.ua/files/ivy-[revision].xml" />
+                    <artifact pattern="ssh://outpost.gradsoft.ua/www/xwikinaming.gradsoft.ua/files/[artifact]-[revision].[ext]" />
+                </ssh>
+                <chain name="external.chain" returnFirst="true" >
+                  <resolver ref="ibiblio" /> 
+                  <resolver ref="xwiki-releases" /> 
+                  <resolver ref="xwiki-externals" /> 
+                  <resolver ref="ow" /> 
+                </chain>
+                <chain name="global.chain" returnFirst="true">
+                  <resolver ref="jungle.repo" />
+                  <resolver ref="external.chain" />
+                </chain>
+        </resolvers>
+        <modules>
+          <module organisation="ua.gradsoft" name="xwiki-plugin-naming" 
+                  resolver="jungle.repo" />
+        </modules>
+</ivysettings>
+

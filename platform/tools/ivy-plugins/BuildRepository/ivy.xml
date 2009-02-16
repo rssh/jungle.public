@@ -1,0 +1,25 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" module="ivy.build.plugin"/>
+       
+    <configurations>
+      <conf name="default" description="standard build" />
+      <conf name="test" description="test configuration" />
+    </configurations>
+    <publications>
+      <artifact name="ivy.build.plugin" type="jar" />
+      <artifact name="ivy.build.plugin-src" type="tar.gz" />
+    </publications>
+    <dependencies>
+         <dependency org="org.junit" name="junit" rev="3.8" 
+         conf="test->default">
+          <artifact name="junit" type="jar" />
+         </dependency>
+         <dependency org="org.apache.ant" name="ant" rev="1.7.1" 
+             transitive="false" >
+            <artifact name="ant" type="jar" />
+         </dependency>
+    </dependencies>
+</ivy-module>
+
+
+

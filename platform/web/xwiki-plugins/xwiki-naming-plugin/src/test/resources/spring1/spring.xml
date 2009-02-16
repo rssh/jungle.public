@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" 
+                "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+ <bean id="jndi" class="org.apache.xbean.spring.jndi.DefaultContext">
+  <property name="entries">
+   <map>
+    <entry key="java:/comp/env/UsedBean">
+     <bean id="UsedBean" class="ua.gradsoft.xwikinamingtest.spring1.UsedBean">
+     </bean>
+    </entry>
+   </map>
+  </property>
+ </bean>
+</beans>

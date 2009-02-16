@@ -1,0 +1,27 @@
+
+spring1:
+  1. put xwkik-plugin-naming-test-sprig1-<version>.jar in <xwiki>/WEB-INF/lib
+  2. install xwiki-naming-plugin as described in guide.
+  3. set xwiki plugin configuration to resolve spring/tomcat chain:
+xwikinaming.chain=1
+xwikinaming.chain.first=spring
+  4.create some xwiki page with next text:
+------------------------------------
+#set($plugin=$xwiki.naming)
+plugin=$plugin<br>
+#set($usedbean=$xwiki.naming.lookup('UsedBean'))
+usedbean=$usedbean<br>
+$usedbean.helloWorld()<br>
+#set($ds1=$plugin.lookup('java:comp/env/GradDB'))
+ds1=$ds1 <br>
+lastException:$plugin.getLastException() <br>
+#set($xw=$xwiki.naming.lookup('java:comp/env/XWikiConfig'))
+xw=$xw<br>
+#set($list=$xwiki.naming.list(""))
+list=$list<br>
+
+#foreach($o in $list)
+ (( $o.getName():$o.getClassName() ))<br>
+#end
+--------------------------------------
+  look - what you receive.

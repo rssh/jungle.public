@@ -1,0 +1,21 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" module="xwiki-plugin-velocity-tools"/>
+       
+    <configurations>
+      <conf name="std" description="standard build" />
+    </configurations>
+    <publications>
+      <artifact name="xwiki-plugin-velocity-tools" />
+    </publications>
+    <dependencies>
+        <dependency org="org.apache.velocity" name="velocity-tools" 
+           rev="1.3" conf="std->default" transitive="false" />
+        <dependency org="org.apache" name="commons-logging" rev="1.1.1" 
+         conf="*->default" transitive="false" />
+        <dependency org="org.xwiki" name="xwiki-core" rev="1.3+"  
+         conf="std->default" transitive="false" />
+    </dependencies>
+</ivy-module>
+
+
+

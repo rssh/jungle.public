@@ -1,0 +1,13 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" module="p1" />
+       
+    <configurations>
+      <conf name="default" description="standard build" />
+    </configurations>
+    <publications>
+      <artifact name="p1" type="jar" />
+    </publications>
+</ivy-module>
+
+
+

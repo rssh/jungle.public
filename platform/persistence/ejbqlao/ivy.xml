@@ -1,0 +1,37 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" module="jungle.persistence.ejbqlao"/>
+       
+    <configurations>
+      <conf name="std" description="standard build" />
+      <conf name="test" description="test version with junit test" 
+                        extends="std" />
+      <conf name="doc" description="with tool for building documentations" 
+                        extends="std" />
+    </configurations>
+    <publications>
+      <artifact name="jungle.persistence.ejbqlao" type="jar" />
+      <artifact name="jungle.persistence.ejbqlao-src" type="tar.gz" ext="tar.gz" />
+      <artifact name="jungle.persistence.ejbqlao-doc" type="tar.gz" ext="tar.gz" />
+    </publications>
+    <dependencies>
+        <dependency org="org.apache" name="commons-logging" rev="1.1.1" 
+         conf="*->default" transitive="false" />
+        <dependency org="org.junit" name="junit" rev="4.4" 
+         conf="test->default"/>
+        <dependency org="ua.gradsoft" name="odt2html" rev="1.1" 
+         conf="doc->default" >
+         <artifact name="odt2html" type="jar"
+           url="http://odt2html.gradsoft.ua/files/odt2html-1.1.jar"
+         />
+        </dependency>
+        <dependency org="javaee" name="javaee-api" rev="5" />
+        <dependency org="ua.gradsoft" name="jungle.caching" 
+                    rev="${jungle.caching.version}"
+         conf="*->default" >
+         <artifact name="jungle.caching" type="jar" />
+        </dependency>
+    </dependencies>
+</ivy-module>
+
+
+

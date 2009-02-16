@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CachingPolicies>
+ <entries>
+  <entry class="ua.gradsoft.ifs.deposits.DepositsDAO">
+   <ClassCachingPolicy>
+    <MethodsCachingPolicy>
+     <entry methodName="queryByCriteria">
+      <MethodCachingPolicy cacheName="DepositsQueryCache"
+         action="CACHE" 
+         keyBuilderClass="ua.gradsoft.caching.util.AllArgumentsValueBuilder"
+      />
+     </entry>
+    </MethodsCachingPolicy>
+   </ClassCachingPolicy>
+  </entry>
+ </entries>
+</CachingPolicies>

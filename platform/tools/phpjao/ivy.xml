@@ -1,0 +1,40 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" module="jungle.tools.phpjao"/>
+       
+    <configurations>
+      <conf name="default" description="standard build" />
+      <conf name="test" description="test version with junit test" 
+                        extends="default" />
+      <conf name="doc" description="with tool for building documentations" 
+                        extends="default" />
+      <conf name="compile" description="with dependencies for compiling"
+                        extends="default" />
+    </configurations>
+    <publications>
+      <artifact name="jungle.tools.phpjao" type="jar" />
+      <artifact name="PHPJAO" type="php" />
+      <artifact name="jungle.tools.phpjao-src" type="tar.gz" ext="tar.gz" />
+    </publications>
+    <dependencies>
+         <dependency org="org.junit" name="junit" rev="4.5" 
+         conf="test->default"/>
+         <dependency org="ua.gradsoft" name="termwarephp" 
+                     rev="${termwarephp.version}" 
+                     conf="default->default">
+          <artifact name="TermWarePhp" type="jar" conf="default-default" />
+         </dependency>
+         <dependency org="ua.gradsoft" name="javachecker" 
+                     rev="${javachecker.version}" 
+                     conf="default->jar">
+          <artifact name="JavaChecker" type="jar" />
+          <artifact name="JavaChecker2Annotations" type="jar" />
+         </dependency>
+         <dependency org="org.apache.ant" name="ant" rev="1.7.1" 
+                     conf="compile->default">
+          <artifact name="ant" type="jar" />
+         </dependency>
+    </dependencies>
+</ivy-module>
+
+
+

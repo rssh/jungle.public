@@ -1,0 +1,9 @@
+
+ this is class serializer.
+
+Format:
+
+ { 
+   javaClass: "java.lang.Class" ,
+   name     : "com.myorg.MyClass"
+ }

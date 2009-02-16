@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" 
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+	http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+  <servlet>
+    <servlet-name>ProxyServlet</servlet-name>
+    <servlet-class>net.edwardstx.ProxyServlet</servlet-class>
+    <init-param>
+      <param-name>proxyHost</param-name>
+      <param-value>a22.localhost</param-value>
+    </init-param>
+    <init-param>
+      <param-name>proxyPort</param-name>
+      <param-value>80</param-value>
+    </init-param>
+    <init-param>
+      <param-name>proxyPath</param-name>
+      <param-value></param-value>
+    </init-param>
+    <init-param>
+      <param-name>maxFileUploadSize</param-name>
+      <param-value></param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ProxyServlet</servlet-name>
+    <url-pattern>/*</url-pattern>
+  </servlet-mapping>
+</web-app>

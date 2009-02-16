@@ -1,0 +1,41 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" module="xwiki-plugin-sql"/>
+       
+    <configurations>
+      <conf name="std" description="standard build" />
+      <conf name="test" description="test version with junit test" 
+                        extends="std" />
+      <conf name="doc" description="with tool for building documentations" 
+                        extends="std" />
+    </configurations>
+    <publications>
+      <artifact name="xwiki-plugin-sql" />
+      <artifact name="xwiki-plugin-sql-src" type="tar.gz" ext="tar.gz" />
+      <artifact name="xwiki-plugin-sql-doc" type="tar.gz" ext="tar.gz" />
+    </publications>
+    <dependencies>
+        <dependency org="org.xwiki" name="xwiki-core" rev="[1.2+,1.6+]"  conf="std->default" transitive="false" />
+        <dependency org="org.apache" name="velocity" rev="1.5" 
+         conf="test->default" />
+        <dependency org="org.apache" name="commons-logging" rev="1.1.1" 
+         conf="*->default" transitive="false" />
+
+        <dependency org="org.junit" name="junit" rev="4.4" 
+         conf="test->default"/>
+        <dependency org="org.apache" name="commons-dbcp" rev="1.2.2" 
+         conf="test->default" />
+        <dependency org="org.osjava" name="simple-jndi" rev="0.11.3" 
+         conf="test->default" />
+        <dependency org="org.hsqldb" name="hsqldb" rev="1.8.0.7" 
+         conf="test->default" />
+        <dependency org="ua.gradsoft" name="odt2html" rev="1.1" 
+         conf="doc->default" >
+         <artifact name="odt2html" type="jar"
+           url="http://odt2html.gradsoft.ua/files/odt2html-1.1.jar"
+         />
+        </dependency>
+    </dependencies>
+</ivy-module>
+
+
+

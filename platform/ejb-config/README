@@ -1,0 +1,11 @@
+
+
+  each subdirectory is a configuration, which include file ejb-tasks.xml
+
+File must be ant tasks with the folowwing targets:
+
+deploy-ejbjar
+
+  must deploy ejb3 jar situated in property ${this.ejbjar} to 
+  application server deploy directory.
+

@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<!-- build file for IFS deposits ORM -->
+<project name="phpjao.t1" default="build" basedir="."
+  xmlns:ivy="antlib:fr.jayasoft.ivy.ant"
+  xmlns:phpjao="antlib:ua.gradsoft.phpjao"
+ >
+    <property file="build.properties" />
+    <import file="build-ivy.xml" />
+    
+<!-- directories -->    
+    <property name="src.dir" value="."/>
+    
+    <path id="compile.path">
+       <pathelement location="lib/javaee-api-${javaee-api.version}.jar"/>
+    </path>
+
+
+   <target name="declare-phpjao"  >
+     <path id="phpjao.lib.path">
+    <pathelement location="../../target/jungle.tools.phpjao-1.0.jar" />
+    <pathelement location="../../lib/TermWare-${termware.version}.jar" />
+    <pathelement location="../../lib/TermWarePhp-${termwarephp.version}.jar" />
+    <pathelement location="../../lib/JavaChecker-${javachecker.version}.jar" />
+    <pathelement location="../../lib/JavaChecker2Annotations-${javachecker.version}.jar" />
+    <pathelement location="../../lib/TermWareJPP-${termwarejpp.version}.jar" />
+   </path>
+   <taskdef resource="ua/gradsoft/phpjao/antlib.xml" 
+            uri="antlib:ua.gradsoft.phpjao" 
+            classpathref="phpjao.lib.path"/>
+ </target>
+
+
+    <!-- targets -->
+    <target name="clean">
+        <delete>
+            <fileset dir="${build.dir}" includes="**/*.class" />
+            <fileset dir="${dist.dir}" includes="**/*.ear,**/*.war,**/*.jar" />
+        </delete>
+    </target>
+    
+    <target name="build" depends="retrieve-libs" >
+        <javac  srcdir="jsrc" 
+                includes="**/*.java" 
+                deprecation="on" 
+                debug="${debug}" >
+            <!--<compilerarg  line="-Xlint:unchecked" />-->
+            <classpath>
+              <path refid="compile.path"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="generate-php" depends="declare-phpjao, retrieve-libs" >
+        <phpjao:generate  outputFile="${basedir}/php/generated.php" >
+          <includedirs dir="${basedir}/jsrc" />
+          <includejars path="${basedir}/lib/javaee-api-${javaee-api.version}.jar" />
+          <class name="ua.gradsoft.t1.E1" />
+        </phpjao:generate>
+    </target>
+
+</project>

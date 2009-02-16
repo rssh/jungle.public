@@ -1,0 +1,14 @@
+<ivysettings>
+        <settings defaultResolver="jungle.repo" checkUpToDate="false" />
+        <resolvers>
+                <filesystem name="jungle.repo">
+                    <ivy pattern="${repo.home}/[organisation]/[module]/ivys/ivy-[revision].xml"/>
+                    <artifact pattern="${repo.home}/[organisation]/[module]/[type]s/[artifact]-[revision].[ext]"/>
+                </filesystem>
+        </resolvers>
+        <modules>
+          <module organisation="com.oracle" name="ojdbc6" 
+                  resolver="jungle.repo" />
+        </modules>
+</ivysettings>
+

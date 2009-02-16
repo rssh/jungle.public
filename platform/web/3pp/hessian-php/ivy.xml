@@ -1,0 +1,22 @@
+<ivy-module version="1.4">
+    <info organisation="net.sf" module="hessianphp"/>
+       
+    <configurations>
+      <conf name="default" description="default artefacts" />
+    </configurations>
+    <publications>
+      <artifact name="hessianphp" type="zip" />
+    </publications>
+    <dependencies>
+        <dependency org="net.sf" name="hessianphp-original" 
+                    rev="${origin.version}" conf="default"
+                    transitive="false" >
+         <artifact name="hessianphp" type="zip"
+           url="http://prdownloads.sourceforge.net/hessianphp/HessianPHP-1.0.5-RC2.zip?download"
+         />
+        </dependency>
+    </dependencies>
+</ivy-module>
+
+
+

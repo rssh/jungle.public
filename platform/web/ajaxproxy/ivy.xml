@@ -1,0 +1,19 @@
+<ivy-module version="1.4">
+    <info organisation="net.edwardstx" module="proxy"/>
+    <configurations>
+      <conf name="war" description="build war" />
+    </configurations>
+    <dependencies>
+        <dependency org="org.apache" name="commons-httpclient" rev="3.1" 
+                    conf="war->default"/>
+        <dependency org="org.apache" name="commons-logging" rev="1.1.1" 
+                    conf="war->default" />
+        <dependency org="org.apache" name="commons-codec" rev="1.3" 
+                    conf="war->default" />
+        <dependency org="org.apache" name="commons-fileupload" rev="1.2.1" 
+                    conf="war->default" />
+        <dependency org="org.apache" name="commons-io" rev="1.4" />
+        <dependency org="javaee" name="javaee-api" rev="5" >
+        </dependency>
+    </dependencies>
+</ivy-module>

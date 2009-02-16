@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<!-- build file for test from ivy build plugin -->
+<project name="p2" default="build" basedir="."
+    xmlns:ivy="antlib:fr.jayasoft.ivy.ant"
+ >
+
+ <property file="build.properties" />
+ <property file="build.local.properties" />
+
+ <property name="ivy.install.version" value="2.0.0" />
+ <condition property="ivy.home" value="${env.IVY_HOME}">
+        <isset property="env.IVY_HOME" />
+ </condition>
+ <property name="ivy.home" value="${user.home}/.ivy" />
+ <property name="ivy.jar.dir" value="${ivy.home}/jars" />
+ <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
+ <property name="jsch.jar.file" value="${ivy.jar.dir}/jsch.jar" />
+
+ <condition property="ivy.offline">
+   <or>
+     <and>
+      <available file="${ivy.jar.file}" />
+      <available file="${ivy.jar.dir}/jsch.jar" />
+     </and>
+     <isset property="offline" />
+   </or>
+ </condition>
+
+ <target name="download-ivy" unless="ivy.offline">
+    <mkdir dir="${ivy.jar.dir}"/>
+    <!-- download Ivy from web site so that it can be used even without any special installation -->
+    <get src="http://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar"
+         dest="${ivy.jar.file}" usetimestamp="true"/>
+    <get src="http://prdownloads.sourceforge.net/jsch/jsch-0.1.37.jar?download"
+         dest="${jsch.jar.file}" usetimestamp="true"/>
+ </target>
+	
+ <target name="declare-ivy" depends="download-ivy" >
+   <path id="ivy.lib.path">
+      <fileset dir="${ivy.jar.dir}" includes="*.jar"/>
+      <fileset dir="${basedir}/../../../target" includes="*.jar"/>
+   </path>
+   <taskdef resource="fr/jayasoft/ivy/ant/antlib.xml"
+            uri="antlib:fr.jayasoft.ivy.ant" 
+            classpathref="ivy.lib.path"/>
+ </target>
+
+
+  <target name="clean-ivy" description="--> clean the ivy installation">
+    <delete dir="${ivy.jar.dir}"/>
+  </target>
+
+ <target name="init-ivy" depends="declare-ivy" unless="offline">
+    <ivy:resolve />
+ </target>
+
+ <target name="retrieve-libs" depends="init-ivy" unless="offline">
+  <ivy:retrieve pattern="lib/[artifact]-[revision].[ext]"  />
+ </target>
+
+ <path id="build.path">
+      <fileset dir="lib" includes="*.jar"/>
+ </path>
+
+ <target name="build" depends="retrieve-libs">
+  <javac srcdir="src" includes="**/*.java" deprecation="on" 
+         debug="${debug}" >
+    <classpath  refid="build.path" />
+  </javac>
+  <jar destfile="target/p2-${version}.jar" 
+       index="true">
+   <fileset dir="src" >
+      <include name="**/*.class" />
+      <include name="**/*.xml" />
+   </fileset>  
+  <include name="build"/>
+  <manifest>
+   <attribute name="Build-By" value="${user-name}"/>
+   <attribute name="Main-Class" value="ua.gradsoft.phpjao.Main"/>
+  </manifest>
+  </jar>
+ </target>
+
+ <target name="clean">
+  <delete>
+    <fileset dir="src" includes="**/*.class" />
+  </delete>
+ </target>
+
+ <target name="clean-build-cache" depends="declare-ivy" >
+   <delete dir="${basedir}/${ivy.build.resolver.dir}" />
+   <ivy:cleancache/>
+ </target>
+
+   <target name="publish.local" depends="build">
+     <ivy:publish resolver="local" pubrevision="${version}" 
+                  overwrite="true" 
+                  >
+       <artifacts pattern="target/[artifact]-[revision].[ext]" />
+     </ivy:publish>
+    </target>
+
+ <target name="test.all">
+    <antcall target="clean-build-cache" />
+    <antcall target="publish.local" />
+ </target>
+
+</project>

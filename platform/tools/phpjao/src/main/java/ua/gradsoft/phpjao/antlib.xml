@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<antlib>
+ <typedef name="generate" classname="ua.gradsoft.phpjao.PhpJaoAntTask" />
+</antlib>

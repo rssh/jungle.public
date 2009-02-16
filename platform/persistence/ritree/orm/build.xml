@@ -1,0 +1,115 @@
+<?xml version="1.0"?>
+<!-- build file for jungle.persistency.ritree project -->
+<project name="jungle.persistence.ritree" default="build" basedir="."
+  xmlns:ivy="antlib:fr.jayasoft.ivy.ant"
+ >
+    <property file="build.properties" />
+    <import file="build-ivy.xml" />
+    
+<!-- directories -->    
+    <property name="src.dir" value="."/>
+    <property name="build.dir" value="build"/>
+    <property name="dist.dir" value="dist"/>
+    <property name="lib.dir" value="lib"/>
+    <property name="etc.dir" value="etc"/>
+
+    <property name="src-common.dir" value="src/common"/>
+    <property name="src-server.dir" value="src/server"/>
+    
+    <property name="build-common.dir" value="${build.dir}/common"/>
+    <property name="build-server.dir" value="${build.dir}/server"/>
+    
+    <path id="core.classpath">
+        <pathelement location="${lib.dir}/javaee-api-5.0-1.jar"/>
+    </path>
+
+    <!-- targets -->
+    <target name="prepare">
+        
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="${build-common.dir}"/>
+        <mkdir dir="${build-server.dir}"/>
+        
+        <mkdir dir="${dist.dir}"/>
+    </target>
+    
+    <target name="clean">
+        <!--
+        <delete>
+            <fileset dir="${build.dir}" includes="**/*.class" />
+            <fileset dir="${dist.dir}" includes="**/*.ear,**/*.war,**/*.jar" />
+        </delete>
+        -->
+        <delete dir="${build.dir}"/>
+        <delete dir="${dist.dir}"/>
+    </target>
+    
+    <target name="build" depends="build-common, 
+                                  build-server" >
+    </target>
+    
+    <target name="build-common" depends="retrieve-libs,prepare" >
+        <javac destdir="${build-common.dir}" 
+                srcdir="${src-common.dir}" 
+                includes="**/*.java" 
+                deprecation="on" 
+                debug="${debug}" >
+            <!--<compilerarg  line="-Xlint:unchecked" />-->
+            <classpath>
+              <path refid="core.classpath"/>
+            </classpath>
+        </javac>
+        <jar destfile="${dist.dir}/jungle.persistence.ritree-${version}.jar"
+                basedir="${build-common.dir}" 
+                includes="**/*.class,**/*.dtd,META-INF/**/*" 
+                index="true">
+            <include name="build"/>
+            <manifest>
+                <attribute name="Build-By" value="${user-name}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="build-server" depends="retrieve-libs,prepare" >
+        <javac destdir="${build-server.dir}" 
+                srcdir="${src-server.dir}" 
+                includes="**/*.java" 
+                deprecation="on" 
+                debug="${debug}" >
+            <!--<compilerarg  line="-Xlint:unchecked" />-->
+            <classpath>
+                <path refid="core.classpath"/>
+            </classpath>
+        </javac>
+        <jar destfile="${dist.dir}/jungle.persistence.ritree.server-${version}.jar"
+                basedir="${build-server.dir}" 
+                includes="**/*.class,**/*.dtd,META-INF/**/*" 
+                index="true">
+            <include name="build"/>
+            <manifest>
+                <attribute name="Build-By" value="${user-name}"/>
+            </manifest>
+        </jar>
+    </target>
+
+   <target name="publish" depends="resolve-ivy,build">
+     <ivy:publish resolver="datacenter.gradsoft.ua" 
+                  pubrevision="${version}" 
+                  overwrite="true" 
+                  >
+       <artifacts pattern="dist/[artifact]-[revision].[ext]" />
+     </ivy:publish>
+    </target>
+
+   <target name="publish.local" depends="resolve-ivy,build">
+     <ivy:publish resolver="local.repo" pubrevision="${version}" 
+                  overwrite="true" 
+                  >
+       <artifacts pattern="dist/[artifact]-[revision].[ext]" />
+     </ivy:publish>
+    </target>
+
+
+    <target name="docs" depends="" />
+    
+</project>
