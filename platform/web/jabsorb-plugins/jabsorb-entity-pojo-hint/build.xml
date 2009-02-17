@@ -17,7 +17,7 @@
  <property name="jsch.install.version" value="0.1.37" />
  <property name="jsch.jar.file" value="${ivy.jar.dir}/jsch.jar" />
 
- <condition property="without.ivy.downloads">
+ <condition property="without.ivy.download">
   <or>
    <and>
     <available file="${ivy.jar.dir}/ivy.jar" />
