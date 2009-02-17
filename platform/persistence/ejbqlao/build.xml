@@ -124,6 +124,16 @@
   </delete>
  </target>
 
+ <target name="clean-all" depends="declare-ivy,clean" >
+   <delete>
+    <fileset dir="lib" includes="*.jar" />
+    <fileset dir="target" includes="*.xml" />
+    <fileset dir="target" includes="*.jar" />
+   </delete>
+   <ivy:cleancache />
+ </target>
+
+
  <target name="build-tests" depends="build,retrieve-test-libs">
   <javac srcdir="src/test/java" includes="**/*.java" deprecation="on" 
          debug="${debug}" >
