@@ -1,0 +1,5 @@
+
+#define CONFIGURATION_PERSISTENCE_CLASSES \
+        <class>ua.gradsoft.jungle.configuration.ConfigurationItem</class>
+
+   
