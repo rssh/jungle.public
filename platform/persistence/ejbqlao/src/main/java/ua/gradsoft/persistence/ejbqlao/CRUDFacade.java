@@ -28,28 +28,28 @@ public interface CRUDFacade
     @Caching(cacheName="queryCache", action=CacheAction.CLEAR)
     public void  remove(Object id);
 
-
+    @Caching(cacheName="queryCache", action=CacheAction.CACHE,
+             keyBuilder=AllArguments.class)
     <T>       T     find(Class<T> tClass, Object id);
     
     @Caching(cacheName="queryCache", action=CacheAction.CACHE,
              keyBuilder=AllArguments.class)
     public <T> List<T> executeQuery(Class<T> tClass, String ejbql);
 
-    @Caching(cacheName="queryCache", action=CacheAction.CACHE,
-             keyBuilder=AllArguments.class)
-    public <T> List<T> executeQuery(Class<T> tClass, String ejbql, List<Object> positionParameters);
-
    /**
-    *Executre query with given options. 
+    *Execute query with given options. 
     * @param tClass class of return value.
     * @param ejbql  query to select,
-    * @param positionParameters  parameters to query, organized as position.
-    * @param options qurty options, one of:
+    * @param positionParameters  positions parameters to query.
+    * @param options querty options, one of:
     * <ul>
     *  <li> maxResults </li>  number of results to retrieve
     *  <li> firstResult </li> index of firstResult in query
-    *  <li> native </li> use natiove sql
+    *  <li> native </li> use native sql
+    *  <li> jdbcnative </li> use jdbc-native sql
+    *  <li> jdbcnative </li> use native sql via underlaying jdbc call.
     *  <li> nocache </li>  does not cache query.
+    *  <li> resultSetMapping </li> use resultSetMapping
     * </ul>
     *        
     * @return result of query evaluation.
@@ -59,6 +59,16 @@ public interface CRUDFacade
              policyInterceptor=InterceptCachingOptions.class)
     public <T> List<T> executeQuery(Class<T> tClass, String ejbql, List<Object> positionParameters, Map<String,Object> options);
 
+   /**
+    *Execute query with given options. If this method is called in cache wrapper, that
+    * result is stored in queryCache
+    * @param tClass class of return value.
+    * @param ejbql  query to select,
+    * @param namedParameters  named parameters to query.
+    * @param options querty options
+    *
+    * @return result of query evaluation.
+    */
     @Caching(cacheName="queryCache", action=CacheAction.CACHE,
              keyBuilder=AllArguments.class, 
              policyInterceptor=InterceptCachingOptions.class)
@@ -69,8 +79,33 @@ public interface CRUDFacade
              policyInterceptor=InterceptCachingOptions.class)
     public int executeUpdate(String ejbql, Map<String,Object> namedParameters, Map<String,Object> options);
 
+    /**
+     * query by criteria.
+     * See<T,C> List<T> ua.gradsoft.persistence.ejbqlao.CRUDFacade.queryByCriteria(Class<T>, C, Map<String,Object>)
+     */
     @Caching(cacheName="queryCache", action=CacheAction.CACHE, keyBuilder=AllArguments.class)
     public <T,C> List<T>  queryByCriteria(Class<T> tClass, C Criteria);
+
+    /**
+     * Query by critera.
+     *  Criteria - is a special object, which is transformed to query and set of parameters
+     * by criteria helper. Criteria is any class, for which exists CriteriaHelper.  And CriteriaHelper
+     * for class <code>Xxx</code> is just class with name <code>XxxCriteriaHelper</code>, which
+     * implements CriteriaHelper interface.
+     *@see ua.gradsoft.persistence.ejbqlao.CriteriaHelper;
+     */
+    @Caching(cacheName="queryCache", action=CacheAction.CACHE, keyBuilder=AllArguments.class)
+    public <T,C> List<T>  queryByCriteria(Class<T> tClass, C Criteria, Map<String, Object> options);
+
+    /**
+     * Update with command. Cache is cleaned.
+     * @param <C> - class of command
+     * @param Command - update command
+     * @return number of affected rows or 0.
+     */
+    @Caching(cacheName="queryCache", action=CacheAction.CLEAR)
+    public <C> int  updateWithCommand(C Command);
+
 
 
 }
