@@ -1,9 +1,15 @@
 package ua.gradsoft.persistence.ejbqlao;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.EntityManager;
@@ -11,6 +17,7 @@ import javax.persistence.Query;
 import javax.persistence.TemporalType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import ua.gradsoft.persistence.ejbqlao.util.NamedToPositionalParamsSqlTransformer;
 
 /**
  * Object, which erncapsulate remote entity manager.
@@ -52,9 +59,26 @@ public abstract class EjbQlAccessObject implements CRUDFacade
 
   public <T> List<T> executeQuery(Class<T> tClass, String ejbql, List<Object> positionParameters, Map<String,Object> options)
   {
-   Query q = createQuery(ejbql, options);
-   int i=1;
-   for(Object param:positionParameters) {
+   boolean isJdbcNative=useJdbcMapping(tClass, options);
+   List<T> retval;
+   if (isJdbcNative){
+     Connection cn = createJdbcConnection();
+     try {
+         PreparedStatement st = cn.prepareStatement(ejbql);
+         applyPositionalParameters(st,positionParameters);
+         applyOptions(st,options);
+         ResultSet rs = st.executeQuery();
+         Class<?> resultClass = getClassForJdbcQueryResultRow(tClass);
+         retval = transformResultSetToList(rs, tClass, resultClass);
+     }catch(SQLException ex){
+         throw new DatabaseAccessException("Exception during execute",ex);
+     }finally{
+         releaseJdbcConnection(cn);
+     }
+   }else{
+     Query q = createQuery(ejbql, options);
+     int i=1;
+     for(Object param:positionParameters) {
        if (param instanceof Date) {
            q.setParameter(i, (Date)param, TemporalType.TIMESTAMP);
        }else if (param instanceof List) {
@@ -67,54 +91,89 @@ public abstract class EjbQlAccessObject implements CRUDFacade
            q.setParameter(i, param);
        }
        ++i;
+     }
+     applyOptions(q,options);
+     retval = q.getResultList();
    }
-   applyOptions(q,options);
-   List<T> retval = q.getResultList();
    return retval;
   }
 
   public <T> List<T> executeQuery(Class<T> tClass, String ejbql, Map<String,Object> namedParameters, Map<String,Object> options)
   {
-     Query q = createQuery(ejbql, options);
-     applyNamedParameters(q,namedParameters);
-     applyOptions(q,options);
-     List<T> retval = q.getResultList();
+     boolean isJdbcNative = useJdbcMapping(tClass, options);
+     List<T> retval = null;
+     if (isJdbcNative) {
+        Connection cn = createJdbcConnection();
+        try {
+          SqlPositionalQueryParams params = NamedToPositionalParamsSqlTransformer.translate(ejbql, namedParameters);
+          PreparedStatement st = cn.prepareStatement(params.getQuery());
+          applyPositionalParameters(st,params.getParameters());
+          applyOptions(st,options);
+          ResultSet rs = st.executeQuery();
+          Class<?> resultClass = getClassForJdbcQueryResultRow(tClass);
+          retval = transformResultSetToList(rs, tClass, resultClass);
+        }catch(SQLException ex){
+            throw new DatabaseAccessException("Exception during execute",ex);
+        }finally{
+            releaseJdbcConnection(cn);
+        }
+     }else{
+        Query q = createQuery(ejbql, options);
+        applyNamedParameters(q,namedParameters);
+        applyOptions(q,options);
+        retval = q.getResultList();
+     }
      return retval;     
   }
 
   public int executeUpdate(String ejbql, Map<String,Object> namedParameters, Map<String,Object> options)
   {
-    Query q = createQuery(ejbql, options);
-    applyNamedParameters(q, namedParameters);
-    applyOptions(q,options);
-    return q.executeUpdate();
+    boolean isJdbcNative = useJdbcMapping(null, options);
+    if (isJdbcNative) {
+        Connection cn = createJdbcConnection();
+        try {
+           SqlPositionalQueryParams params = NamedToPositionalParamsSqlTransformer.translate(ejbql, namedParameters);
+           PreparedStatement st = cn.prepareStatement(params.getQuery());
+           applyPositionalParameters(st,params.getParameters());
+           applyOptions(st,options);
+           return st.executeUpdate();
+        }catch(SQLException ex){
+           throw new DatabaseAccessException("Exception during execute",ex);
+        }finally{
+            releaseJdbcConnection(cn);
+        }
+    }else{
+      Query q = createQuery(ejbql, options);
+      applyNamedParameters(q, namedParameters);
+      applyOptions(q,options);
+      return q.executeUpdate();
+    }
   }
 
   public <T,C> List<T>  queryByCriteria(Class<T> tClass, C criteria)
   {
-      Class criteriaHelperClass = findCriteriaHelperClass(criteria.getClass());
-      if (criteriaHelperClass == null) {
-          throw new IllegalArgumentException("Invalid criteria: can't find criteria helper for class "+criteria.getClass().getName());
-      }
-      Object o = null;
-      try {        
-        o = criteriaHelperClass.newInstance();
-      } catch (InstantiationException ex) {
-          throw new IllegalArgumentException("Can't instantiate class "+criteriaHelperClass.getName(),ex);
-      } catch (IllegalAccessException ex){
-          throw new IllegalArgumentException("Can't instantiate class "+criteriaHelperClass.getName(),ex);
-      }
-      if (!(o instanceof CriteriaHelper)) {
-          throw new IllegalArgumentException("bad criteria helper for this criteria "+criteriaHelperClass.getClass().getName());
-      }
-      CriteriaHelper criteriaHelper = (CriteriaHelper)o;
+    return queryByCriteria(tClass, criteria, Collections.<String,Object>emptyMap());
+  }
+
+  public <T,C> List<T>  queryByCriteria(Class<T> tClass, C criteria, Map<String,Object> options)
+  {
+      CriteriaHelper criteriaHelper = createHelperObjectWithClassSuffix(criteria, "CriteriaHelper", CriteriaHelper.class);
       QueryParams params = criteriaHelper.getQueryParams(criteria);
       String query = params.getQuery();
       Map<String,Object> namedParameters = params.getNamedParameters();
-      Map<String,Object> options = params.getOptions();
-      return executeQuery(tClass, query, namedParameters, options);
+      Map<String,Object> noptions = params.getOptions();
+      noptions.putAll(options);
+      return executeQuery(tClass, query, namedParameters, noptions);
   }
   
+  public <C> int updateWithCommand(C command)
+  {
+     CommandHelper helper = createHelperObjectWithClassSuffix(command, "CommandHelper", CommandHelper.class);
+     QueryParams params = helper.getQueryParams(command);
+     return executeUpdate(params.getQuery(), params.getNamedParameters(), params.getOptions());     
+  }
+
+
   private Query createQuery(String ejbql, Map<String, Object> options)
   {
       boolean isNative=false;
@@ -123,16 +182,7 @@ public abstract class EjbQlAccessObject implements CRUDFacade
       if (options!=null) {
           Object o = options.get("native");
           if (o!=null) {
-            if (o instanceof Boolean) {
-                isNative=(Boolean)o;
-            } else if (o instanceof Number) {
-                isNative=((Number)o).intValue()!=0;
-            } else if (o instanceof String) {
-                String so = (String)o;
-                isNative = (so.equalsIgnoreCase("true") || so.equals("1"));
-            } else {
-                throw new IllegalArgumentException("Non-boolean value for query option native :"+o.toString());
-            }
+            isNative=ObjectParser.parseBoolean(o);
           } 
           o = options.get("resultClass");
           if (o!=null) {
@@ -170,6 +220,7 @@ public abstract class EjbQlAccessObject implements CRUDFacade
       }
   }
 
+
   private void applyNamedParameters(Query query, Map<String, ?> params)
   {
     for(Map.Entry<String,?> param: params.entrySet()) {
@@ -193,31 +244,155 @@ public abstract class EjbQlAccessObject implements CRUDFacade
            query.setParameter(name, value);
        }               
   }
+
+  private void applyPositionalParameters(PreparedStatement st, List<Object> params) throws SQLException
+  {
+    int i=0;
+    for(Object param: params)
+    {
+      if (params instanceof List) {
+          List<Object> list = (List<Object>)param;
+          st.setObject(i+1, ObjectParser.parseListAsQueryParameter(list));
+      }else if (params.getClass().isArray()){
+          Object[] arr = (Object[])param;
+          List<Object> list = Arrays.asList(arr);
+          st.setObject(i+1, ObjectParser.parseListAsQueryParameter(list));
+      }
+      st.setObject(i+1, param);
+    }
+  }
   
   private void applyOptions(Query query, Map<String,?> options)
   {
     for(Map.Entry<String,?> option: options.entrySet())  {
-        applyOption(query,option);
+        applyOption(query,option, options);
     }
   }
   
-  private void applyOption(Query query, Map.Entry<String,?> option)
+  private void applyOption(Query query, Map.Entry<String,?> option, Map<String,?> options)
   {
     String key = option.getKey();
     OptionParser evaluator = queryOptions.get(key);
     if (evaluator==null) {
         throw new IllegalArgumentException("Invalid option:"+key);
     }
-    evaluator.apply(query, option.getValue());
+    evaluator.apply(query, option.getValue(), options);
   }
-  
+
+  private void applyOptions(Statement st, Map<String,?> options)
+  {
+      for(Map.Entry<String,?> option: options.entrySet())
+      {
+        applyOption(st,option,options);  
+      }
+  }
+
+  private void applyOption(Statement st, Map.Entry<String,?> option, Map<String,?> options)
+  {
+      OptionParser evaluator = queryOptions.get(option.getKey());
+      if (evaluator==null) {
+          throw new IllegalArgumentException("Invalid option:"+option.getKey());
+      }
+      evaluator.apply(st, option.getValue(), options);
+  }
+
+
+  private boolean useJdbcMapping(Class resultClass, Map<String,Object> options)
+  {
+    boolean retval = false;
+    Object o = options.get("jdbcnative");
+    if (o!=null) {
+        retval = ObjectParser.parseBoolean(o);
+    }else{
+        if (resultClass!=null) {
+          o=options.get("native");
+          boolean n1=false;
+          if (o!=null) {
+            n1 = ObjectParser.parseBoolean(o);
+          }
+          if (n1 && java.util.Map.class.isAssignableFrom(resultClass)) {
+            retval=true;
+          }
+        }
+    }
+    return retval;
+  }
+
+
+  private Class<?> getClassForJdbcQueryResultRow(Class<?> tClass)
+  {
+    Class<?> resultClass;
+    if (java.util.Map.class.isAssignableFrom(tClass)) {
+      if (tClass.isInterface()) {
+         resultClass=java.util.HashMap.class;
+      }else{
+         resultClass=tClass;
+      }
+    }else if(java.util.List.class.isAssignableFrom(tClass)){
+      if (tClass.isInterface()) {
+         resultClass=java.util.ArrayList.class;
+      }else{
+         resultClass=tClass;
+      }
+    }else if(tClass.isAssignableFrom(java.lang.Object.class)){
+      resultClass=java.util.ArrayList.class;
+    }else{
+      throw new IllegalArgumentException("unknown result class for jdbc native query");
+    }
+    return resultClass;
+  }
+
+  private<T> List<T>  transformResultSetToList(ResultSet rs, Class<T> tClass, Class<?> rClass) throws SQLException
+  {
+    List<T> retval = new LinkedList<T>();
+    if (java.util.Map.class.isAssignableFrom(tClass)) {
+      try {
+        while(rs.next()) {
+          Map<String,Object> row = (Map<String,Object>)rClass.newInstance();
+          for(int i=1; i<=rs.getMetaData().getColumnCount(); ++i){
+            String columnLabel = rs.getMetaData().getColumnLabel(i);
+            Object o = rs.getObject(i);
+            row.put(columnLabel, o);
+          }
+          retval.add((T)row);
+        }
+      }catch(InstantiationException ex){
+         throw new IllegalArgumentException("Can't create oject of type "+rClass.getName(),ex);
+      }catch(IllegalAccessException ex){
+         throw new IllegalArgumentException("Can't create oject of type "+rClass.getName(),ex);
+      }
+    }else if(java.util.List.class.isAssignableFrom(tClass)){
+      try {
+        while(rs.next()) {
+            List<Object> row = (List<Object>)rClass.newInstance();
+            for(int i=1; i<=rs.getMetaData().getColumnCount();++i){
+                row.add(i);
+            }
+            retval.add((T)row);
+        }
+      }catch(InstantiationException ex){
+         throw new IllegalArgumentException("Can't create oject of type "+rClass.getName(),ex);
+      }catch(IllegalAccessException ex){
+         throw new IllegalArgumentException("Can't create oject of type "+rClass.getName(),ex);
+      }
+    }else{
+        //may be in future create pluggable custom transformers.
+        throw new IllegalArgumentException("Can't cast resultset to "+tClass.getName());
+    }
+    return retval;
+  }
+
+
   public static interface OptionParser
   {
-      void apply(Query q, Object o);
+      void apply(Query q, Object o, Map<String,?> opts);
+
+      void apply(Statement st, Object o, Map<String,?> opts);
 
       public static class NothingOptionParser implements OptionParser
       {
-        public void apply(Query q, Object o) {}
+        public void apply(Query q, Object o, Map<String,?> opts) {}
+        public void apply(Statement st, Object o, Map<String,?> opts) {}
       }
       
       public static final NothingOptionParser NOTHING = new NothingOptionParser();
@@ -229,26 +404,62 @@ public abstract class EjbQlAccessObject implements CRUDFacade
       HashMap<String,OptionParser> a = new HashMap<String,OptionParser>();
       a.put("maxResults", new OptionParser()
       {
-         public void apply(Query q,Object o)  {
+         public void apply(Query q,Object o,Map<String,?> opts)  {
              q.setMaxResults(ObjectParser.parseInt(o));             
+         }
+         public void apply(Statement st, Object o, Map<String,?> opts){
+             try {
+               st.setMaxRows(ObjectParser.parseInt(o));
+             }catch(SQLException ex){
+                 throw new DatabaseAccessException("Exception during setting query option",ex);
+             }
          }
       }
               );
       a.put("firstResult", new OptionParser()
       {
-         public void apply(Query q,Object o)  {
+         public void apply(Query q,Object o, Map<String,?> opts)  {
              q.setFirstResult(ObjectParser.parseInt(o));                    
+         }
+         public void apply(Statement st, Object o, Map<String,?> opts)
+         {
+            int io = ObjectParser.parseInt(o);
+            if (io!=0) {
+                throw new IllegalArgumentException("firstResult options is not supported in jdbc-sql queries");
+            }
          }
       }              
               );
       a.put("native", OptionParser.NOTHING);
+      a.put("jdbcnative", OptionParser.NOTHING);
       a.put("resultClass", OptionParser.NOTHING);
       a.put("resultSetMapping", OptionParser.NOTHING);
       a.put("nocache", OptionParser.NOTHING);
       return a;  
   }
 
-  private Class findCriteriaHelperClass(Class criteriaClass)
+  private <C, CH> CH createHelperObjectWithClassSuffix(C x, String suffix, Class<CH> helperInterface )
+  {
+      Class helperClass = findHelperClassWithSuffix(x.getClass(),suffix);
+      if (helperClass == null) {
+          throw new IllegalArgumentException("Invalid criteria or command: can't find  helper for class "+x.getClass().getName()+" with suffix "+suffix);
+      }
+      Object o = null;
+      try {
+        o = helperClass.newInstance();
+      } catch (InstantiationException ex) {
+          throw new IllegalArgumentException("Can't instantiate class "+helperClass.getName(),ex);
+      } catch (IllegalAccessException ex){
+          throw new IllegalArgumentException("Can't instantiate class "+helperClass.getName(),ex);
+      }
+      if (!(helperInterface.isAssignableFrom(helperClass))) {
+          throw new IllegalArgumentException("bad helper: "+helperClass.getClass().getName()+" must implement "+helperInterface.getName());
+      }
+      return (CH)o;
+  }
+
+
+  private Class findHelperClassWithSuffix(Class criteriaClass, String suffix)
   {
     if (criteriaClass==null ||
         criteriaClass.equals(Object.class) ||
@@ -256,7 +467,7 @@ public abstract class EjbQlAccessObject implements CRUDFacade
         return null;
     }
     Class retval=null;
-    String criteriaHelperClassName = criteriaClass.getName()+"CriteriaHelper";
+    String criteriaHelperClassName = criteriaClass.getName()+suffix;
     try {
         retval = Class.forName(criteriaHelperClassName);
     } catch (ClassNotFoundException ex) {
@@ -267,13 +478,13 @@ public abstract class EjbQlAccessObject implements CRUDFacade
     if (retval!=null) {
         return retval;
     }
-    retval = findCriteriaHelperClass(criteriaClass.getSuperclass());
+    retval = findHelperClassWithSuffix(criteriaClass.getSuperclass(),suffix);
     if (retval!=null) {
         return retval;
     }
     Class[] interfaces = criteriaClass.getInterfaces();
     for(int i=0; i<interfaces.length; ++i) {
-        retval = findCriteriaHelperClass(interfaces[i]);
+        retval = findHelperClassWithSuffix(interfaces[i],suffix);
         if (retval!=null) {
             return retval;
         }
@@ -282,12 +493,25 @@ public abstract class EjbQlAccessObject implements CRUDFacade
   }
 
   /**   
-   * allcessible only from local.
+   * accessible only from local.
    * Must be overloaded from subclasses.
    * @return entityManager
    */
   public abstract EntityManager getEntityManager();
-  
+
+  /**
+   * accessible only frol local.
+   * Must be overloaded from subclasses
+   */
+  public abstract Connection  createJdbcConnection();
+
+
+  /**
+   * release JDBC connection
+   */
+  public abstract void  releaseJdbcConnection(Connection cn);
+
+
   private static HashMap<String,OptionParser> queryOptions=initQueryOptions();
   private static Log LOG = LogFactory.getLog(EjbQlAccessObject.class);
   

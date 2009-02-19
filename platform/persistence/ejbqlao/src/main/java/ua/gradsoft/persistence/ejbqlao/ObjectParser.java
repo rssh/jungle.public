@@ -86,4 +86,37 @@ public class ObjectParser {
         }
     }
 
+    public static boolean parseBoolean(Object value)
+    {
+       if (value instanceof Boolean) {
+           return (Boolean)value;
+       } else if (value instanceof Number) {
+          Number n = (Number)value;
+          return n.intValue()!=0;           
+       } else if (value instanceof String) {
+          String s = (String)value;
+          if (s.equalsIgnoreCase("true")) {
+              return true;
+          }else if (s.equalsIgnoreCase("T")) {
+              return true;
+          }else if (s.equalsIgnoreCase("yes")){
+              return true;
+          }else if (s.equals("1")){
+              return true;
+          }else if (s.equalsIgnoreCase("false")){
+              return false;
+          }else if (s.equalsIgnoreCase("F")){
+              return false;
+          }else if (s.equalsIgnoreCase("no")){
+              return false;
+          }else if (s.equals("0")){
+              return false;
+          }else{
+              throw new ObjectParseException("Can't transform string '"+s+"' to boolean");
+          }
+       } else {
+           throw new ObjectParseException("Can't transform '"+value.toString()+"' to boolean");
+       }
+    }
+
 }
