@@ -234,6 +234,9 @@ class BigDecimal
  public function getString()
    { return $this->strvalue; }
 
+ public function __toString()
+   { return $this->strvalue; }
+
  public $strvalue;
 }
 
