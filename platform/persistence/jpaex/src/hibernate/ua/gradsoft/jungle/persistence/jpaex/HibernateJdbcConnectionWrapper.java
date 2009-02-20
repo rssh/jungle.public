@@ -7,10 +7,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- *IDBC Connection wrapper for hibernate
+ *JDBC Connection wrapper for hibernate
  * @author rssh
  */
-public class HibernateJdbcConnectionWrapper implements JdbcConnectionWrapper
+class HibernateJdbcConnectionWrapper implements JdbcConnectionWrapper
 {
 
     HibernateJdbcConnectionWrapper(Connection connection, boolean toClose)

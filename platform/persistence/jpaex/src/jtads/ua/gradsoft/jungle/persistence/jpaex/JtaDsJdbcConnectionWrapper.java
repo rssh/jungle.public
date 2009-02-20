@@ -12,7 +12,7 @@ import org.apache.commons.logging.LogFactory;
  *Connection wrapper for JTA/DS
  * @author rssh
  */
-public class JtaDsJdbcConnectionWrapper implements JdbcConnectionWrapper
+class JtaDsJdbcConnectionWrapper implements JdbcConnectionWrapper
 {
 
 

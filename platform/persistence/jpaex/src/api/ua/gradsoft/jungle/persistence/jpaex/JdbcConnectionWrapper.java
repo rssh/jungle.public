@@ -4,7 +4,7 @@ import java.sql.Connection;
 
 /**
  * Wrapper for Jdbc connection.
- *@see ua.gradsoft.jungle.persistence.jpaex; 
+ *@see ua.gradsoft.jungle.persistence.jpaex.JpaEx
  **/ 
 public interface JdbcConnectionWrapper
 {

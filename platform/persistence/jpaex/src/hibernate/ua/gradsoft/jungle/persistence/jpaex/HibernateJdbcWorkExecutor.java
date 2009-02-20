@@ -10,7 +10,7 @@ import org.hibernate.jdbc.Work;
  *Executor of JDFC worl
  * @author rssh
  */
-public class HibernateJdbcWorkExecutor implements JdbcWorkExecutor
+class HibernateJdbcWorkExecutor implements JdbcWorkExecutor
 {
 
     static class WorkAdapter implements Work

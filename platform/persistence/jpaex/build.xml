@@ -168,7 +168,12 @@
  <target name="api-docs" depends="retrieve-libs" >
   <javadoc destdir="docs/api" >
    <packageset dir="src/api" />
-   <classpath  refid="std.build.path" />
+   <packageset dir="src/spring" />
+   <packageset dir="src/hibernate" />
+   <packageset dir="src/jtads" />
+   <classpath>
+    <fileset dir="lib" includes="**/*.jar" />
+   </classpath>
   </javadoc>
  </target>
 

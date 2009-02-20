@@ -9,7 +9,7 @@ import org.springframework.jdbc.datasource.ConnectionHandle;
  * (wrapper arround spring ConnectionHandle)
  * @author rssh
  */
-public class SpringJdbcConnectionWrapper implements JdbcConnectionWrapper
+class SpringJdbcConnectionWrapper implements JdbcConnectionWrapper
 {
 
     SpringJdbcConnectionWrapper(ConnectionHandle connectionHandle)
