@@ -55,7 +55,7 @@ public class NamedToPositionalParamsSqlTransformer
           boolean found=false;
           int i=++varIndex;
           for(; i<arr.length && !found; ++i) {
-              if (!Character.isLetterOrDigit(arr[i])) {
+              if (!Character.isJavaIdentifierPart(arr[i])) {
                   found=true;
                   break;
               }
