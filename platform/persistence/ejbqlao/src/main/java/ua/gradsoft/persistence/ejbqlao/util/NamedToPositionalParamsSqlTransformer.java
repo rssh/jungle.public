@@ -57,6 +57,7 @@ public class NamedToPositionalParamsSqlTransformer
           for(; i<arr.length && !found; ++i) {
               if (!Character.isLetterOrDigit(arr[i])) {
                   found=true;
+                  break;
               }
           }
           if (i==varIndex) {
