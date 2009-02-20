@@ -506,11 +506,15 @@ public abstract class EjbQlAccessObject implements CRUDFacade
 
 
   /**
-   * accessible only from local.
-   * Must be overloaded from subclasses.
+   * accessible only from local. By default return JpaEx singleton which
+   * must be configured before first call to getJpaEx;
+   * Can be overloaded from subclasses.
    * @return JpaEx
    */  
-  public abstract JpaEx  getJpaEx();
+  public JpaEx  getJpaEx()
+  {
+    return JpaEx.getInstance();
+  }
 
 
   private static HashMap<String,OptionParser> queryOptions=initQueryOptions();
