@@ -26,6 +26,16 @@ public abstract class JpaEx
     return new DefaultJdbcWorkExecutor(getJdbcConnectionWrapper(em,false));
   }
 
+
+  /**
+   * register this instance of JpaEx as singleton.
+   * (used during system initialization)
+   */
+  public void registerInstance()
+  {
+      JpaEx.setInstance(this);
+  }
+
   /**
    * get instance of JpaEx, if it is configured in application, otherwise
    * throws IllegalStateException
