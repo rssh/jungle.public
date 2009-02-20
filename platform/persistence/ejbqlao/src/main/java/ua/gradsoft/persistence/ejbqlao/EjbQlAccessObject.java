@@ -17,6 +17,8 @@ import javax.persistence.Query;
 import javax.persistence.TemporalType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import ua.gradsoft.jungle.persistence.jpaex.JdbcConnectionWrapper;
+import ua.gradsoft.jungle.persistence.jpaex.JpaEx;
 import ua.gradsoft.persistence.ejbqlao.util.NamedToPositionalParamsSqlTransformer;
 
 /**
@@ -62,7 +64,8 @@ public abstract class EjbQlAccessObject implements CRUDFacade
    boolean isJdbcNative=useJdbcMapping(tClass, options);
    List<T> retval;
    if (isJdbcNative){
-     Connection cn = createJdbcConnection();
+     JdbcConnectionWrapper cnw = getJpaEx().getJdbcConnectionWrapper(getEntityManager(), true);
+     Connection cn = cnw.getConnection();
      try {
          PreparedStatement st = cn.prepareStatement(ejbql);
          applyPositionalParameters(st,positionParameters);
@@ -73,7 +76,7 @@ public abstract class EjbQlAccessObject implements CRUDFacade
      }catch(SQLException ex){
          throw new DatabaseAccessException("Exception during execute",ex);
      }finally{
-         releaseJdbcConnection(cn);
+         cnw.releaseConnection(cn);
      }
    }else{
      Query q = createQuery(ejbql, options);
@@ -103,7 +106,8 @@ public abstract class EjbQlAccessObject implements CRUDFacade
      boolean isJdbcNative = useJdbcMapping(tClass, options);
      List<T> retval = null;
      if (isJdbcNative) {
-        Connection cn = createJdbcConnection();
+        JdbcConnectionWrapper cnw = getJpaEx().getJdbcConnectionWrapper(getEntityManager(), true);
+        Connection cn = cnw.getConnection();
         try {
           SqlPositionalQueryParams params = NamedToPositionalParamsSqlTransformer.translate(ejbql, namedParameters);
           PreparedStatement st = cn.prepareStatement(params.getQuery());
@@ -115,7 +119,7 @@ public abstract class EjbQlAccessObject implements CRUDFacade
         }catch(SQLException ex){
             throw new DatabaseAccessException("Exception during execute",ex);
         }finally{
-            releaseJdbcConnection(cn);
+            cnw.releaseConnection(cn);
         }
      }else{
         Query q = createQuery(ejbql, options);
@@ -130,7 +134,8 @@ public abstract class EjbQlAccessObject implements CRUDFacade
   {
     boolean isJdbcNative = useJdbcMapping(null, options);
     if (isJdbcNative) {
-        Connection cn = createJdbcConnection();
+        JdbcConnectionWrapper cnw = getJpaEx().getJdbcConnectionWrapper(getEntityManager(), false);
+        Connection cn = cnw.getConnection();
         try {
            SqlPositionalQueryParams params = NamedToPositionalParamsSqlTransformer.translate(ejbql, namedParameters);
            PreparedStatement st = cn.prepareStatement(params.getQuery());
@@ -140,7 +145,7 @@ public abstract class EjbQlAccessObject implements CRUDFacade
         }catch(SQLException ex){
            throw new DatabaseAccessException("Exception during execute",ex);
         }finally{
-            releaseJdbcConnection(cn);
+            cnw.releaseConnection(cn);
         }
     }else{
       Query q = createQuery(ejbql, options);
@@ -499,17 +504,13 @@ public abstract class EjbQlAccessObject implements CRUDFacade
    */
   public abstract EntityManager getEntityManager();
 
-  /**
-   * accessible only frol local.
-   * Must be overloaded from subclasses
-   */
-  public abstract Connection  createJdbcConnection();
-
 
   /**
-   * release JDBC connection
-   */
-  public abstract void  releaseJdbcConnection(Connection cn);
+   * accessible only from local.
+   * Must be overloaded from subclasses.
+   * @return JpaEx
+   */  
+  public abstract JpaEx  getJpaEx();
 
 
   private static HashMap<String,OptionParser> queryOptions=initQueryOptions();

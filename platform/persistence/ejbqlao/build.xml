@@ -22,7 +22,7 @@
    <and>
     <available file="${ivy.jar.dir}/ivy.jar" />
     <available file="${ivy.jar.dir}/jsch.jar" />
-    <available file="${ivy.jar.dir}/ivy.build.plugin-1.0.jar" />
+    <available file="${ivy.jar.dir}/ivy.build.plugin.jar" />
    </and>
    <isset property="offline" />
   </or>
@@ -35,8 +35,8 @@
          dest="${ivy.jar.file}" usetimestamp="true"/>
     <get src="http://prdownloads.sourceforge.net/jsch/jsch-0.1.37.jar?download"
          dest="${jsch.jar.file}" usetimestamp="true"/>
-    <get src="http://datacenter.gradsoft.ua/public.repository/ua.gradsoft/ivy.build.plugin/jars/ivy.build.plugin-1.0.jar"
-        dest="${ivy.jar.dir}/ivy.build.plugin-1.0.jar" usetimestamp="true"/>
+    <get src="http://datacenter.gradsoft.ua/public.repository/ua.gradsoft/ivy.build.plugin/jars/ivy.build.plugin-${ivy.build.plugin.version}.jar"
+        dest="${ivy.jar.dir}/ivy.build.plugin.jar" usetimestamp="true"/>
  </target>
 	
  <target name="declare-ivy" depends="download-ivy" >
@@ -82,8 +82,10 @@
 
 
  <path id="std.build.path">
-   <pathelement location="lib/commons-logging-1.1.1.jar" />
-   <pathelement location="lib/jungle.caching-${jungle.caching.version}.jar" />
+   <fileset dir="lib" includes="commons-logging-*.jar" />
+   <fileset dir="lib" includes="javaee-api-*.jar" />
+   <fileset dir="lib" includes="jungle.caching-*.jar" />
+   <fileset dir="lib" includes="jungle.persistence.jpaex-api-*.jar" />
    <pathelement location="lib/javaee-api-5.jar" />
  </path>
 
