@@ -14,7 +14,7 @@ public class NamedToPositionalParamsSqlTransformer
    *  jdbc query with positional parameters.
    * (note - this class does not touch options)
    * @param nQuery - query with named parameters.
-   * @param namedParametets - parameters.
+   * @param namedParameters - parameters.
    * @return sql query with positions parameters.
    */
   public static SqlPositionalQueryParams translate(String nQuery, Map<String,Object> namedParameters )

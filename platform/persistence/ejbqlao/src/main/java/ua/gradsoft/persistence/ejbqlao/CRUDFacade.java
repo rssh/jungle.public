@@ -81,8 +81,8 @@ public interface CRUDFacade
 
     /**
      * query by criteria.
-     * See<T,C> List<T> ua.gradsoft.persistence.ejbqlao.CRUDFacade.queryByCriteria(Class<T>, C, Map<String,Object>)
-     */
+     *@see List ua.gradsoft.persistence.ejbqlao.CRUDFacade#queryByCriteria(Class, C, Map>)
+     **/
     @Caching(cacheName="queryCache", action=CacheAction.CACHE, keyBuilder=AllArguments.class)
     public <T,C> List<T>  queryByCriteria(Class<T> tClass, C Criteria);
 
@@ -92,8 +92,8 @@ public interface CRUDFacade
      * by criteria helper. Criteria is any class, for which exists CriteriaHelper.  And CriteriaHelper
      * for class <code>Xxx</code> is just class with name <code>XxxCriteriaHelper</code>, which
      * implements CriteriaHelper interface.
-     *@see ua.gradsoft.persistence.ejbqlao.CriteriaHelper;
-     */
+     *@see ua.gradsoft.persistence.ejbqlao.CriteriaHelper
+     **/
     @Caching(cacheName="queryCache", action=CacheAction.CACHE, keyBuilder=AllArguments.class)
     public <T,C> List<T>  queryByCriteria(Class<T> tClass, C Criteria, Map<String, Object> options);
 
