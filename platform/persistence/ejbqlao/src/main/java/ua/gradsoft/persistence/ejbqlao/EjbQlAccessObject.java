@@ -255,15 +255,17 @@ public abstract class EjbQlAccessObject implements CRUDFacade
     int i=0;
     for(Object param: params)
     {
-      if (params instanceof List) {
+      if (param instanceof List) {
           List<Object> list = (List<Object>)param;
           st.setObject(i+1, ObjectParser.parseListAsQueryParameter(list));
-      }else if (params.getClass().isArray()){
+      }else if (param.getClass().isArray()){
           Object[] arr = (Object[])param;
           List<Object> list = Arrays.asList(arr);
           st.setObject(i+1, ObjectParser.parseListAsQueryParameter(list));
+      }else{
+          st.setObject(i+1, param);
       }
-      st.setObject(i+1, param);
+      ++i;
     }
   }
   
@@ -366,12 +368,12 @@ public abstract class EjbQlAccessObject implements CRUDFacade
       }catch(IllegalAccessException ex){
          throw new IllegalArgumentException("Can't create oject of type "+rClass.getName(),ex);
       }
-    }else if(java.util.List.class.isAssignableFrom(tClass)){
+    }else if((tClass!=null && List.class.isAssignableFrom(tClass)) || List.class.isAssignableFrom(rClass)){
       try {
         while(rs.next()) {
             List<Object> row = (List<Object>)rClass.newInstance();
             for(int i=1; i<=rs.getMetaData().getColumnCount();++i){
-                row.add(i);
+                row.add(rs.getObject(i));
             }
             retval.add((T)row);
         }

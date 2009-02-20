@@ -7,6 +7,8 @@
                         extends="std" />
       <conf name="doc" description="with tool for building documentations" 
                         extends="std" />
+      <conf name="build" description="with libraries, needed for compiling " 
+                        extends="std" />
     </configurations>
     <publications>
       <artifact name="jungle.persistence.ejbqlao" type="jar" />
@@ -24,7 +26,7 @@
            url="http://odt2html.gradsoft.ua/files/odt2html-1.1.jar"
          />
         </dependency>
-        <dependency org="javaee" name="javaee-api" rev="5" />
+        <dependency org="javaee" name="javaee-api" rev="5" conf="build->*" />
         <dependency org="ua.gradsoft" name="jungle.caching" 
                     rev="${jungle.caching.version}"
          conf="*->default" >

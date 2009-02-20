@@ -46,7 +46,7 @@ public class NamedToPositionalParamsSqlTransformer
     int varIndex=index;
     char[] arr = part.toCharArray();
     while(varIndex < arr.length) {
-      while(arr[varIndex]!=':' && varIndex<arr.length) {
+      while(varIndex<arr.length && arr[varIndex]!=':') {
           qb.append(arr[varIndex]);
           ++varIndex;
       }
@@ -69,6 +69,7 @@ public class NamedToPositionalParamsSqlTransformer
           }
           qb.append("?");
           //qb.append(sqlPositionParameterIndex);
+          posParams.add(varValue);
           ++sqlPositionParameterIndex;
           varIndex=i;
       }
