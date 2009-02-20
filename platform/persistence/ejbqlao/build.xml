@@ -165,7 +165,7 @@
   <javadoc destdir="docs/api" >
    <packageset dir="src/main/java" />
    <classpath  refid="std.build.path" />
-   <link href="${gradsoft.docs.root}/jungle.persistence.jpaex/javadoc/" />
+   <link href="${gradsoft.docs.root}/jungle.persistence.jpaex/javadoc" />
   </javadoc>
  </target>
 
