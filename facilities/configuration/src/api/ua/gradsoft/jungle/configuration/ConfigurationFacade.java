@@ -1,13 +1,25 @@
 package ua.gradsoft.jungle.configuration;
 
-
-public interface ConfigurationFacade
+/**
+ * Facade for configuration
+ **/ 
+public class ApplicationsConfiguration
 {
-  
-  public  boolean isDefined(String name);
 
-  public  String  getStringItem(String name);
+  List<ConfigurationItemDescription>  getConfigDescription(String appName);
 
-  public  boolean getBooleanItem(String name);
+  void registerConfigItemDescription(ConfigItemDescription description);
+
+  void unregisterConfigItemDescription(ConfigItemDescription description);
+
+  public <T> T getConfigItem(Class<T> type, ConfigItemSelector itemSelector); 
+
+  public <T> void  setConfigItem(ConfigItemSelector itemSelector, T item);
+
+  public List<Object>  getConfigItems(ConfigItemSelector itemSelector);
+
+  public int           getNumberOfConfigItems(ConfigItemSelector itemSelector);
+
+  public void  setConfigItems(Map<BigDecimal,Object> objects);
 
 }

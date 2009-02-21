@@ -1,0 +1,39 @@
+<ivy-module version="1.4">
+ <info organisation="ua.gradsoft" module="jungle.configuration" />
+ <configurations>
+  <conf name="api" description="api only" />
+  <conf name="default" description="default build without db scripts" 
+        extends="api"
+  />
+  <conf name="pgsql" description="build with pgsql scripts" 
+        extends="default" />
+  <conf name="hgsql" description="build with hgsql scripts" 
+        extends="default" />
+  <conf name="source" description="source tarboll" />
+ </configurations>
+ <publications>
+  <artifact name="jungle.configuration.api" type="jar" conf="api" />
+  <artifact name="jungle.configuration.impl" type="jar" conf="default" />
+  <artifact name="jungle.configuration.persistence.xml" type="part" />
+  <artifact name="jungle.configuration.docs" type="zip" />
+  <artifact name="create_jungle_configuration_pgsql" type="sql" conf="pgsql" />
+  <artifact name="drop_jungle_configuration_pgsql" type="sql" conf="pgsql" />
+  <artifact name="create_jungle_configuration_hsql" type="sql" conf="hsql" />
+  <artifact name="drop_jungle_configuration_hsql" type="sql" conf="hsql" />
+  <artifact name="jungle.configuration-src" type="zip" conf="source" />
+ </publications>
+ <dependencies>
+    <dependency org="org.apache.openejb" 
+               name="javaee-api"
+               rev="5.0-1" 
+               >
+       <artifact name="javaee-api" type="jar" />
+    </dependency>
+    <dependency org="ua.gradsoft" 
+               name="jungle.persistence.ejbqlao"
+               rev="[,1.4)"
+               conf="default->std">
+       <artifact name="jungle.persistence.ejbqlao" type="jar" />
+    </dependency>
+ </dependencies>
+</ivy-module>
