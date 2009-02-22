@@ -42,6 +42,7 @@ public class BuildResolver extends AbstractResolver
             ArtifactDownloadReport r= reports[i];
             if (r.getDownloadStatus()!=DownloadStatus.SUCCESSFUL ) {
                 nextDownloads.add(r.getArtifact());
+                Message.verbose(getName()+"  "+r.getName()+" can't be downloaded+("+r.getDownloadStatus()+"), will try build");
             }
         }
         int nBuilds = doBuildAndPublishForArtifacts(nextDownloads);
