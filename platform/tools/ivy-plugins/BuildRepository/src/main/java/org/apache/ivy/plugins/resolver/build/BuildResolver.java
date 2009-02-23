@@ -222,12 +222,12 @@ public class BuildResolver extends AbstractResolver
         project.addBuildListener(logger);
 
         // Execute task
-        Message.verbose("performing packager resolver build in " + dir);
+        Message.verbose("performing build resolver build in " + dir);
         try {
             project.executeTarget(e.getPublishTarget());          
         } catch (BuildException ex) {
             ex.printStackTrace(System.out);
-            Message.verbose("packager resolver build failed: " + e);
+            Message.verbose("build resolver build failed: " + e);
             throw new BuildException("exception in depended build",ex);
         }
 
