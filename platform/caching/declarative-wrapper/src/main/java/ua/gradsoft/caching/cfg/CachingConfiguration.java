@@ -148,12 +148,12 @@ public class CachingConfiguration implements Serializable {
 
     public static final long    DEFAULT_DISK_EXPIRE_THREAD_INTERVAL = 60*5;
     public static final boolean DEFAULT_DISK_PERSISTENT = false;
-    public static final long    DEFAULT_TIME_TO_IDLE = (60*60)*1;
+    public static final long    DEFAULT_TIME_TO_IDLE = (60*10)*1;
     public static final long    DEFAULT_TIME_TO_LIVE = (60*60)*3;
     public static final boolean DEFAULT_ETERAL = false;
     public static final boolean DEFAULT_OVERFLOW_TO_DISK = false;
     public static final MemoryStoreEvictionPolicy DEFAULT_EVICTION_POLICY = MemoryStoreEvictionPolicy.LRU;
-    public static final int DEFULT_MAX_ELEMENTS_IN_MEMORY_FOR_CACHE = 10000;
+    public static final int DEFULT_MAX_ELEMENTS_IN_MEMORY_FOR_CACHE = 1000;
 
     private static final long serialVersionUID = 200901080005L;
 }
