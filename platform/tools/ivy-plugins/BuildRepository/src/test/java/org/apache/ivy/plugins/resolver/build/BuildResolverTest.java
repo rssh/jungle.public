@@ -2,59 +2,129 @@ package org.apache.ivy.plugins.resolver.build;
 
 import java.io.File;
 import junit.framework.TestCase;
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.BuildLogger;
-import org.apache.tools.ant.DefaultLogger;
+import org.apache.ivy.core.event.EventManager;
+import org.apache.ivy.core.module.descriptor.Artifact;
+import org.apache.ivy.core.module.descriptor.DefaultArtifact;
+import org.apache.ivy.core.module.descriptor.DefaultDependencyDescriptor;
+import org.apache.ivy.core.module.id.ModuleRevisionId;
+import org.apache.ivy.core.report.ArtifactDownloadReport;
+import org.apache.ivy.core.report.DownloadReport;
+import org.apache.ivy.core.resolve.DownloadOptions;
+import org.apache.ivy.core.resolve.ResolveData;
+import org.apache.ivy.core.resolve.ResolveEngine;
+import org.apache.ivy.core.resolve.ResolveOptions;
+import org.apache.ivy.core.resolve.ResolvedModuleRevision;
+import org.apache.ivy.core.settings.IvySettings;
+import org.apache.ivy.core.sort.SortEngine;
+import org.apache.ivy.plugins.resolver.FileSystemResolver;
+import org.apache.ivy.util.DefaultMessageLogger;
+import org.apache.ivy.util.FileUtil;
+import org.apache.ivy.util.Message;
 import org.apache.tools.ant.Project;
-import org.apache.tools.ant.ProjectHelper;
+import org.apache.tools.ant.taskdefs.Copy;
+import org.apache.tools.ant.types.FileSet;
 
 public class BuildResolverTest extends TestCase
 {
 
+  private IvySettings _settings;
+  private ResolveEngine _engine;
+  private ResolveData _data;
+  private File _cache;
+
+  private File _workdir;
+  private File _builddir;
+  private File _repodir;
+  private File _p1dir;
 
 
-    
-
-  public void testStructure1() throws Exception
+  protected void setUp() throws Exception
   {
-      doAntTarget("testdata/structure1/p2","test.all");
+      _settings=new IvySettings();
+      Message.setDefaultLogger(new DefaultMessageLogger(99));
+      _engine=new ResolveEngine(_settings, new EventManager(), new SortEngine(_settings));
+      _cache=new File("build/cache");
+
+      _data=new ResolveData(_engine, new ResolveOptions());
+      _cache.mkdirs();
+      _settings.setDefaultCache(_cache);
+
+      //create workspace
+      _workdir=new File("build/test/BuildResolverTest");
+      FileUtil.forceDelete(_workdir);
+      _builddir = new File(_workdir,"build");
+      _repodir = new File(_workdir,"repo");
+      _p1dir = new File(_workdir,"p1");
+
+      //copy p1 to builddir
+      Copy copy = new Copy();
+      FileSet fileset = new FileSet();
+      fileset.setDir(new File("test/repositories/build/buildexample"));
+      copy.addFileset(fileset);
+      copy.setTodir(_p1dir);
+      copy.setProject(new Project());
+      copy.execute();
+
   }
 
-
-  private void doAntTarget(String dirname, String target) throws Exception
+  protected void tearDown() throws Exception
   {
-      Project project = new Project();
-      File dir = new File(dirname);
-      File antFile = new File(dirname,"build.xml");
-      project.init();
-      //project.setUserProperty(dirname, target)
-      project.setUserProperty("ant.file", antFile.getAbsolutePath());
-      project.setBasedir(dir.getAbsolutePath());
-      project.setUserProperty("basedir", dir.getAbsolutePath());
-      ProjectHelper.configureProject(project,antFile);
-      project.addDataTypeDefinition("build", org.apache.ivy.plugins.resolver.build.BuildResolver.class);
+      FileUtil.forceDelete(_cache);
+      FileUtil.forceDelete(_workdir);
+  }
+
+  public void testBuildCallsP1() throws Exception
+  {
+      BuildResolver buildResolver=new BuildResolver();
+      buildResolver.setSettings(_settings);
+      FileSystemResolver repoResolver=new FileSystemResolver();
+      repoResolver.setSettings(_settings);
+      repoResolver.addIvyPattern(_repodir.getAbsolutePath()+"/[organization]/[module]/ivys/ivy-[revision].xml");
+      repoResolver.addArtifactPattern(_repodir.getAbsolutePath()+"/[organization]/[module]/[type]s/[artifact]-[revision].[ext]");
+      repoResolver.setName("local");
+      buildResolver.setName("build.local");
+      buildResolver.setBuildResolverDir(_repodir.getAbsolutePath());
+      buildResolver.add(repoResolver);
+      BuildDescriptionEntry bde = new BuildDescriptionEntry();
+      bde.setOrganization("org.apache.ivy");
+      bde.setName("buildexample");
+      bde.setPublishTarget("publish.local");
+      bde.setBuildDirectory(_p1dir.getAbsolutePath());
+      buildResolver.addConfiguredDependencyBuild(bde);
+
+      ModuleRevisionId mrid = ModuleRevisionId.newInstance(
+                                 "org.apache.ivy", "buildexample","1.0");
+      ResolvedModuleRevision rmr = buildResolver.getDependency(new DefaultDependencyDescriptor(mrid,false), _data);
+      assertNotNull(rmr);
       
+      Artifact artifact = new DefaultArtifact(mrid,rmr.getPublicationDate(),"buildexample","txt","txt");
+      Artifact[] artifacts = new Artifact[1];
+      artifacts[0]=artifact;
+      DownloadReport report = buildResolver.download(artifacts, new DownloadOptions());
+      assertNotNull(report);
+      
+      assertEquals(1,report.getArtifactsReports().length);
+      
+      ArtifactDownloadReport ar = report.getArtifactReport(artifact);
+      assertNotNull(ar);
+      
+      // at least, check that file in ivy.build.resolver.dir exists
+      
+      File orgf = new File(_repodir,"org.apache.ivy" );
+      assertTrue(orgf.exists());
+      
+      File modf = new File(orgf,"buildexample" );
+      assertTrue(modf.exists());
 
-    // Configure logging verbosity
-        BuildLogger logger = new DefaultLogger();
-        logger.setMessageOutputLevel(Project.MSG_VERBOSE);
-        logger.setOutputPrintStream(System.out);
-        logger.setErrorPrintStream(System.err);
-        project.addBuildListener(logger);
+      File typef = new File(modf,"txts");
+      assertTrue(typef.exists());
+      
+      File artf = new File(typef, "buildexample-1.0.txt");
+      assertTrue(artf.exists());
 
-      try {
-        project.executeTarget(target);
-      }catch(BuildException ex){
-          ex.printStackTrace();
-          throw ex;
-      }
-            
   }
-
 
   public void testMakeAntHeppy()
   { }
-
-  public static String TEST_DIR_ROOT=;
 
 }
