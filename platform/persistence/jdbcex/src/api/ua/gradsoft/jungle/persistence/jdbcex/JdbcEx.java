@@ -43,7 +43,15 @@ public abstract class JdbcEx
   **/ 
   public abstract void dropSequence(String name, Connection cn);
 
-  
+
+  /**
+   * register instance of 'this' JdbcEx as JdbcEx singleton.
+   */
+  public void registerInstance()
+  {
+    setInstance(this);  
+  }
+
   /**
    * return API for work with database extensions, if one is
    * configured, otherwse throws IllegalStateException. 
