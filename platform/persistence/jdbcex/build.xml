@@ -215,8 +215,8 @@
  </target>
 
  <target name="doc-distributive" depends="docs">
-  <mkdir dir="target/jungle.persistence.jdbcex-${version}" />
-  <copy todir="target/jungle.persistence.jdbcex-${version}" >
+  <mkdir dir="target/jungle.persistence.jdbcex-docs-${version}" />
+  <copy todir="target/jungle.persistence.jdbcex-docs-${version}" >
    <fileset dir=".">
     <include name="docs/**/*" />
    </fileset>
@@ -224,12 +224,12 @@
   <tar basedir="target" 
        destfile="target/jungle.persistence.jdbcex-docs-${version}.tar"
        defaultexcludes="yes"
-       includes="jungle.persistence.jdbcex-${version}/**/*" />
+       includes="jungle.persistence.jdbcex-docs-${version}/**/*" />
   <gzip src="target/jungle.persistence.jdbcex-docs-${version}.tar"
         destfile="target/jungle.persistence.jdbcex-docs-${version}.tar.gz"
   />
   <delete file="target/jungle.persistence.jdbcex-docs-${version}.tar" />
-  <delete dir="target/jungle.persistence.jdbcex-${version}" />
+  <delete dir="target/jungle.persistence.jdbcex-docs-${version}" />
  </target>
 
   <target name="distributives" 
