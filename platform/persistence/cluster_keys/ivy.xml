@@ -15,7 +15,7 @@
                         extends="pgsql,hsql,oracle" />
     </configurations>
     <publications>
-      <artifact name="jungle.persistence.cluster_keys-api" 
+      <artifact name="jungle.persistence.cluster_keys" 
                 type="jar" conf="api" />
       <artifact name="jungle.persistence.cluster_keys-src" type="tar.gz" 
                 ext="tar.gz" conf="src" />
@@ -33,8 +33,6 @@
                 conf="oracle" />
       <artifact name="drop_cluster_keys_oracle" type="sql" 
                 conf="oracle" />
-      <artifact name="jungle.persistence.cluster_keys-all" type="jar" 
-                conf="all" />
     </publications>
     <dependencies>
         <dependency org="ua.gradsoft" name="jungle.persistence.jdbcex" 

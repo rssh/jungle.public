@@ -4,7 +4,10 @@ create schema clusterization;
 
 set search_path = clusterization, pg_catalog;
 
--- this table must have only one record.
+/**
+ * Node ifno for 'this' cluster.
+ *Usually, this is only one record.
+ **/
 create table my_cluster_node_info
 (
  node_id      INTEGER  not null,

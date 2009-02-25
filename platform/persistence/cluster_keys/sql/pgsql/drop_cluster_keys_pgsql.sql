@@ -1,0 +1,4 @@
+
+drop schema clusterization cascade;
+
+

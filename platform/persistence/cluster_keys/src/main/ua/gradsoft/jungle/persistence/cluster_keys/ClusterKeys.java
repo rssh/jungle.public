@@ -70,7 +70,12 @@ public class ClusterKeys
      Statement st = null;
      try {
        st=jdbcConnection.createStatement();
-       ResultSet rs = st.executeQuery("select node_number, org_id from clusterization.my_cluster_node_info");
+       String sql = (jdbcEx.getDialect().equals("pgsql") ?
+                      "select node_id, org_id from clusterization.my_cluster_node_info"
+                      :
+                      "select node_id, org_id from my_cluster_node_info"
+                    );
+       ResultSet rs = st.executeQuery(sql);
        if (rs.next()) {
          // check for same org_id and node_id.  insert if not found.
          int nodeId = rs.getInt(1);
@@ -87,11 +92,11 @@ public class ClusterKeys
                  }
              }
              if (!found) {
-                 addToMyClusterNodeInfo(nodeInfo,jdbcConnection);
+                 addToMyClusterNodeInfo(nodeInfo,jdbcConnection, jdbcEx);
              }
          }
        }else{
-         addToMyClusterNodeInfo(nodeInfo,jdbcConnection);
+         addToMyClusterNodeInfo(nodeInfo,jdbcConnection, jdbcEx);
        }
      }catch(SQLException ex){
          throw new RuntimeSqlException(ex);
@@ -209,12 +214,15 @@ public class ClusterKeys
       return Base64Encoder.base64Encode(bytes);
   }
   
-  private static void addToMyClusterNodeInfo(ClusterNodeInfo nodeInfo, Connection jdbcConnection) throws SQLException
+  private static void addToMyClusterNodeInfo(ClusterNodeInfo nodeInfo, Connection jdbcConnection, JdbcEx jdbcEx) throws SQLException
   {
-     PreparedStatement st1 = jdbcConnection.prepareStatement(
-                 "insert into clusterization.my_cluster_node_info(node_number,org_id)" +
+     String sql = (jdbcEx.getDialect().equals("pgsql") ?
+            "insert into clusterization.my_cluster_node_info(node_id,org_id)" +
                  " values(?,?) "
-                 );
+                 :
+            "insert into my_cluster_node_info(node_id,org_id) values(?,?) "
+            );
+     PreparedStatement st1 = jdbcConnection.prepareStatement(sql);
      st1.setInt(1, nodeInfo.getNodeId());
      st1.setInt(2, nodeInfo.getOrgId());
      st1.execute();

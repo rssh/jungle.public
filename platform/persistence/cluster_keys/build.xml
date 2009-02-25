@@ -90,6 +90,8 @@
    <delete>
     <fileset dir="lib" includes="*.jar" />
     <fileset dir="target" includes="*.jar" />
+    <fileset dir="target" includes="*.xml" />
+    <fileset dir="target" includes="*.tar.gz" />
     <fileset dir="target" includes="*.sql" />
    </delete>
    <ivy:cleancache />
