@@ -60,9 +60,9 @@ class PHPJAO
     if (self::isPrimitivePhpObject($o)) {
        return $o;
     }else if (is_object($o)) {
-       $customHelper = self::$customJsonMapping[get_class($o)];
-       if ($customHelper!=null) {
-         $toJson=$customHelper->getMethod('toJson');
+       $className = get_class($o);
+       if (isset(self::$customJsonMapping[$className])) {
+         $toJson=self::$customJsonMapping[$className]->getMethod('toJson');
          return $toJson->invoke(null,$o);
        }else{
          $reflectionClass = new ReflectionClass(get_class($o));
@@ -95,10 +95,9 @@ class PHPJAO
     if (self::isPrimitivePhpObject($o) || is_null($o)) {
       $retval = $o;
     }else{
-      $javaClass = $o['javaClass'];
       $phpType = null;
-      if ($javaClass!=null) {
-        $phpType=self::findType($javaClass);
+      if (isset($o['javaClass'])) {
+        $phpType=self::findType($o['javaClass']);
       }
       if ($phpType!=null) {
         $helperReflection = self::$customJsonMapping[$phpType];
@@ -139,7 +138,7 @@ class PHPJAO
     $request = array(
         "method" => $requestMethod,
         "params" => $requestArguments,
-        "id" => ++$requestsIdCount
+        "id" => ++ self::$requestsIdCount
                     );
     $ch=curl_init($url);
     curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
