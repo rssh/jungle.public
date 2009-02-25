@@ -7,16 +7,17 @@ set search_path = clusterization, pg_catalog;
 -- this table must have only one record.
 create table my_cluster_node_info
 (
- node_number  INTEGER  not null,
+ node_id      INTEGER  not null,
  org_id       INTEGER  not null
+  primary key(node_number, org_id)
 );
 
-insert into my_cluster_node_info(node_number, org_id) values(1,1,1);
+insert into my_cluster_node_info(node_id, org_id) values(1,1);
 
 create table  db_cluster_neightboards
 (
- cluster_number  INTEGER  primary key,
- org_id          INTEGER 
+ node_id  INTEGER  primary key,
+ org_id   INTEGER 
 );
 
 create or replace function generate_number_key(BIGINT) returns NUMERIC(40,0)
@@ -27,8 +28,8 @@ declare
  x  alias for $1;
  retval NUMERIC(40,0);
 begin
- select my_cluster_number, my_org_id into cn, org_id
-   from clusterization.my_cluster_info;
+ select node_id, org_id into cn, org_id
+   from clusterization.my_cluster_node_info limit 1;
  if cn is null then
    raise exception 'clusterization metainfo is not filled.';
  end if;
@@ -45,8 +46,8 @@ as $$
  x  alias for $1;
  retval CHAR(24);
 begin
- select my_cluster_number, my_org_id into cn, org_id
-   from clusterization.my_cluster_info;
+ select node_id, org_id into cn, org_id
+   from clusterization.my_cluster_info limit 1;
  if cn is null then
    raise exception 'clusterization metainfo is not filled.';
  end if;
