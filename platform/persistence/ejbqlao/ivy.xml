@@ -28,7 +28,7 @@
         </dependency>
         <dependency org="javaee" name="javaee-api" rev="5" conf="build->*" />
         <dependency org="ua.gradsoft" name="jungle.caching" 
-                    rev="${jungle.caching.version}"
+                    rev="[1.0.2,)"
          conf="*->default" >
          <artifact name="jungle.caching" type="jar" />
         </dependency>
