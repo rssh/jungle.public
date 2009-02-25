@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://www.netbeans.org/ns/project/1">
+    <type>org.netbeans.modules.ant.freeform</type>
+    <configuration>
+        <general-data xmlns="http://www.netbeans.org/ns/freeform-project/1">
+            <name>jungle.persistence.jdbcex</name>
+        </general-data>
+        <general-data xmlns="http://www.netbeans.org/ns/freeform-project/2">
+            <!-- Do not use Project Properties customizer when editing this file manually. -->
+            <name>jungle.persistence.jdbcex</name>
+            <properties/>
+            <folders>
+                <source-folder>
+                    <label>src/api</label>
+                    <type>java</type>
+                    <location>src/api</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>src/hsql</label>
+                    <type>java</type>
+                    <location>src/hsql</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>src/oracle</label>
+                    <type>java</type>
+                    <location>src/oracle</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>src/pgsql</label>
+                    <type>java</type>
+                    <location>src/pgsql</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>jungle.persistence.jdbcex</label>
+                    <location>.</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+            </folders>
+            <ide-actions>
+                <action name="build">
+                    <target>build</target>
+                </action>
+                <action name="clean">
+                    <target>clean</target>
+                </action>
+                <action name="javadoc">
+                    <target>docs</target>
+                </action>
+                <action name="rebuild">
+                    <target>clean</target>
+                    <target>build</target>
+                </action>
+            </ide-actions>
+            <export>
+                <type>folder</type>
+                <location>src/api</location>
+                <build-target>build</build-target>
+            </export>
+            <export>
+                <type>folder</type>
+                <location>src/hsql</location>
+                <build-target>build</build-target>
+            </export>
+            <export>
+                <type>folder</type>
+                <location>src/oracle</location>
+                <build-target>build</build-target>
+            </export>
+            <export>
+                <type>folder</type>
+                <location>src/pgsql</location>
+                <build-target>build</build-target>
+            </export>
+            <view>
+                <items>
+                    <source-folder style="packages">
+                        <label>src/api</label>
+                        <location>src/api</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>src/hsql</label>
+                        <location>src/hsql</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>src/oracle</label>
+                        <location>src/oracle</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>src/pgsql</label>
+                        <location>src/pgsql</location>
+                    </source-folder>
+                    <source-file>
+                        <location>build.xml</location>
+                    </source-file>
+                </items>
+                <context-menu>
+                    <ide-action name="build"/>
+                    <ide-action name="rebuild"/>
+                    <ide-action name="clean"/>
+                    <ide-action name="javadoc"/>
+                </context-menu>
+            </view>
+        </general-data>
+        <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/1">
+            <compilation-unit>
+                <package-root>src/api</package-root>
+                <built-to>src/api</built-to>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>src/hsql</package-root>
+                <classpath mode="compile">src/api</classpath>
+                <built-to>src/hsql</built-to>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>src/oracle</package-root>
+                <classpath mode="compile">src/api</classpath>
+                <built-to>src/oracle</built-to>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>src/pgsql</package-root>
+                <classpath mode="compile">src/api</classpath>
+                <built-to>src/pgsql</built-to>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+        </java-data>
+    </configuration>
+</project>
