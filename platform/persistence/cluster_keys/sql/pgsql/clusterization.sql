@@ -5,28 +5,18 @@ create schema clusterization;
 set search_path = clusterization, pg_catalog;
 
 -- this table must have only one record.
-create table my_cluster_info
+create table my_cluster_node_info
 (
- my_cluster_number  INTEGER  not null,
- my_org_id          INTEGER  not null,
- my_key             INTEGER  not null
+ node_number  INTEGER  not null,
+ org_id       INTEGER  not null
 );
 
-insert into my_cluster_info(my_cluster_number, my_org_id, my_key) values(1,1,1);
+insert into my_cluster_node_info(node_number, org_id) values(1,1,1);
 
 create table  db_cluster_neightboards
 (
  cluster_number  INTEGER  primary key,
  org_id          INTEGER 
-);
-
-create table db_replicated_tables
-(
- schema_name varchar(64),
- table_name  varchar(128),
- generate    boolean,
- accept      boolean,
- primary key(schema_name, table_name)
 );
 
 create or replace function generate_number_key(BIGINT) returns NUMERIC(40,0)
@@ -47,5 +37,40 @@ begin
  return retval;
 end $$ LANGUAGE plpgsql;
 
+create or replace function generate_character_key(BIGINT) returns CHAR(24)
+declare
+as $$
+ cn INTEGER;
+ org_id INTEGER;
+ x  alias for $1;
+ retval CHAR(24);
+begin
+ select my_cluster_number, my_org_id into cn, org_id
+   from clusterization.my_cluster_info;
+ if cn is null then
+   raise exception 'clusterization metainfo is not filled.';
+ end if;
+ retval:=encode(
+       (
+         set_byte(E'a'::bytea,0,(org_id>>24)%256)::bytea
+       ||set_byte(E'a'::bytea,0,(org_id>>16)%256)::bytea
+       ||set_byte(E'a'::bytea,0,(org_id>>8)%256)::bytea
+       ||set_byte(E'a'::bytea,0,(org_id%256))::bytea
+       ||set_byte(E'a'::bytea,0,(cn>>24)%256)::bytea
+       ||set_byte(E'a'::bytea,0,(cn>>16)%256)::bytea
+       ||set_byte(E'a'::bytea,0,(cn>>8)%256)::bytea
+       ||set_byte(E'a'::bytea,0,(cn%256))::bytea
+       ||set_byte(E'a'::bytea,0,cast((x>>56)%256 as integer))::bytea
+       ||set_byte(E'a'::bytea,0,cast((x>>48)%256 as integer))::bytea
+       ||set_byte(E'a'::bytea,0,cast((x>>40)%256 as integer))::bytea
+       ||set_byte(E'a'::bytea,0,cast((x>>32)%256 as integer))::bytea
+       ||set_byte(E'a'::bytea,0,cast((x>>24)%256 as integer))::bytea
+       ||set_byte(E'a'::bytea,0,cast((x>>16)%256 as integer))::bytea
+       ||set_byte(E'a'::bytea,0,cast((x>>8)%256 as integer))::bytea
+       ||set_byte(E'a'::bytea,0,cast(x%256 as integer))::bytea
+       )
+             ,'base64');
+  return retval;
+end $$ LANGUAGE plpgsql;
 
 
