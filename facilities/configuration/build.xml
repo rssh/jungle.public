@@ -1,0 +1,172 @@
+<?xml version="1.0"?>
+<project name="jungle.configuration" default="build" basedir="."
+  xmlns:ivy="antlib:fr.jayasoft.ivy.ant"
+  xmlns:phpjao="antlib:ua.gradsoft.phpjao"
+ >
+    <property file="build.properties" />
+    <property file="build.local.properties" />
+
+    <import file="build-ivy.xml" />
+    
+<!-- directories -->    
+    <property name="src.dir" value="."/>
+    <property name="build.dir" value="build"/>
+    <property name="dist.dir" value="dist"/>
+    <property name="lib.dir" value="lib"/>
+    <property name="etc.dir" value="etc"/>
+
+    <property name="src-api.dir" value="src/api"/>
+    <property name="src-impl.dir" value="src/impl"/>
+    
+    <property name="build-api.dir" value="${build.dir}/api"/>
+    <property name="build-impl.dir" value="${build.dir}/impl"/>
+    
+    <path id="core.classpath">
+       <fileset dir="${lib.dir}" includes="*.jar" />
+    </path>
+
+
+    <!-- targets -->
+    <target name="prepare">
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="${build-api.dir}"/>
+        <mkdir dir="${build-impl.dir}"/>
+        
+        <mkdir dir="${dist.dir}"/>
+    </target>
+    
+    <target name="clean">
+        <!--
+        <delete>
+            <fileset dir="${build.dir}" includes="**/*.class" />
+            <fileset dir="${dist.dir}" includes="**/*.ear,**/*.war,**/*.jar" />
+        </delete>
+        -->
+        <delete dir="${build.dir}"/>
+        <delete dir="${dist.dir}"/>
+    </target>
+
+    
+    <target name="build" depends="build-api,build-impl" >
+      <copy file="etc/persistence.xml.part" 
+            tofile="${dist.dir}/jungle.configuration.persistence.xml-${version}.part"
+      />
+      <copy file="sql/pgsql/create_configuration_pgsql.sql"
+          tofile="${dist.dir}/create_configuration_pgsql-${version}.sql" />
+      <copy file="sql/pgsql/drop_configuration_pgsql.sql"
+          tofile="${dist.dir}/drop_configuration_pgsql-${version}.sql" />
+      <copy file="sql/hsql/create_configuration_hsql.sql"
+          tofile="${dist.dir}/create_configuration_hsql-${version}.sql" />
+      <copy file="sql/hsql/drop_configuration_hsql.sql"
+          tofile="${dist.dir}/drop_configuration_hsql-${version}.sql" />
+    </target>
+    
+    <target name="build-api" depends="retrieve-libs,prepare" >
+        <javac destdir="${build-api.dir}" 
+                srcdir="${src-api.dir}" 
+                includes="**/*.java" 
+                deprecation="on" 
+                debug="${debug}" >
+            <!--<compilerarg  line="-Xlint:unchecked" />-->
+            <classpath>
+              <path refid="core.classpath"/>
+            </classpath>
+        </javac>
+        <jar destfile="${dist.dir}/jungle.configuration.api-${version}.jar"
+                basedir="${build-api.dir}" 
+                includes="**/*.class,**/*.dtd,META-INF/**/*" 
+                index="true">
+            <include name="build"/>
+            <manifest>
+                <attribute name="Build-By" value="${user-name}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="build-impl" depends="retrieve-libs,prepare" >
+        <javac destdir="${build-impl.dir}" 
+                srcdir="${src-impl.dir}" 
+                includes="**/*.java" 
+                deprecation="on" 
+                debug="${debug}" >
+            <!--<compilerarg  line="-Xlint:unchecked" />-->
+            <classpath>
+                <path refid="core.classpath"/>
+                <pathelement location="${build-api.dir}" />
+            </classpath>
+        </javac>
+        <jar destfile="${dist.dir}/jungle.configuration.impl-${version}.jar"
+                basedir="${build-impl.dir}" 
+                includes="**/*.class,**/*.dtd,META-INF/**/*" 
+                index="true">
+            <include name="build"/>
+            <manifest>
+                <attribute name="Build-By" value="${user-name}"/>
+            </manifest>
+        </jar>
+    </target>
+
+   <target name="publish" depends="resolve-ivy,build,docs">
+     <ivy:publish resolver="datacenter.gradsoft.ua" pubrevision="${version}" 
+                  overwrite="true" 
+                  >
+       <artifacts pattern="dist/[artifact]-[revision].[ext]" />
+     </ivy:publish>
+    </target>
+
+   <target name="publish.local" depends="resolve-ivy,build,docs">
+     <ivy:publish resolver="jungle.repo" pubrevision="${version}" 
+                  overwrite="true" 
+                  >
+       <artifacts pattern="dist/[artifact]-[revision].[ext]" />
+     </ivy:publish>
+    </target>
+
+    <target name="docs" depends="javadoc" />
+
+    <target name="javadoc" >
+     <javadoc destdir="docs/javadoc" >
+       <sourcefiles>
+        <fileset dir="src/api">
+          <include name="**/*.java" />
+        </fileset>
+        <fileset dir="src/impl">
+          <include name="**/*.java" />
+        </fileset>
+       </sourcefiles>
+       <classpath>
+        <path refid="core.classpath"/>
+        <pathelement location="${build-api.dir}" />
+        <pathelement location="${build-impl.dir}" />
+       </classpath>
+     </javadoc>
+     <zip destfile="dist/jungle.configuration.docs-${version}.zip" 
+          basedir="docs/javadoc"
+     />
+    </target>
+
+    <target name="source-distributive" depends="build">
+      <mkdir dir="dist/jungle.configuration-src-${version}" />
+      <copy todir="dist/jungle.configuration-src-${version}" >
+      <fileset dir=".">
+        <include name="**/*.xml" />
+        <include name="**/*.java" />
+        <include name="**/*.properties" />
+        <include name="src/*" />
+        <include name="lib/*" />
+        <include name="docs/**/*" />
+        <exclude name="dist/*.*" />
+        <exclude name="dist/**/*.*" />
+        <exclude name="nbproject/private/*" />
+        <exclude name="**/*.class" />
+      </fileset>
+     </copy>
+     <zip destfile="dist/jungle.configuration-src-${version}.zip" >
+       <zipfileset dir="dist/jungle.configuration-src-${version}" 
+                   prefix="jungle.configuration-src-${version}" />
+     </zip>
+     <delete dir="dist/jungle.configuration-src-${version}.zip" />
+    </target>
+
+    
+</project>

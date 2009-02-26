@@ -1,10 +1,10 @@
 package ua.gradsoft.jungle.configuration;
 
 
-public class ConfigItemSelectorByNames implements ConfigItemSelector
+public class ConfigItemSelectorByNames extends ConfigItemSelector
 {
 
-  public ConfigItemSelecorByNames(String appName, String itemName)
+  public ConfigItemSelectorByNames(String appName, String itemName)
    { 
      appName_=appName;
      itemName_=itemName; 

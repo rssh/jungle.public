@@ -1,6 +1,8 @@
 package ua.gradsoft.jungle.configuration;
 
-public class ConfigItemSelectorById implements ConfigItemSelector
+import java.math.BigDecimal;
+
+public class ConfigItemSelectorById extends ConfigItemSelector
 {
   public ConfigItemSelectorById(BigDecimal id)
   {
@@ -10,7 +12,7 @@ public class ConfigItemSelectorById implements ConfigItemSelector
   public BigDecimal getId()
   { return id_; }
 
-  public void setId()
+  public void setId(BigDecimal id)
   { id_=id; }
 
   private BigDecimal id_;

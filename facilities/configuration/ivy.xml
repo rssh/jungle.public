@@ -7,7 +7,7 @@
   />
   <conf name="pgsql" description="build with pgsql scripts" 
         extends="default" />
-  <conf name="hgsql" description="build with hgsql scripts" 
+  <conf name="hsql" description="build with hsql scripts" 
         extends="default" />
   <conf name="source" description="source tarboll" />
  </configurations>
@@ -31,9 +31,15 @@
     </dependency>
     <dependency org="ua.gradsoft" 
                name="jungle.persistence.ejbqlao"
-               rev="[,1.4)"
+               rev="[1.4,)"
                conf="default->std">
        <artifact name="jungle.persistence.ejbqlao" type="jar" />
+    </dependency>
+    <dependency org="ua.gradsoft" 
+               name="jungle.persistence.cluster_keys"
+               rev="[1.0a,)"
+               conf="default->api">
+       <artifact name="jungle.persistence.cluster_keys" type="jar" />
     </dependency>
  </dependencies>
 </ivy-module>
