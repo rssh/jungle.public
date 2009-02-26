@@ -15,11 +15,11 @@
   <artifact name="jungle.configuration.api" type="jar" conf="api" />
   <artifact name="jungle.configuration.impl" type="jar" conf="default" />
   <artifact name="jungle.configuration.persistence.xml" type="part" />
-  <artifact name="jungle.configuration.docs" type="zip" />
-  <artifact name="create_jungle_configuration_pgsql" type="sql" conf="pgsql" />
-  <artifact name="drop_jungle_configuration_pgsql" type="sql" conf="pgsql" />
-  <artifact name="create_jungle_configuration_hsql" type="sql" conf="hsql" />
-  <artifact name="drop_jungle_configuration_hsql" type="sql" conf="hsql" />
+  <artifact name="jungle.configuration-docs" type="zip" />
+  <artifact name="create_configuration_pgsql" type="sql" conf="pgsql" />
+  <artifact name="drop_configuration_pgsql" type="sql" conf="pgsql" />
+  <artifact name="create_configuration_hsql" type="sql" conf="hsql" />
+  <artifact name="drop_configuration_hsql" type="sql" conf="hsql" />
   <artifact name="jungle.configuration-src" type="zip" conf="source" />
  </publications>
  <dependencies>
