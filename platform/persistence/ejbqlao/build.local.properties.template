@@ -3,4 +3,4 @@ debug=true
 #repo.home=${jungle.home}/repo
 
 #offline=true
-offline.ivy=true
+#offline.ivy=true
