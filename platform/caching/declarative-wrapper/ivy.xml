@@ -14,13 +14,14 @@
       <artifact name="jungle.caching-doc" type="tar.gz" ext="tar.gz" />
     </publications>
     <dependencies>
-        <dependency org="org.apache" name="commons-logging" rev="1.1.1" 
+        <dependency org="org.apache" name="commons-logging" rev="[1.1.1,)" 
          conf="*->default" transitive="false" />
         <dependency org="net.sf.ehcache" name="ehcache" 
-            rev="${ehcache.version}"  conf="default->default" >
+            rev="[1.6.0-beta2,)"  
+            conf="default->default" >
            <artifact name="ehcache" type="jar" />
         </dependency> 
-        <dependency org="org.junit" name="junit" rev="4.4" 
+        <dependency org="org.junit" name="junit" rev="[4.4,)" 
          conf="test->default"/>
     </dependencies>
 </ivy-module>
