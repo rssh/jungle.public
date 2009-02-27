@@ -11,9 +11,11 @@
                         extends="api" />
       <conf name="jtads" description="jta with known datasource" 
                         extends="api" />
+      <conf name="build" description="with build dependnecy" 
+                        extends="api" />
     </configurations>
     <publications>
-      <artifact name="jungle.persistence.jpaex-api" type="jar" conf="api" />
+      <artifact name="jungle.persistence.jpaex-api" type="jar" conf="build" />
       <artifact name="jungle.persistence.jpaex-src" type="tar.gz" 
                 ext="tar.gz" conf="src" />
       <artifact name="jungle.persistence.jpaex-docs" type="tar.gz" 
@@ -26,7 +28,8 @@
                 conf="jtads" />
     </publications>
     <dependencies>
-        <dependency org="javaee" name="javaee-api" rev="5" />
+        <dependency org="javaee" name="javaee-api" rev="5" 
+                    conf="build->default" />
         <dependency org="org.apache" name="commons-logging" rev="1.1.1" 
                     transitive="false" conf="hibernate,jtads->default" >
           <artifact name="commons-logging" type="jar" />
