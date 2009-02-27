@@ -17,9 +17,8 @@ public abstract class JpaEx
    */
   public abstract JdbcConnectionWrapper  getJdbcConnectionWrapper(EntityManager em, boolean readOnly);
 
-
   /**
-   * execute JdbcWork with
+   * get API for execute JdbcWork 
    */
   public JdbcWorkExecutor  getJdbcWorkExecutor(EntityManager em)
   {
