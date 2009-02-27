@@ -1,0 +1,148 @@
+<?xml version="1.0"?>
+
+<project name="test-spring-hibernate-tomcat" default="assemble" basedir="."
+ xmlns:ivy='antlib:fr.jayasoft.ivy.ant'
+>
+
+    <property file="build.properties" />
+    <import file="build-ivy.xml" />
+
+    <property name="lib.dir" value="lib" />
+    <property name="compile.lib.dir" value="lib.compileonly" />
+    <property name="dist.dir" value="dist" />
+    <property name="war.dir" value="${dist.dir}/war" />
+    
+<!-- directories -->    
+    <path id="core.path">
+       <fileset dir="${lib.dir}" includes="**/*.jar" />
+    </path>
+
+    <path id="compile.path">
+     <path refid="core.path" />
+     <pathelement location="${compile.lib.dir}/javaee-api-5.0-1.jar"/>
+    </path>
+
+
+<!-- targets -->
+    <target name="prepare">
+        <mkdir dir="${dist.dir}"/>
+        <mkdir dir="${war.dir}"/>
+    </target>
+    
+    <target name="clean">
+     <delete>
+      <fileset dir="classes" includes="**/*.class" />
+     </delete>
+    </target>
+ 
+    <target name="assemble" depends="build-war">
+    </target>
+
+    <target name="build" depends="retrieve-libs, retrieve-compile-libs" >
+      <javac  srcdir="src" includes="**/*.java" deprecation="on"
+              debug="on" 
+              destdir="classes"
+              >
+        <classpath refid="compile.path" />
+      </javac>  
+    </target>
+  
+    <target name="build-persistence" depends="retrieve-libs">
+      <loadfile property="jungle.appregistry.classes" 
+                srcFile="lib/jungle.appregistry.persistence.xml-${jungle.appregistry.version}.part" />
+      <loadfile property="jungle.configuration.classes" 
+                srcFile="lib/jungle.configuration.persistence.xml-${jungle.configuration.version}.part" />
+      <copy file="etc/META-INF/persistence.xml.in"
+            tofile="etc/META-INF/persistence.xml"
+            overwrite="true"
+      >
+       <filterset>
+         <filter token="DATA_SOURCE" value="DS" />
+         <filter token="APPREGISTRY_ORM_CLASSES" 
+                 value="${jungle.appregistry.classes}" />
+         <filter token="CONFIGURATION_ORM_CLASSES" 
+                 value="${jungle.configuration.classes}" />
+       </filterset>
+      </copy>
+      <copy file="etc/WEB-INF/applicationContext.xml.in"
+            tofile="etc/WEB-INF/applicationContext.xml"
+            overwrite="true"
+      >
+       <filterset>
+         <filter token="DATA_SOURCE" value="DS" />
+         <filter token="JDBC_DRIVER" value="${jdbc.driver}" />
+         <filter token="JDBC_URL" value="${jdbc.url}" />
+         <filter token="JDBC_LOGIN" value="${jdbc.login}" />
+         <filter token="JDBC_PASSWORD" value="${jdbc.password}" />
+         <filter token="DB_FILE" value="${db.file}" />
+       </filterset>
+      </copy>
+      <move todir="sql"> 
+        <fileset dir="lib" includes="*.sql" />
+      </move>
+    </target>
+
+    <target name="build-war" depends="prepare, build, build-persistence" >
+        <war destfile="${war.dir}/jungle.tomcat.sh-test.war" 
+                webxml="etc/WEB-INF/web.xml"  
+                index="true">
+            <classes  dir="classes" includes="**/*.class" />
+            <classes  dir="etc" >
+              <include name="META-INF/persistence.xml" />
+              <include name="logging.properties" />
+            </classes>
+<!--
+            <fileset  dir="${resources-web.dir}" />
+            <fileset  dir="${platform-web-resources.dir}" />
+          -->
+<!--
+            <fileset  dir="web.groovy" />
+-->
+            <webinf   dir="etc/WEB-INF" includes="**/*.xml" />
+            <metainf  dir="etc/META-INF" includes="context.xml" />
+            <lib  dir="lib" includes="**/*.jar" />    
+        </war>
+    </target>
+
+    <target name="deploy" 
+            depends="build-war,retrieve-tomcat-libs,check-tomcat-home" 
+                          if="tomcat.home.is.set">
+      <echo message="tomcat.home is set to ${tomcat.home}" />
+      <copy file="lib.common.tomcat/spring-tomcat-weaver-2.5.6.jar" 
+            todir="${tomcat.home}/lib" />
+      <copy file="${war.dir}/ifs.tomcat-test-${version}.war" 
+            todir="${tomcat.home}/webapps" 
+            overwrite="true" />
+      <echo message="please, restart tomcat" />
+    </target>
+    
+    <target name="check-tomcat-home"> 
+      <condition property="tomcat.home.is.set">
+         <isset property="tomcat.home" />
+      </condition>
+    </target>
+
+    <target name="create-db" depends="build-persistence" >
+     <sql driver="${jdbc.driver}" url="${jdbc.url}" 
+          userid="${jdbc.login}"  password="${jdbc.password}" 
+          classpathref="core.path"  >
+       <fileset dir="sql"
+         includes="create_appregistry_hsql-*.sql" />
+       <fileset dir="sql"
+         includes="create_configuration_hsql-*.sql" />
+     </sql>
+    </target>
+
+    <target name="drop-db" depends="build-persistence" >
+     <sql driver="${jdbc.driver}" url="${jdbc.url}" 
+          userid="${jdbc.login}"  password="${jdbc.password}" 
+          classpathref="core.path"  >
+       <fileset dir="sql"
+         includes="drop_configuration_hsql-*.sql" />
+       <fileset dir="sql"
+         includes="drop_appregistry_hsql-*.sql" />
+     </sql>
+    </target>
+    
+
+</project>

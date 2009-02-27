@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+        persistence unit for test application
+-->
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="1.0">
+    <persistence-unit name="PU" transaction-type="RESOURCE_LOCAL" >
+        <description>
+          persistence unit for test application
+        </description>
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+         @APPREGISTRY_ORM_CLASSES@
+         @CONFIGURATION_ORM_CLASSES@
+        <properties>
+            <property name="hibernate.cache.provider_class"
+                      value="org.hibernate.cache.EhCacheProvider" />
+            <property name="hibernate.show_sql" value="false" />
+<!--
+  for hsql
+-->
+            <property name="hibernate.dialect"
+                      value="org.hibernate.dialect.HSQLDialect" />
+        </properties>
+    </persistence-unit>
+</persistence>
+

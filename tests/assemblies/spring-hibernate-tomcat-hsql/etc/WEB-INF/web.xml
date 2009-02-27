@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+   version="2.5">
+
+    <description>
+      Web bridge for jungle test application
+    </description>
+    <display-name>IFS</display-name>
+
+    <filter>
+       <filter-name>SpringOpenEntityManagerInViewFilter</filter-name>
+       <filter-class>
+          org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter
+       </filter-class>
+    </filter>
+     <filter-mapping>
+         <filter-name>SpringOpenEntityManagerInViewFilter</filter-name>
+         <url-pattern>/*</url-pattern>
+     </filter-mapping>
+
+
+ <servlet>
+    <servlet-name>JsonRpcServlet</servlet-name>
+    <servlet-class>org.jabsorb.JSONRPCServlet</servlet-class>
+   <!-- <servlet-class>ua.gradsoft.ifs.rpc.JsonAcceptor</servlet-class> -->
+    <init-param>
+      <param-name>gzip_threshold</param-name>
+      <param-value>200</param-value>
+    </init-param>
+ </servlet>
+
+  <servlet-mapping>
+    <servlet-name>JsonRpcServlet</servlet-name>
+    <url-pattern>/JSON-RPC</url-pattern>
+  </servlet-mapping>
+
+    <servlet>
+      <servlet-name>Groovy</servlet-name>
+      <servlet-class>groovy.servlet.GroovyServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+      <servlet-name>Groovy</servlet-name>
+      <url-pattern>*.groovy</url-pattern>
+    </servlet-mapping>
+
+
+     <listener>
+       <listener-class>
+             org.springframework.web.context.ContextLoaderListener
+       </listener-class>
+     </listener>
+
+</web-app>
