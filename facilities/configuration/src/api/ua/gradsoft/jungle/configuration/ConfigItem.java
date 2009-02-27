@@ -14,7 +14,7 @@ import javax.persistence.UniqueConstraint;
  * @author rssh
  */
 @Entity
-@Table(name="jungle_config_items",
+@Table(name="jungle_configitems",
        uniqueConstraints={
             @UniqueConstraint(columnNames={"name", "appname"})
        }

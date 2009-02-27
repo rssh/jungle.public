@@ -10,6 +10,7 @@
   <conf name="hsql" description="build with hsql scripts" 
         extends="default" />
   <conf name="source" description="source tarboll" />
+  <conf name="compile" description="with dependencies for compilations" />
  </configurations>
  <publications>
   <artifact name="jungle.configuration.api" type="jar" conf="api" />
@@ -26,6 +27,7 @@
     <dependency org="org.apache.openejb" 
                name="javaee-api"
                rev="5.0-1" 
+               conf="compile"
                >
        <artifact name="javaee-api" type="jar" />
     </dependency>

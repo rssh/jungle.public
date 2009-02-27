@@ -1,3 +1,3 @@
 
-drop table jungle_configitems;
+drop table jungle_configitems if exists;
 
