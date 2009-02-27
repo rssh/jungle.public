@@ -1,4 +1,4 @@
 
 
-drop table appregistry;
+drop table jungle_appregistry if exists;
 

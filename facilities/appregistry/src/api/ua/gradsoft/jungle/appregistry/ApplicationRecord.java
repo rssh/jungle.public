@@ -9,7 +9,7 @@ import javax.persistence.Table;
  * One record in appregistry 
  **/ 
 @Entity
-@Table(name="appregistry")
+@Table(name="jungle_appregistry")
 public class ApplicationRecord
 {
 
