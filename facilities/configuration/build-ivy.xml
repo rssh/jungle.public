@@ -37,7 +37,7 @@
 
 <condition property="without.ivy.build.plugin.download">
  <or>
-   <available file="${ivy.jar.dir}/ivy.build.plugin-1.0.jar" />
+   <available file="${ivy.jar.dir}/ivy.build.plugin.jar" />
    <isset property="offline" />
  </or>
 </condition>
@@ -61,8 +61,8 @@
  <target name="download-ivy.build.plugin" 
          unless="without.ivy.build.plugin.download" 
                               depends="download-ivy" >
-   <get src="http://datacenter.gradsoft.ua/public.repository/ua.gradsoft/ivy.build.plugin/jars/ivy.build.plugin-1.0.jar"
-        dest="${ivy.jar.dir}/ivy.build.plugin-1.0.jar" usetimestamp="true"/>
+   <get src="http://datacenter.gradsoft.ua/public.repository/ua.gradsoft/ivy.build.plugin/jars/ivy.build.plugin-1.0.2.jar"
+        dest="${ivy.jar.dir}/ivy.build.plugin.jar" usetimestamp="true"/>
  </target>
 
  <target name="download-ivy-all" 
