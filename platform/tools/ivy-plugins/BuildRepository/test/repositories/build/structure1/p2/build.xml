@@ -14,13 +14,11 @@
  <property name="ivy.home" value="${user.home}/.ivy" />
  <property name="ivy.jar.dir" value="${ivy.home}/jars" />
  <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
- <property name="jsch.jar.file" value="${ivy.jar.dir}/jsch.jar" />
 
  <condition property="ivy.offline">
    <or>
      <and>
       <available file="${ivy.jar.file}" />
-      <available file="${ivy.jar.dir}/jsch.jar" />
      </and>
      <isset property="offline" />
    </or>
@@ -31,8 +29,6 @@
     <!-- download Ivy from web site so that it can be used even without any special installation -->
     <get src="http://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar"
          dest="${ivy.jar.file}" usetimestamp="true"/>
-    <get src="http://prdownloads.sourceforge.net/jsch/jsch-0.1.37.jar?download"
-         dest="${jsch.jar.file}" usetimestamp="true"/>
  </target>
 	
  <target name="declare-ivy" depends="download-ivy" >
