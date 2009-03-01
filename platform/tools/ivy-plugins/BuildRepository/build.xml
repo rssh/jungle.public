@@ -91,9 +91,12 @@
  <target name="clean">
   <delete>
     <fileset dir="src" includes="**/*.class" />
-    <fileset dir="testdata" includes="**/*.class" />
-    <fileset dir="testdata" includes="**/*.jar" />
+    <fileset dir="test" includes="**/*.class" />
+    <fileset dir="test" includes="**/*.jar" />
+    <fileset dir="testWithAnt" includes="**/*.class" />
+    <fileset dir="testWithAnt" includes="**/*.jar" />
   </delete>
+  <delete dir="testWithAnt/structure1/repo" />
  </target>
 
  <target name="build-tests" depends="build,retrieve-libs">

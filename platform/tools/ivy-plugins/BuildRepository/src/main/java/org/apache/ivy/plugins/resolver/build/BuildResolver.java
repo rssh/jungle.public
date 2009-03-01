@@ -20,6 +20,7 @@ import org.apache.ivy.plugins.parser.ModuleDescriptorParser;
 import org.apache.ivy.plugins.parser.ModuleDescriptorParserRegistry;
 import org.apache.ivy.plugins.resolver.AbstractResolver;
 import org.apache.ivy.plugins.resolver.DependencyResolver;
+import org.apache.ivy.plugins.resolver.ResolverSettings;
 import org.apache.ivy.plugins.resolver.util.ResolvedResource;
 import org.apache.ivy.util.Message;
 import org.apache.ivy.util.StringUtils;
@@ -66,12 +67,14 @@ public class BuildResolver extends AbstractResolver
             String organization = dd.getDependencyId().getOrganisation();
             BuildDescriptionEntry e = buildDescription.findBuildDescription(organization, resourceName);
             if (e!=null) {
-                if (checkAntFileExists(e)) {
-                  doBuildAndPublish(e,backResolver.getName());
-                  retval = backResolver.findIvyFileRef(dd, resolveData);
-                }else{
-                  Message.verbose(getName()+": and file "+e.getBuildDirectory()+"/"+e.getAntFile()+" does not exists");
-                }
+                  if (checkAntFileExists(e)) {
+                    if (!e.isBuildWasCalled()) {
+                      doBuildAndPublish(e,backResolver.getName());
+                    }
+                    retval = backResolver.findIvyFileRef(dd, resolveData);
+                  }else{
+                    Message.verbose(getName()+": and file "+e.getBuildDirectory()+"/"+e.getAntFile()+" does not exists");
+                  }                
             }
         }
         return retval;
@@ -186,19 +189,26 @@ public class BuildResolver extends AbstractResolver
             Artifact artifact = (Artifact)it.next();            
             BuildDescriptionEntry e = buildDescription.findBuildDescription(artifact.getModuleRevisionId().getOrganisation(),
                                                 artifact.getModuleRevisionId().getName());
-          if (e!=null) {
+            if (e!=null) {              
               if (checkAntFileExists(e)) {
-                doBuildAndPublish(e, backResolver.getName());
-                ++nBuilds;
+                if (!e.isBuildWasCalled()) {
+                  doBuildAndPublish(e, backResolver.getName());
+                  ++nBuilds;
+                }
               }
-          }
+            }
         }
+
         Message.verbose(getName()+": doBuildAndPublishForArtifacts end, nBuilds="+nBuilds);
         return nBuilds;
     }
 
     private void doBuildAndPublish(BuildDescriptionEntry e, String resolverName)
     {
+       if (e.isBuildWasCalled()) {
+           return;
+       }
+
        Project project = new Project();
        File dir = new File(e.getBuildDirectory());
        File antFile = new File(e.getBuildDirectory(),e.getAntFile());
@@ -210,8 +220,6 @@ public class BuildResolver extends AbstractResolver
        }
        ProjectHelper.configureProject(project, antFile);
        project.setBaseDir(dir);
-
-
 
         // Configure logging verbosity
         BuildLogger logger = new DefaultLogger();
@@ -229,6 +237,8 @@ public class BuildResolver extends AbstractResolver
             ex.printStackTrace(System.out);
             Message.verbose("build resolver build failed: " + e);
             throw new BuildException("exception in depended build",ex);
+        }finally{
+            e.markCallOfBuild();
         }
 
 
@@ -240,22 +250,7 @@ public class BuildResolver extends AbstractResolver
       return antFile.exists();
     }
 
-    /*
-    public void  addConfiguredBackResolver(Object o)
-    {
-        if (o instanceof DependencyResolver) {
-          if (backResolver!=null) {
-             Message.warn(getName()+":backResolver is not empty, override");
-          }
-          backResolver=(DependencyResolver)o;             
-        }else{
-           Message.error(getName()+":backResolver must be resolver instead "+o.getClass());  
-           throw new IllegalArgumentException("backResolver property must be resolver");
-        }
-    }
-     */
-
-    
+   
     public void  add(DependencyResolver dependencyResolver)
     {
        if (backResolver!=null) {
@@ -295,24 +290,6 @@ public class BuildResolver extends AbstractResolver
     {
       ivyBuildResolverDir=theBuildResolverDir;  
     }
-
-/*
-    private final ResourceDownloader downloader = new ResourceDownloader() {
-        public void download(Artifact artifact, Resource resource, File dest) throws IOException
-        {
-            if (resource instanceof LocalBuildResource) {
-              LocalBuildResource lr = (LocalBuildResource)resource;
-              if (dest.exists()) {
-                dest.delete();
-              }
-              FileUtils.getFileUtils().copyFile(lr.getFile(), dest);
-            }else{
-               Message.error(getName()+": invalid build resource type for "+resource.getName());
-               throw new RuntimeException(getName()+": invalid build resource type for "+resource.getName());
-            }
-        }
-    };
- */
 
   private DependencyResolver backResolver=null;
   private BuildDescription   buildDescription=new BuildDescription();

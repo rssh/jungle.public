@@ -1,5 +1,6 @@
 package org.apache.ivy.plugins.resolver.build;
 
+
 public class BuildDescriptionEntry {
 
     public String getName() {
@@ -41,9 +42,21 @@ public class BuildDescriptionEntry {
     public void setAntFile(String theAntFile) {
         antFile = theAntFile;
     }
+
+
+    boolean isBuildWasCalled()
+    { return buildWasCalled; }
+    
+    void markCallOfBuild()
+    { buildWasCalled=true; }
+
+
     private String organization;
     private String name;
     private String buildDirectory;
     private String publishTarget = "publish";
     private String antFile = "build.xml";
+
+    private boolean  buildWasCalled = false;
+
 }
