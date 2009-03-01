@@ -124,7 +124,5 @@ public class BuildResolverTest extends TestCase
 
   }
 
-  public void testMakeAntHeppy()
-  { }
 
 }
