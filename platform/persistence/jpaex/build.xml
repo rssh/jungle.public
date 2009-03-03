@@ -161,6 +161,7 @@
     <fileset dir="lib" includes="*.jar" />
     <fileset dir="target" includes="*.xml" />
     <fileset dir="target" includes="*.jar" />
+    <fileset dir="target" includes="*.tar.gz" />
    </delete>
    <ivy:cleancache />
  </target>
