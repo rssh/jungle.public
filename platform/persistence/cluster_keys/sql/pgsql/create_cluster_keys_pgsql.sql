@@ -11,8 +11,8 @@ set search_path = clusterization, pg_catalog;
 create table my_cluster_node_info
 (
  node_id      INTEGER  not null,
- org_id       INTEGER  not null
-  primary key(node_number, org_id)
+ org_id       INTEGER  not null,
+  primary key(node_id, org_id)
 );
 
 insert into my_cluster_node_info(node_id, org_id) values(1,1);
@@ -27,39 +27,45 @@ create or replace function generate_number_key(BIGINT) returns NUMERIC(40,0)
 as $$
 declare
  cn INTEGER;
- org_id INTEGER;
+ vorg_id INTEGER;
  x  alias for $1;
  retval NUMERIC(40,0);
 begin
- select node_id, org_id into cn, org_id
+ select node_id, org_id into cn, vorg_id
    from clusterization.my_cluster_node_info limit 1;
  if cn is null then
-   raise exception 'clusterization metainfo is not filled.';
+   raise exception 'clusterization metainfo (node_id) is not filled.';
  end if;
- retval:=org_id*cast(2^32 as NUMERIC(40,0))+cn;     
+ if vorg_id is null then
+   raise exception 'clusterization metainfo (org_id) is not filled.';
+ end if;
+ retval:=vorg_id*cast(2^32 as NUMERIC(40,0))+cn;
  retval:=retval*cast(2^64 as NUMERIC(40,0))+x;
  return retval;
 end $$ LANGUAGE plpgsql;
 
 create or replace function generate_character_key(BIGINT) returns CHAR(24)
-declare
 as $$
+declare
  cn INTEGER;
- org_id INTEGER;
+ vorg_id INTEGER;
  x  alias for $1;
  retval CHAR(24);
 begin
- select node_id, org_id into cn, org_id
-   from clusterization.my_cluster_info limit 1;
+ select node_id, org_id into cn, vorg_id
+   from clusterization.my_cluster_node_info limit 1;
  if cn is null then
-   raise exception 'clusterization metainfo is not filled.';
+   raise exception 'clusterization metainfo(cn) is not filled.';
+ end if;
+ if vorg_id is null then
+   raise exception 'clusterization metainfo(org_id) is not filled.';
  end if;
  retval:=encode(
        (
-         set_byte(E'a'::bytea,0,(org_id>>24)%256)::bytea
-       ||set_byte(E'a'::bytea,0,(org_id>>16)%256)::bytea
-       ||set_byte(E'a'::bytea,0,(org_id>>8)%256)::bytea
-       ||set_byte(E'a'::bytea,0,(org_id%256))::bytea
+         set_byte(E'a'::bytea,0,(vorg_id>>24)%256)::bytea
+       ||set_byte(E'a'::bytea,0,(vorg_id>>16)%256)::bytea
+       ||set_byte(E'a'::bytea,0,(vorg_id>>8)%256)::bytea
+       ||set_byte(E'a'::bytea,0,(vorg_id%256))::bytea
        ||set_byte(E'a'::bytea,0,(cn>>24)%256)::bytea
        ||set_byte(E'a'::bytea,0,(cn>>16)%256)::bytea
        ||set_byte(E'a'::bytea,0,(cn>>8)%256)::bytea
