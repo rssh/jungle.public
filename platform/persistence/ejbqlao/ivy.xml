@@ -16,7 +16,7 @@
       <artifact name="jungle.persistence.ejbqlao-doc" type="tar.gz" ext="tar.gz" />
     </publications>
     <dependencies>
-        <dependency org="org.apache" name="commons-logging" rev="1.1.1" 
+        <dependency org="org.apache" name="commons-logging" rev="[1.1.1,)" 
          conf="*->default" transitive="false" />
         <dependency org="org.junit" name="junit" rev="4.4" 
          conf="test->default"/>
@@ -26,7 +26,8 @@
            url="http://odt2html.gradsoft.ua/files/odt2html-1.1.jar"
          />
         </dependency>
-        <dependency org="javaee" name="javaee-api" rev="5" conf="build->*" />
+        <dependency org="javaee" name="javaee-api" rev="5" 
+                    conf="build->default" />
         <dependency org="ua.gradsoft" name="jungle.caching" 
                     rev="[1.0.2,)"
          conf="*->default" >
