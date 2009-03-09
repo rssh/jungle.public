@@ -60,7 +60,7 @@ begin
  if vorg_id is null then
    raise exception 'clusterization metainfo(org_id) is not filled.';
  end if;
- retval:=encode(
+ retval:=substr(encode(
        (
          set_byte(E'a'::bytea,0,(vorg_id>>24)%256)::bytea
        ||set_byte(E'a'::bytea,0,(vorg_id>>16)%256)::bytea
@@ -79,7 +79,7 @@ begin
        ||set_byte(E'a'::bytea,0,cast((x>>8)%256 as integer))::bytea
        ||set_byte(E'a'::bytea,0,cast(x%256 as integer))::bytea
        )
-             ,'base64');
+             ,'base64'),0,23);
   return retval;
 end $$ LANGUAGE plpgsql;
 

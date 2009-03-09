@@ -190,8 +190,8 @@ public class ClusterKeys
       bytes[12]=(byte)(x>>24);
       bytes[13]=(byte)(x>>16);
       bytes[14]=(byte)(x>>8);
-      bytes[14]=(byte)(x);
-      return base64Encode(bytes);
+      bytes[15]=(byte)(x % 256);
+      return base64Encode(bytes).substring(0,23);
   }
 
 
@@ -228,6 +228,9 @@ public class ClusterKeys
      st1.execute();
   }
 
+  public static final int CLUSTERKEY_STRING_LEN=22;
+  public static final int CLUSTERKEY_BIGDECIMALE_PRECISION=40;
+  public static final int CLUSTERKEY_BIGDECIMALE_SCALE=0;
 
   private static ClusterNodeInfo  clusterNodeInfo_=null;
 
