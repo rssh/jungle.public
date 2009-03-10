@@ -2,6 +2,7 @@
  <info organisation="ua.gradsoft" module="jungle.configuration" />
  <configurations>
   <conf name="api" description="api only" />
+  <conf name="gwt-export" description="export of api in form of gwt module" />
   <conf name="default" description="default build without db scripts" 
         extends="api"
   />
@@ -14,6 +15,7 @@
  </configurations>
  <publications>
   <artifact name="jungle.configuration.api" type="jar" conf="api" />
+  <artifact name="jungle.configuration.gwt" type="jar" conf="gwt-export" />
   <artifact name="jungle.configuration.impl" type="jar" conf="default" />
   <artifact name="jungle.configuration.persistence.xml" type="part" />
   <artifact name="jungle.configuration-docs" type="zip" />
@@ -39,9 +41,8 @@
     </dependency>
     <dependency org="ua.gradsoft" 
                name="jungle.persistence.cluster_keys"
-               rev="[1.0a,)"
-               conf="default->api">
-       <artifact name="jungle.persistence.cluster_keys" type="jar" />
+               rev="[1.0b,)"
+               conf="default->api;hsql->hsql;pgsql->pgsql">
     </dependency>
  </dependencies>
 </ivy-module>

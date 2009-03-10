@@ -54,7 +54,7 @@
     </target>
 
     
-    <target name="build" depends="build-api,build-impl" >
+    <target name="build" depends="build-api,build-impl,build-gwt" >
       <copy file="etc/persistence.xml.part" 
             tofile="${dist.dir}/jungle.configuration.persistence.xml-${version}.part"
       />
@@ -112,6 +112,14 @@
             </manifest>
         </jar>
     </target>
+
+   <target name="build-gwt" depends="build-api" >
+    <jar destfile="${dist.dir}/jungle.configuration.gwt-${version}.jar" >
+      <fileset dir="${build-api.dir}" includes="**/*.class" />
+      <fileset dir="${src-api.dir}" includes="**/*.java" />
+      <fileset dir="etc/gwt" includes="**/*.xml" />
+    </jar>
+   </target>
 
    <target name="publish" depends="distributives">
      <ivy:publish resolver="datacenter.gradsoft.ua" pubrevision="${version}" 
@@ -174,7 +182,7 @@
        <zipfileset dir="dist/jungle.configuration-src-${version}" 
                    prefix="jungle.configuration-src-${version}" />
      </zip>
-     <delete dir="dist/jungle.configuration-src-${version}.zip" />
+     <delete dir="dist/jungle.configuration-src-${version}" />
     </target>
 
     
