@@ -34,7 +34,7 @@ public class ConfigurationFacadeImpl extends EjbQlAccessObject implements Config
                 );
     }
 
-    public void registerConfigItem(ConfigItem description) {
+    public BigDecimal registerConfigItem(ConfigItem description) {
         // if is is null - get id.
         BigDecimal id = null;
         if (description.getId()==null) {
@@ -42,9 +42,12 @@ public class ConfigurationFacadeImpl extends EjbQlAccessObject implements Config
             Connection cn = cnw.getConnection();
             id=ClusterKeys.generateBigDecimalClusterKeyBySequence("jungle_configitems", cn);
             cnw.releaseConnection(cn);
+            description.setId(id);
+        }else{
+            id=description.getId();
         }
-        description.setId(id);
         entityManager_.persist(description);
+        return id;
     }
 
     public void unregisterConfigItem(BigDecimal id) {

@@ -12,7 +12,7 @@ public interface ConfigurationFacade
 
   List<ConfigItem>  getConfigItems(String appName);
 
-  void registerConfigItem(ConfigItem item);
+  BigDecimal registerConfigItem(ConfigItem item);
 
   void unregisterConfigItem(BigDecimal id);
 

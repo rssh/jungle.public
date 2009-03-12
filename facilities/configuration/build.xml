@@ -114,7 +114,9 @@
     </target>
 
    <target name="build-gwt" depends="build-api" >
-    <jar destfile="${dist.dir}/jungle.configuration.gwt-${version}.jar" >
+    <jar destfile="${dist.dir}/jungle.configuration.gwt-${version}.jar" 
+         index="true"
+    >
       <fileset dir="${build-api.dir}" includes="**/*.class" />
       <fileset dir="${src-api.dir}" includes="**/*.java" />
       <fileset dir="etc/gwt" includes="**/*.xml" />

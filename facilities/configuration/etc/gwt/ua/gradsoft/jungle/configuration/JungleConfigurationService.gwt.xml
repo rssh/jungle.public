@@ -1,3 +1,5 @@
 <module>
- <source path="ua/gradsoft/jungle/configuration" />
+ <inherits name="com.google.gwt.user.User"/>
+ <inherits name="com.googlecode.gwt.math.Math"/>
+ <source path="" />
 </module>
