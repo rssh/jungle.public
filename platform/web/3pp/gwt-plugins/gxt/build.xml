@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="com.extjs.gxt.repackaged" default="repackage" basedir="."
+  xmlns:ivy="antlib:fr.jayasoft.ivy.ant"
+ >
+
+  <property file="build.properties" />
+
+  <import file="build-ivy.xml" />
+
+  <target name="repackage" depends="retrieve-origin" 
+          description="repackage project">
+    <unzip src="origin/gxt-${origin.version}.zip"
+           dest="origin" />
+    <copy file="origin/gxt-${origin.version}/gxt.jar"
+           tofile="dist/gxt-${version}.jar" />
+    <zip basedir="origin/gxt-${origin.version}" 
+         destfile="dist/extjs.resources.css-${version}.zip">
+      <fileset dir="." includes="resources/**/*.*" />
+    </zip>
+    <delete dir="origin/gxt-${origin.version}" />
+  </target>
+
+  <target name="clean">
+    <!-- Delete the bin directory tree -->
+    <delete file="origin/gxt-${origin.version}.zip" />
+    <delete file="dist/gxt-${version}.jar" />
+    <delete file="dist/extjs.resources.css-${version}.zip" />
+    <delete file="dist/ivy-${version}.xml" />
+  </target>
+
+  
+   <target name="publish" depends="repackage">
+     <ivy:publish resolver="datacenter.gradsoft.ua" pubrevision="${version}" 
+                  overwrite="true" 
+                  >
+       <artifacts pattern="dist/[artifact]-[revision].[ext]" />
+     </ivy:publish>
+    </target>
+
+   <target name="publish.local" depends="repackage">
+     <ivy:publish resolver="jungle.repo" pubrevision="${version}" 
+                  overwrite="true" 
+                  >
+       <artifacts pattern="dist/[artifact]-[revision].[ext]" />
+     </ivy:publish>
+    </target>
+
+
+</project>

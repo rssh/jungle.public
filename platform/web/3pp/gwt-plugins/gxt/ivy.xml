@@ -1,0 +1,19 @@
+<ivy-module version="1.4">
+ <info organisation="com.extjs" module="gxt.repackaged" />
+ <configurations>
+  <conf name="default" description="default repackaged artifacts" />
+ </configurations>
+ <publications>
+   <artifact name="gxt" type="jar" />
+   <artifact name="extjs.resources.css" type="zip" />
+ </publications>
+ <dependencies>
+    <dependency org="com.extjs" 
+               name="gxt.origin"
+               rev="1.2.3" 
+               >
+       <artifact name="gxt" type="zip" 
+             url="http://extjs.com/products/gxt/download.php?dl=gxt123" />
+    </dependency>
+ </dependencies>
+</ivy-module>
