@@ -93,7 +93,6 @@
             </chain>
                 <chain name="global.chain" returnFirst="true">
                   <resolver ref="jungle.repo" />
-                  <resolver ref="build.local" />
                   <resolver ref="read.datacenter.gradsoft.ua" /> 
                   <resolver ref="external.chain" />
                 </chain>
