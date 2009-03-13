@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="com.googlecode.gwt-math.patched" default="patch" basedir="."
+  xmlns:ivy="antlib:fr.jayasoft.ivy.ant"
+ >
+
+  <property file="build.properties" />
+
+  <import file="build-ivy.xml" />
+
+
+  <target name="patch" depends="retrieve-origin" 
+          description="repackage project">
+    <mkdir dir="origin/gwt-math" />
+    <unjar src="origin/gwt-math-${origin.version}.jar"
+           dest="origin/gwt-math" />
+    <mkdir dir="origin/gwt-math-server" />
+    <unjar src="origin/gwt-math-server-${origin.version}.jar"
+           dest="origin/gwt-math-server" />
+    <patch patchfile="patches/patch.1" strip="0" /> 
+    <jar  basedir="origin/gwt-math"
+           destfile="origin/gwt-math-${version}.jar" />
+    <jar  basedir="origin/gwt-math-server"
+           destfile="origin/gwt-math-server-${version}.jar" />
+    <delete dir="origin/gwt-math" />
+    <delete dir="origin/gwt-math-server" />
+    <move file="origin/gwt-math-${version}.jar" todir="dist" />
+    <move file="origin/gwt-math-server-${version}.jar" todir="dist" />
+  </target>
+
+  <target name="clean">
+    <!-- Delete the bin directory tree -->
+    <delete>
+      <fileset dir="origin" includes="*.jar" />
+      <fileset dir="dist" includes="*.jar,*.xml" />
+    </delete>
+  </target>
+
+  
+   <target name="publish" depends="patch">
+     <ivy:publish resolver="datacenter.gradsoft.ua" pubrevision="${version}" 
+                  overwrite="true" 
+                  >
+       <artifacts pattern="dist/[artifact]-[revision].[ext]" />
+     </ivy:publish>
+    </target>
+
+   <target name="publish.local" depends="patch">
+     <ivy:publish resolver="jungle.repo" pubrevision="${version}" 
+                  overwrite="true" 
+                  >
+       <artifacts pattern="dist/[artifact]-[revision].[ext]" />
+     </ivy:publish>
+    </target>
+
+
+</project>

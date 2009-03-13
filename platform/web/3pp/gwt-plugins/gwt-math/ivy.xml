@@ -1,0 +1,22 @@
+<ivy-module version="1.4">
+ <info organisation="com.googlecode" module="gwt-math" />
+ <configurations>
+  <conf name="default" description="default" />
+ </configurations>
+ <publications>
+   <artifact name="gwt-math" type="jar" />
+   <artifact name="gwt-math-server" type="jar" />
+ </publications>
+ <dependencies>
+    <dependency org="com.googlecode" 
+               name="gwt-math.origin"
+               rev="2.0.3" 
+               >
+       <artifact name="gwt-math" type="jar" 
+          url="http://gwt-math.googlecode.com/files/gwt-math-2.0.3.jar" />
+       <artifact name="gwt-math-server" type="jar" 
+          url="http://gwt-math.googlecode.com/files/gwt-math-server-2.0.3.jar" 
+       />
+    </dependency>
+ </dependencies>
+</ivy-module>

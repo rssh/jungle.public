@@ -1,0 +1,19 @@
+diff -udr origin/gwt-math/com/googlecode/gwt/math/emul/java/math/BigDecimal.java patched/gwt-math/com/googlecode/gwt/math/emul/java/math/BigDecimal.java
+--- origin/gwt-math/com/googlecode/gwt/math/emul/java/math/BigDecimal.java	2009-01-05 23:39:14.000000000 +0200
++++ patched/gwt-math/com/googlecode/gwt/math/emul/java/math/BigDecimal.java	2009-03-13 20:15:53.000000000 +0200
+@@ -76,10 +76,10 @@
+ //	public static BigDecimal valueOf(long unscaledVal, int scale) {
+ //		throw new IllegalArgumentException("Constructor not implemented");
+ //	}
+-//
+-//	public static BigDecimal valueOf(long val) {
+-//		throw new IllegalArgumentException("Constructor not implemented");
+-//	}
++
++	public static BigDecimal valueOf(long val) {
++		return new BigDecimal(val);
++	}
+ 
+ 	// Arithmetic Operations
+ 	//ADD into 2.0.3
+Only in origin: gwt-math.patched
