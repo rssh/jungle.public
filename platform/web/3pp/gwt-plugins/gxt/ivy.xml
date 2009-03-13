@@ -2,6 +2,7 @@
  <info organisation="com.extjs" module="gxt.repackaged" />
  <configurations>
   <conf name="default" description="default repackaged artifacts" />
+  <conf name="origin" description="origin artifacts" />
  </configurations>
  <publications>
    <artifact name="gxt" type="jar" />
@@ -11,6 +12,7 @@
     <dependency org="com.extjs" 
                name="gxt.origin"
                rev="1.2.3" 
+               conf="origin->*"
                >
        <artifact name="gxt" type="zip" 
              url="http://extjs.com/products/gxt/download.php?dl=gxt123" />
