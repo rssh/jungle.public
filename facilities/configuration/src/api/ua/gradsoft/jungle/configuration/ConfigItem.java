@@ -1,5 +1,6 @@
 package ua.gradsoft.jungle.configuration;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,7 +20,7 @@ import javax.persistence.UniqueConstraint;
             @UniqueConstraint(columnNames={"name", "appname"})
        }
 )
-public class ConfigItem
+public class ConfigItem implements Serializable
 {
 
  @Id
@@ -45,7 +46,7 @@ public class ConfigItem
   { name_=name; }
 
  @Enumerated(EnumType.ORDINAL)
- @Column(name="typocode")
+ @Column(name="typecode")
  public ConfigItemType getType()
   { return type_; }
 
@@ -86,11 +87,13 @@ public class ConfigItem
  }
 
 
+ @Column
  public boolean getEditable()
  {
     return isEditable_;
  }
 
+ 
  public void setEditable(boolean isEditable)
  {
    isEditable_=isEditable;

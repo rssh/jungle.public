@@ -1,8 +1,14 @@
 package ua.gradsoft.jungle.configuration;
 
+import java.io.Serializable;
 
-public class ConfigItemSelectorByNames extends ConfigItemSelector
+public class ConfigItemSelectorByNames extends ConfigItemSelector implements Serializable
 {
+
+  public ConfigItemSelectorByNames()
+  {
+    this(null,null);
+  }
 
   public ConfigItemSelectorByNames(String appName, String itemName)
    { 
@@ -18,6 +24,9 @@ public class ConfigItemSelectorByNames extends ConfigItemSelector
 
   public String getItemName()
    { return itemName_; }
+
+  public void setItemName(String itemName)
+  { itemName_=itemName; }
  
   private String appName_;
   private String itemName_;

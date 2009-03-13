@@ -1,5 +1,6 @@
 package ua.gradsoft.jungle.configuration;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -16,9 +17,9 @@ public interface ConfigurationFacade
 
   void unregisterConfigItem(BigDecimal id);
 
-  public <T> T getConfigItemValue(Class<T> type, ConfigItemSelector itemSelector);
+  public <T extends Serializable> T getConfigItemValue(Class<T> type, ConfigItemSelector itemSelector);
 
-  public List<Object>  getConfigItemValues(ConfigItemSelector itemSelector);
+  public List<Serializable>  getConfigItemValues(ConfigItemSelector itemSelector);
  
   public String getStringConfigItemValue(ConfigItemSelector selector);
   
@@ -30,8 +31,8 @@ public interface ConfigurationFacade
 
   public Double   getDoubleConfigItemValue(ConfigItemSelector selector);
 
-  public <T> void  setConfigItemValue(ConfigItemSelector itemSelector, T value);
+  public <T extends Serializable> void  setConfigItemValue(ConfigItemSelector itemSelector, T value);
 
-  public void  setConfigItemValues(Map<BigDecimal,Object> objects);
+  public void  setConfigItemValues(Map<BigDecimal,Serializable> objects);
 
 }

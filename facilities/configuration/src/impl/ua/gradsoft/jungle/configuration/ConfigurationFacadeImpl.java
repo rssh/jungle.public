@@ -1,6 +1,7 @@
 package ua.gradsoft.jungle.configuration;
 
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ public class ConfigurationFacadeImpl extends EjbQlAccessObject implements Config
 
 
 
-    public <T> T getConfigItemValue(Class<T> type, ConfigItemSelector itemSelector) {
+    public <T extends Serializable> T getConfigItemValue(Class<T> type, ConfigItemSelector itemSelector) {
         List<ConfigItem> items=queryByCriteria(ConfigItem.class, itemSelector);
         ConfigItem item = items.get(0);
         return (T)item.getType().fromString(item.getValue());
@@ -86,8 +87,8 @@ public class ConfigurationFacadeImpl extends EjbQlAccessObject implements Config
     }
 
 
-    public List<Object> getConfigItemValues(ConfigItemSelector itemSelector) {
-        List<Object> retval = new ArrayList<Object>();
+    public List<Serializable> getConfigItemValues(ConfigItemSelector itemSelector) {
+        List<Serializable> retval = new ArrayList<Serializable>();
         List<ConfigItem> items=queryByCriteria(ConfigItem.class, itemSelector);
         for(ConfigItem item: items) {
             retval.add(item.getType().fromString(item.getValue()));
@@ -96,15 +97,15 @@ public class ConfigurationFacadeImpl extends EjbQlAccessObject implements Config
     }
 
 
-    public <T> void setConfigItemValue(ConfigItemSelector itemSelector, T value) {
+    public <T extends Serializable> void setConfigItemValue(ConfigItemSelector itemSelector, T value) {
         List<ConfigItem> items=queryByCriteria(ConfigItem.class, itemSelector);
         ConfigItem curr = items.get(0);
         curr.setValue(curr.getType().toString(value));
         curr=entityManager_.merge(curr);
     }
 
-    public void setConfigItemValues(Map<BigDecimal, Object> objects) {
-       for(Map.Entry<BigDecimal,Object> e: objects.entrySet()) {
+    public void setConfigItemValues(Map<BigDecimal, Serializable> objects) {
+       for(Map.Entry<BigDecimal,Serializable> e: objects.entrySet()) {
            ConfigItem curr = entityManager_.find(ConfigItem.class, e.getKey());
            curr.setValue(curr.getType().toString(e.getValue()));
            entityManager_.merge(curr);

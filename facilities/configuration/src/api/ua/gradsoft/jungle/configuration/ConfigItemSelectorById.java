@@ -1,8 +1,9 @@
 package ua.gradsoft.jungle.configuration;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class ConfigItemSelectorById extends ConfigItemSelector
+public class ConfigItemSelectorById extends ConfigItemSelector implements Serializable
 {
   public ConfigItemSelectorById(BigDecimal id)
   {
