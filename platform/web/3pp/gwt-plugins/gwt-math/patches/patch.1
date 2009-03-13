@@ -11,7 +11,7 @@ diff -udr origin/gwt-math/com/googlecode/gwt/math/emul/java/math/BigDecimal.java
 -//	}
 +
 +	public static BigDecimal valueOf(long val) {
-+		return new BigDecimal(val);
++		return new BigDecimal(""+val);
 +	}
  
  	// Arithmetic Operations
