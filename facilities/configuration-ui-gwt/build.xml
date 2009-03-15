@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="jungle.configuration-ui-gwt" default="compile" basedir="."
+  xmlns:ivy="antlib:fr.jayasoft.ivy.ant"
+ >
+
+  <property file="build.properties" />
+
+  <import file="build-ivy.xml" />
+
+  <!-- set classpath -->
+  <path id="project.class.path">
+    <pathelement path="${java.class.path}/"/>
+    <pathelement path="${gwt.home}/gwt-user.jar"/>
+    <fileset dir="lib" includes="*.jar"/>
+   <!--
+    <fileset dir="lib" includes="jungle.configuration.gwt-*.jar"/>
+   -->
+    <!-- Additional dependencies (such as junit) go here -->
+  </path>
+
+  <target name="compile" description="Compile src to bin" 
+                         depends="retrieve-libs">
+    <mkdir dir="bin"/>
+    <javac srcdir="src:test" destdir="bin" includes="**" debug="on" debuglevel="lines,vars,source" >
+      <classpath refid="project.class.path"/>
+    </javac>
+  </target>
+
+  <target name="package" depends="compile" description="Package up the project as a jar">
+    <jar destfile="jungle.configuration-ui-gwt.jar">
+      <fileset dir="bin">
+        <include name="**/*.class"/>
+      </fileset>
+      <!-- Get everything; source, modules, html files -->
+      <fileset dir="src">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="test">
+        <include name="**"/>
+      </fileset>
+    </jar>
+  </target>
+
+  <target name="js-compile" description="generation of local test ui here"
+                            depends="retrieve-libs" >
+    <java classname="com.google.gwt.dev.GWTCompiler" fork="true">
+      <classpath>
+        <pathelement location="src" />
+        <path refid="project.class.path" />
+        <fileset dir="${gwt.home}" includes="gwt-dev-*.jar" />
+      </classpath>
+      <jvmarg value="-Xmx256M" /> 
+      <arg value="-logLevel" />
+      <arg value="INFO" />
+      <arg value="-out" />
+      <arg value="www" />
+      <arg value="ua.gradsoft.jungle.configuration.GwtUI" />
+    </java>
+  </target>
+
+  <target name="run.shell.only" description="run local shell here">
+    <java classname="com.google.gwt.dev.GWTShell" fork="true">
+     <classpath>
+        <pathelement location="src" />
+        <pathelement location="bin" />
+        <path refid="project.class.path" />
+        <fileset dir="${gwt.home}" includes="gwt-dev-*.jar" />
+     </classpath>
+      <jvmarg value="-Xmx256M" /> 
+      <arg value="-out" />
+      <arg value="www" />
+      <arg value="ua.gradsoft.jungle.configuration.GwtUI" />
+    </java>
+  </target>
+                           
+
+  <target name="clean">
+    <!-- Delete the bin directory tree -->
+    <delete file="jungle.configuation-ui-gwt.jar"/>
+    <delete>
+      <fileset dir="bin" includes="**/*.class"/>
+    </delete>
+  </target>
+
+  <target name="all" depends="package"/>
+
+</project>
