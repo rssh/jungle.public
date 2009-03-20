@@ -23,26 +23,30 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
+ *<p>
  * Generic gwt servlet, configurable from JNDI or spring.
  *The work of Servlet is receive GWT call, determinate
  * object, which called (by JNDI name, same as pathInfo of
  * received HTTP request), do method call of server objects
  * (note, that server objects can not implement RemoteService),
  * and transform result back to client.
- *
+ *</p>
+ * <p>
  * In addition, server can apply hooks for tranforming parameters before
  * method call and transforming result of call. This is particalury
  * useful for transforming JPA-implementations to plain POJO from internal
  * classes of JPA implementation.
- *
+ *</p>
+ * <p>
  * Objects are located by JNDI name, by search in set of initial contenxs,
  * provided in GWTServlet configuration.  For example it is possible
  * setup GWTServlet at first search object in local spring context of web
  * application, than in external jndi context of ejb server.
- *
+ *</p>
+ * <p>
  * TODO: interceptor call for access checking subsystem is planned, but
  * not implemented yet.
- *
+ *</p>
  **/ 
 public class GWTServlet extends RemoteServiceServlet                       
 {
@@ -57,6 +61,7 @@ public class GWTServlet extends RemoteServiceServlet
    * 
    * Set of parameters for setting JNDI names looks like:
    * <pre>
+   *
    *   prefix1.java.naming.factory.initial=first-naming-factory
    *   prefix1.java.naming.provider.url=first-provider
    *   prefix2.java.naming.factory.initial=second-naming-factory
