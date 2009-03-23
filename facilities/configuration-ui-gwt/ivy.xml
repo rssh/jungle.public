@@ -3,6 +3,7 @@
  <configurations>
   <conf name="default" description="default build of module" />
   <conf name="testui" description="ui build with testdata" />
+  <conf name="docs" description="docs" />
   <conf name="source" description="sources" />
   <conf name="compile" 
         description="compiling module with compile dependencies" />
@@ -10,9 +11,13 @@
  <publications>
   <artifact name="jungle.configuration-ui-gwt-export" 
             type="jar" conf="default" />
-  <artifact name="jungle.configuration-ui-gwt-web" 
+  <!--
+   <artifact name="jungle.configuration-ui-gwt-web" 
             type="zip" conf="testui" />
+    // now not needed
+  -->
   <artifact name="jungle.configuration-ui-gwt-src" type="zip" conf="source" />
+  <artifact name="jungle.configuration-ui-gwt-docs" type="zip" conf="docs" />
  </publications>
  <dependencies>
     <dependency org="com.googlecode" 
