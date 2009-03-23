@@ -34,13 +34,12 @@
     <jar destfile="dist/jungle.configuration-ui-gwt-export-${version}.jar">
       <fileset dir="bin">
         <include name="**/*.class"/>
+        <exclude name="ua/gradsoft/jungle/configuration/server/**/*.class"/>
       </fileset>
       <!-- Get everything; source, modules, html files -->
       <fileset dir="src">
         <include name="**"/>
-      </fileset>
-      <fileset dir="test">
-        <include name="**"/>
+        <exclude name="ua/gradsoft/jungle/configuration/server/**/*.java"/>
       </fileset>
     </jar>
   </target>
