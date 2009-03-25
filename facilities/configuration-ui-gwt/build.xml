@@ -75,7 +75,7 @@
       <jvmarg value="-Xmx256M" /> 
       <arg value="-out" />
       <arg value="www" />
-      <arg value="ua.gradsoft.jungle.configuration.GwtUI" />
+      <arg value="ua.gradsoft.jungle.configuration.TestGwtUI" />
     </java>
   </target>
                            
