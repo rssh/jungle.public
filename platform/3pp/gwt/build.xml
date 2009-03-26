@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="com.google.gwt.repackaged" default="repackage" basedir="."
+  xmlns:ivy="antlib:fr.jayasoft.ivy.ant"
+ >
+
+  <property file="build.properties" />
+
+  <import file="build-ivy.xml" />
+
+
+  <target name="untar" depends="retrieve-origin" 
+          description="untar origin files">
+    <bunzip2 src="origin/gwt-linux-${origin.version}.tar.bz2" />
+    <untar src="origin/gwt-linux-${origin.version}.tar" 
+           dest="origin" />
+    <delete file="origin/gwt-linux-${origin.version}.tar" />
+  </target>
+
+
+  <target name="patch" depends="untar" 
+              description="apply patches">
+   <!--
+    We have not patches (yet ?)
+    <patch patchfile="patches/patch.1" strip="0" /> 
+   -->
+  </target>
+
+  <target name="package" depends="patch" 
+              description="do packaging and cleanup">
+    <copy file="origin/gwt-linux-${origin.version}/gwt-servlet.jar" 
+          tofile="dist/gwt-servlet-${version}.jar" />
+    <copy file="origin/gwt-linux-${origin.version}/gwt-user.jar" 
+          tofile="dist/gwt-user-${version}.jar" />
+  </target>
+
+  <target name="repackage" depends="package" />
+
+  <target name="clean">
+    <!-- Delete the bin directory tree -->
+    <delete dir="origin/gwt-linux-${origin.version}" />
+  </target>
+
+   <target name="clean-all" depends="clean">
+      <delete file="origin/gwt-linux-${origin.version}.tar.bz2" />
+      <delete>
+       <fileset dir="dist" includes="*.*" />
+      </delete>
+   </target>
+  
+  
+   <target name="publish" depends="repackage">
+     <ivy:publish resolver="datacenter.gradsoft.ua" pubrevision="${version}" 
+                  overwrite="true" 
+                  >
+       <artifacts pattern="dist/[artifact]-[revision].[ext]" />
+     </ivy:publish>
+    </target>
+
+   <target name="publish.local" depends="repackage">
+     <ivy:publish resolver="jungle.repo" pubrevision="${version}" 
+                  overwrite="true" 
+                  >
+       <artifacts pattern="dist/[artifact]-[revision].[ext]" />
+     </ivy:publish>
+    </target>
+
+
+</project>

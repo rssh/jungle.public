@@ -1,0 +1,23 @@
+<ivy-module version="1.4">
+ <!-- repakaged jars for JWT -->
+ <info organisation="com.google.gwt" module="gwt.repackaged" />
+ <configurations>
+  <conf name="client" description="repackaged client libraries" />
+  <conf name="server" description="repackaged server libraries" />
+  <conf name="origin" description="origin artifacts" />
+ </configurations>
+ <publications>
+   <artifact name="gwt-user" type="jar" conf="client" />
+   <artifact name="gwt-servlet" type="jar" conf="server" />
+ </publications>
+ <dependencies>
+    <dependency org="com.google.gwt" 
+               name="gwt-.origin"
+               rev="1.5.3" 
+               conf="origin->*"
+               >
+       <artifact name="gwt-linux" type="tar.bz2" 
+         url="http://google-web-toolkit.googlecode.com/files/gwt-linux-1.5.3.tar.bz2" />
+    </dependency>
+ </dependencies>
+</ivy-module>
