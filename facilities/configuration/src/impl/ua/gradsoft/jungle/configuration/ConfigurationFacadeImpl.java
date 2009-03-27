@@ -5,8 +5,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.Local;
@@ -25,14 +23,8 @@ public class ConfigurationFacadeImpl extends EjbQlAccessObject implements Config
 {
 
 
-    public List<ConfigItem> getConfigItems(String appName) {
-        HashMap<String, Object> vars = new HashMap<String,Object>();
-        vars.put("name", appName);
-        Map<String,Object> options = Collections.emptyMap();
-        return executeQuery(ConfigItem.class,
-                "select c from ConfigItemDescription c where c.appname=:name",
-                vars, options
-                );
+    public List<ConfigItem> getConfigItems(ConfigItemSelector itemSelector) {
+        return queryByCriteria(ConfigItem.class, itemSelector);
     }
 
     public BigDecimal registerConfigItem(ConfigItem description) {
@@ -117,6 +109,6 @@ public class ConfigurationFacadeImpl extends EjbQlAccessObject implements Config
   public EntityManager getEntityManager()
   { return entityManager_; }
  
-  @PersistenceContext 
+  @PersistenceContext(name="",unitName="PU")
   private EntityManager entityManager_;
 }

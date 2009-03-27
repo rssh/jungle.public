@@ -23,6 +23,9 @@ import javax.persistence.UniqueConstraint;
 public class ConfigItem implements Serializable
 {
 
+ public ConfigItem()   
+ {}
+
  @Id
  @Column(name="id", precision=ID_PRECISION, scale=ID_SCALE)
  public BigDecimal getId()

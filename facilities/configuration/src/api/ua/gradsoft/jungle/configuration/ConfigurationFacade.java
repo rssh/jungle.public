@@ -11,7 +11,7 @@ import java.util.Map;
 public interface ConfigurationFacade
 {
 
-  List<ConfigItem>  getConfigItems(String appName);
+  List<ConfigItem>  getConfigItems(ConfigItemSelector itemSelector);
 
   BigDecimal registerConfigItem(ConfigItem item);
 

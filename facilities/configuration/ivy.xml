@@ -10,6 +10,7 @@
         extends="default" />
   <conf name="hsql" description="build with hsql scripts" 
         extends="default" />
+  <conf name="docs" description="documentation" />
   <conf name="source" description="source tarboll" />
   <conf name="compile" description="with dependencies for compilations" />
  </configurations>
@@ -18,7 +19,7 @@
   <artifact name="jungle.configuration.gwt" type="jar" conf="gwt-export" />
   <artifact name="jungle.configuration.impl" type="jar" conf="default" />
   <artifact name="jungle.configuration.persistence.xml" type="part" />
-  <artifact name="jungle.configuration-docs" type="zip" />
+  <artifact name="jungle.configuration-docs" type="zip" conf="docs" />
   <artifact name="create_configuration_pgsql" type="sql" conf="pgsql" />
   <artifact name="drop_configuration_pgsql" type="sql" conf="pgsql" />
   <artifact name="create_configuration_hsql" type="sql" conf="hsql" />
