@@ -67,7 +67,7 @@
 
     <!-- transaction management -->
     <bean id="transactionManager"
-            class="org.springframework.orm.jpa.JpaTransactionManager" >
+           class="org.springframework.orm.jpa.JpaTransactionManager" >
         <property name="entityManagerFactory" ref="entityManagerFactory" />
     </bean>
     <tx:annotation-driven />
@@ -93,13 +93,16 @@
     <!--
       JNDI-spring integration
     -->
-    <bean id="jndi" class="org.apache.xbean.spring.jndi.DefaultContext">
+    <bean id="jndi" 
+          class="org.apache.xbean.spring.jndi.SpringInitialContextFactory"
+          factory-method="makeInitialContext"
+          scope="singleton" >
         <property name="entries">
             <map>
-                <entry key="ua.gradsoft.jungle.appregistry.AppRegistryFacade" 
-                        value-ref="ReferencesDAO" />
-                <entry key="ua.gradsoft.ifs.references.DepositsDAO" 
-                        value-ref="DepositsDAO" />
+                <entry key="AppregistryFacade" 
+                        value-ref="AppregistryFacade" />
+                <entry key="ConfigurationFacade" 
+                        value-ref="ConfigurationFacade" />
             </map>
         </property>
     </bean>
@@ -111,15 +114,13 @@
 
     <!-- JSON/RPC integration -->
     <bean id="JSONRPC" 
-        class="ua.gradsoft.ifs.spring.JSONRPCGlobalBridgeAccessBean" >
+        class="ua.gradsoft.jungle.spring.JSONRPCGlobalBridgeAccessBean" >
         <property name="registeredObjects">
              <map>
-                <entry key="depositsDAO" 
-                       value-ref="DepositsDAO" />
-                <entry key="referencesDAO" 
-                       value-ref="ReferencesDAO" />
-                <entry key="cachedDepositsDAO" 
-                       value-ref="CachedDepositsDAO" />
+                <entry key="AppregistryFacade" 
+                       value-ref="AppregistryFacade" />
+                <entry key="ConfigurationFacade" 
+                       value-ref="ConfigurationFacade" />
              </map>
         </property>
         <property name="customSerializerClasses">

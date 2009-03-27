@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="test.ui" default="compile" basedir=".">
+  <description>
+    ui build file.  This is used to package up your project as a jar,
+    if you want to distribute it.  This isn't needed for normal operation.
+  </description>
+
+  <property file="../build.properties" />
+
+  <!-- set classpath -->
+  <path id="project.class.path">
+    <pathelement path="${java.class.path}/"/>
+    <pathelement path="/opt/gwt-linux-1.5.3/gwt-user.jar"/>
+    <pathelement path="/opt/gwt-linux-1.5.3/gwt-servlet.jar"/>
+    <fileset dir="../lib"
+             includes="jungle.configuration-ui-gwt-export-*.jar"/>
+    <fileset dir="../lib"
+             includes="jungle.configuration.gwt-*.jar"/>
+    <fileset dir="../lib"
+             includes="javaee-api-*.jar"/>
+    <fileset dir="../lib"
+             includes="gxt-*.jar"/>
+    <fileset dir="../lib"
+             includes="gwt-math-*.jar"/>
+    <!-- Additional dependencies (such as junit) go here -->
+  </path>
+
+  <target name="compile" description="Compile src to bin">
+    <mkdir dir="bin"/>
+    <javac srcdir="src:test" destdir="bin" includes="**" debug="on" debuglevel="lines,vars,source" >
+      <classpath refid="project.class.path"/>
+    </javac>
+  </target>
+
+  <target name="js-compile" description="generation of local test ui here"
+                            depends="compile" >
+    <java classname="com.google.gwt.dev.GWTCompiler" fork="true">
+      <classpath>
+        <pathelement location="src" />
+        <path refid="project.class.path" />
+        <fileset dir="${gwt.home}" includes="gwt-dev-*.jar" />
+      </classpath>
+      <jvmarg value="-Xmx256M" />
+      <arg value="-logLevel" />
+      <arg value="INFO" />
+      <arg value="-out" />
+      <arg value="www" />
+      <arg value="ua.gradsoft.jungle.testapp.GwtUI" />
+    </java>
+  </target>
+
+
+  <target name="package" depends="compile" description="Package up the project as a jar">
+    <jar destfile="ui.jar">
+      <fileset dir="bin">
+        <include name="**/*.class"/>
+      </fileset>
+      <!-- Get everything; source, modules, html files -->
+      <fileset dir="src">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="test">
+        <include name="**"/>
+      </fileset>
+    </jar>
+  </target>
+
+  <target name="clean">
+    <!-- Delete the bin directory tree -->
+    <delete file="ui.jar"/>
+    <delete>
+      <fileset dir="bin" includes="**/*.class"/>
+    </delete>
+  </target>
+
+  <target name="all" depends="package"/>
+
+</project>

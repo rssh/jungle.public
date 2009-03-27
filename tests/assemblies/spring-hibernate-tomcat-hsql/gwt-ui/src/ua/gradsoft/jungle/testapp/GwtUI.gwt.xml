@@ -1,0 +1,7 @@
+<module>
+
+   <inherits name='ua.gradsoft.jungle.configuration.GwtUI'/>
+  
+   <entry-point class="ua.gradsoft.jungle.testapp.client.GwtUI" />
+
+</module>

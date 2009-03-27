@@ -47,6 +47,16 @@
       </javac>  
     </target>
   
+    <target name="build-gwt" depends="retrieve-libs, retrieve-compile-libs" >
+      <available property="gwt.js.generated" file="gwt-ui/www" />
+      <antcall target="gwt-js-compile" />
+    </target>
+
+    <target name="gwt-js-compile" unless="gwt.js.generated"  >
+      <ant dir="gwt-ui" antfile="ui.ant.xml" target="js-compile" />
+    </target>
+
+
     <target name="build-persistence" depends="retrieve-libs">
       <loadfile property="jungle.appregistry.classes" 
                 srcFile="lib/jungle.appregistry.persistence.xml-${jungle.appregistry.version}.part" />
@@ -83,15 +93,17 @@
       </move>
     </target>
 
-    <target name="build-war" depends="prepare, build, build-persistence" >
+    <target name="build-war" depends="prepare, build, build-persistence, 
+                                      build-gwt" >
         <war destfile="${war.dir}/jungle.tomcat.sh-test.war" 
                 webxml="etc/WEB-INF/web.xml"  
                 index="true">
-            <classes  dir="classes" includes="**/*.class" />
+            <classes  dir="classes" includes="**/*.class,**/*.xml" />
             <classes  dir="etc" >
               <include name="META-INF/persistence.xml" />
               <include name="logging.properties" />
             </classes>
+
 <!--
             <fileset  dir="${resources-web.dir}" />
             <fileset  dir="${platform-web-resources.dir}" />
@@ -99,6 +111,9 @@
 <!--
             <fileset  dir="web.groovy" />
 -->
+            <fileset  dir="gwt-ui/www/ua.gradsoft.jungle.testapp.GwtUI/" />
+
+
             <webinf   dir="etc/WEB-INF" includes="**/*.xml" />
             <metainf  dir="etc/META-INF" includes="context.xml" />
             <lib  dir="lib" includes="**/*.jar" />    

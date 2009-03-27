@@ -46,6 +46,19 @@
       <url-pattern>*.groovy</url-pattern>
     </servlet-mapping>
 
+ <servlet>
+  <servlet-name>GwtRpcServlet</servlet-name>
+  <servlet-class>ua.gradsoft.jungle.gwt.servlet.GWTServlet</servlet-class>
+    <init-param>
+      <param-name>spring.applicationConfig</param-name>
+      <param-value>classpath:applicationContext.xml</param-value>
+    </init-param>
+ </servlet>
+
+  <servlet-mapping>
+    <servlet-name>GwtRpcServlet</servlet-name>
+    <url-pattern>/GWT-RPC/*</url-pattern>
+  </servlet-mapping>
 
      <listener>
        <listener-class>
