@@ -61,14 +61,15 @@ public class GWTServlet extends RemoteServiceServlet
    * 
    * Set of parameters for setting JNDI names looks like:
    * <pre>
-   *
-   *   prefix1.java.naming.factory.initial=first-naming-factory
+   *   prefix1.java.naming.factory.initial = first-naming-factory
    *   prefix1.java.naming.provider.url=first-provider
    *   prefix2.java.naming.factory.initial=second-naming-factory
    *   prefix2.java.naming.provider.url=second-provider
    *   .....
    *   java.naming.factory.initial=default-namig-factory
    * </pre>
+   *(here x=y is used instead tags, of ciurse in WEB.xml it's writen
+   * with standard &lt;init-param&gt; tags)
    *
    * GWTServlet will receive request in form of "/Context/Servlet/ObjectName"
    * and will search target objects in all configured named contexts.
@@ -82,19 +83,25 @@ public class GWTServlet extends RemoteServiceServlet
    *  http://beanlib.sourceforge.net/ </a>) with default constructor.
    *
    * <pre>
-   *  spring.applicationConfig=fname
+   *  spring=&lt;any&gt;
    * </pre>
    * is shortcut to
    * <pre>
    * spring.java.naming.factory.initial = org.apache.xbean.spring.jndi.SpringInitialContextFactory
-   * spring.java.naming.provider = classpath:fname
    * </pre>
+   *
+   * <pre>
+   *  debug = 1 or 0
+   * </pre>
+   *  enable or disable debug.
+   *
    *
    * @param servletConfig
    */
   @Override
   public void init(ServletConfig servletConfig) throws ServletException
   {
+      super.init(servletConfig);
       Map<String,Hashtable<String,String>> namedEnvs = new HashMap<String,Hashtable<String,String>>();
       Hashtable<String,String> defaultEnv = new Hashtable<String,String>();
       Enumeration e = servletConfig.getInitParameterNames();
@@ -122,13 +129,24 @@ public class GWTServlet extends RemoteServiceServlet
               }
           }
           if (!b) {
-              if (name.equals("spring.applicationConfig")) {
+              if (name.equals("spring")) {
                   checkNamedProperty("spring."+Context.INITIAL_CONTEXT_FACTORY,
                           Context.INITIAL_CONTEXT_FACTORY,namedEnvs,defaultEnv,
                           "org.apache.xbean.spring.jndi.SpringInitialContextFactory");
-                  checkNamedProperty("spring."+Context.PROVIDER_URL,
-                          Context.PROVIDER_URL,namedEnvs,defaultEnv,
-                          value);
+                  b=true;
+              }
+          }
+          if (!b) {
+              if (name.equals("debug")) {
+                  if (value.equals("1")||value.equalsIgnoreCase("true")) {
+                      debug_=true;
+                  }else if (value.equals("0")||value.equalsIgnoreCase("false")) {
+                      debug_=false;
+                  }else{
+                      Log log = LogFactory.getLog(GWTServlet.class);
+                      log.warn("invalud value of debug parameter, must be 0 or 1; set to true");
+                      debug_=true;
+                  }
               }
           }
           if (!b) {
@@ -157,7 +175,13 @@ public class GWTServlet extends RemoteServiceServlet
           for(Map.Entry<String,Hashtable<String,String>> je: namedEnvs.entrySet()) {
               try {
                 Context ctx = new InitialContext(je.getValue());
-                contexts.add(ctx);
+                if (contexts_==null) {
+                  // bust be initialized in costructor, but .. (?)
+                  contexts_=new LinkedList<Context>();
+                  Log log = LogFactory.getLog(GWTServlet.class);
+                  log.warn("servlet context field was not initialized, check version of web container");
+                }
+                contexts_.add(ctx);
               }catch(NamingException ex){
                   Log log = LogFactory.getLog(GWTServlet.class);
                   log.error("Can't init name service for "+je.getKey(), ex);
@@ -169,7 +193,7 @@ public class GWTServlet extends RemoteServiceServlet
          try {
            Context ctx=( defaultEnv.isEmpty() ? new InitialContext() :
                                                 new InitialContext(defaultEnv));
-           contexts.add(ctx);
+           contexts_.add(ctx);
          }catch(NamingException ex){
            Log log = LogFactory.getLog(GWTServlet.class);
            log.error("Can't init default name service", ex);
@@ -226,21 +250,28 @@ public class GWTServlet extends RemoteServiceServlet
     String responsePayload = null;
     RPCRequest rpcRequest = null;
     Object targetObject = null;
-    try {
-        targetObject = retrieveTargetObject(this.getThreadLocalRequest());
-        if (targetObject == null) {
-           responsePayload = RPC.encodeResponseForFailure(null, new RuntimeException("target object not found"));
-        }
-    }catch(Exception ex){
-        responsePayload = RPC.encodeResponseForFailure(null, ex);
-    }
     if (responsePayload==null) {
       try {
-        rpcRequest = RPC.decodeRequest(responsePayload, null, this);
+        rpcRequest = RPC.decodeRequest(payload, null, this);
       } catch (NullPointerException ex) {
         Log LOG = LogFactory.getLog(GWTServlet.class);
         LOG.info("empty rpc request");
-        responsePayload = RPC.encodeResponseForFailure(null, ex);
+        throw new RuntimeException("Empty rpc request");
+      }
+    }
+    if (responsePayload == null) {
+     try {
+        targetObject = retrieveTargetObject(this.getThreadLocalRequest());
+        if (targetObject == null) {
+           Log log = LogFactory.getLog(GWTServlet.class);
+           log.info("can't retrieve target object");
+           throw new RuntimeException("target object not found");
+           //responsePayload = RPC.encodeResponseForFailure(null,
+           //        new RuntimeException("target object not found"),
+           //        rpcRequest.getSerializationPolicy());
+        }
+      }catch(Exception ex){
+        responsePayload = RPC.encodeResponseForFailure(null, ex, rpcRequest.getSerializationPolicy());
       }
     }
     Object retval = null;
@@ -258,6 +289,8 @@ public class GWTServlet extends RemoteServiceServlet
          Method targetObjectMethod = targetObject.getClass().getMethod(method.getName(), method.getParameterTypes());
          retval = targetObjectMethod.invoke(targetObject, params);
       }catch(Exception ex){
+         Log log = LogFactory.getLog(GWTServlet.class);
+         log.info("exception during call",ex);
          responsePayload = RPC.encodeResponseForFailure(
                                   rpcRequest.getMethod(), ex);
       }
@@ -287,11 +320,26 @@ public class GWTServlet extends RemoteServiceServlet
   private Object retrieveTargetObject(HttpServletRequest request)
   {
      String objectName = request.getPathInfo();
+     if (objectName.startsWith("/")) {
+         objectName=objectName.substring(1);
+     }
+     if (debug_) {
+       Log log = LogFactory.getLog(GWTServlet.class);
+       log.info("retrieveTarget object for name "+objectName);
+     }
      Object retval = null;
-     for(Context context: contexts) {
+     for(Context context: contexts_) {
          try {
+             if (debug_) {
+               Log log = LogFactory.getLog(GWTServlet.class);
+               log.info("search in "+context.toString());
+             }
              retval = context.lookup(objectName);
          }catch(NameNotFoundException ex){
+             if (debug_) {
+                 Log log = LogFactory.getLog(GWTServlet.class);
+                 log.info("Not found.");
+             }
              ;
          }catch(NamingException ex){
              Log log = LogFactory.getLog(GWTServlet.class);
@@ -302,7 +350,7 @@ public class GWTServlet extends RemoteServiceServlet
          }
      }
      if (retval==null) {
-         //
+         throw new RuntimeException("Can't find object with name "+objectName);
      }
      return retval;
   }
@@ -333,7 +381,8 @@ public class GWTServlet extends RemoteServiceServlet
 
   }
 
-  private List<Context> contexts = new LinkedList<Context>();
+  private boolean       debug_    = false;
+  private List<Context> contexts_ = new LinkedList<Context>();
 
   private BeanReplicator inputParametersReplicator_=null;
   private BeanReplicator resultReplicator_=null;
