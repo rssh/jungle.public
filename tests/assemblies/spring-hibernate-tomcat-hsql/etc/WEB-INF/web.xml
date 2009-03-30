@@ -50,8 +50,8 @@
   <servlet-name>GwtRpcServlet</servlet-name>
   <servlet-class>ua.gradsoft.jungle.gwt.servlet.GWTServlet</servlet-class>
     <init-param>
-      <param-name>spring.applicationConfig</param-name>
-      <param-value>classpath:applicationContext.xml</param-value>
+      <param-name>spring.java.naming.factory.initial</param-name>
+      <param-value>org.apache.xbean.spring.jndi.SpringInitialContextFactory</param-value>
     </init-param>
  </servlet>
 

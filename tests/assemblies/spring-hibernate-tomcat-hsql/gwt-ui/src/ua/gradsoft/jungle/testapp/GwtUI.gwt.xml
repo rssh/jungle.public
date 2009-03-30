@@ -1,6 +1,8 @@
 <module>
 
    <inherits name='ua.gradsoft.jungle.configuration.GwtUI'/>
+
+   <inherits name='com.extjs.gxt.desktop.WebDesktop' />
   
    <entry-point class="ua.gradsoft.jungle.testapp.client.GwtUI" />
 
