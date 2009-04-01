@@ -57,8 +57,8 @@
   <ivy:resolve />
  </target>
 
- <target name="retrieve-libs" depends="init-ivy" unless="offline">
-  <ivy:retrieve pattern="lib/[artifact]-[revision].[ext]" conf="std" />
+ <target name="retrieve-build-libs" depends="init-ivy" unless="offline">
+  <ivy:retrieve pattern="lib/[artifact]-[revision].[ext]" conf="build" />
  </target>
 
  <target name="retrieve-test-libs" depends="declare-ivy" unless="offline" >
@@ -105,7 +105,7 @@
  </path>
  
 
- <target name="build-std" depends="retrieve-libs">
+ <target name="build-std" depends="retrieve-build-libs">
   <javac srcdir="src/main/java" includes="**/*.java" deprecation="on" 
          debug="${debug}" >
     <classpath  refid="std.build.path" />
@@ -123,6 +123,7 @@
  <target name="build-gwt-export" depends="build-std">
   <jar destfile="target/jungle.persistence.ejbqlao-gwt-export-${version}.jar" >
      <fileset dir="src/main/java" includes="**/CRUDFacade.class" />
+     <fileset dir="src/main/java" includes="**/CRUDFacade.java" />
      <fileset dir="etc/gwt" includes="**/*.xml" />
   </jar>
  </target>
