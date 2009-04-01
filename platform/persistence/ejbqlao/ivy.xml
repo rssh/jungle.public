@@ -3,6 +3,7 @@
        
     <configurations>
       <conf name="std" description="standard build" />
+      <conf name="gwt-export" description="export CRUDFacade to gwt clients" />
       <conf name="test" description="test version with junit test" 
                         extends="std" />
       <conf name="doc" description="with tool for building documentations" 
@@ -12,8 +13,12 @@
     </configurations>
     <publications>
       <artifact name="jungle.persistence.ejbqlao" type="jar" />
-      <artifact name="jungle.persistence.ejbqlao-src" type="tar.gz" ext="tar.gz" />
-      <artifact name="jungle.persistence.ejbqlao-doc" type="tar.gz" ext="tar.gz" />
+      <artifact name="jungle.persistence.ejbqlao-src" 
+             type="tar.gz" ext="tar.gz" conf="build" />
+      <artifact name="jungle.persistence.ejbqlao-doc" 
+             type="tar.gz" ext="tar.gz" conf="doc" />
+      <artifact name="jungle.persistence.ejbqlao-gwt-export" type="jar"
+             conf="gwt-export" />
     </publications>
     <dependencies>
         <dependency org="org.apache" name="commons-logging" rev="[1.1.1,)" 

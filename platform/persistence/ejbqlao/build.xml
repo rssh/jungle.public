@@ -105,7 +105,7 @@
  </path>
  
 
- <target name="build" depends="retrieve-libs">
+ <target name="build-std" depends="retrieve-libs">
   <javac srcdir="src/main/java" includes="**/*.java" deprecation="on" 
          debug="${debug}" >
     <classpath  refid="std.build.path" />
@@ -119,6 +119,15 @@
   </manifest>
   </jar>
  </target>
+
+ <target name="build-gwt-export" depends="build-std">
+  <jar destfile="target/jungle.persistence.ejbqlao-gwt-export-${version}.jar" >
+     <fileset dir="src/main/java" includes="**/CRUDFacade.class" />
+     <fileset dir="etc/gwt" includes="**/*.xml" />
+  </jar>
+ </target>
+
+ <target name="build" depends="build-std,build-gwt-export" />
 
  <target name="clean">
   <delete>
