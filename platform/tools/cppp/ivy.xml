@@ -5,16 +5,21 @@
       <conf name="src" description="source distribution" />
       <conf name="test" description="test version with junit test" 
                         extends="default" />
+      <conf name="compile" description="with compile dependencies" 
+                        extends="default" />
     </configurations>
     <publications>
-     <artifact name="cppp" type="jar" /> 
-     <artifact name="cppp-src" type="zip" /> 
+     <artifact name="jungle.cppp" type="jar" /> 
+     <artifact name="jungle.cppp-src" type="zip" /> 
     </publications>
     <dependencies>
         <dependency org="ua.gradsoft" name="termware" rev="2.3.1" 
                     conf="default" >
           <artifact name="TermWare"  type="jar" 
-               url="http://www.gradsoft.ua/common/termware/TermWare-2.3.1.jar" />
+           url="http://www.gradsoft.ua/common/termware/TermWare-2.3.1.jar" />
+        </dependency>
+        <dependency org="net.java.dev.javacc" name="javacc" rev="4.0" 
+               conf="compile->default" transitive="false" >
         </dependency>
         <dependency org="junit" name="junit" rev="3.8" conf="test->default"/>
     </dependencies>
