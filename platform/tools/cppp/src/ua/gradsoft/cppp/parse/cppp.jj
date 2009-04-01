@@ -1,0 +1,1435 @@
+options
+{
+ static=false;
+ java_unicode_escape=true;
+}
+PARSER_BEGIN(CPPPParser)
+
+package ua.gradsoft.cppp.parse;
+
+import java.io.*;
+import java.util.*;
+
+import ua.gradsoft.termware.*;
+import ua.gradsoft.termware.exceptions.*;
+import ua.gradsoft.cppp.utils.*;
+
+/**
+ * parser for C preprocessor.
+ *<pre>
+ *@!checker:disable(All)@!
+ *</pre>
+ */
+public class CPPPParser
+{
+
+ public static CPPPParser createParser(String[] args, Reader in, String inFname) throws TermWareException
+ {
+  Vector searchPath=new Vector();
+  String inputFname=null;
+  String outputFname=null;
+  HashMap predefined=new HashMap();
+  String outputLinePrefix="#__FILE__:__LINE__:";
+  int i=0;
+  while(i<args.length) {
+    if (args[i].equals("-I")) {
+       ++i; 
+       if (i>=args.length) {
+         throw new AssertException("-I option require argument");
+       }
+       searchPath.add(args[i]);
+       ++i;
+    }else if(args[i].equals("-o")) {
+       ++i;
+       if (i>=args.length) {
+         throw new AssertException("-o option require argument");
+       }
+       outputFname=args[i];
+       ++i;
+    }else if(args[i].equals("-D")) {
+       ++i;
+       if (i>=args.length) {
+         throw new AssertException("-D option require argument");
+       }
+       int eqIndex=args[i].indexOf('=');
+       if (eqIndex==-1) {
+         predefined.put(args[i],"");
+       }else{
+         String frs=args[i].substring(0,eqIndex);
+         String snd=args[i].substring(eqIndex+1);
+         predefined.put(frs,snd);
+       }
+       ++i;
+    }else if(args[i].equals("-l")) {
+       ++i;
+       if (i>=args.length) {
+         throw new AssertException("-l option require argument");
+       }
+       outputLinePrefix=args[i];
+       ++i;
+    }else{
+       if (inputFname==null) {
+         inputFname=args[i];
+         ++i;
+       }else{
+         throw new AssertException(args[i]+" override "+inputFname+" as input file");
+       }
+    } 
+  }
+  CPPPParser retval;
+  if (inputFname==null) {
+    inputFname = inFname;
+    retval = new CPPPParser(in);
+    retval.setInputFname(inputFname);
+  }else{
+    Reader input;
+    try {
+      input = new BufferedReader(new FileReader(inputFname));
+    }catch(FileNotFoundException ex){
+      throw new AssertException("File "+inputFname+" not found.");
+    }
+    retval = new CPPPParser(input);
+    retval.setInputFname(inputFname);
+  }
+  retval.init();
+  retval.setSearchPath(searchPath);
+  if (outputFname==null) {
+    retval.setOutput(new PrintWriter(System.out,true));
+  }else{
+    FileWriter fo;
+    try {
+      fo = new FileWriter(outputFname);
+    }catch(IOException ex){
+      throw new AssertException("Can't open file '"+outputFname+"' for writing:"+ex.getMessage());
+    }
+    retval.setOutput(new PrintWriter(fo));
+  }
+  retval.setPredefined(predefined);
+  retval.setOutputLinePrefix(outputLinePrefix);
+  return retval;
+ }
+
+
+ /**
+  *  must have type "cppp_args(t_1,..t_n)", and t_1, t_n must be strings.
+  **/
+ public static CPPPParser create(Reader in, String inFname, Term args) throws TermWareException
+ {
+  String usage="cppp parser argument must have structure like \n";
+  usage+="'cppp_args(x_1,..x_n)', where x_i are strings, which are correspond\n";
+  usage+=" to command line options. or NIL\n";
+  if (args.isNil()) {
+   Term[] empty=new Term[0];
+   args=TermWare.getInstance().getTermFactory().createComplexTerm("cppp_args",empty);
+  }
+  if (!args.isComplexTerm()) {
+    throw new AssertException(usage);
+  }
+  if (!args.getName().equals("cppp_args")) {
+    throw new AssertException(usage);
+  }
+  String[] sargs=new String[args.getArity()];
+  for(int i=0; i<args.getArity(); ++i) {
+    Term x = args.getSubtermAt(i);
+    if (x.isComplexTerm()) throw new AssertException("usage");
+    sargs[i]=x.getName();
+  }
+  return createParser(sargs,in,inFname);
+ }
+
+
+ public static void main(String[] args)
+ {
+  try {
+    CPPPParser parser = createParser(args,new InputStreamReader(System.in),"<stdin>");    
+    parser.run();
+    parser.close();
+  }catch(TermWareException ex){
+    try {
+      PrintWriter writer = new PrintWriter(new FileWriter("log1"));
+      writer.println(ex.getMessage());
+      ex.printStackTrace(writer);
+      writer.close();
+    }catch(IOException ex1){
+      ex1.printStackTrace();
+      ex.printStackTrace();
+    }
+    System.err.println(ex.getMessage());
+  }  
+ }
+
+
+ public void  run() throws TermWareException
+ {
+  try {
+   while(line()){
+   }
+  }catch(ParseException ex){
+    throw new TermWareParseException(ex.getMessage(),ex);
+  }
+ }
+
+
+
+ public  void  setHelper(CPPPParserHelper helper)
+ {
+  helper_ = helper;
+  if (inputFname_!=null) {
+    helper.setFileName(inputFname_);
+  }
+  helper_.setLine(lineCount_);
+ }
+
+
+ public  CommentsDB  getCommentsDB()
+ {
+  return commentsDB_;
+ }
+
+
+ private void setCommentsDB(CommentsDB db)
+ {
+  commentsDB_=db;
+ }
+
+ public boolean  isPrintFileAndLine()
+ {
+  return printFileAndLine_;
+ }
+
+ public void    setPrintFileAndLine(boolean v)
+ {
+  printFileAndLine_=v; 
+ }
+
+ public void  setOutputLinePrefix(String outputLinePrefix)
+ {
+  outputLinePrefixFormat_=new OutputLinePrefixFormat(outputLinePrefix);
+ }
+
+ private void  setOutputLinePrefixFormat(OutputLinePrefixFormat format)
+ {
+  outputLinePrefixFormat_=format;
+ }
+
+
+ public void  setPredefined(Map<String,String> predefined) throws TermWareException
+ {
+  // generate temporary set of #define in memory
+   if (predefined==null || predefined.size()==0) return;
+   if (helper_==null) {
+     setHelper(new CPPPParserHelper());
+   }
+   ByteArrayOutputStream tmpBytes = new ByteArrayOutputStream();
+   PrintWriter tmpOut=new PrintWriter(tmpBytes);
+   for(Map.Entry<String,String> cur:predefined.entrySet()) {
+      String line="#define "+cur.getKey()+" "+cur.getValue();
+      tmpOut.println(line);
+   } 
+    tmpOut.flush();
+   CPPPParser nestedParser = createNestedParser(
+         new InputStreamReader(new ByteArrayInputStream(tmpBytes.toByteArray())),
+         "predefined macrodefinitons"
+                                               );
+
+   nestedParser.run();
+
+ }
+
+ private void  init() throws TermWareException
+ {
+  lineCount_=1;
+  enabled_=true;
+  if (ifHelper_==null) {
+    ifHelper_=new IfHandleHelper(this);
+  }
+  if (helper_==null) {
+    setHelper(new CPPPParserHelper());
+  }  
+  commentsDB_ = new CommentsDB();
+  debug_ = false;
+ }
+
+ /**
+  * get filename from #INCLUDE statement.
+  *   Q(strind) or F("string")
+  **/
+ private String  getIncludeFileName(Term t) throws TermWareException
+ {
+  String retval=null;
+  if (t.getName().equals("Q")) {
+    //TODO: file must be situated at the same directory, as inputFname.
+    retval = t.getSubtermAt(0).getString();
+  }else if(t.getName().equals("F")) {
+    String iname=t.getSubtermAt(0).getString();
+    for(String candidate: searchPath_) {
+      String fullFname = candidate+File.separator+iname;
+      File candidateFile = new File(fullFname);
+      if (candidateFile.exists()) {         
+        try {
+          retval=candidateFile.getCanonicalPath();
+        }catch(IOException ex){
+          retval=fullFname;
+        }
+        // TODO: add options for different modes of include file canonization.
+        break;
+      }
+    }
+    if (retval==null) {
+      throw new AssertException("Can't find file:"+iname+" for inclusion");
+    }
+  }else if(t.getName().equals("M")) {
+    t=helper_.ask(t.getSubtermAt(0));
+    if (t.isString()) {
+      String s=t.getString();   
+      if (s.charAt(0)=='"') {
+        return getIncludeFileName(TermWare.getInstance().getTermFactory().createTerm("Q",TermWare.getInstance().getTermFactory().createString(s.substring(1,s.length()-1))));
+      }else{
+        throw new AssertException("pattern "+s+"in #include statement does not look as filename");
+      }
+    }else{
+      String s=helper_.stringTerm(t);
+      if (s.charAt(0)=='<') {
+        return getIncludeFileName(TermWare.getInstance().getTermFactory().createTerm("F",TermWare.getInstance().getTermFactory().createString(s.substring(1,s.length()-1))));
+      }else if(s.charAt(0)=='"') {
+        return getIncludeFileName(TermWare.getInstance().getTermFactory().createTerm("Q",TermWare.getInstance().getTermFactory().createString(s.substring(1,s.length()-1))));
+      }
+      throw new AssertException("pattern "+s+"in #include statement does not look as filename");
+    }
+  }
+  return retval;
+ }
+
+
+ public PrintWriter getOutput()
+ {
+  return out_;
+ }
+
+ public void  setOutput(PrintWriter out)
+ {
+  if (out_!=out) {
+    if (out_!=null) {
+       out_.flush();
+    }
+    out_ = out;
+  }
+ }
+
+ public void close()
+ {
+   if (out_!=null) {
+      out_.close();
+   }
+ }
+
+ private void setIfHelper(IfHandleHelper ifHelper)
+ {
+   ifHelper_=ifHelper;
+ }
+
+
+ private void handleIFDEF(Term t)  throws TermWareException
+ {
+  if (debug_) {
+    System.err.print("handleIFDEF:");
+    t.print(System.err);
+    System.err.println();
+  }
+  t=TermWare.getInstance().getTermFactory().createBoolean(helper_.defined(t.getName()));
+  enabled_=ifHelper_.handleIF(t);
+  incLineCount();
+ }
+
+ private void handleIFNDEF(Term t) throws TermWareException
+ {
+  if (debug_) {
+    System.err.print("handleIFNDEF:");
+    t.print(System.err);
+    System.err.println();
+  }
+  t=TermWare.getInstance().getTermFactory().createBoolean(!helper_.defined(t.getName()));
+  enabled_=ifHelper_.handleIF(t);
+  incLineCount();
+ }
+
+
+ private void handleIF(Term t) throws TermWareException
+ {
+  if (debug_) {
+    System.err.print("handleIF:");
+    t.print(System.err);
+    System.err.println();
+  }
+  enabled_=ifHelper_.handleIF(t);
+  incLineCount();
+ }
+
+ private void handleELIF(Term t) throws TermWareException
+ {
+  if (debug_) {
+    System.err.print("handleELIF:");
+    t.print(System.err);
+    System.err.println();
+  }
+  enabled_=ifHelper_.handleELIF(t);
+  incLineCount();
+ }
+
+ private void handleELSE()  throws TermWareException
+ {
+  if (debug_) {
+    System.err.println("handleELSE");
+  }
+  enabled_=ifHelper_.handleELSE();
+  incLineCount();
+ }
+
+
+ private void handleENDIF() throws TermWareException
+ {
+  if (debug_) {
+    System.err.println("handleENDIF");
+  }
+  enabled_=ifHelper_.handleENDIF();
+  incLineCount();
+ }
+
+
+
+ private void handleDEFINE(Term t)  throws TermWareException
+ {
+  if (enabled_) {
+    if (debug_) {
+      System.err.print("handleDEFINE:");
+      t.print(System.err);
+      System.err.println();
+    }
+    helper_.set(t);
+  }
+  incLineCount();
+ }
+
+
+ private void handleUNDEF(Term t) throws TermWareException
+ {
+  if (enabled_) {
+    if (debug_) {
+      System.err.print("handleUNDEF:");
+      t.print(System.err);
+      System.err.println();
+    }
+    helper_.undef(t.getName());
+  }
+  incLineCount();
+ }
+
+ private void handleINCLUDE(Term t) throws TermWareException
+ {
+  if (enabled_) {
+    if (debug_) {
+      System.err.print("handleINCLUDE:");
+      t.print(System.err);
+      System.err.println();
+    }
+    String fname=getIncludeFileName(t);
+    Reader newIn;
+    try {
+      newIn = new FileReader(fname);
+    }catch(FileNotFoundException ex){
+      throw new AssertException("can't open file:"+fname);
+    }
+    out_.flush();
+    CPPPParser nestedParser = createNestedParser(newIn,fname);    
+    try {
+      nestedParser.run();
+    }catch(TermWareException ex){
+      throw ex;
+    }finally{
+      try {
+        newIn.close();
+      }catch(IOException ex){
+        throw new AssertException("Can't close include file "+fname,ex);
+      }
+    }
+  }
+  incLineCount();
+ }
+
+private CPPPParser createNestedParser(Reader newIn,String newFname)
+{
+    CPPPParser nestedParser = new CPPPParser(newIn);    
+    nestedParser.setSearchPath(searchPath_);
+  //  getOutput().flush();
+    nestedParser.setOutput(getOutput());
+    nestedParser.setHelper(helper_);
+    nestedParser.setIfHelper(ifHelper_);
+    nestedParser.setCommentsDB(commentsDB_);
+    nestedParser.setDebug(debug_);   
+    nestedParser.setPrintFileAndLine(printFileAndLine_);
+    nestedParser.setEraseCComments(eraseC_Comments_);
+    nestedParser.setEraseCppComments(eraseCPP_Comments_);
+    nestedParser.setEraseXmlComments(eraseXML_Comments_);
+    nestedParser.setInputFname(newFname);
+    nestedParser.setOutputLinePrefixFormat(outputLinePrefixFormat_);
+    nestedParser.enabled_=true;
+    return nestedParser;
+}
+
+
+
+
+ private void handleLINE(Term t) throws TermWareException
+ {                           
+   if (enabled_ && debug_) {
+    System.err.print("handleLINE:");
+    t.print(System.err);
+    System.err.println();
+  }
+  //TODO: implement set of file and line.
+  incLineCount();
+ }
+
+
+ private void handleERROR(Term t)  throws TermWareException
+ {
+  if (enabled_) {
+    if (debug_) {
+      System.err.print("handleERROR:");
+      t.print(System.err);
+      System.err.println();
+    }
+    ByteArrayOutputStream tmpBytes=new ByteArrayOutputStream();
+    helper_.printTerm(t,new PrintWriter(tmpBytes)); 
+    throw new CPPPErrorDirectiveException(lineCount_,inputFname_,tmpBytes.toString());
+  }else{
+    //do nothing.
+  }
+  incLineCount();
+ }
+
+
+ private void handlePRAGMA(Term t) throws TermWareException
+ {
+  if (enabled_ && debug_) {
+    System.err.print("handlePRAGMA:");
+    t.print(System.err);
+    System.err.println();
+  }
+  incLineCount();
+ }
+
+ private void handleEMPTYPRAGMA()
+ {
+  if (debug_) {
+    System.err.println("handleEMPTYPRAGMA");
+  }
+  incLineCount();
+ }
+
+
+ private void handleEMPTY()
+ {
+   //System.err.println("handleEMPTY");
+   incLineCount();
+ }
+
+
+ private void handlePP_TOKENS(Term t)  throws TermWareException
+ {
+  PrintWriter out = (out_==null ? new PrintWriter(System.out,true) : out_ );
+  if (enabled_ && debug_) {
+   System.err.print("handlerPP_TOKENS:");
+   t.print(System.err);
+   System.err.println();
+   System.err.println("out="+out.toString());
+  }  
+  if (enabled_) {
+    //out_.print("#line \""+inputFname_+"\" "+lineCount_+":");
+    if (printFileAndLine_) {
+       out.print("# "+lineCount_+" "+"\""+inputFname_+"\" ");
+    }
+    t=helper_.ask(t);
+    helper_.printTerm(t,out); 
+    out.println();
+  }
+  if (enabled_ && debug_) {
+   System.err.print("out PP_TOKENS:");
+   t.print(System.err);
+   System.err.println();
+  }
+
+  incLineCount();
+ }
+
+ private void handleNEWLINE()
+ {
+   incLineCount();
+ }
+
+ private void handleEOF()
+ {
+   if (debug_) {
+     System.err.println("handleEOF");
+   }
+ }
+
+ private void handleC_COMMENT(Token t)
+ {
+   if (debug_) {
+     System.err.println("handleC_COMMENT:"+t.image);
+   }
+   int n=ParseUtils.countLines(t.image);
+   incLineCount(n);
+ }
+
+ private void handleXML_COMMENT(Token t)
+ {
+   if (debug_) {
+     System.err.println("handleXML_COMMENT:"+t.image);
+   }
+   int n=ParseUtils.countLines(t.image);
+   incLineCount(n);
+ }
+
+
+ private void handleCPP_COMMENT(Token t)
+ {
+   if (debug_) {
+     System.err.println("handleCPP_COMMENT:"+t.image);
+   }
+ }
+
+
+ public boolean checkConstantExpressionInLine(Term t) throws TermWareException
+ {
+   return helper_.checkUnparsedConstantExpression(t);
+ }
+
+ private void incLineCount(int n)
+ {
+   lineCount_+=n;
+   if (helper_!=null) helper_.setLine(lineCount_);
+ }
+
+
+ private void incLineCount()
+ {
+   ++lineCount_;
+   if (helper_!=null) helper_.setLine(lineCount_);
+ }
+
+ private Term  cons(Term t1, Term t2) throws TermWareException
+ {
+  return TermWare.getInstance().getTermFactory().createTerm("cons",t1,t2);
+ }
+
+ private Term  cons(String s1, Term t2) throws TermWareException
+ {
+  return cons(TermWare.getInstance().getTermFactory().createString(s1),t2);
+ }
+
+ private Term  cons(Term t1, String s2) throws TermWareException
+ {
+  return cons(t1,TermWare.getInstance().getTermFactory().createString(s2));
+ }
+
+ private Term  cons1(Term t1, Term t2) throws TermWareException
+ {
+  return TermWare.getInstance().getTermFactory().createTerm("cons1",t1,t2);
+ }
+
+ private Term  createString(String s) 
+ {
+  return TermWare.getInstance().getTermFactory().createString(s);
+ }
+
+ private void setInputFname(String fname)
+ {
+  inputFname_=fname;
+  if (helper_!=null) helper_.setFileName(fname);
+ }
+
+
+ public void setSearchPath(List<String> searchPath)
+ {
+  searchPath_ = searchPath;
+ }
+ 
+
+ public void setDebug(boolean b)
+ {
+  debug_=b;
+ }
+
+ public void setEraseCComments(boolean b)
+ {
+  eraseC_Comments_=b;
+ }
+
+ public void setEraseCppComments(boolean b)
+ {
+  eraseCPP_Comments_=b;
+ }
+
+ public void setEraseXmlComments(boolean b)
+ {
+  eraseXML_Comments_=b;
+ }
+
+ private boolean debug_=true;
+ private boolean printFileAndLine_=true;
+ private boolean eraseC_Comments_=true;
+ private boolean eraseCPP_Comments_=true;
+ private boolean eraseXML_Comments_=false;
+
+ private int lineCount_;
+ private boolean enabled_;
+
+ private CPPPParserHelper helper_; 
+ private IfHandleHelper   ifHelper_;
+ private OutputLinePrefixFormat outputLinePrefixFormat_;
+
+
+ private String   inputFname_;
+ 
+ private PrintWriter out_;
+ private CommentsDB  commentsDB_;
+
+ private List<String>  searchPath_;
+
+
+}
+
+PARSER_END(CPPPParser)
+
+
+boolean line() throws TermWareException :
+{
+ Term t=null;
+ Term t1=null;
+ boolean retval=true;
+ String wse=null;
+}
+{
+(
+ LOOKAHEAD(3)
+  "#" [ wse() ] "if" t=pp_tokens() <NEWLINE>
+   { handleIF(t); } 
+ |
+ LOOKAHEAD(3)
+  "#" [ wse() ] "ifdef" [wse()] t=identifier() [wse()] <NEWLINE>
+   { handleIFDEF(t); }
+ |
+ LOOKAHEAD(3)
+  "#" [ wse() ] "ifndef" [wse()] t=identifier() [wse()] <NEWLINE>
+   { handleIFNDEF(t); }
+ |
+ LOOKAHEAD(3)
+  "#" [ wse() ] "elif" t=pp_tokens() [wse()] <NEWLINE>
+   { handleELIF(t); }
+ |
+ LOOKAHEAD(3)
+  "#" [ wse() ] "else" [wse()] <NEWLINE>
+   { handleELSE(); }
+ |
+ LOOKAHEAD(3)
+  "#" [ wse() ] "endif" [ wse() ] (<NEWLINE>|<EOF>)
+   { handleENDIF(); }
+ |
+ LOOKAHEAD(3)
+  "#" [wse()] "define" [wse() ] t=definition() <NEWLINE>
+   { handleDEFINE(t); }
+ |
+ LOOKAHEAD(3)
+  "#" [wse()] "undef" [wse()] t=identifier() [wse()] <NEWLINE>
+   { handleUNDEF(t); }
+ |
+ LOOKAHEAD(3)
+  "#" [ wse() ] "include" [ wse() ] t=filename() [ wse() ] <NEWLINE>
+   { handleINCLUDE(t); }
+ |
+  LOOKAHEAD(3)
+  "#" [wse()] "line"  t=pp_tokens()  <NEWLINE>
+   { handleLINE(t); }
+ |
+  LOOKAHEAD(3)
+  "#" [wse()] "error" [ t=pp_tokens() ] <NEWLINE> 
+   { if (t==null) t=createString(""); handleERROR(t); }
+ |
+  LOOKAHEAD(3)
+  "#" [wse()] "pragma" [ t=pp_tokens() ] <NEWLINE>
+   { if (t!=null) handlePRAGMA(t); else handleEMPTYPRAGMA(); }
+ |
+  LOOKAHEAD(3)
+  "#" [wse()] <NEWLINE>
+   { handleEMPTY(); }
+ |
+  LOOKAHEAD(2)
+ t=pp_tokens() <NEWLINE>
+  { handlePP_TOKENS(t); }
+ |
+  LOOKAHEAD(2)
+ t=pp_tokens() <EOF>  
+  { handlePP_TOKENS(t); handleEOF(); retval=false; }
+ |
+ <NEWLINE> 
+  { handleNEWLINE(); }
+ |
+ <EOF>
+ { handleEOF(); retval=false; }
+)
+ { return retval; } 
+}
+
+
+String ws():
+{
+ Token t;
+ Token t0=null;
+ String s=null;
+ String suffix=null;
+ StringBuilder sb;
+}
+{
+  LOOKAHEAD(2)
+  [t0=<WS>] t=c_comment() [LOOKAHEAD(2) suffix=wse()]
+   { handleC_COMMENT(t); 
+     sb = new StringBuilder();
+     if (t0!=null) {
+      sb.append(t0.image);
+     }
+     if (!eraseC_Comments_) {
+       sb.append(t.image);
+     }
+     if (suffix!=null) {
+       sb.append(suffix);
+     }
+     String retval=sb.toString();
+     return (retval.length()==0 ? " " : retval);
+   }
+  |
+  LOOKAHEAD(2)
+  [t0=<WSCONTINUE>] t=c_comment() [LOOKAHEAD(2) suffix=wse()]
+   { incLineCount(); handleC_COMMENT(t); 
+     sb = new StringBuilder();
+     if (t0!=null) { sb.append(t0.image); }
+     if (!eraseC_Comments_) { sb.append(t.image); }
+     if (suffix!=null) { sb.append(suffix); }
+     String retval=sb.toString();
+     return (retval.length()==0 ? " " : retval);
+   }
+   |
+  LOOKAHEAD(2)
+  [t0=<WS>] t=xml_comment() [LOOKAHEAD(2) suffix=wse()]
+   { 
+     handleXML_COMMENT(t); 
+     sb = new StringBuilder();
+     if (t0!=null) { sb.append(t0.image); }
+     if (!eraseXML_Comments_) { sb.append(t.image); }
+     if (suffix!=null) { sb.append(suffix); }
+     String retval=sb.toString();
+     return (retval.length()==0 ? " " : retval);
+   }
+  |
+  LOOKAHEAD(2)
+  [t0=<WSCONTINUE>] t=xml_comment() [LOOKAHEAD(2) suffix=wse()]
+   { 
+     incLineCount(); handleXML_COMMENT(t); 
+     sb = new StringBuilder();
+     if (t0!=null) { sb.append(t0.image); }
+     if (!eraseXML_Comments_) { sb.append(t.image); }
+     if (suffix!=null) { sb.append(suffix); }
+     String retval=sb.toString();
+     return (retval.length()==0 ? " " : retval);
+   }
+   |
+  LOOKAHEAD(2)
+  [t0=<WS>] t=<CPP_COMMENT> [LOOKAHEAD(2) suffix=wse()]
+   { handleCPP_COMMENT(t); 
+     sb = new StringBuilder();
+     if (t0!=null) { sb.append(t0.image); }
+     if (!eraseCPP_Comments_) { sb.append(t.image); }
+     if (suffix!=null) { sb.append(suffix); }
+     String retval=sb.toString();
+     return (retval.length()==0 ? " " : retval);
+   }
+   |
+  LOOKAHEAD(2)
+  [t0=<WSCONTINUE>] t=<CPP_COMMENT> [LOOKAHEAD(2) wse()]
+   { incLineCount(); handleCPP_COMMENT(t); 
+     sb = new StringBuilder();
+     if (t0!=null) { sb.append(t0.image); }
+     if (!eraseCPP_Comments_) { sb.append(t.image); }
+     if (suffix!=null) { sb.append(suffix); }
+     String retval=sb.toString();
+     return (retval.length()==0 ? " " : retval);
+   }
+   |
+  t=<WS>
+   { return t.image; }
+   |
+  t=<WSCONTINUE>
+   { incLineCount(); return t.image; }
+}
+
+
+String wse():                   
+{
+ Token t;
+ String retval=null;
+ Token prefix=null;
+ String suffix=null;
+ StringBuilder sb;
+}
+{
+ LOOKAHEAD(2)
+ [prefix=<WS>] t=c_comment() [LOOKAHEAD(2) suffix=wse() ] 
+ { 
+   sb = new StringBuilder();
+   if (prefix!=null) {
+     sb.append(prefix.image);
+   }
+   if (!eraseC_Comments_) {
+     sb.append(t.image);
+   }
+   if (suffix!=null) {
+     sb.append(suffix);
+   }
+   handleC_COMMENT(t); 
+   return sb.toString();
+ }
+ |
+ LOOKAHEAD(2)
+ [prefix=<WSCONTINUE>] t=c_comment() [LOOKAHEAD(2) suffix=wse() ] 
+ { 
+  sb = new StringBuilder();
+  if(prefix!=null) {
+    sb.append(prefix.image);
+  }
+  if (!eraseC_Comments_) {
+     sb.append(t.image);
+  }
+  if(suffix!=null) {
+    sb.append(suffix);
+  }
+  incLineCount(); handleC_COMMENT(t); 
+  return sb.toString();
+ }
+ |
+ LOOKAHEAD(2)
+ [prefix=<WS>] t=<CPP_COMMENT> [LOOKAHEAD(2) suffix=wse() ]
+ { 
+  sb = new StringBuilder();
+  if(prefix!=null) {
+    sb.append(prefix.image);
+  }
+  if (!eraseCPP_Comments_) {
+     sb.append(t.image);
+  }
+  if(suffix!=null) {
+     sb.append(suffix);
+  }
+  handleCPP_COMMENT(t); 
+  return sb.toString();
+ }
+ |
+ LOOKAHEAD(2)
+ [prefix=<WSCONTINUE>] t=<CPP_COMMENT> [LOOKAHEAD(2) suffix=wse() ]
+ { 
+  sb = new StringBuilder();
+  if (prefix!=null) {
+   sb.append(prefix.image); 
+  }
+  if (!eraseCPP_Comments_) {
+     sb.append(t.image);
+  }
+  if(suffix!=null) {
+     sb.append(suffix);
+  }
+  incLineCount(); handleCPP_COMMENT(t); 
+  return sb.toString();
+ }
+ |
+ t=<WS>
+  { return t.image; }
+ |
+ t=<WSCONTINUE>
+ { incLineCount(); return t.image; }
+}
+
+
+Term pp_tokens() throws TermWareException:
+{
+ Term t1=null;
+ Term t2=null;
+}
+{
+  (LOOKAHEAD(2) t1=pp_token()
+   { if (t2==null) {
+       t2=t1;
+     }else{
+       t2=cons(t2,t1);
+     }
+   }
+  )+
+ { return t2; }
+}
+
+Term pp_token_or_Ns() throws TermWareException:
+{
+ Term t1=null;
+ Term t2=null;
+}
+{
+  (LOOKAHEAD(2) 
+   t1=pp_token()
+   { if (t2==null) {
+       t2=t1;
+     }else{
+       t2=cons(t2,t1);
+     }
+   }
+   |
+   "#"
+   { if (t2==null) {
+       t2=createString("#");
+     }else{
+       t2=cons(t2,createString("#"));
+     }
+   }
+  )+
+ { return t2; }
+}
+
+
+Term pp_token() throws TermWareException:
+{
+String s;
+Term t=null;                             
+Term t1=null;
+}
+{
+  t=identifier()
+   { return t; }
+ |
+  s=ws()
+  { return TermWare.getInstance().getTermFactory().createTerm("W",
+                                                     createString(s)); 
+   }
+ |
+  t=pp_number()
+  { return t; }
+ |
+  t=pp_keyword()
+  { return t; }
+ |
+  t=character_literal()
+  { return t; }
+ |
+  t=string_literal()
+  { return t; }
+ |
+  t=pp_punctuation()
+  { return t; }
+ |
+  t=one_quote()
+  { return t; }
+}
+
+Term pp_punctuation():
+{
+ Token t;
+}
+{
+ t=<PUNCT>
+  { return createString(t.image); }
+ |
+ <LESS>
+  { return createString("<"); }
+ |
+ <GREATER>
+  { return createString(">"); }
+ |
+ "(" { return createString("("); }
+ |
+ ")" { return createString(")"); }
+ |
+ ","
+  { return createString(","); }
+ |
+ <LOGICAL_OR>  { return createString("||"); }
+ |
+ <LOGICAL_AND>  { return createString("&&"); }
+ |
+ <BIT_OR> { return createString("|"); }
+ |
+ <BIT_AND> { return createString("&"); }
+ |
+ <EQ> { return createString("=="); } 
+ |
+ <NEQ> { return createString("!="); }
+ |
+ <LESS_EQ> { return createString("<="); }
+ |
+ <GREATER_EQ>  { return createString(">="); }
+ |
+ <LEFT_SHIFT>  { return createString("<<"); } 
+ |
+ <RIGHT_SHIFT>  { return createString(">>"); }
+ |
+ <PLUS> { return createString("+"); }
+ |
+ <MINUS> { return createString("-"); }
+ |
+ <MULTIPLY> { return createString("*"); }
+ |
+ <DIVIDE> { return createString("/"); }
+ |
+ <MOD> { return createString("%"); }
+ |
+ <BIT_NEGATE> { return createString("~"); }
+ |
+ <LOGICAL_NOT> { return createString("!"); }
+ |
+ <NN>  { return createString("##"); }
+}
+
+Term pp_keyword() :
+{
+}
+{
+ "ifdef"
+  { return createString("ifdef"); }
+  |
+ "ifndef"
+  { return createString("ifndef"); }
+  |
+ "if"
+  { return createString("if"); }
+  |
+ "elif"
+  { return createString("elif"); }
+  |
+ "else"
+  { return createString("else"); }
+  |
+ "endif"
+  { return createString("endif"); }
+  |
+ "include"
+  { return createString("include"); }
+  |
+ "pragma"
+  { return createString("pragma"); }
+  |
+ "error"
+  { return createString("error"); }
+  |
+ "define"
+  { return createString("define"); }
+  |
+ "defined"
+  { return createString("defined"); }
+}
+
+Term filename() throws TermWareException :
+{
+ Token tk;
+ Term t;
+}
+{
+ <LESS> {token_source.SwitchTo(FILENAME_1);} tk=<FCHAR> <GREATER>
+   { 
+        return TermWare.getInstance().getTermFactory().createTerm("F",
+                    createString(tk.image)); }
+ |
+ tk=<STRING>
+   {                       
+        return TermWare.getInstance().getTermFactory().createTerm("Q",
+                    TermWare.getInstance().getTermFactory().createString(tk.image.substring(1,tk.image.length()-1))); }
+ |
+  t=identifier()              
+   { return TermWare.getInstance().getTermFactory().createTerm("M",t); }
+}
+
+
+Term identifier()  throws TermWareException :
+{
+ Token t;               
+}
+{
+ t=<ID>
+  { return TermWare.getInstance().getTermFactory().createAtom(t.image); }
+}
+
+
+Term pp_number() throws TermWareException :
+{                        
+ Term retval;
+ Token t;
+}
+{
+ t=<CE_INTEGER>
+  { return TermWare.getInstance().getTermFactory().createTerm("N",
+                    TermWare.getInstance().getTermFactory().createString(t.image)); 
+  }
+}
+
+
+Term definition()  throws TermWareException :
+{
+ Term t1;
+ Term t2;
+ Term t3;
+}
+{
+ LOOKAHEAD(2)
+ t1=identifier() wse() t2=replacement_list()
+   { return TermWare.getInstance().getTermFactory().createTerm("define",t1,t2); }
+ |
+ LOOKAHEAD(2)
+ t1=identifier() "(" [LOOKAHEAD(2) wse()] t2=identifier_list() [wse()] ")" t3=replacement_list()
+   { 
+     return TermWare.getInstance().getTermFactory().createTerm("define_list",t1,t2,t3);
+   }
+ |
+ t1=identifier()
+ {
+  return TermWare.getInstance().getTermFactory().createTerm("define",t1,TermWare.getInstance().getTermFactory().createString("")); 
+ }                                                                                       
+}
+
+
+
+Term identifier_list()  throws TermWareException :
+{
+ Term t1=null;
+ Term t2=null;
+ Term t3=null;
+}
+{
+ t1=identifier() (LOOKAHEAD(2) [wse()] "," [wse()] t2=identifier() 
+                   { if (t3==null) t3=t2;
+                     else t3=cons(t3,cons(",",t2));
+                   }
+                 )*
+ {
+  if (t2==null) return t1;
+  else return cons(t1,t3);
+ }
+}
+
+
+Term replacement_list() throws TermWareException :
+{
+ Term t1=null;
+ Term t2=null; 
+}
+{
+ [ t1=pp_token_or_Ns() ]
+ {  
+  if (t1==null) {
+    return TermFactory.createString("");
+  }else{
+    // todo: skip ws() tokens
+    return t1;
+  }
+ }
+}
+
+Term character_literal() :
+{
+ Token t;
+}
+{
+ t=<CHARACTER>
+ { return createString(t.image); }
+}
+
+Term string_literal() :
+{
+ Token t;
+}
+{
+ t=<STRING>
+ { return createString(t.image); }
+}
+
+Term one_quote() throws TermWareException :
+{
+ Token t;
+ String s1;
+ String s2;
+}
+{
+ t=<ONE_QUOTE>
+ {
+  s1=t.image.substring(0,1);
+  s2=t.image.substring(1);
+  Term ts1 = createString(s1);
+  Term ts2 = createString(s2);
+  return cons(ts1,ts2);
+  //CPPPParser nestedParser = createNestedParser(new StringReader(s2),inFname);
+ }
+}
+
+Token c_comment():
+{
+ Token t;
+}
+{
+ <C_COMMENT_BEGIN> t=<C_COMMENT_END>
+ { return t; }
+}
+
+Token xml_comment():
+{
+Token t;
+}
+{
+ <XML_COMMENT_BEGIN> t=<XML_COMMENT_END>
+  { return t; }
+}
+
+<DEFAULT>
+TOKEN: 
+{
+ <WS: ([" ","\t"])+ >
+ |
+ <WSP: [" ","\t"]>
+ |
+ <WSCONTINUE: ("\\\n"|"\\\n\r"|"\\\r\n")([" ","\t"])* >
+ |
+ <NEWLINE: "\n"|"\n\r"|"\r\n"|"\r" >
+ |
+ <CE_INTEGER: (["0"-"9"])+ >
+ |
+ <ID: (["a"-"z"]|["A"-"Z"]|"_")((["a"-"z"]|["A"-"Z"]|["0"-"9"]|"_")+)? >
+ |
+ /* punctuation */
+ <PUNCT: ("@"|"$"|"^"|"="|"?"|"\\"|"."|";"|":"|"{"|"}"|"["|"]"|"`"|"\\\"") >
+ |
+ <LESS: "<" > 
+ |
+ <GREATER: ">" >
+ |
+ <LOGICAL_OR: "||" >
+ |
+ <LOGICAL_AND: "&&" >
+ |
+ <BIT_OR: "|" >
+ |
+ <BIT_AND: "&" >
+ |
+ <EQ: "==" >
+ |
+ <NEQ: "!=" >
+ |
+ <LESS_EQ: "<=" >
+ |
+ <GREATER_EQ: ">=" >
+ |
+ <LEFT_SHIFT: "<<" >
+ |
+ <RIGHT_SHIFT: ">>" >
+ |
+ <PLUS: "+" >              
+ |
+ <MINUS: "-" >
+ |                        
+ <MULTIPLY: "*" >
+ |
+ <DIVIDE: "/" >
+ |
+ <MOD: "%" >
+ |
+ <BIT_NEGATE: "~" >
+ |
+ <LOGICAL_NOT: "!" >
+ |
+ <NN: "##">
+ |
+ <  CHARACTER : "'"
+   (   (~["'","\\","\n","\r"])
+   | ("\\" (
+             ["n","t","v","b","r","f","a","\\","?","'","\""]
+            |
+             "0" (["0"-"7"])*
+            |
+             ["1"-"9"] (["0"-"9"])*
+            |
+             ("0x" | "0X") (["0"-"9","a"-"f","A"-"F"])+
+           )
+     )
+   )*
+   "'" >
+ |
+   <STRING:
+      "\""
+      (   (~["\"","\\","\n","\r"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","'","\""]
+            | ["0"-"7"] ( ["0"-"7"] )?
+            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+            )
+          )
+      )*
+      "\""
+  >
+ | 
+  <ONE_QUOTE:
+   (
+    ("\"" (~["\n","\r","\""])* )
+    |
+    ("\'" (~["\n","\r","\'"])* )
+   )
+  >
+ |
+ < C_COMMENT_BEGIN: ("\t"|" ")* "/*" > 
+   { /* nothing */
+   }
+     : IN_C_COMMENT
+ |
+ < CPP_COMMENT: "//"(~["\n","\r"])* > 
+ |
+ < XML_COMMENT_BEGIN: "<!--" > {} : IN_XML_COMMENT
+}
+
+<FILENAME_1>
+TOKEN:
+{
+ <FCHAR: (~[">"])+ > :DEFAULT
+}
+
+<FILENAME_2>
+TOKEN:
+{
+ <QCHAR: (~["\""])+ > :DEFAULT
+}
+
+
+<IN_C_COMMENT>
+TOKEN:
+{
+ < C_COMMENT_END : "*/" (" "|"\t")* > : DEFAULT
+}
+
+<IN_C_COMMENT>
+MORE:
+{
+ < (~[]) >  :IN_C_COMMENT
+}
+
+<IN_XML_COMMENT>
+TOKEN:
+{
+ < XML_COMMENT_END : "-->" (" "|"\t")* > : DEFAULT
+}
+
+<IN_XML_COMMENT>
+MORE:
+{
+ < (~[]) >  :IN_XML_COMMENT
+}
+

@@ -1,0 +1,162 @@
+<?xml version="1.0"?>
+<!-- build file for Jungle/cppp project -->
+<project name="Jungle/CPPP" default="build" basedir="."
+    xmlns:ivy="antlib:fr.jayasoft.ivy.ant"
+ >
+
+ <property file="build.properties" />
+
+ <property name="ivy.install.version" value="2.0.0-beta1" />
+ <condition property="ivy.home" value="${env.IVY_HOME}">
+        <isset property="env.IVY_HOME" />
+ </condition>
+ <property name="ivy.home" value="${user.home}/.ivy" />
+ <property name="ivy.jar.dir" value="${ivy.home}/jars" />
+ <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
+	
+ <target name="download-ivy" unless="offline">
+    <mkdir dir="${ivy.jar.dir}"/>
+    <!-- download Ivy from web site so that it can be used even without any special installation -->
+    <get src="http://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar"
+         dest="${ivy.jar.file}" usetimestamp="true"/>
+ </target>
+	
+ <target name="declare-ivy" >
+   <path id="ivy.lib.path">
+      <fileset dir="${ivy.jar.dir}" includes="*.jar"/>
+   </path>
+   <taskdef resource="fr/jayasoft/ivy/ant/antlib.xml"
+            uri="antlib:fr.jayasoft.ivy.ant" 
+            classpathref="ivy.lib.path"/>
+ </target>
+
+  <target name="clean-ivy" description="--> clean the ivy installation">
+    <delete dir="${ivy.jar.dir}"/>
+  </target>
+
+
+ <target name="retrieve-libs" depends="declare-ivy">
+  <ivy:retrieve pattern="lib/[artifact]-[revision].[ext]" conf="default" />
+ </target>
+
+ <target name="retrieve-test-libs" depends="declare-ivy">
+  <ivy:retrieve pattern="lib/[artifact]-[revision].[ext]" 
+                conf="test" />
+ </target>
+
+ <target name="build-cpppcppp-parser">
+  <javacc target="src/ua/gradsoft/cppp/parse/cppp.jj"
+          javacchome="${javacchome}"
+  />
+ </target>
+ <target name="build-cpppexpr-parser">
+  <javacc target="src/ua/gradsoft/cppp/parse/cexpr.jj"
+          javacchome="${javacchome}"
+  />
+ </target>
+ <target name="build-cppp"
+         depends="build-cpppcppp-parser,build-cpppexpr-parser">
+ </target>
+
+ <target name="build" depends="build-cppp,retrieve-libs">
+  <javac srcdir="src" includes="**/*.java" deprecation="on" debug="${debug}" >
+    <classpath>
+     <pathelement location="lib/TermWare-2.3.1.jar" />
+    </classpath>
+  </javac>
+  <jar basedir="src" includes="**/*.class" 
+       destfile="lib/cppp-${version}.jar" 
+       index="true">
+  <include name="build"/>
+  <manifest>
+   <attribute name="Build-By" value="${user-name}"/>
+   <attribute name="Main-Class" value="ua.gradsoft.cppp.CPPPParser"/>
+  </manifest>
+  </jar>
+ </target>
+
+ <target name="clean">
+  <delete>
+    <fileset dir="src" includes="**/*.class" />
+    <fileset dir="test" includes="**/*.class" />
+  </delete>
+ </target>
+ 
+ <target name="clean-all" depends="clean">
+   <delete>
+    <fileset dir="dist" includes="*.xml" />
+    <fileset dir="dist" includes="*.zip" />
+    <fileset dir="dist" includes="*.jar" />
+    <fileset dir="lib" includes="*.jar" />
+    <fileset dir="testdata/output" includes="*.pp" />
+    <fileset dir="testdata/output" includes="*.xml" />
+   </delete>
+ </target>
+
+ <target name="build-tests" depends="build,retrieve-test-libs">
+  <javac srcdir="test" includes="**/*.java" deprecation="on" >
+    <classpath>
+     <pathelement location="lib/TermWare-2.3.1.jar" />
+     <pathelement location="lib/cppp-${version}.jar" />
+     <pathelement location="lib/junit-3.8.jar" />
+    </classpath>
+  </javac>
+ </target>
+
+ <target name="test" depends="build-tests">
+  <junit printsummary="yes" haltonfailure="yes" showoutput="yes">
+  <classpath>
+    <pathelement location="test"/>
+    <pathelement location="lib/TermWare-2.3.1.jar" />
+    <pathelement location="lib/cppp-${version}.jar" />
+    <pathelement location="lib/junit-3.8.jar" />
+    <pathelement path="${java.class.path}"/>
+   </classpath>
+  <sysproperty key="basedir" value="${basedir}"/>
+
+  <formatter type="plain"/>
+
+  <batchtest>
+    <fileset dir="test">
+      <include name="**/*Test*.java"/>
+      <exclude name="**/AllTests.java"/>
+    </fileset>
+  </batchtest>
+  </junit>
+ </target>
+
+ <target name="mkdist">
+  <mkdir dir="dist" />
+ </target>
+
+ <target name="distributive-src" depends="build, mkdist">
+   <zip destfile="dist/cppp-src-${version}.zip"
+        basedir="." 
+        excludes="**/*.class,dist/**" 
+   />
+ </target>
+ <target name="distributive-jar" depends="build, mkdist">
+  <copy file="lib/cppp-${version}.jar" todir="dist" />
+ </target>
+
+ <target name="distributives" depends="distributive-src,distributive-jar">
+ </target>
+
+  <target name="publish" depends="distributives">
+     <ivy:publish resolver="datacenter.gradsoft.ua" pubrevision="${version}" 
+                  overwrite="true" 
+                  >
+       <artifacts pattern="dist/[artifact]-[revision].[ext]" />
+     </ivy:publish>
+  </target>
+
+  <target name="publish.local" depends="distributives">
+     <ivy:publish resolver="jungle.repo" pubrevision="${version}" 
+                  overwrite="true" 
+                  >
+       <artifacts pattern="dist/[artifact]-[revision].[ext]" />
+     </ivy:publish>
+  </target>
+
+
+</project>

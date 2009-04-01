@@ -1,0 +1,21 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" module="cppp"/>
+    <configurations>
+      <conf name="default" description="just jar CPPP file" />
+      <conf name="src" description="source distribution" />
+      <conf name="test" description="test version with junit test" 
+                        extends="default" />
+    </configurations>
+    <publications>
+     <artifact name="cppp" type="jar" /> 
+     <artifact name="cppp-src" type="zip" /> 
+    </publications>
+    <dependencies>
+        <dependency org="ua.gradsoft" name="termware" rev="2.3.1" 
+                    conf="default" >
+          <artifact name="TermWare"  type="jar" 
+               url="http://www.gradsoft.ua/common/termware/TermWare-2.3.1.jar" />
+        </dependency>
+        <dependency org="junit" name="junit" rev="3.8" conf="test->default"/>
+    </dependencies>
+</ivy-module>
