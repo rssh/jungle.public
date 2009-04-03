@@ -4,6 +4,7 @@ import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.server.rpc.RPC;
 import com.google.gwt.user.server.rpc.RPCRequest;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -155,7 +156,7 @@ public class GWTServlet extends RemoteServiceServlet
                 Log log = LogFactory.getLog(GWTServlet.class);
                 log.warn("unknown init parameter "+name);
               }
-              String prefix = name.substring(0,pos);
+              //String prefix = name.substring(0,pos);
               String rest = name.substring(pos+1);
               if (rest.startsWith("java")) {
                   b=checkNamedProperty(name,rest,namedEnvs,defaultEnv,
@@ -270,7 +271,18 @@ public class GWTServlet extends RemoteServiceServlet
            //        new RuntimeException("target object not found"),
            //        rpcRequest.getSerializationPolicy());
         }
-      }catch(Exception ex){
+     }catch(RuntimeException ex){
+        Log log = LogFactory.getLog(GWTServlet.class);
+        log.info("exception during call of server object",ex);
+        responsePayload = RPC.encodeResponseForFailure(null, ex, rpcRequest.getSerializationPolicy());
+     }catch(Exception ex){
+        // it's not runtime exception, so log only if debug is enabled or
+        //exception can't be passed to client.
+        boolean toLog= ((!(ex instanceof Serializable))||debug_);
+        if (toLog) {
+          Log log = LogFactory.getLog(GWTServlet.class);
+          log.info("exception during call of server object",ex);
+        }
         responsePayload = RPC.encodeResponseForFailure(null, ex, rpcRequest.getSerializationPolicy());
       }
     }
