@@ -19,6 +19,7 @@ import javax.naming.NamingException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import net.sf.beanlib.hibernate.HibernateBeanReplicator;
 import net.sf.beanlib.provider.replicator.BeanReplicator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -206,7 +207,15 @@ public class GWTServlet extends RemoteServiceServlet
           try {
             Class<?> outputReplicatorClass = Class.forName(outputReplicatorClassname);
             Object o = outputReplicatorClass.newInstance();
-            resultReplicator_ = (BeanReplicator)o;
+            if (o instanceof BeanReplicator) {
+               resultReplicator_ = (BeanReplicator)o;
+            }else if (o instanceof HibernateBeanReplicator){
+               resultHibernateBeanReplicator_ = (HibernateBeanReplicator)o;
+            }else{
+              Log log = LogFactory.getLog(GWTServlet.class);
+              log.fatal("output replicator class is not BeanReplicator or HibernateBeanReplicator");
+              throw new ServletException("output replicator "+o.getClass()+" is not BeanReplicator or HibernateBeanReplicator");
+            }
           }catch(ClassNotFoundException ex){
               Log log = LogFactory.getLog(GWTServlet.class);
               log.fatal("output replicator class not found", ex);
@@ -310,7 +319,9 @@ public class GWTServlet extends RemoteServiceServlet
     if (responsePayload==null) {
       if (resultReplicator_!=null) {
           retval = resultReplicator_.replicateBean(retval);
-      }         
+      }else if(resultHibernateBeanReplicator_!=null){
+          retval = resultHibernateBeanReplicator_.deepCopy(retval);
+      }
       try {
         responsePayload = RPC.encodeResponseForSuccess(rpcRequest.getMethod(),
                                                        retval,
@@ -398,5 +409,6 @@ public class GWTServlet extends RemoteServiceServlet
 
   private BeanReplicator inputParametersReplicator_=null;
   private BeanReplicator resultReplicator_=null;
+  private HibernateBeanReplicator resultHibernateBeanReplicator_=null;
 
 }

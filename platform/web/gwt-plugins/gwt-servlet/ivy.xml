@@ -17,11 +17,8 @@
  </publications>
  <dependencies>
     <dependency org="net.sf.beanlib" name="beanlib.repackaged" 
-       rev="[5.0.1beta,)" conf="default->default" transitive="false" >
+       rev="[5.0.1beta.1,)" conf="default->default" transitive="false" >
        <artifact name="beanlib" type="jar" />
-    </dependency>
-    <dependency org="net.sf.beanlib" name="beanlib.repackaged" 
-       rev="[5.0.1beta,)" conf="default->default" transitive="false" >
        <artifact name="beanlib-hibernate" type="jar" />
     </dependency>
     <dependency org="org.apache" name="commons-logging" 
