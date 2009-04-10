@@ -9,9 +9,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.persistence.EntityManager;
 import ua.gradsoft.jungle.persistence.cluster_keys.impl.Base64Encoder;
+import ua.gradsoft.jungle.persistence.cluster_keys.impl.MyNodeInfoBigTableJPA;
 import ua.gradsoft.jungle.persistence.jdbcex.JdbcEx;
 import ua.gradsoft.jungle.persistence.jdbcex.RuntimeSqlException;
+import ua.gradsoft.jungle.persistence.jpaex.JdbcConnectionWrapper;
+import ua.gradsoft.jungle.persistence.jpaex.JpaEx;
 
 
 /**
@@ -56,11 +60,23 @@ public class ClusterKeys
      initClusterNodeInfo(createDefaultClusterNodeInfo(),jdbcConnection);
   }
 
+  public static void   initClusterNodeInfo(EntityManager entityManager)
+  {
+     initClusterNodeInfo(createDefaultClusterNodeInfo(),entityManager);
+  }
+
+
 
   public static void   initClusterNodeInfo(ClusterNodeInfo nodeInfo,
                                            Connection jdbcConnection)
   {
     initClusterNodeInfo(nodeInfo,jdbcConnection,JdbcEx.getInstance());
+  }
+
+  public static void   initClusterNodeInfo(ClusterNodeInfo nodeInfo,
+                                           EntityManager entityManager)
+  {
+    initClusterNodeInfo(nodeInfo,entityManager,JpaEx.getInstance());  
   }
 
   public static void   initClusterNodeInfo(ClusterNodeInfo nodeInfo,
@@ -113,6 +129,28 @@ public class ClusterKeys
   }
 
 
+  public static void   initClusterNodeInfo(ClusterNodeInfo nodeInfo,
+                                           EntityManager entityManager,
+                                           JpaEx jpaEx)
+  {
+    if (jpaEx.isJdbcConnectionWrapperSupported(entityManager))  {
+        JdbcConnectionWrapper wr = jpaEx.getJdbcConnectionWrapper(entityManager, false);
+        Connection cn = wr.getConnection();
+        try {
+            initClusterNodeInfo(nodeInfo,cn,jpaEx.getJdbcEx());
+        } finally {
+            wr.releaseConnection(cn);
+        }
+    } else {
+        // this is non-relational query, such as google datastore.
+        //  more simple: just persist ones.
+        MyNodeInfoBigTableJPA jpani = new MyNodeInfoBigTableJPA(nodeInfo);
+        entityManager.persist(jpani);
+    }
+  }
+
+
+
   public static ClusterNodeInfo  getClusterInfo(Connection jdbcConnection)
   {
     if (clusterNodeInfo_==null) {
@@ -121,7 +159,20 @@ public class ClusterKeys
     return clusterNodeInfo_;
   }
 
+  public static ClusterNodeInfo  getClusterInfo(EntityManager entityManager)
+  {
+    if (clusterNodeInfo_==null) {
+        initClusterNodeInfo(entityManager);
+    }
+    return clusterNodeInfo_;
+  }
 
+  /**
+   * Generate string cluster key by sequence.
+   * @param sequenceName
+   * @param jdbcConnection
+   * @return
+   */
   public static String     generateStringClusterKeyBySequence(
                                         String sequenceName,
                                         Connection jdbcConnection
@@ -129,7 +180,6 @@ public class ClusterKeys
   {
     return generateStringClusterKeyBySequence(sequenceName,jdbcConnection,JdbcEx.getInstance());
   }
-
 
   public static String     generateStringClusterKeyBySequence(
                                         String sequenceName,
@@ -141,6 +191,27 @@ public class ClusterKeys
             jdbcEx.getNextSequenceNumber(sequenceName, jdbcConnection),
             jdbcConnection);
   }
+
+  public static String     generateStringClusterKeyBySequence(
+                                        String sequenceName,
+                                        EntityManager entityManager
+                                        )
+  {
+    return generateStringClusterKeyBySequence(sequenceName,entityManager,JpaEx.getInstance());
+  }
+
+  public static String     generateStringClusterKeyBySequence(
+                                        String sequenceName,
+                                        EntityManager entityManager,
+                                        JpaEx jpaEx
+                                        )
+  {
+   return generateStringClusterKeyByLocalKey(
+            jpaEx.getNextSequenceNumber(sequenceName, entityManager),
+            entityManager);
+  }
+
+
 
   public static BigDecimal generateBigDecimalClusterKeyBySequence(
                                         String sequenceName,
@@ -164,13 +235,34 @@ public class ClusterKeys
             );
   }
 
-  
+
+  public static BigDecimal generateBigDecimalClusterKeyBySequence(
+                                        String sequenceName,
+                                        EntityManager entityManager
+                                        )
+  {
+    return generateBigDecimalClusterKeyBySequence(sequenceName, entityManager,
+            JpaEx.getInstance());
+  }
+
+
+  public static BigDecimal generateBigDecimalClusterKeyBySequence(
+                                        String sequenceNumber,
+                                        EntityManager entityManager,
+                                        JpaEx jpaEx
+                                        )
+  {
+    return generateBigDecimalClusterKeyByLocalKey(
+                   jpaEx.getNextSequenceNumber(sequenceNumber, entityManager),
+                   entityManager
+            );
+  }
+
   public static String   generateStringClusterKeyByLocalKey(
                                          long localKey,
-                                         Connection jdbcConnection)
+                                         ClusterNodeInfo nodeInfo)
   {
       byte[] bytes = new byte[16];
-      ClusterNodeInfo nodeInfo = getClusterInfo(jdbcConnection);
       int x = nodeInfo.getOrgId();
       bytes[0]=(byte)(x>>24);
       bytes[1]=(byte)(x>>16);
@@ -194,12 +286,29 @@ public class ClusterKeys
       return base64Encode(bytes).substring(0,23);
   }
 
-
-  public static BigDecimal generateBigDecimalClusterKeyByLocalKey(
+  
+  public static String   generateStringClusterKeyByLocalKey(
                                          long localKey,
                                          Connection jdbcConnection)
   {
-      ClusterNodeInfo nodeInfo = getClusterInfo(jdbcConnection);
+      return generateStringClusterKeyByLocalKey(localKey,
+                                   getClusterInfo(jdbcConnection));
+  }
+
+  public static String   generateStringClusterKeyByLocalKey(
+                                         long localKey,
+                                         EntityManager entityManager)
+  {
+      return generateStringClusterKeyByLocalKey(localKey,
+                                   getClusterInfo(entityManager));
+  }
+
+
+
+  public static BigDecimal generateBigDecimalClusterKeyByLocalKey(
+                                         long localKey,
+                                         ClusterNodeInfo nodeInfo)
+  {
       long firstComponent = nodeInfo.getOrgId();
       firstComponent = (firstComponent<<32)+nodeInfo.getNodeId();
       BigInteger bi = BigInteger.valueOf(firstComponent);
@@ -207,6 +316,22 @@ public class ClusterKeys
       bi=bi.add(BigInteger.valueOf(localKey));
       return new BigDecimal(bi);
   }
+
+
+  public static BigDecimal generateBigDecimalClusterKeyByLocalKey(
+                                         long localKey,
+                                         Connection jdbcConnection)
+  {
+      return generateBigDecimalClusterKeyByLocalKey(localKey, getClusterInfo(jdbcConnection));
+  }
+
+  public static BigDecimal generateBigDecimalClusterKeyByLocalKey(
+                                         long localKey,
+                                         EntityManager entityManager)
+  {
+      return generateBigDecimalClusterKeyByLocalKey(localKey, getClusterInfo(entityManager));
+  }
+
 
 
   private static String base64Encode(byte[] bytes)

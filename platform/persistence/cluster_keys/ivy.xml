@@ -40,6 +40,11 @@
                     conf="api->*" >
           <artifact name="jungle.persistence.jdbcex-api" type="jar" />
         </dependency>
+        <dependency org="ua.gradsoft" name="jungle.persistence.jpaex" 
+                    rev="[1.1.0,)" 
+                    conf="api->api" >
+          <artifact name="jungle.persistence.jpaex-api" type="jar" />
+        </dependency>
     </dependencies>
 </ivy-module>
 
