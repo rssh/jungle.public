@@ -1,6 +1,6 @@
 package ua.gradsoft.jungle.persistence.cluster_keys;
 
-public class HsqlSequeceApi extends SequenceApi
+public class HsqlSequenceApi extends SequenceApi
 {
 
   public long generateNextSequenceValue(String sequenceName, Connection cn)
