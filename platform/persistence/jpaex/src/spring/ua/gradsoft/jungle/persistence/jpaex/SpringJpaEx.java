@@ -4,10 +4,23 @@ import java.sql.SQLException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 import org.springframework.orm.jpa.JpaDialect;
+import ua.gradsoft.jungle.persistence.jdbcex.JdbcEx;
 
 
 public class SpringJpaEx extends JpaEx
 {
+
+    @Override
+    public String getDialect() {
+        return getJpaDialect().toString();
+    }
+
+
+
+    @Override
+    public boolean isJdbcConnectionWrapperSupported(EntityManager em) {
+        return true;
+    }
 
    public JdbcConnectionWrapper getJdbcConnectionWrapper(EntityManager em, boolean readOnly)
    {
@@ -16,6 +29,15 @@ public class SpringJpaEx extends JpaEx
      }catch(SQLException ex){
          throw new PersistenceException("exception during creating jdbcWrapper",ex);
      }
+   }
+
+   /**
+    * JdbcEx instance must be configured in IOP as singleton
+    * @return
+    */
+   public JdbcEx  getJdbcEx()
+   {
+       return JdbcEx.getInstance();
    }
 
    public JpaDialect getJpaDialect()

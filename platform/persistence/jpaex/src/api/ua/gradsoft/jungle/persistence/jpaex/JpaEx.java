@@ -1,6 +1,8 @@
 package ua.gradsoft.jungle.persistence.jpaex;
 
+import java.sql.Connection;
 import javax.persistence.EntityManager;
+import ua.gradsoft.jungle.persistence.jdbcex.JdbcEx;
 import ua.gradsoft.jungle.persistence.jpaex.impl.DefaultJdbcWorkExecutor;
 
 
@@ -11,11 +13,35 @@ import ua.gradsoft.jungle.persistence.jpaex.impl.DefaultJdbcWorkExecutor;
  **/ 
 public abstract class JpaEx
 {
+
+
+ /**
+  * get dialect (the same as name of configuration, i.e. hibernate, toplink ...)
+  **/
+  public abstract String getDialect();
+
+
+  /**
+   * @param em - entity manager.
+   * @return true if JPA implementation support creation of jdbc connections.
+   */
+  public abstract boolean isJdbcConnectionWrapperSupported(EntityManager em);
+
   /**
    * get JdbcConnectionWrapper with jdbc connection, which situated in
    *same transaction as entity manager. 
    */
   public abstract JdbcConnectionWrapper  getJdbcConnectionWrapper(EntityManager em, boolean readOnly);
+
+  /**
+   * return true if exists API for submitting JdbcWork to execution.  
+   * @param em
+   * @return
+   */
+  public boolean isJdbcWorkExecutorSupported(EntityManager em)
+  {
+      return isJdbcConnectionWrapperSupported(em);
+  }
 
   /**
    * get API for execute JdbcWork 
@@ -24,6 +50,73 @@ public abstract class JpaEx
   {
     return new DefaultJdbcWorkExecutor(getJdbcConnectionWrapper(em,false));
   }
+
+  /**
+   * get Jdbc dialect, if one is available, otherwise return null.
+   */
+  public abstract JdbcEx getJdbcEx();
+
+  /**
+   * get next sequence number for string with name <code> name </code>
+   **/
+   public long getNextSequenceNumber(String name, EntityManager em)
+   {
+     if (isJdbcConnectionWrapperSupported(em)) {
+         JdbcConnectionWrapper wr = getJdbcConnectionWrapper(em, false);
+         Connection cn = wr.getConnection();
+         try {
+           return getJdbcEx().getNextSequenceNumber(name, cn);
+         }finally{
+           wr.releaseConnection(cn);
+         }
+     }else{
+         throw new UnsupportedOperationException();
+     }
+   }
+
+ /**
+  * create sequence with name <code> name </code> and value
+  * <code> initialValue </code>. Note, that in most implementation this is
+  * DDL statement, which must live in own transaction.
+  **/
+  public void createSequence(String name, long initial, int increment, EntityManager em)
+  {
+     if (isJdbcConnectionWrapperSupported(em)) {
+       JdbcEx jdbcEx = getJdbcEx();
+       JdbcConnectionWrapper wr = this.getJdbcConnectionWrapper(em, false);
+       Connection cn = wr.getConnection();
+       try {
+         jdbcEx.createSequence(name, initial, increment, cn);
+       }finally{
+           wr.releaseConnection(cn);
+       }
+     }else{
+       throw new UnsupportedOperationException();
+     }
+  }
+
+
+ /**
+  * drop sequence with name <code> name</code>.
+  * Note, that in most implementation this is
+  * DDL statement, which must live in own transaction.
+  **/
+  public void dropSequence(String name, EntityManager em)
+  {
+     if (isJdbcConnectionWrapperSupported(em)) {
+       JdbcEx jdbcEx = getJdbcEx();
+       JdbcConnectionWrapper wr = this.getJdbcConnectionWrapper(em, false);
+       Connection cn = wr.getConnection();
+       try {
+         jdbcEx.dropSequence(name, cn);
+       }finally{
+           wr.releaseConnection(cn);
+       }
+     }else{
+       throw new UnsupportedOperationException();
+     }
+  }
+
 
 
   /**

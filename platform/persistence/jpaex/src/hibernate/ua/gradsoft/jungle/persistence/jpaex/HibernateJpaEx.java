@@ -2,10 +2,21 @@ package ua.gradsoft.jungle.persistence.jpaex;
 
 import javax.persistence.EntityManager;
 import org.hibernate.ejb.HibernateEntityManager;
+import ua.gradsoft.jungle.persistence.jdbcex.JdbcEx;
 
 
 public class HibernateJpaEx extends JpaEx
 {
+
+    @Override
+    public String getDialect() {
+        return "hibernate";
+    }
+
+    @Override
+    public boolean isJdbcConnectionWrapperSupported(EntityManager em) {
+        return true;
+    }
 
     @Override
     public JdbcConnectionWrapper getJdbcConnectionWrapper(EntityManager em, boolean readOnly) {
@@ -17,6 +28,13 @@ public class HibernateJpaEx extends JpaEx
         }
     }
 
+    public JdbcEx  getJdbcEx()
+    { return jdbcEx_; }
+
+    public void setJdbcEx(JdbcEx jdbcEx)
+    { jdbcEx_=jdbcEx; }
+    
+
     public boolean getCloseConnection()
     { return aggressiveClose_; }
 
@@ -24,5 +42,6 @@ public class HibernateJpaEx extends JpaEx
     { aggressiveClose_=closeConnection; }
 
     private boolean aggressiveClose_;
+    private JdbcEx  jdbcEx_;
 
 }

@@ -69,6 +69,7 @@
  <path id="std.build.path">
    <pathelement location="lib/javaee-api-5.jar" />
    <pathelement location="lib/commons-logging-1.1.1.jar" />
+   <fileset dir="lib" includes="jungle.persistence.jdbcex-api-*.jar" />
  </path>
 
  <path id="spring.build.path">

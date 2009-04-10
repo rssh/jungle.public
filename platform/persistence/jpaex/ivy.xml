@@ -34,6 +34,10 @@
                     transitive="false" conf="hibernate,jtads->default" >
           <artifact name="commons-logging" type="jar" />
         </dependency>
+        <dependency org="ua.gradsoft" name="jungle.persistence.jdbcex" 
+                    rev="[1.0,)" conf="api->api" > 
+          <artifact name="jungle.persistence.jdbcex-api" />
+        </dependency>
         <dependency org="org.springframework" name="spring" rev="2.5.6"
                     transitive="false" conf="spring->default" >
           <artifact name="spring" type="jar" />
