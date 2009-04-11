@@ -171,7 +171,7 @@ public class ClusterKeys
    * Generate string cluster key by sequence.
    * @param sequenceName
    * @param jdbcConnection
-   * @return
+   * @return just-created cluster key
    */
   public static String     generateStringClusterKeyBySequence(
                                         String sequenceName,

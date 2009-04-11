@@ -10,39 +10,37 @@ import java.lang.annotation.RetentionPolicy;
  * that id-s are keys wich generated from
  * sequence with name <code> sequenceName </code>
  *
- * We use this annotation instead vendor-specific id generators.
- *
+ * We use this annotation instead vendor-specific id generators
  *
  *<pre>
- * @Entity()
+ * &#064;Entity()
  * public class X
  * {
- *    @Id()
- *    @Column(name=id, precision=40, scale=0)
- *    @SequenceKey(sequenceName="x_seq", type=KeyType.CLUSTER)
+ *    &#064;Id()
+ *    &#064;Column(name=id, precision=40, scale=0)
+ *    &#064;SequenceKey(sequenceName="x_seq", type=KeyType.CLUSTER)
  *    public BigDecimal getId()
  *    ...........
  *
  * }
  *</pre>
- */
-@Retention(RetentionPolicy.RUNTIME)
+ *
+ **/
 @Documented()
+@Retention(RetentionPolicy.RUNTIME)
 public @interface SequenceKey {
 
     /**
      * Name of sequence. (in case of relation database which support sequence -
-     * name of database sequence, for non-relation database store - name of sequence
-     * in sequence emulation layer).
-     * @return sequence name
-     */
+     * name of database sequence, for non-relation database store - name of 
+     * sequence in sequence emulation layer).
+     **/
     public String sequenceName();
 
     /**
-     * Stroe type of key.
-     * @return type of key.
-     */
+     * Store type of key.
+     **/
     public KeyType type();
 
-
 }
+
