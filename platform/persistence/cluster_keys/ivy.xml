@@ -5,6 +5,8 @@
       <conf name="api" description="api" />
       <conf name="docs" description="javadoc archive" />
       <conf name="src" description="source archive" />
+      <conf name="build" description="with compilation dependencies" 
+                           extends="api" />
       <conf name="pgsql" description="implementation for pgsql" 
                         extends="api" />
       <conf name="hsql" description="implementation for hsql" 
@@ -37,12 +39,12 @@
     <dependencies>
         <dependency org="ua.gradsoft" name="jungle.persistence.jdbcex" 
                     rev="[1.0,)" 
-                    conf="api->*" >
+                    conf="api->api" >
           <artifact name="jungle.persistence.jdbcex-api" type="jar" />
         </dependency>
         <dependency org="ua.gradsoft" name="jungle.persistence.jpaex" 
                     rev="[1.1.0,)" 
-                    conf="api->api" >
+                    conf="api->api;build->build" >
           <artifact name="jungle.persistence.jpaex-api" type="jar" />
         </dependency>
     </dependencies>

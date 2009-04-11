@@ -83,6 +83,11 @@
                buildDirectory="${platform.home}/persistency/jdbcex"
                publishTarget="publish.local"
              />
+             <dependencyBuild   
+               organization="ua.gradsoft" name="jungle.persistence.jpaex"
+               buildDirectory="${platform.home}/persistency/jpaex"
+               publishTarget="publish.local"
+             />
            </build>
            <url name="read.datacenter.gradsoft.ua" namespace="gradsoft">
              <ivy pattern="http://datacenter.gradsoft.ua/public.repository/[organization]/[module]/ivys/ivy-[revision].xml" />
