@@ -86,6 +86,8 @@
    <fileset dir="lib" includes="javaee-api-*.jar" />
    <fileset dir="lib" includes="jungle.caching-*.jar" />
    <fileset dir="lib" includes="jungle.persistence.jpaex-api-*.jar" />
+   <fileset dir="lib" includes="jungle.persistence.jdbcex-api-*.jar" />
+   <fileset dir="lib" includes="jungle.persistence.cluster_keys-*.jar" />
    <pathelement location="lib/javaee-api-5.jar" />
  </path>
 
@@ -245,7 +247,7 @@
     </target>
 
    <target name="publish.local" depends="distributives">
-     <ivy:publish resolver="local.jungle.repo" 
+     <ivy:publish resolver="jungle.repo" 
                   pubrevision="${version}" 
                   overwrite="true" 
                   >

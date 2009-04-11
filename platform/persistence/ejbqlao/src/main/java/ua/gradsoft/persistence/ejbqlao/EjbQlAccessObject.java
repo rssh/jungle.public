@@ -1,5 +1,9 @@
 package ua.gradsoft.persistence.ejbqlao;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,11 +16,14 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import ua.gradsoft.jungle.persistence.cluster_keys.ClusterKeys;
+import ua.gradsoft.jungle.persistence.cluster_keys.SequenceKey;
 import ua.gradsoft.jungle.persistence.jpaex.JdbcConnectionWrapper;
 import ua.gradsoft.jungle.persistence.jpaex.JpaEx;
 import ua.gradsoft.persistence.ejbqlao.util.NamedToPositionalParamsSqlTransformer;
@@ -27,38 +34,45 @@ import ua.gradsoft.persistence.ejbqlao.util.NamedToPositionalParamsSqlTransforme
  **/
 public abstract class EjbQlAccessObject implements CRUDFacade
 {       
-    
+
+    @Override
     public <T>       void  create(T newEntity)
     {
         getEntityManager().persist(newEntity);
     }
-    
+
+    @Override
     public <T>       void  update(T newEntity)
     {
         getEntityManager().merge(newEntity);
     }
-    
+
+    @Override
     public void  remove(Object id)
     {
         getEntityManager().remove(id);
     }
-    
+
+    @Override
     public <T>       T     find(Class<T> tClass, Object id)
     {
         return getEntityManager().find(tClass, id);
     }
     
-    
+
+  @Override
   public <T> List<T> executeQuery(Class<T> tClass, String ejbql)
   {
    return executeQuery(tClass,ejbql,Collections.<Object>emptyList(),Collections.<String,Object>emptyMap());   
   }
-    
+
+  //@Override
   public <T> List<T> executeQuery(Class<T> tClass, String ejbql, List<Object> positionParameters)
   {
     return executeQuery(tClass, ejbql,positionParameters,Collections.<String,Object>emptyMap());
   }
 
+  @Override
   public <T> List<T> executeQuery(Class<T> tClass, String ejbql, List<Object> positionParameters, Map<String,Object> options)
   {
    boolean isJdbcNative=useJdbcMapping(tClass, options);
@@ -101,6 +115,7 @@ public abstract class EjbQlAccessObject implements CRUDFacade
    return retval;
   }
 
+  @Override
   public <T> List<T> executeQuery(Class<T> tClass, String ejbql, Map<String,Object> namedParameters, Map<String,Object> options)
   {
      boolean isJdbcNative = useJdbcMapping(tClass, options);
@@ -130,6 +145,7 @@ public abstract class EjbQlAccessObject implements CRUDFacade
      return retval;     
   }
 
+  @Override
   public int executeUpdate(String ejbql, Map<String,Object> namedParameters, Map<String,Object> options)
   {
     boolean isJdbcNative = useJdbcMapping(null, options);
@@ -155,11 +171,13 @@ public abstract class EjbQlAccessObject implements CRUDFacade
     }
   }
 
+  @Override
   public <T,C> List<T>  queryByCriteria(Class<T> tClass, C criteria)
   {
     return queryByCriteria(tClass, criteria, Collections.<String,Object>emptyMap());
   }
 
+  @Override
   public <T,C> List<T>  queryByCriteria(Class<T> tClass, C criteria, Map<String,Object> options)
   {
       CriteriaHelper criteriaHelper = createHelperObjectWithClassSuffix(criteria, "CriteriaHelper", CriteriaHelper.class);
@@ -170,7 +188,8 @@ public abstract class EjbQlAccessObject implements CRUDFacade
       noptions.putAll(options);
       return executeQuery(tClass, query, namedParameters, noptions);
   }
-  
+
+  @Override
   public <C> int updateWithCommand(C command)
   {
      CommandHelper helper = createHelperObjectWithClassSuffix(command, "CommandHelper", CommandHelper.class);
@@ -178,6 +197,100 @@ public abstract class EjbQlAccessObject implements CRUDFacade
      return executeUpdate(params.getQuery(), params.getNamedParameters(), params.getOptions());     
   }
 
+
+  /**
+   * Generate next id for class entityClass, if some field in entityClass POJO
+   * definition was marked as SequenceKey
+   * @param <T> - type of key
+   * @param <E> - type of POJP entity.
+   * @param entityClass
+   * @param idClass
+   * @return next sequence or null, if such sequence does not exists.
+   */
+  public<T,E> T generateNextSequenceKey(Class<E> entityClass, Class<T> idClass)
+  {
+      Annotation entityAnnotation = entityClass.getAnnotation(Entity.class);
+      if (entityAnnotation==null) {
+          throw new IllegalArgumentException("Class" +entityClass.getName()+" has not @Entity annotation");
+      }
+      SequenceKey key = getSequenceKeyAnnotation(entityClass,null,null);
+      Object retval=null;
+      switch(key.type()) {
+          case CLUSTER:
+          {
+              if (idClass.isAssignableFrom(BigDecimal.class)) {
+                  retval = ClusterKeys.generateBigDecimalClusterKeyBySequence(
+                                    key.sequenceName(), getEntityManager(), getJpaEx()
+                                  );
+              } else if (idClass.isAssignableFrom(String.class)) {
+                  retval = ClusterKeys.generateStringClusterKeyBySequence(
+                                    key.sequenceName(), getEntityManager(), getJpaEx()
+                                    );
+              } else {
+                  throw new IllegalArgumentException("type of cluster key must be BigDecimal or String");
+              }
+          }
+          break;
+          case ORDINARY:
+          {
+              long lretval = getJpaEx().getNextSequenceNumber(key.sequenceName(), getEntityManager());
+              if (idClass.isAssignableFrom(Long.class)) {
+                  retval = new Long(lretval);
+              } else if (idClass.isAssignableFrom(BigDecimal.class)) {
+                  retval = BigDecimal.valueOf(lretval);
+              } else if (idClass.isAssignableFrom(String.class)) {
+                  retval = Long.toHexString(lretval);
+              } else {
+                  throw new IllegalArgumentException("type of ordinary key must be Long or BigDecimal or String");
+              }
+          }
+          break;
+          default:
+              throw new IllegalArgumentException("Unknow type of key:"+key.type());
+      }
+      return (T)retval;
+  }    
+      
+      
+  private SequenceKey getSequenceKeyAnnotation(Class<?> entityClass, Method[] methodHolder, Field[] fieldHolder)
+  {
+      SequenceKey keyAnnotation=null;
+      // now search for Id
+      Method[] methods = entityClass.getDeclaredMethods();
+      for(Method m:methods) {
+          keyAnnotation = m.getAnnotation(SequenceKey.class);
+          if (keyAnnotation!=null) {
+              if (methodHolder!=null) {
+                  methodHolder[0]=m;
+                  break;
+              }
+          }
+      }
+      if (keyAnnotation==null) {
+          // now search in fields
+          Field[] fields = entityClass.getDeclaredFields();
+          for(Field field: fields) {
+              keyAnnotation = field.getAnnotation(SequenceKey.class);
+              if (keyAnnotation!=null) {
+                  if (fieldHolder!=null) {
+                      fieldHolder[0]=field;
+                  }
+              }
+          }
+      }
+      if (keyAnnotation==null) {
+          // may be super is entity - then let's search in super.
+          Class superClass = entityClass.getSuperclass();
+          if (superClass!=null) {
+              Annotation entityAnnotation = superClass.getAnnotation(Entity.class);
+              if (entityAnnotation!=null) {
+                  return getSequenceKeyAnnotation(superClass,methodHolder,fieldHolder);
+              }
+          }
+      }
+      return keyAnnotation;
+
+  }
 
   private Query createQuery(String ejbql, Map<String, Object> options)
   {

@@ -70,13 +70,13 @@
            <ibiblio name="java.net" root="http://download.java.net/maven/1/"
                     namespace="java.net" 
                    pattern="[organization]/jars/[module]-[revision].[ext]" />
-           <filesystem name="local.jungle.repo">
+           <filesystem name="jungle.repo">
             <ivy pattern="${ivy.build.resolver.dir}/[organisation]/[module]/ivys/ivy-[revision].xml"/>
                <artifact pattern="${ivy.build.resolver.dir}/[organisation]/[module]/[type]s/[artifact]-[revision].[ext]"/>
            </filesystem>
            <build name="build.local"   
                   buildResolverDir="${ivy.build.resolver.dir}" >
-             <resolver ref="local.jungle.repo" />
+             <resolver ref="jungle.repo" />
              <dependencyBuild   
                organization="ua.gradsoft" name="jungle.caching"
                buildDirectory="${platform.home}/caching/declarative-wrapper"
@@ -109,7 +109,7 @@
         </resolvers>
         <modules>
           <module organisation="ua.gradsoft" name="ejbqlao" 
-                  resolver="local.jungle.repo" />
+                  resolver="jungle.repo" />
         </modules>
 </ivysettings>
 

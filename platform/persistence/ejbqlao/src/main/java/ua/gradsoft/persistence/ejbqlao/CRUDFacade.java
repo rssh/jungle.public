@@ -107,4 +107,11 @@ public interface CRUDFacade
     public <C> int  updateWithCommand(C Command);
 
 
+    /**
+     * Get clusker-key id for appropriative entity class.
+     * (this can be cluster or ordinary key)
+     */
+    public <T,E>  T generateNextId(Class<E> entityClass);
+
+
 }
