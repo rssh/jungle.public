@@ -9,7 +9,6 @@
     <import file="build-ivy.xml" />
     
 <!-- directories -->    
-    <property name="src.dir" value="."/>
     <property name="build.dir" value="build"/>
     <property name="dist.dir" value="dist"/>
     <property name="lib.dir" value="lib"/>
@@ -70,7 +69,6 @@
              <exclude name="ua/gradsoft/jungle/gwt/util/server/**/*.java" />
              <exclude name="ua/gradsoft/jungle/gwt/util/client/test/**/*.java" />
             </fileset>
-            <include name="build"/>
             <manifest>
                 <attribute name="Build-By" value="${user-name}"/>
             </manifest>
