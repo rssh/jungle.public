@@ -116,11 +116,16 @@ public interface CRUDFacade
     public <C> int  updateWithCommand(C Command);
 
 
-    /**
-     * Get clusker-key id for appropriative entity class.
-     * (this can be cluster or ordinary key)
-     */
-    public <T,E>  T generateNextId(Class<E> entityClass);
+  /**
+   * Generate next id for class entityClass, if some field in entityClass POJO
+   * definition was marked as SequenceKey
+   * @param <T> - type of key
+   * @param <E> - type of POJP entity.
+   * @param entityClass
+   * @param idClass
+   * @return next sequence or null, if such sequence does not exists.
+   */
+   public<T,E> T generateNextSequenceKey(Class<E> entityClass, Class<T> idClass);
 
 
 }
