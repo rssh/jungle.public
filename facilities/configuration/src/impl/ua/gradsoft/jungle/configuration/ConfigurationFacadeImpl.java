@@ -14,7 +14,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import ua.gradsoft.jungle.persistence.cluster_keys.ClusterKeys;
 import ua.gradsoft.jungle.persistence.jpaex.JdbcConnectionWrapper;
-import ua.gradsoft.persistence.ejbqlao.EjbQlAccessObject;
+import ua.gradsoft.jungle.persistence.ejbqlao.EjbQlAccessObject;
 
 @Stateless
 @Remote(ConfigurationFacade.class)
@@ -27,14 +27,15 @@ public class ConfigurationFacadeImpl extends EjbQlAccessObject implements Config
         return queryByCriteria(ConfigItem.class, itemSelector);
     }
 
+    public Long getConfigItemsCount(ConfigItemSelector itemSelector) {
+        return queryCountByCriteria(itemSelector);
+    }
+
     public BigDecimal registerConfigItem(ConfigItem description) {
         // if is is null - get id.
         BigDecimal id = null;
         if (description.getId()==null) {
-            JdbcConnectionWrapper cnw = getJpaEx().getJdbcConnectionWrapper(entityManager_, false);
-            Connection cn = cnw.getConnection();
-            id=ClusterKeys.generateBigDecimalClusterKeyBySequence("jungle_configitems", cn);
-            cnw.releaseConnection(cn);
+            id = generateNextSequenceKey(ConfigItem.class, BigDecimal.class);
             description.setId(id);
         }else{
             id=description.getId();

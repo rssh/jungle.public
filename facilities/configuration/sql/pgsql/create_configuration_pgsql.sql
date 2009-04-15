@@ -14,3 +14,5 @@ create table jungle_configitems
   value     VARCHAR(255)
 );
 
+create sequence jungle_configitems_seq;
+

@@ -36,13 +36,13 @@
     </dependency>
     <dependency org="ua.gradsoft" 
                name="jungle.persistence.ejbqlao"
-               rev="[1.4,)"
+               rev="[2.0,)"
                conf="default->std">
        <artifact name="jungle.persistence.ejbqlao" type="jar" />
     </dependency>
     <dependency org="ua.gradsoft" 
                name="jungle.persistence.cluster_keys"
-               rev="[1.0b,)"
+               rev="[1.0,)"
                conf="default->api;hsql->hsql;pgsql->pgsql">
     </dependency>
  </dependencies>

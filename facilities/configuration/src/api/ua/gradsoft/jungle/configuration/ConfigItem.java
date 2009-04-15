@@ -9,6 +9,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import ua.gradsoft.jungle.persistence.cluster_keys.KeyType;
+import ua.gradsoft.jungle.persistence.cluster_keys.SequenceKey;
+
 
 /**
  * Entity for configuration item with name, value and description.
@@ -28,6 +31,7 @@ public class ConfigItem implements Serializable
 
  @Id
  @Column(name="id", precision=ID_PRECISION, scale=ID_SCALE)
+ @SequenceKey(sequenceName="jungle_configitems_seq", type=KeyType.CLUSTER)
  public BigDecimal getId()
  { return id_; }
  
