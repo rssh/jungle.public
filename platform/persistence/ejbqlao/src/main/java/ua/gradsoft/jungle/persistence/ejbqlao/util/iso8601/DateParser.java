@@ -61,7 +61,7 @@
 // site-policy@w3.org .
 //
 
-package ua.gradsoft.persistence.ejbqlao.util.iso8601;
+package ua.gradsoft.jungle.persistence.ejbqlao.util.iso8601;
 
 import java.util.Calendar;
 import java.util.Date;

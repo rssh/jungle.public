@@ -1,9 +1,9 @@
-package ua.gradsoft.persistence.ejbqlao.util;
+package ua.gradsoft.jungle.persistence.ejbqlao;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import ua.gradsoft.persistence.ejbqlao.SqlPositionalQueryParams;
+import ua.gradsoft.jungle.persistence.ejbqlao.SqlPositionalQueryWithParams;
 
 
 public class NamedToPositionalParamsSqlTransformer
@@ -17,7 +17,7 @@ public class NamedToPositionalParamsSqlTransformer
    * @param namedParameters - parameters.
    * @return sql query with positions parameters.
    */
-  public static SqlPositionalQueryParams translate(String nQuery, Map<String,Object> namedParameters )
+  public static SqlPositionalQueryWithParams translate(String nQuery, Map<String,Object> namedParameters )
   { 
     StringBuilder sb = new StringBuilder();
     List<Object> positionParameters = new ArrayList<Object>();
@@ -33,7 +33,7 @@ public class NamedToPositionalParamsSqlTransformer
             substituteNamedParametersInPart(0,ejbQueryParts[i],sb,positionParameters,namedParameters);
         }    
     }
-    SqlPositionalQueryParams retval = new SqlPositionalQueryParams(sb.toString(),positionParameters);
+    SqlPositionalQueryWithParams retval = new SqlPositionalQueryWithParams(sb.toString(),positionParameters);
     return retval;
   }
   

@@ -1,4 +1,4 @@
-package ua.gradsoft.persistence.ejbqlao;
+package ua.gradsoft.jungle.persistence.ejbqlao;
 
 /**
  * Exception, which throwed on failure in underlaying persistence mechanizms

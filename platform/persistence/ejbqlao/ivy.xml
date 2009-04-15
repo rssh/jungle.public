@@ -35,7 +35,7 @@
                     conf="build->default" />
         <dependency org="ua.gradsoft" name="jungle.caching" 
                     rev="[1.0.2,)"
-         conf="*->default" >
+                    conf="*->default" >
          <artifact name="jungle.caching" type="jar" />
         </dependency>
         <dependency org="ua.gradsoft" name="jungle.persistence.jpaex"

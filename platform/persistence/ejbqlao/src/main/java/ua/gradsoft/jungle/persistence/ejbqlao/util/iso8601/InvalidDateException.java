@@ -4,7 +4,7 @@
 //
 // (C) Ruslan Shevchenko, GradSoft LTD.
 //
-package ua.gradsoft.persistence.ejbqlao.util.iso8601;
+package ua.gradsoft.jungle.persistence.ejbqlao.util.iso8601;
 
 /**
  * Invalid parse

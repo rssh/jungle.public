@@ -1,4 +1,4 @@
-package ua.gradsoft.persistence.ejbqlao;
+package ua.gradsoft.jungle.persistence.ejbqlao;
 
 import java.lang.reflect.Method;
 import java.util.Map;

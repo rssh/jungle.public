@@ -1,9 +1,10 @@
 
-package ua.gradsoft.persistence.ejbqlao;
+package ua.gradsoft.jungle.persistence.ejbqlao;
 
+import ua.gradsoft.jungle.persistence.ejbqlao.ObjectParseException;
 import java.util.List;
-import ua.gradsoft.persistence.ejbqlao.util.iso8601.DateParser;
-import ua.gradsoft.persistence.ejbqlao.util.iso8601.InvalidDateException;
+import ua.gradsoft.jungle.persistence.ejbqlao.util.iso8601.DateParser;
+import ua.gradsoft.jungle.persistence.ejbqlao.util.iso8601.InvalidDateException;
 
 /**
  *Utility object which used for parsion 

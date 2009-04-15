@@ -1,5 +1,5 @@
 
-package ua.gradsoft.persistence.ejbqlao;
+package ua.gradsoft.jungle.persistence.ejbqlao;
 
 import java.util.List;
 import java.util.Map;
@@ -81,10 +81,11 @@ public interface CRUDFacade
 
     /**
      * query by criteria.
-     *@see List ua.gradsoft.persistence.ejbqlao.CRUDFacade#queryByCriteria(Class, C, Map>)
+     *@see List ua.gradsoft.persistence.ejbqlao.CRUDFacade#queryByCriteria(Class, C, Map)
      **/
     @Caching(cacheName="queryCache", action=CacheAction.CACHE, keyBuilder=AllArguments.class)
     public <T,C> List<T>  queryByCriteria(Class<T> tClass, C Criteria);
+
 
     /**
      * Query by critera.
@@ -98,10 +99,18 @@ public interface CRUDFacade
     public <T,C> List<T>  queryByCriteria(Class<T> tClass, C Criteria, Map<String, Object> options);
 
     /**
+     * query count for items, selected by given criteria.
+     **/
+    @Caching(cacheName="queryCache", action=CacheAction.CACHE, keyBuilder=AllArguments.class)
+    public <C> Long  queryCountByCriteria(C criteria);
+
+    /**
      * Update with command. Cache is cleaned.
+     * Command id a special object, which is transformet to update query and set of parameters by command helper.
      * @param <C> - class of command
      * @param Command - update command
      * @return number of affected rows or 0.
+     *@see ua.gradsoft.persistence.ejbqlao.CommandHelper
      */
     @Caching(cacheName="queryCache", action=CacheAction.CLEAR)
     public <C> int  updateWithCommand(C Command);

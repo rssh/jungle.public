@@ -1,4 +1,5 @@
-package ua.gradsoft.persistence.ejbqlao;
+package ua.gradsoft.jungle.persistence.ejbqlao;
+
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -26,7 +27,7 @@ import ua.gradsoft.jungle.persistence.cluster_keys.ClusterKeys;
 import ua.gradsoft.jungle.persistence.cluster_keys.SequenceKey;
 import ua.gradsoft.jungle.persistence.jpaex.JdbcConnectionWrapper;
 import ua.gradsoft.jungle.persistence.jpaex.JpaEx;
-import ua.gradsoft.persistence.ejbqlao.util.NamedToPositionalParamsSqlTransformer;
+import ua.gradsoft.jungle.persistence.ejbqlao.NamedToPositionalParamsSqlTransformer;
 
 /**
  * Object, which erncapsulate remote entity manager.
@@ -124,7 +125,7 @@ public abstract class EjbQlAccessObject implements CRUDFacade
         JdbcConnectionWrapper cnw = getJpaEx().getJdbcConnectionWrapper(getEntityManager(), true);
         Connection cn = cnw.getConnection();
         try {
-          SqlPositionalQueryParams params = NamedToPositionalParamsSqlTransformer.translate(ejbql, namedParameters);
+          SqlPositionalQueryWithParams params = NamedToPositionalParamsSqlTransformer.translate(ejbql, namedParameters);
           PreparedStatement st = cn.prepareStatement(params.getQuery());
           applyPositionalParameters(st,params.getParameters());
           applyOptions(st,options);
@@ -153,7 +154,7 @@ public abstract class EjbQlAccessObject implements CRUDFacade
         JdbcConnectionWrapper cnw = getJpaEx().getJdbcConnectionWrapper(getEntityManager(), false);
         Connection cn = cnw.getConnection();
         try {
-           SqlPositionalQueryParams params = NamedToPositionalParamsSqlTransformer.translate(ejbql, namedParameters);
+           SqlPositionalQueryWithParams params = NamedToPositionalParamsSqlTransformer.translate(ejbql, namedParameters);
            PreparedStatement st = cn.prepareStatement(params.getQuery());
            applyPositionalParameters(st,params.getParameters());
            applyOptions(st,options);
@@ -181,19 +182,31 @@ public abstract class EjbQlAccessObject implements CRUDFacade
   public <T,C> List<T>  queryByCriteria(Class<T> tClass, C criteria, Map<String,Object> options)
   {
       CriteriaHelper criteriaHelper = createHelperObjectWithClassSuffix(criteria, "CriteriaHelper", CriteriaHelper.class);
-      QueryParams params = criteriaHelper.getQueryParams(criteria);
-      String query = params.getQuery();
-      Map<String,Object> namedParameters = params.getNamedParameters();
-      Map<String,Object> noptions = params.getOptions();
+      QueryWithParams qp = criteriaHelper.getSelectQueryWithParams(criteria);
+      String query = qp.getQuery();
+      Map<String,Object> namedParameters = qp.getNamedParameters();
+      Map<String,Object> noptions = qp.getOptions();
       noptions.putAll(options);
       return executeQuery(tClass, query, namedParameters, noptions);
+  }
+
+  @Override
+  public <C>  Long queryCountByCriteria(C criteria)
+  {
+      CriteriaHelper criteriaHelper = createHelperObjectWithClassSuffix(criteria, "CriteriaHelper", CriteriaHelper.class);
+      QueryWithParams qp = criteriaHelper.getCountQueryWithParams(criteria);
+      String query = qp.getQuery();
+      Map<String,Object> namedParameters = qp.getNamedParameters();
+      Map<String,Object> noptions = qp.getOptions();
+      List<Long> ll = executeQuery(Long.class, query, namedParameters, noptions);
+      return ll.get(0);
   }
 
   @Override
   public <C> int updateWithCommand(C command)
   {
      CommandHelper helper = createHelperObjectWithClassSuffix(command, "CommandHelper", CommandHelper.class);
-     QueryParams params = helper.getQueryParams(command);
+     QueryWithParams params = helper.getQueryWithParams(command);
      return executeUpdate(params.getQuery(), params.getNamedParameters(), params.getOptions());     
   }
 

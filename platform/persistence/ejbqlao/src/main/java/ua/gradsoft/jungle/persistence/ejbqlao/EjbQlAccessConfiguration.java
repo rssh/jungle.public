@@ -1,5 +1,5 @@
 
-package ua.gradsoft.persistence.ejbqlao;
+package ua.gradsoft.jungle.persistence.ejbqlao;
 
 import java.util.HashMap;
 import java.util.Map;
