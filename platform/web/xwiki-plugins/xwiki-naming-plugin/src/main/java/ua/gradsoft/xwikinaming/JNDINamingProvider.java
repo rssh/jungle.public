@@ -52,15 +52,12 @@ public class JNDINamingProvider implements NamingProvider {
                chainParams.put(ChainInitialContextFactory.FIRST_PREFIX+Context.PROVIDER_URL, 
                                "classpath:"+configuration.getSpringConfig());
             }
-            LOG.debug("JNDINamingProvider.init-x7"); 
             if (configuration.getChainFirstDefault()) {
                 //String fname = configuration.
             }
-            LOG.debug("JNDINamingProvider.init-x8"); 
             if (configuration.getChainFirstWritable()) {
                 chainParams.put(ChainInitialContextFactory.FIRST_PREFIX+"writable", "1");
             }
-            LOG.debug("JNDINamingProvider.init-x9"); 
             fname = configuration.getChainSecondPropertiesFile();
             if (fname!=null) {
                 Properties p = new Properties();
@@ -75,7 +72,6 @@ public class JNDINamingProvider implements NamingProvider {
                     chainParams.put(ChainInitialContextFactory.SECOND_PREFIX + e.getKey(), e.getValue());
                 }                
             }
-            LOG.debug("JNDINamingProvider.init-x10"); 
             if (configuration.getChainSecondSpring()) {
                initSpring=true;
                chainParams.put(ChainInitialContextFactory.SECOND_PREFIX+Context.INITIAL_CONTEXT_FACTORY,
@@ -84,23 +80,15 @@ public class JNDINamingProvider implements NamingProvider {
                chainParams.put(ChainInitialContextFactory.SECOND_PREFIX+Context.PROVIDER_URL, 
                                "classpath:"+configuration.getSpringConfig());
             }
-            LOG.debug("JNDINamingProvider.init-x11"); 
             if (configuration.getChainSecondWritable()) {
                 chainParams.put(ChainInitialContextFactory.SECOND_PREFIX+"writable", "1");                                
             }
-            LOG.debug("JNDINamingProvider.init-x12"); 
             if (initSpring) {
-                LOG.debug("JNDINamingProvider.init-x13"); 
                 springNamingProvider = new SpringNamingProvider();
-                LOG.debug("JNDINamingProvider.init-x14"); 
                 springNamingProvider.init(configuration);
-                LOG.debug("JNDINamingProvider.init-x15"); 
             }
-            LOG.debug("JNDINamingProvider.init-x16"); 
             ChainInitialContextFactory factory = new ChainInitialContextFactory();
-            LOG.debug("JNDINamingProvider.init-x17"); 
             initialContext_ = factory.getInitialContext(chainParams);
-            LOG.debug("JNDINamingProvider.init-x18"); 
         }else{            
             initialContext_ = new InitialContext();    
         }
