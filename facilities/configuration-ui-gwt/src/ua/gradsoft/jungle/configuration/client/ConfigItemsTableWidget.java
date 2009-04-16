@@ -9,7 +9,6 @@ import com.extjs.gxt.ui.client.data.BasePagingLoader;
 import com.extjs.gxt.ui.client.data.BeanModel;
 import com.extjs.gxt.ui.client.data.BeanModelReader;
 import com.extjs.gxt.ui.client.data.LoadEvent;
-import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.event.GridEvent;
@@ -41,6 +40,7 @@ import java.util.Map;
 import ua.gradsoft.jungle.configuration.ConfigItem;
 import ua.gradsoft.jungle.configuration.ConfigItemSelectorByNames;
 import ua.gradsoft.jungle.configuration.ConfigItemType;
+import ua.gradsoft.jungle.gwt.util.client.gxt.PagingLoadCallbackAdapters;
 
 /**
  *Table widget for Config Items
@@ -62,10 +62,13 @@ public class ConfigItemsTableWidget extends LayoutContainer
               PagingLoadConfig pagingLoadConfig = (PagingLoadConfig)loadConfig;
               ConfigItemSelectorByNames selector = new ConfigItemSelectorByNames(null,null);
               selector.setAppName(fAppName);
+              PagingLoadCallbackAdapters adapters = new PagingLoadCallbackAdapters<ConfigItem>(callback,pagingLoadConfig.getOffset());
+
               selector.setFirstResult(pagingLoadConfig.getOffset());
               selector.setMaxResults(pagingLoadConfig.getLimit());
               configurationUI_.getService().getConfigItems(selector, 
-                               new PagingListCallbackAdapter<ConfigItem>(callback,pagingLoadConfig.getOffset()));
+                                                           adapters.getListCallbackAdapter());
+              configurationUI_.getService().getConfigItemsCount(selector, adapters.getTotalCountCallbackAdapter());
           }
        };
        

@@ -24,6 +24,13 @@ public class TestConfigurationRemoteServiceImpl extends RemoteServiceServlet
         return retval;
     }
 
+    public Integer getConfigItemsCount(ConfigItemSelector selector) {
+        init();
+        return storage_.size();
+    }
+
+
+
     public ConfigItem getConfigItemById(BigDecimal id)
     {
        init(); 

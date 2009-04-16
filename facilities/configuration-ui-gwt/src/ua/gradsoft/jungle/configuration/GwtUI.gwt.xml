@@ -16,6 +16,10 @@
       <inherits 
        name='ua.gradsoft.jungle.configuration.JungleConfigurationService'/>
 
+      <inherits
+       name='ua.gradsoft.jungle.gwt.util.Util'/>
+
+
       <inherits  name='com.extjs.gxt.ui.GXT' />
 
       <!-- Specify the application specific style sheet.              -->

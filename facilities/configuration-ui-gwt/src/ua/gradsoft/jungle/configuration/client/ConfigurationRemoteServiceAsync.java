@@ -13,6 +13,9 @@ public interface ConfigurationRemoteServiceAsync
   public void getConfigItems(ConfigItemSelector selector,
                              AsyncCallback<List<ConfigItem>> callback);
 
+  public void getConfigItemsCount(ConfigItemSelector selector,
+                                  AsyncCallback<Integer> callback);
+
   public void  getConfigItemById(BigDecimal id, AsyncCallback<ConfigItem> callback);
 
   public void  setConfigItemStringValues(Map<BigDecimal,String> objects,

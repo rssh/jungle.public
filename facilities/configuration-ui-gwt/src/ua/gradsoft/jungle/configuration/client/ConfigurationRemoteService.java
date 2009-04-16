@@ -14,6 +14,8 @@ public interface ConfigurationRemoteService extends RemoteService
 
   public List<ConfigItem> getConfigItems(ConfigItemSelector selector);
 
+  public Integer          getConfigItemsCount(ConfigItemSelector selector);
+
   public ConfigItem  getConfigItemById(BigDecimal id);
 
   public void  setConfigItemStringValues(Map<BigDecimal, String> objects);

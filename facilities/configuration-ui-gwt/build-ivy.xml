@@ -54,7 +54,7 @@
  
  <target name="download-jsch" unless="without.jsch.download" 
                               depends="download-ivy" >
-   <get src="http://prdownloads.sourceforge.net/jsch/jsch-0.1.37.jar?download"
+   <get src="http://datacenter.gradsoft.ua/public.repository/net.sf.jsch/jsch/jars/jsch-0.1.41.jar"
         dest="${ivy.jar.dir}/jsch.jar" usetimestamp="true"/>
  </target>
 

@@ -48,9 +48,14 @@
        <artifact name="javaee-api" type="jar" />
     </dependency>
     <dependency org="ua.gradsoft" name="jungle.configuration" 
-                rev="[1.0.4,)"
+                rev="[1.0.8,)"
                 conf="default->gwt-export" >
       <artifact name="jungle.configuration.gwt" type="jar" />
+    </dependency>
+    <dependency org="ua.gradsoft" name="jungle.gwt.util" 
+                rev="[1.0.0,)"
+                conf="default->default" >
+      <artifact name="jungle.gwt.util" type="jar" />
     </dependency>
  </dependencies>
 </ivy-module>
