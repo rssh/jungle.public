@@ -102,7 +102,7 @@ public interface CRUDFacade
      * query count for items, selected by given criteria.
      **/
     @Caching(cacheName="queryCache", action=CacheAction.CACHE, keyBuilder=AllArguments.class)
-    public <C> Long  queryCountByCriteria(C criteria);
+    public <T extends Number, C> T  queryCountByCriteria(Class<T> tClass, C criteria);
 
     /**
      * Update with command. Cache is cleaned.

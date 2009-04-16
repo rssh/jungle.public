@@ -10,4 +10,10 @@ public class DatabaseAccessException extends RuntimeException
      super(message,ex);
    }
 
+   public DatabaseAccessException(String message)
+   {
+     super(message);
+   }
+
+
 }

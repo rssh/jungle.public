@@ -5,6 +5,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -191,15 +192,60 @@ public abstract class EjbQlAccessObject implements CRUDFacade
   }
 
   @Override
-  public <C>  Long queryCountByCriteria(C criteria)
+  public <T extends Number,C>  T queryCountByCriteria(Class<T> tClass, C criteria)
   {
       CriteriaHelper criteriaHelper = createHelperObjectWithClassSuffix(criteria, "CriteriaHelper", CriteriaHelper.class);
       QueryWithParams qp = criteriaHelper.getCountQueryWithParams(criteria);
       String query = qp.getQuery();
       Map<String,Object> namedParameters = qp.getNamedParameters();
       Map<String,Object> noptions = qp.getOptions();
-      List<Long> ll = executeQuery(Long.class, query, namedParameters, noptions);
-      return ll.get(0);
+      List ll = executeQuery(Long.class, query, namedParameters, noptions);
+      if (ll.size()!=1) {
+          throw new DatabaseAccessException("count query not return one row:"+query);
+      }
+      Object o = ll.get(0);
+      Number retval;
+      if (o instanceof Number) {
+          retval = ((Number)o);
+          if (tClass.isAssignableFrom(Long.class)||
+              tClass.isAssignableFrom(long.class)
+                  ) {
+              return (T)(new Long(retval.longValue()));
+          }else if (tClass.isAssignableFrom(Integer.class)
+                  ||tClass.isAssignableFrom(int.class)){
+              return (T)(new Integer(retval.intValue()));
+          }else if (tClass.isAssignableFrom(Short.class)
+                  ||tClass.isAssignableFrom(short.class)
+                  ){
+              return (T)(new Short(retval.shortValue()));
+          }else if (tClass.isAssignableFrom(BigDecimal.class)){
+              if (retval instanceof BigDecimal) {
+                  return (T)((BigDecimal)retval);
+              }else if (retval instanceof BigInteger){
+                  BigInteger bi = (BigInteger)retval;
+                  return (T)(new BigDecimal(bi));
+              }else{
+                  return (T)BigDecimal.valueOf(retval.longValue());
+              }
+          }else if (tClass.isAssignableFrom(BigInteger.class)){
+              if (retval instanceof BigInteger) {
+                  return (T)retval;
+              }else if (retval instanceof BigDecimal){
+                  BigDecimal bd = (BigDecimal)retval;
+                  return (T)bd.toBigInteger();
+              }else {
+                  return (T)BigInteger.valueOf(retval.longValue());
+              }
+          }else if (tClass.isAssignableFrom(Double.class)){
+              return (T)(new Double(retval.doubleValue()));
+          }else if (tClass.isAssignableFrom(Float.class)){
+              return (T)(new Float(retval.floatValue()));
+          }else {
+              throw new IllegalArgumentException("class of return value must be number ");
+          }
+      }else{
+          throw new DatabaseAccessException("count query return non-number:"+query);
+      }   
   }
 
   @Override
