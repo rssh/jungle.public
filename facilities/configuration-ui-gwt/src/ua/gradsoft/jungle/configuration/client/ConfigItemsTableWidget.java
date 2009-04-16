@@ -9,6 +9,7 @@ import com.extjs.gxt.ui.client.data.BasePagingLoader;
 import com.extjs.gxt.ui.client.data.BeanModel;
 import com.extjs.gxt.ui.client.data.BeanModelReader;
 import com.extjs.gxt.ui.client.data.LoadEvent;
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.event.GridEvent;
@@ -29,6 +30,7 @@ import com.extjs.gxt.ui.client.widget.grid.CellEditor;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
+import com.extjs.gxt.ui.client.widget.grid.GridViewConfig;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -119,6 +121,31 @@ public class ConfigItemsTableWidget extends LayoutContainer
 
 
        EditorGrid<BeanModel> grid = new EditorGrid<BeanModel>(store,cm);
+
+
+       final GridViewConfig defaultViewConfig = grid.getView().getViewConfig();
+       grid.getView().setViewConfig(new GridViewConfig(){
+           @Override
+           public String getRowStyle(ModelData model, int rowIndex, ListStore ds) {
+               Object oEditable = model.get("editable");
+               if (oEditable!=null) {
+                   Boolean editable = (Boolean)oEditable;
+                   if (!editable) {
+                       return "x-item-disabled";
+                   }else{
+                       if (defaultViewConfig!=null) {
+                         return defaultViewConfig.getRowStyle(model, rowIndex, ds);
+                       }else{
+                         return "";
+                       }
+                   }
+               }else{
+                   // impossible
+                   return "x-item-disabled";
+               }
+           }
+       }
+       );
 
        grid.addListener(Events.BeforeEdit, new Listener<GridEvent>(){
            public void handleEvent(GridEvent e) {
