@@ -43,7 +43,7 @@
     <dependency org="ua.gradsoft" 
                name="jungle.persistence.cluster_keys"
                rev="[1.0,)"
-               conf="default->api;hsql->hsql;pgsql->pgsql">
+               conf="default->api;gwt-export->api;api->api;hsql->hsql;pgsql->pgsql">
     </dependency>
  </dependencies>
 </ivy-module>
