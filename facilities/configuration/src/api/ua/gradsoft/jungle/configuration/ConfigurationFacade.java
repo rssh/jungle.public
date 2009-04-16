@@ -13,7 +13,7 @@ public interface ConfigurationFacade
 
   List<ConfigItem>  getConfigItems(ConfigItemSelector itemSelector);
  
-  Long              getConfigItemsCount(ConfigItemSelector itemSelector);
+  Integer           getConfigItemsCount(ConfigItemSelector itemSelector);
 
   BigDecimal registerConfigItem(ConfigItem item);
 

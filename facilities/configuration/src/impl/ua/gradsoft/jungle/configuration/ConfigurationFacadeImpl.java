@@ -3,7 +3,6 @@ package ua.gradsoft.jungle.configuration;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -12,8 +11,6 @@ import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import ua.gradsoft.jungle.persistence.cluster_keys.ClusterKeys;
-import ua.gradsoft.jungle.persistence.jpaex.JdbcConnectionWrapper;
 import ua.gradsoft.jungle.persistence.ejbqlao.EjbQlAccessObject;
 
 @Stateless
@@ -27,8 +24,8 @@ public class ConfigurationFacadeImpl extends EjbQlAccessObject implements Config
         return queryByCriteria(ConfigItem.class, itemSelector);
     }
 
-    public Long getConfigItemsCount(ConfigItemSelector itemSelector) {
-        return queryCountByCriteria(itemSelector);
+    public Integer getConfigItemsCount(ConfigItemSelector itemSelector) {
+        return queryCountByCriteria(Integer.class, itemSelector);
     }
 
     public BigDecimal registerConfigItem(ConfigItem description) {
