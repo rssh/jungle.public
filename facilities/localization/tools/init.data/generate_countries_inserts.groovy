@@ -1,5 +1,25 @@
 #!/usr/bin/groovy
 
+def withOut=false;
+def xxout=System.out;
+
+println("0 ");
+
+try {
+ xxout = xout;
+ withOut=true;
+ println("property xout is ${xout} ");
+}catch(MissingPropertyException ex){
+  println("Missint property on xout ");
+}
+
+if (!withOut) {
+  xout=xxout;
+}else{
+  println("out was here ");
+}
+
+
 def byCountryCode = [:];
 def byCountryCodeOrigins = [:];
 def byIso639_1Code = [:];
@@ -88,9 +108,12 @@ new File("ethnologue/LanguageCodes.tab").eachLine {
 new File("ethnologue/CountryCodes.tab").eachLine{
 
  String[] fields = it.split("[\t]+");
- 
- if (fields[0].length()==2) {
-   countryNames[fields[0]]=fields[1];
+
+ if (fields.length > 1 ) {
+   fields[0]=fields[0].replace(" ","");
+   if (fields[0].length()==2) {
+     countryNames[fields[0]]=fields[1];
+   }
  }
  
 
@@ -101,6 +124,7 @@ new File("ISO-3166.txt").eachLine {
  String[] names = it.split("[\t]+");
  if (names.length > 1) {
    String countryCode=names[1];
+   countryCode=countryCode.replaceAll(" ","");
    //println("it:${it}");
    //println("name=${names[0]}, code=${names[1]}, all:${names}");
 
@@ -130,11 +154,11 @@ new File("ISO-3166.txt").eachLine {
      """;
    }
 
-   println(sql);
+   xout.println(sql);
 
-   if (alls!=null) {
+   if (alls!=null && false) {
 
-     println("alls:${alls}");
+//     println("alls:${alls}");
 
      alls.each {
        def languageCode = byIso639_2Code[it];
@@ -143,7 +167,7 @@ new File("ISO-3166.txt").eachLine {
            insert into languages_in_countries(language_code, country_code)
               values('${languageCode}','${countryCode}');
          """;
-         println(sql);
+         xout.println(sql);
        }
      }
    }

@@ -1,5 +1,24 @@
 #!/usr/bin/groovy
 
+def withOut=false;
+def xxout=System.out;
+
+println("0 ");
+
+try {
+ xxout = xout;
+ withOut=true;
+ println("property xout is ${xout} ");
+}catch(MissingPropertyException ex){
+  println("Missint property on xout ");
+}
+
+if (!withOut) {
+  xout=xxout;
+}else{
+  println("out was here ");
+}
+
 new File("ISO-639-2_utf-8.txt").eachLine {
 
  String[] names = it.toUpperCase().split("\\|");
@@ -15,7 +34,7 @@ new File("ISO-639-2_utf-8.txt").eachLine {
        values('${iso_639_1}','${iso_639_2}','${fln}');
      """;
 
-   println(tmpl);
+   xout.println(tmpl);
  }
 
 }

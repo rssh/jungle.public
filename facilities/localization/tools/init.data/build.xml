@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<project name="jungle.localization.init" default="build" basedir="."
+ >
+
+    <target name="init-properties" >
+      <property file="../../build.properties" />
+      <property file="../../build.local.properties" />
+
+      <path id="groovy.classpath">
+        <fileset dir="${groovy.home}/lib">
+          <include name="**/*.jar" />
+        </fileset>
+      </path>
+   </target>
+
+   <target name="init-groovy" depends="init-properties" >
+     <echo message="groovy.home=${groovy.home}" />
+     <taskdef name="groovy"
+         classname="org.codehaus.groovy.ant.Groovy"
+         classpathref="groovy.classpath"/>
+   </target>
+
+
+   <target name="check.init.sql.done">
+     <available property="init.sql.done" file="init.sql" /> 
+   </target>
+    
+   <target name="build-yes" depends="check.init.sql.done, init-groovy"
+                            unless="init.sql.done" >
+     <groovy>
+      GroovyShell shell = new GroovyShell();
+      def xout = new PrintWriter("init.sql");
+      shell.setProperty("xout", xout);
+      shell.run(new File("generate_languages_inserts.groovy"),[]);
+      shell.run(new File("generate_countries_inserts.groovy"),[]);
+      shell.run(new File("fix_supplementary_data.groovy"),[]);
+      println("Hello!");
+      xout.close();
+     </groovy>
+   </target>
+
+   <target name="build" depends="build-yes" >
+   </target>
+    
+</project>
