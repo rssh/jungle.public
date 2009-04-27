@@ -131,6 +131,12 @@
 
    <target name="build-init-sql" >
      <ant dir="tools/init.data" />
+     <copy file="tools/init.data/init.sql"
+          tofile="sql/pgsql/init_localization_pgsql.sql"
+     />
+     <copy file="tools/init.data/init.sql"
+          tofile="sql/hsql/init_localization_hsql.sql"
+     />
    </target>
 
    <target name="publish" depends="distributives">
