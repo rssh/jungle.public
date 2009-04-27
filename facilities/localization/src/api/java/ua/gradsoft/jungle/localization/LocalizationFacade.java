@@ -1,6 +1,9 @@
 package ua.gradsoft.jungle.localization;
 
-public class LocalizationFacade
+import java.math.BigDecimal;
+import java.util.List;
+
+public interface LocalizationFacade
 {
 
  public List<String>   translateFieldsById(String bundle, String language,
@@ -8,14 +11,14 @@ public class LocalizationFacade
                                            List<String> fieldNames);
 
  public List<List<String>> translateFiledsByIds(String bundle, String language,
-                                     List<BigDecimal> ids, String language);
+                                                List<BigDecimal> ids);
 
  public String   translateMessage(String bundle, String message, 
-                                  String language)
+                                  String language);
 
  public List<String>   translateMessages(String bundle, 
                                         List<String> messages, 
-                                        String language)
+                                        String language);
 
  public List<String>  getSupportedLanguages(String bundle);
 
