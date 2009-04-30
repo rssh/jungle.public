@@ -61,11 +61,6 @@
   <ivy:retrieve pattern="lib/[artifact]-[revision].[ext]" />
  </target>
 
- <target name="retrieve-test-libs" depends="declare-ivy" unless="offline" >
-  <ivy:retrieve pattern="lib/[artifact]-[revision].[ext]" 
-                conf="test" />
- </target>
-
  <path id="std.build.path">
    <pathelement location="lib/javaee-api-5.jar" />
    <pathelement location="lib/commons-logging-1.1.1.jar" />
