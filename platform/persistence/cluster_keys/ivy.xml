@@ -43,7 +43,7 @@
           <artifact name="jungle.persistence.jdbcex-api" type="jar" />
         </dependency>
         <dependency org="ua.gradsoft" name="jungle.persistence.jpaex" 
-                    rev="[1.1.0,)" 
+                    rev="[1.2.0,)" 
                     conf="api->api;build->build" >
           <artifact name="jungle.persistence.jpaex-api" type="jar" />
         </dependency>
