@@ -11,7 +11,7 @@ import ua.gradsoft.jungle.persistence.jpaex.JpaEntityProperty;
  *JpaEntity, formed by pair of getters and setters.
  * @author rssh
  */
-public class JpaEntityMethodPairProperty<T,E> extends JpaEntityProperty<T,E>
+public class JpaEntityMethodPairProperty<E,T> extends JpaEntityProperty<E,T>
 {
 
     public JpaEntityMethodPairProperty(String name,

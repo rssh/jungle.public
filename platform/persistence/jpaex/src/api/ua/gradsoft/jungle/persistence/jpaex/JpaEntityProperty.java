@@ -22,7 +22,7 @@ import ua.gradsoft.jungle.persistence.jpaex.impl.JpaEntityMethodPairProperty;
  * Helper class for JPA Entity, which incapsulate
  * access to property value.
  */
-public abstract class JpaEntityProperty<T,E>
+public abstract class JpaEntityProperty<E,T>
 {
 
     /**
@@ -63,13 +63,13 @@ public abstract class JpaEntityProperty<T,E>
      *  otherwise - trow JpaEntityPropertyNotFoundException
      *@exception JpaEntityPropertyNotFoundException
      */
-    public static JpaEntityProperty findByName(Class entityClass, String name)
+    public static<EC,TC> JpaEntityProperty<EC,TC> findByName(Class<EC> entityClass, String name)
     {
         // at first, generate method-s name and
         String getterName = generateGetterName(name);
         Method getter;
         try {
-          getter = entityClass.getMethod(name, new Class[0]);
+          getter = entityClass.getMethod(getterName, new Class[0]);
         }catch(NoSuchMethodException ex){
             getter=null;
         }
@@ -82,7 +82,7 @@ public abstract class JpaEntityProperty<T,E>
             } catch(NoSuchMethodException ex){
                 throw new IllegalArgumentException("getter without setter for propeety "+name);
             }
-            return new JpaEntityMethodPairProperty(name,getter,setter);
+            return new JpaEntityMethodPairProperty<EC,TC>(name,getter,setter);
         }
 
 
@@ -93,7 +93,7 @@ public abstract class JpaEntityProperty<T,E>
             field=null;
         }
         if (field!=null) {
-            return new JpaEntityFieldProperty(field);
+            return new JpaEntityFieldProperty<EC,TC>(field);
         }
         
         // property not found
@@ -105,7 +105,7 @@ public abstract class JpaEntityProperty<T,E>
      * @param entityClass
      * @return
      */
-    public static JpaEntityProperty findByColumnName(Class entityClass, String columnName)
+    public static<EC,TC> JpaEntityProperty<EC,TC> findByColumnName(Class<EC> entityClass, String columnName)
     {
 
         // iterate over all getters.
@@ -141,7 +141,7 @@ public abstract class JpaEntityProperty<T,E>
                     }catch(NoSuchMethodException ex){
                        throw new IllegalStateException("getter woithout setter for property "+propertyName);
                     }
-                    return new JpaEntityMethodPairProperty(propertyName,method,setter);
+                    return new JpaEntityMethodPairProperty<EC,TC>(propertyName,method,setter);
                 }
             }
         } // for
@@ -159,7 +159,7 @@ public abstract class JpaEntityProperty<T,E>
                     }
                 }else{
                     if (fields[i].getName().equalsIgnoreCase(columnName)) {
-                        return new JpaEntityFieldProperty(fields[i]);
+                        return new JpaEntityFieldProperty<EC,TC>(fields[i]);
                     }
                 }
             }else{
@@ -179,7 +179,7 @@ public abstract class JpaEntityProperty<T,E>
      * @param entityClass
      * @return id property, with class.
      */
-    public static JpaEntityProperty findId(Class entityClass)
+    public static<EC,TC> JpaEntityProperty<EC,TC> findId(Class<EC> entityClass)
     {
       Annotation idClass = entityClass.getAnnotation(IdClass.class);
       if (idClass!=null) {

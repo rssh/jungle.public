@@ -62,8 +62,8 @@
  </target>
 
  <path id="std.build.path">
-   <pathelement location="lib/javaee-api-5.jar" />
    <pathelement location="lib/commons-logging-1.1.1.jar" />
+   <fileset dir="lib" includes="javaee-api-*.jar" />
    <fileset dir="lib" includes="jungle.persistence.jdbcex-api-*.jar" />
  </path>
 
@@ -82,6 +82,13 @@
  <path id="jtads.build.path">
    <path refid="std.build.path" />
    <pathelement location="src/api" />
+ </path>
+
+ <path id="test.generic.build.path">
+   <path refid="std.build.path" />
+   <pathelement location="src/api" />
+   <fileset dir="lib" includes="junit-*.jar" />
+   <pathelement location="src/test/generic" />
  </path>
 
  <target name="build-api" depends="retrieve-libs">
@@ -143,6 +150,34 @@
   </manifest>
   </jar>
  </target>
+
+ <target name="build-test" depends="build-api">
+  <javac srcdir="src/test/generic" includes="**/*.java" deprecation="on" 
+         debug="${debug}" >
+    <classpath  refid="test.generic.build.path" />
+  </javac>
+  <jar basedir="src/test/generic" includes="**/*.class" 
+       destfile="target/jungle.persistence.jpaex-test.generic-${version}.jar" 
+       index="true">
+  <include name="build"/>
+  <manifest>
+   <attribute name="Build-By" value="${user-name}"/>
+  </manifest>
+  </jar>
+ </target>
+
+ <target name="test" depends="build-test">
+   <junit printsummary="yes" showoutput="true" fork="true" dir="." >
+     <classpath refid="test.generic.build.path" />
+     <formatter type="plain" />
+     <batchtest>
+      <fileset dir="src/test/generic" >
+        <include name="**/*Test.java" />
+      </fileset>
+     </batchtest>
+   </junit>
+ </target>
+
 
  <target name="build" depends="build-api,build-spring,build-hibernate,build-jtads" />
 

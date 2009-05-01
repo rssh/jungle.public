@@ -13,6 +13,8 @@
                         extends="api" />
       <conf name="build" description="with build dependnecy" 
                         extends="api" />
+      <conf name="test" description="with test dependnecy" 
+                        extends="build" />
     </configurations>
     <publications>
       <artifact name="jungle.persistence.jpaex-api" type="jar" conf="build" />
@@ -28,15 +30,25 @@
                 conf="jtads" />
     </publications>
     <dependencies>
-        <dependency org="javaee" name="javaee-api" rev="5" 
-                    conf="build->default" />
+        <dependency org="org.apache.openejb" 
+               name="javaee-api"
+               rev="5.0-1" 
+               conf="build->default"
+               transitive="false"
+               >
+          <artifact name="javaee-api" type="jar" />
+        </dependency>
         <dependency org="org.apache" name="commons-logging" rev="1.1.1" 
                     transitive="false" conf="hibernate,jtads->default" >
           <artifact name="commons-logging" type="jar" />
         </dependency>
         <dependency org="ua.gradsoft" name="jungle.persistence.jdbcex" 
                     rev="[1.0,)" conf="api->api" > 
-          <artifact name="jungle.persistence.jdbcex-api" />
+          <artifact name="jungle.persistence.jdbcex-api" type="jar" />
+        </dependency>
+        <dependency org="org.junit" name="junit" rev="[4.4,)" 
+                    conf="test->default" >
+          <artifact name="junit" type="jar" />
         </dependency>
         <dependency org="org.springframework" name="spring" rev="2.5.6"
                     transitive="false" conf="spring->default" >

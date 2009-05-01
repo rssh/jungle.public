@@ -39,6 +39,12 @@
                     <location>src/jtads</location>
                     <encoding>UTF-8</encoding>
                 </source-folder>
+                <source-folder>
+                    <label>src/test/generic</label>
+                    <type>java</type>
+                    <location>src/test/generic</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
             </folders>
             <ide-actions>
                 <action name="build">
@@ -96,6 +102,10 @@
                         <label>src/jtads</label>
                         <location>src/jtads</location>
                     </source-folder>
+                    <source-folder style="packages">
+                        <label>src/test/generic</label>
+                        <location>src/test/generic</location>
+                    </source-folder>
                     <source-file>
                         <location>build.xml</location>
                     </source-file>
@@ -110,7 +120,7 @@
             </view>
             <subprojects/>
         </general-data>
-        <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/1">
+        <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/2">
             <compilation-unit>
                 <package-root>src/api</package-root>
                 <classpath mode="compile">lib/javaee-api-5.jar:lib/jungle.persistence.jdbcex-api-1.0.jar</classpath>
@@ -133,6 +143,12 @@
                 <package-root>src/jtads</package-root>
                 <classpath mode="compile">lib/commons-logging-1.1.1.jar:lib/javaee-api-5.jar:src/api:lib/jungle.persistence.jdbcex-api-1.0.jar</classpath>
                 <built-to>src/jtads</built-to>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>src/test/generic</package-root>
+                <unit-tests/>
+                <classpath mode="compile">src/api:lib/javaee-api-5.jar:lib/junit-4.4.jar</classpath>
                 <source-level>1.5</source-level>
             </compilation-unit>
         </java-data>

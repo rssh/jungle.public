@@ -42,9 +42,9 @@ public class JpaHelper {
      *@return JpaEntityProperty with name <code> name </code>
      *@exception JpaEntityPropertyNotFoundException if such property does not exists.
      */
-    public static JpaEntityProperty  findJpaPropertyByName(Class entityClass, String name)
+    public static<E,T> JpaEntityProperty<E,T>  findJpaPropertyByName(Class<E> entityClass, String name)
     {
-        return JpaEntityProperty.findByName(entityClass, name);
+        return JpaEntityProperty.<E,T>findByName(entityClass, name);
     }
 
 }

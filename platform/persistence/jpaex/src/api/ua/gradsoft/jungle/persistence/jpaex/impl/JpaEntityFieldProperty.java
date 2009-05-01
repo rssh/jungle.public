@@ -9,7 +9,7 @@ import ua.gradsoft.jungle.persistence.jpaex.JpaEntityProperty;
  *
  * @author rssh
  */
-public  class JpaEntityFieldProperty<T,E> extends JpaEntityProperty<T,E>
+public  class JpaEntityFieldProperty<E,T> extends JpaEntityProperty<E,T>
 {
 
     public JpaEntityFieldProperty(Field field)

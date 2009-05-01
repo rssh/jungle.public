@@ -15,7 +15,7 @@ import ua.gradsoft.jungle.persistence.jpaex.JpaEntityPropertyNotFoundException;
  * type of property is IdClass,
  * @author rssh
  */
-public class JpaEntityComplexIdClassProperty<T,E> extends JpaEntityProperty<T,E>
+public class JpaEntityComplexIdClassProperty<E,T> extends JpaEntityProperty<E,T>
 {
 
     public JpaEntityComplexIdClassProperty(Class<E> entityClass, Class<T> idClass)
