@@ -37,20 +37,28 @@ create table localization_bundles
   LOCALIZATION_TYPE INTEGER
 );
 
+
+create table localization_bundle_languages
+{
+  bundle_name   NAME(64) references localization_bundles(name),
+  language_code  CHAR(2) references languages(id)
+}
+
 create table localization_bundle_tables
 (
-  TABLE_PREFIX          VARCHAR(64) primary key,
-  TABLE_PK_COLUMN_NAME  VARCHAR(32)
+  TABLE_NAME            VARCHAR(64) primary key,
+  TRANSLATION_TABLE_NAME  VARCHAR(64) unique,
+  PK_COLUMN_NAME     VARCHAR(32),
   BUNDLE_NAME        VARCHAR(64) references localization_bundles(name),
+  ENTITY_CLASSNAME   VARCHAR2(255) unique
 );
+
 
 
 create table localization_bundle_table_columns
 (
-  TABLE_PREFIX          VARCHAR(64),
+  TABLE_NAME          VARCHAR(64),
   COLUMN_PREFIX         VARCHAR(64)
       primary key(table_prefix, column_prefix),
-  BUNDLE_NAME        VARCHAR(64)
-      references localization_bundles(id)
 );
   

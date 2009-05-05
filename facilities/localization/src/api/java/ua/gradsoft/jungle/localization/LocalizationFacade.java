@@ -1,32 +1,34 @@
 package ua.gradsoft.jungle.localization;
 
-import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
 
 public interface LocalizationFacade
 {
 
- public List<String>   translateFieldsById(String bundle, String language,
-                                           String entityName, BigDecimal id, 
+
+ public List<String>  getSupportedLanguagesForBundle(String bundle);
+
+ public String  getDefaultLanguageForBundle(String bundle);
+
+ public boolean  hasDefaultLanguageForCountry(String countryCode);
+
+ public String getDefaultLanguageForCountry(String countryCode);
+
+ public List<String>  getUsedLanguageIdsForCountry(String countryCode);
+
+
+ public List<String>   translateFieldsById(String language,
+                                           String entityName, Object id,
                                            List<String> fieldNames);
 
- public List<List<String>> translateFiledsByIds(String bundle, String language,
-                                                List<BigDecimal> ids);
+ public List<List<String>> translateFieldsByIds(String bundle,
+                                                String language,
+                                                List<Object> ids,
+                                                List<String> fieldNames);
 
- public String   translateMessage(String bundle, String message, 
-                                  String language);
+ public<T>  T  translateBean(T bean, String languageCode);
 
- public List<String>   translateMessages(String bundle, 
-                                        List<String> messages, 
-                                        String language);
-
- public List<String>  getSupportedLanguages(String bundle);
-
- public boolean  hasDefaultLanguage(String countryCode);
-
- public String getDefaultLanguage(String countryCode);
-
- public List<String>  getUsedLanguageIds(String countryCode);
-
+ public<T> Collection<T>  translateBeans(Collection<T> beans, String languageCode);
 
 }
