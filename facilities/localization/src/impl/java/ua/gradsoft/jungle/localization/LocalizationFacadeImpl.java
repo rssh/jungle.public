@@ -166,7 +166,7 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
                       int i=0;
                       HashMap<Integer,List<String>> cachedRows = new HashMap<Integer,List<String>>();
                       for(Object id:ids) {
-                          List<String> row = getCachedTranslation(id,entityClass,fieldNames);
+                          List<String> row = getCachedTranslation(id,entityClass,language, fieldNames);
                           if (row==null) {
                             st.setObject(1,id);
                             st.addBatch();
@@ -199,7 +199,7 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
                               }
                             }
                           }
-                          putCachedTranslation(id,entityClass,fieldNames,retvalRow);
+                          putCachedTranslation(id,entityClass,language,fieldNames,retvalRow);
                         }
                         retval.add(retvalRow);
                         ++i;
@@ -214,7 +214,7 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
                           sqlBuilder.append(", ");
                       }
                       Object id = ids.get(i);
-                      List<String> row = getCachedTranslation(id,entityClass,fieldNames);
+                      List<String> row = getCachedTranslation(id,entityClass,language,fieldNames);
                       if (row==null) {
                         sqlBuilder.append("?");
                         isFirst=false;
@@ -244,14 +244,14 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
                           String value = rs.getString(i+2);
                           retRow.add(value);
                       }
-                      putCachedTranslation(rsid,entityClass,fieldNames,retRow);
+                      putCachedTranslation(rsid,entityClass,language,fieldNames,retRow);
                     }
                   }
                   // now fill cached or untranslated parts
                   int i=0;
                   for(List<String> row: retval) {
                      if (row.size()==0) {
-                          List<String> crow = getCachedTranslation(ids.get(i),entityClass,fieldNames);
+                          List<String> crow = getCachedTranslation(ids.get(i),entityClass,language,fieldNames);
                           if (crow!=null) {
                               row.addAll(crow);
                           } else {
@@ -413,14 +413,18 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
       return tt;
     }
 
-    private List<String> getCachedTranslation(Object id, Class entity, List<String> fieldNames)
+    private List<String> getCachedTranslation(Object id, Class entity, String language, List<String> fieldNames)
     {
         Cache dataCache = getDataCache();      
         Element e = dataCache.get(entity.getName()+","+id.toString());
         if (e==null) {
             return null;
         }
-        Map<String,String> hs = (Map<String,String>)e.getValue();
+        Map<String,Map<String,String>> hss = (Map<String,Map<String,String>>)e.getValue();
+        if (hss==null) {
+            return null;
+        }
+        Map<String,String> hs = hss.get(language);
         if (hs==null) {
             return null;
         }
@@ -435,21 +439,26 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
         return retval;
     }
 
-    public void putCachedTranslation(Object id, Class entityClass, List<String> fieldNames, List<String> values)
+    public void putCachedTranslation(Object id, Class entityClass, String language, List<String> fieldNames, List<String> values)
     {
        Cache dataCache = getDataCache();
        String key = entityClass.getName()+","+id.toString();
        Element e = dataCache.get(key);
-       HashMap<String,String> hs;
+       HashMap<String,HashMap<String,String>> hss;
        if (e==null) {
-           hs = new HashMap<String,String>();
+           hss = new HashMap<String,HashMap<String,String>>();
        } else {
-           hs = (HashMap<String,String>)e.getValue();
+           hss = (HashMap<String,HashMap<String,String>>)e.getValue();
+       }
+       HashMap<String,String> hs = hss.get(language);
+       if (hs==null) {
+           hs = new HashMap<String,String>();
+           hss.put(language, hs);
        }
        for(int i=0; i<fieldNames.size(); ++i) {
            hs.put(fieldNames.get(i), values.get(i));
        }
-       dataCache.put(new Element(key,hs));
+       dataCache.put(new Element(key,hss));
     }
     
     private Cache  getMetadataCache()
