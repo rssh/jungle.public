@@ -21,6 +21,11 @@
        <artifact name="beanlib" type="jar" />
        <artifact name="beanlib-hibernate" type="jar" />
     </dependency>
+    <dependency org="com.google.gwt" name="gwt.repackaged" 
+       rev="[1.5.3,)" conf="default->*" transitive="false" >
+       <artifact name="gwt-user" type="jar" />
+       <artifact name="gwt-servlet" type="jar" />
+    </dependency>    
     <dependency org="org.apache" name="commons-logging" 
        rev="[1.1.1,)" conf="default->default" >
        <artifact name="commons-logging" type="jar" />
