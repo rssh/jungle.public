@@ -1,0 +1,18 @@
+<ivy-module version="1.4">
+ <info organisation="ua.gradsoft" module="jungle.auth-api" />
+ <configurations>
+  <conf name="api" description="api only" />
+  <conf name="gwt-export" description="export of api in form of gwt module" />
+  <conf name="docs" description="documentation" />
+  <conf name="source" description="source tarball" />
+  <conf name="compile" description="with dependencies for compilations" />
+ </configurations>
+ <publications>
+  <artifact name="jungle.auth.api" type="jar" conf="api" />
+  <artifact name="jungle.auth.api.gwt" type="jar" conf="gwt-export" />
+  <artifact name="jungle.auth.api-docs" type="zip" conf="docs" />
+  <artifact name="jungle.auth.api-src" type="zip" conf="source" />
+ </publications>
+ <dependencies>
+ </dependencies>
+</ivy-module>

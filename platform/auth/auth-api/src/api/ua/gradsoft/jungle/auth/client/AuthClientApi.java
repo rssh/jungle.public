@@ -1,0 +1,52 @@
+package ua.gradsoft.jungle.auth.client;
+
+/**
+ * API, which aviable to auth client.
+ **/ 
+public interface AuthClientApi
+{
+
+  /**
+   * get Session ticket by authType and set of parameters.
+   *If authentication process requires redirect to other resources
+   *(such as openid), than throw redirect exception.
+   *some of predefined auth types:
+   *<ul>
+   * <li> Auth-type: "plain" </li>
+   * <ul> parameters:
+   *   <li> "username" - name of user to login </li>
+   *   <li> "password" - password to login </li>
+   *   <li> example parameters string: 
+   *         "username=myname&amp;password=myPassword" </li>
+   * </ul>
+   * <li> Auth-type: "md5pwd" </li>
+   * <ul> parameters:
+   *   <li> "username" -name of user to login </li>
+   *   <li> "pwdhash" - md5 hash of password </li>
+   * </ul>
+   * <li> Auth-type: "openid" </li>
+   * <ul> parameters:
+   *   <li> "url" - uri to check </li>
+   * </ul>
+   *</ul>
+   * Implementations can support only some of this auth types or
+   *  provide own.
+   *
+   *@param  authType - one of predefined authTypes,
+   *@param  parameters query (depend from auth-type) in URL encoding
+   *                 (see http://tools.ietf.org/html/rfc3986 )
+   *@return session ticket
+   **/ 
+  public  String  getSessionTicket(String authType, String parameters)
+                                                 throws 
+                                                   RedirectThrowable,
+                                                   AuthException;
+
+  /**
+   * get minimal client user info (is aviable).
+   **/ 
+  public ClientUserInfo  getUserInfo(String sessionTicket)
+                                   throws InvalidSessionTicketException,
+                                          AuthException;
+
+}
