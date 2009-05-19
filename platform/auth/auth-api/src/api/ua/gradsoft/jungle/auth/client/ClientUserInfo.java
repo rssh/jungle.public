@@ -57,10 +57,20 @@ public class ClientUserInfo implements Serializable
     language_=language;
   }
 
+  /**
+   * genger. 'M' for man, 'F' for female, null for 'not knonw'
+   */
+  public String getGender()
+  { return gender_; }
+
+  public void setGender(String gender)
+  { gender_=gender; }
+
   private String nickname_;
   private String email_;
   private String fullname_;
   private String country_;
   private String language_;
+  private String gender_;
 
 }

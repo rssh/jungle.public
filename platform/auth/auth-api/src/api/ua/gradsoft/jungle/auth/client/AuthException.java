@@ -9,4 +9,15 @@ import java.io.Serializable;
 public class AuthException extends Exception implements Serializable
 {
 
+    public AuthException(String message)
+    {
+       super(message);
+    }
+
+    public AuthException(String message, Exception ex)
+    {
+       super(message,ex);
+    }
+
+
 }

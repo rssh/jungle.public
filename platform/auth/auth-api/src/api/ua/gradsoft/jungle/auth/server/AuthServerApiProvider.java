@@ -1,5 +1,6 @@
 package ua.gradsoft.jungle.auth.server;
 
+import java.util.Map;
 import ua.gradsoft.jungle.auth.client.AuthException;
 import ua.gradsoft.jungle.auth.client.RedirectThrowable;
 
@@ -11,7 +12,7 @@ public interface AuthServerApiProvider
 
 
   public UserServerContext  findAuthenticatedUserContext(String authType,
-                                                   String authParams)
+                                                         Map<String,String> namedParams)
                                                   throws RedirectThrowable,
                                                          AuthException;
                                                          

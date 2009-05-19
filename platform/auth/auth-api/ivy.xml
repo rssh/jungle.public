@@ -14,5 +14,16 @@
   <artifact name="jungle.auth.api-src" type="zip" conf="source" />
  </publications>
  <dependencies>
+    <dependency org="org.apache.openejb" 
+               name="javaee-api"
+               rev="5.0-1" 
+               conf="compile"
+               >
+       <artifact name="javaee-api" type="jar" />
+    </dependency>
+    <dependency org="com.google.gwt" name="gwt.repackaged" 
+       rev="[1.5.3,)" conf="compile->client" transitive="false" >
+       <artifact name="gwt-user" type="jar" />
+    </dependency>
  </dependencies>
 </ivy-module>

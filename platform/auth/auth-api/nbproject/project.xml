@@ -11,14 +11,14 @@
             <properties/>
             <folders>
                 <source-folder>
-                    <label>src/api</label>
-                    <type>java</type>
-                    <location>src/api</location>
+                    <label>jungle.auth-api</label>
+                    <location>.</location>
                     <encoding>UTF-8</encoding>
                 </source-folder>
                 <source-folder>
-                    <label>jungle.auth-api</label>
-                    <location>.</location>
+                    <label>src/api</label>
+                    <type>java</type>
+                    <location>src/api</location>
                     <encoding>UTF-8</encoding>
                 </source-folder>
             </folders>
@@ -59,10 +59,12 @@
                     <ide-action name="javadoc"/>
                 </context-menu>
             </view>
+            <subprojects/>
         </general-data>
         <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/1">
             <compilation-unit>
                 <package-root>src/api</package-root>
+                <classpath mode="compile">lib/gwt-user-1.5.3.jar:lib/javaee-api-5.0-1.jar</classpath>
                 <built-to>build/api</built-to>
                 <source-level>1.5</source-level>
             </compilation-unit>

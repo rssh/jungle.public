@@ -1,5 +1,7 @@
 package ua.gradsoft.jungle.auth.client;
 
+import java.util.Map;
+
 /**
  * API, which aviable to auth client.
  **/ 
@@ -33,11 +35,10 @@ public interface AuthClientApi
    *  provide own.
    *
    *@param  authType - one of predefined authTypes,
-   *@param  parameters query (depend from auth-type) in URL encoding
-   *                 (see http://tools.ietf.org/html/rfc3986 )
+   *@param  parameters query (depend from auth-type) 
    *@return session ticket
    **/ 
-  public  String  getSessionTicket(String authType, String parameters)
+  public  String  getSessionTicket(String authType, Map<String,String> parameters)
                                                  throws 
                                                    RedirectThrowable,
                                                    AuthException;
