@@ -54,14 +54,14 @@
  
  <target name="download-jsch" unless="without.jsch.download" 
                               depends="download-ivy" >
-   <get src="http://prdownloads.sourceforge.net/jsch/jsch-0.1.37.jar?download"
+   <get src="http://datacenter.gradsoft.ua/public.repository/net.sf.jsch/jsch/jars/jsch-0.1.41.jar"
         dest="${ivy.jar.dir}/jsch.jar" usetimestamp="true"/>
  </target>
 
  <target name="download-ivy.build.plugin" 
          unless="without.ivy.build.plugin.download" 
                               depends="download-ivy" >
-   <get src="http://datacenter.gradsoft.ua/public.repository/ua.gradsoft/ivy.build.plugin/jars/ivy.build.plugin-1.0.2.jar"
+   <get src="http://datacenter.gradsoft.ua/public.repository/ua.gradsoft/ivy.build.plugin/jars/ivy.build.plugin-1.0.3.jar"
         dest="${ivy.jar.dir}/ivy.build.plugin.jar" usetimestamp="true"/>
  </target>
 
