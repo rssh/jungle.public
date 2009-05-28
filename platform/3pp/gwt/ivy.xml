@@ -13,11 +13,11 @@
  <dependencies>
     <dependency org="com.google.gwt" 
                name="gwt-.origin"
-               rev="1.5.3" 
+               rev="1.6.4" 
                conf="origin->*"
                >
        <artifact name="gwt-linux" type="tar.bz2" 
-         url="http://google-web-toolkit.googlecode.com/files/gwt-linux-1.5.3.tar.bz2" />
+         url="http://google-web-toolkit.googlecode.com/files/gwt-linux-1.6.4.tar.bz2" />
     </dependency>
  </dependencies>
 </ivy-module>
