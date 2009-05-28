@@ -40,7 +40,7 @@ public interface AuthClientApi
    **/ 
   public  String  getSessionTicket(String authType, Map<String,String> parameters)
                                                  throws 
-                                                   RedirectThrowable,
+                                                   RedirectException,
                                                    AuthException;
 
   /**

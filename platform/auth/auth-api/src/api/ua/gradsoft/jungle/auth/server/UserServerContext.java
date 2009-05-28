@@ -1,6 +1,7 @@
 package ua.gradsoft.jungle.auth.server;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * Interface for accessing user information.
@@ -25,6 +26,6 @@ public interface UserServerContext extends Serializable
    * check permission
    **/
   public boolean checkPermission(String permissingName, 
-                                 String permissionArgument);
+                                 Map<String,String> permissionArguments);
 
 }

@@ -1,15 +1,13 @@
 package ua.gradsoft.jungle.auth.client;
 
-import java.io.Serializable;
-
 /**
  *Throwed from API to show redirect to other site.
  * @author rssh
  */
-public class RedirectThrowable extends Throwable implements Serializable
+public class RedirectException extends Exception
 {
 
-    public RedirectThrowable(String uri)
+    public RedirectException(String uri)
     { uri_=uri; }
 
     public String getUri()

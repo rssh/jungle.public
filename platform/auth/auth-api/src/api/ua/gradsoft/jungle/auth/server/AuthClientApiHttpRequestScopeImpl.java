@@ -14,7 +14,7 @@ import ua.gradsoft.jungle.auth.client.AuthClientApi;
 import ua.gradsoft.jungle.auth.client.AuthException;
 import ua.gradsoft.jungle.auth.client.ClientUserInfo;
 import ua.gradsoft.jungle.auth.client.InvalidSessionTicketException;
-import ua.gradsoft.jungle.auth.client.RedirectThrowable;
+import ua.gradsoft.jungle.auth.client.RedirectException;
 
 /**
  *Implementation in AuthClientApi, which exists in request scope.
@@ -25,7 +25,7 @@ public class AuthClientApiHttpRequestScopeImpl implements AuthClientApi
     /**
      * Session ticket stored in session context
      */
-    public String getSessionTicket(String authType, Map<String,String> parameters) throws RedirectThrowable, AuthException {
+    public String getSessionTicket(String authType, Map<String,String> parameters) throws RedirectException, AuthException {
         UserServerContext ctx = apiProvider_.findAuthenticatedUserContext(authType, parameters);
         if (ctx==null) {
             throw new AuthException("Authorization failed: user not found");
