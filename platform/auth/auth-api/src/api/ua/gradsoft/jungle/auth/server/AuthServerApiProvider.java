@@ -20,4 +20,8 @@ public interface AuthServerApiProvider
   public UserServerContext  findContextById(String userId)
                                               throws AuthException;
 
+
+  public UserServerContext   getAnonimousContext()
+                                              throws AuthException;
+
 }

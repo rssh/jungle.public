@@ -1,6 +1,10 @@
 
 package ua.gradsoft.jungle.auth.server;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 /**
  * Used to indicate, that method (or class) require permissions.
  *Example of usage:
@@ -11,6 +15,8 @@ package ua.gradsoft.jungle.auth.server;
  *which mean, that method <code>saveOrganization</code> must be called
  *only with user with permission <code>edit.organization</code>.
  */
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
 public @interface RequirePermission {
 
     /**
