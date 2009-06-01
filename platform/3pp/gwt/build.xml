@@ -31,6 +31,8 @@
           tofile="dist/gwt-servlet-${version}.jar" />
     <copy file="origin/gwt-linux-${origin.version}/gwt-user.jar" 
           tofile="dist/gwt-user-${version}.jar" />
+    <copy file="origin/gwt-linux-${origin.version}/gwt-dev-linux.jar" 
+          tofile="dist/gwt-dev-linux-${version}.jar" />
   </target>
 
   <target name="repackage" depends="package" />

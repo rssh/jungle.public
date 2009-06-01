@@ -9,6 +9,7 @@
  <publications>
    <artifact name="gwt-user" type="jar" conf="client" />
    <artifact name="gwt-servlet" type="jar" conf="server" />
+   <artifact name="gwt-dev-linux" type="jar" conf="server" />
  </publications>
  <dependencies>
     <dependency org="com.google.gwt" 
