@@ -76,8 +76,8 @@
  -->
 
  <path id="std.build.path">
-   <pathelement location="lib/commons-logging-${commons-logging.version}.jar" />
-   <pathelement location="lib/ehcache-1.6.0-beta2.jar" />
+   <pathelement location="lib/commons-logging-1.1.1.jar" />
+   <pathelement location="lib/ehcache-1.6.0-beta4.jar" />
  </path>
 
  <path id="test.std.build.path">

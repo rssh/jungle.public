@@ -87,6 +87,16 @@
                buildDirectory="${platform.public.home}/persistence/cluster_keys"
                publishTarget="publish.local"
              />
+             <dependencyBuild
+                  organization="net.sf.beanlib" name="beanlib.repackaged"
+                  buildDirectory="${platform.public.home}/3pp/beanlib"
+                  publishTarget="publish.local"
+             />
+             <dependencyBuild
+                  organization="com.google.gwt" name="gwt.repackaged"
+                  buildDirectory="${platform.public.home}/3pp/gwt"
+                  publishTarget="publish.local"
+             />
            </build>
 
            <url name="read.datacenter.gradsoft.ua" namespace="gradsoft">
