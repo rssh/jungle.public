@@ -6,12 +6,14 @@ import com.google.gwt.user.server.rpc.RPCRequest;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NameNotFoundException;
@@ -19,10 +21,18 @@ import javax.naming.NamingException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import net.sf.beanlib.hibernate.HibernateBeanReplicator;
 import net.sf.beanlib.provider.replicator.BeanReplicator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import ua.gradsoft.jungle.auth.client.UserIdParameter;
+import ua.gradsoft.jungle.auth.server.AuthClientApiHttpRequestScopeImpl;
+import ua.gradsoft.jungle.auth.server.AuthServerApiProvider;
+import ua.gradsoft.jungle.auth.server.Permission;
+import ua.gradsoft.jungle.auth.server.Require;
+import ua.gradsoft.jungle.auth.server.RequirePermission;
+import ua.gradsoft.jungle.auth.server.UserServerContext;
 
 /**
  *<p>
@@ -93,6 +103,16 @@ public class GWTServlet extends RemoteServiceServlet
    * </pre>
    *
    * <pre>
+   *  authApiProvider=name   
+   * </pre>
+   *  set name of bean for authApiProvider
+   *
+   * <pre>
+   *  clientSideAuthName=name
+   * </pre>
+   *  set 'name' of client-side auth object, i, e.
+   *
+   * <pre>
    *  debug = 1 or 0
    * </pre>
    *  enable or disable debug.
@@ -149,6 +169,18 @@ public class GWTServlet extends RemoteServiceServlet
                       log.warn("invalud value of debug parameter, must be 0 or 1; set to true");
                       debug_=true;
                   }
+              }
+          }
+          if (!b) {
+              if (name.equals("authApiProvider")) {
+                  authApiProviderName_=servletConfig.getInitParameter("authApiProvider");
+                  b=true;
+              }
+          }
+          if (!b) {
+              if (name.equals("clientSideAuthName")) {
+                  clientSideAuthName_=servletConfig.getInitParameter("clientSideAuthName");
+                  b=true;
               }
           }
           if (!b) {
@@ -250,6 +282,32 @@ public class GWTServlet extends RemoteServiceServlet
           }
       }
 
+      if (authApiProviderName_!=null) {
+          // here, becouse whe know, that naing is initialized
+          for(Context context:contexts_) {
+            try {
+                Object o = context.lookup(authApiProviderName_);
+                if (o instanceof AuthServerApiProvider) {
+                    authApiProvider_ = (AuthServerApiProvider)o;
+                    break;
+                }else{
+                    throw new ServletException("object with name "+authApiProviderName_+" not implement AuthServerApiProvider");
+                }
+            }catch(NameNotFoundException ex){
+                /* do nothing */
+            }catch(NamingException ex){
+                throw new ServletException("Can't locate api provider:"+authApiProviderName_,ex);
+            }
+          }
+          if (authApiProvider_==null) {
+              throw new ServletException("AuthApiProivider with name "+authApiProviderName_+" is not found");
+          }
+
+          if (clientSideAuthName_==null) {
+              clientSideAuthName_="auth";
+          }
+      }
+
   }
 
 
@@ -269,6 +327,7 @@ public class GWTServlet extends RemoteServiceServlet
         throw new RuntimeException("Empty rpc request");
       }
     }
+    Object retval=null;
     if (responsePayload == null) {
      try {
         targetObject = retrieveTargetObject(this.getThreadLocalRequest());
@@ -276,10 +335,106 @@ public class GWTServlet extends RemoteServiceServlet
            Log log = LogFactory.getLog(GWTServlet.class);
            log.info("can't retrieve target object");
            throw new RuntimeException("target object not found");
-           //responsePayload = RPC.encodeResponseForFailure(null,
-           //        new RuntimeException("target object not found"),
-           //        rpcRequest.getSerializationPolicy());
         }
+        Method method = rpcRequest.getMethod();
+        Object[] params = rpcRequest.getParameters();
+        Method targetMethod = findTargetMethod(targetObject, method , params);
+        Class<?> methodParameterTypes[] = method.getParameterTypes();
+        Class<?> targetMethodParameterTypes[] = targetMethod.getParameterTypes();
+        UserServerContext userContext=null;
+        if (authApiProvider_!=null) {
+            HttpSession session = getThreadLocalRequest().getSession(false);
+            Object o = session.getAttribute("lastUserId");
+            if (o==null) {
+                userContext = authApiProvider_.getAnonimousContext();
+            } else {
+                if (o instanceof UserServerContext) {
+                    userContext = (UserServerContext)o;
+                } else if (o instanceof String) {
+                    userContext = authApiProvider_.findContextById((String)o);
+                } else {
+                    throw new RuntimeException("Internal error: can't deteminate user");
+                }
+            }
+        }
+        Object[] targetParams;
+        int copyOffset=0;
+        boolean copy=false;
+        boolean eraseIdParam=false;
+        int userIdParamIndex=-1;
+        UserIdParameter uidAnn = targetMethod.getAnnotation(UserIdParameter.class);
+        if (uidAnn!=null) {
+            userIdParamIndex=uidAnn.value();
+        }
+        if (targetMethodParameterTypes.length > methodParameterTypes.length) {
+          targetParams=new Object[targetMethodParameterTypes.length];
+          copy=true;
+          copyOffset=1;
+          if (authApiProvider_!=null) {
+            targetParams[0]=userContext;
+          } else {
+            throw new RuntimeException("AuthApiProvider must be set for call of "+targetMethod.toString());
+          }
+        } else if (targetMethodParameterTypes.length == methodParameterTypes.length) {
+          if (inputParametersReplicator_!=null) {
+              targetParams = new Object[targetMethodParameterTypes.length];
+              copy=true;
+          }else{
+              copy=false;
+              targetParams=params;
+          }
+        } else if (targetMethodParameterTypes.length < methodParameterTypes.length) {
+              targetParams = new Object[targetMethodParameterTypes.length];
+              copy=true;
+              eraseIdParam = true;
+        } else {
+            // impossible.
+            throw new IllegalStateException("Impossible situation with params length before server call");
+        }
+        if (copy) {
+          if (inputParametersReplicator_!=null) {
+              for(int i=copyOffset; i<targetMethodParameterTypes.length; ++i) {
+                  if (i-copyOffset==userIdParamIndex) {
+                      if (!eraseIdParam) {
+                          Object o = params[i-copyOffset];
+                          if (o!=null) {
+                            targetParams[i]=authApiProvider_.findContextById(o.toString());
+                          }else{
+                            targetParams[i]=authApiProvider_.getAnonimousContext();
+                          }
+                          continue;
+                      }else{
+                         --copyOffset;
+                      }
+                  }
+                 targetParams[i]=inputParametersReplicator_.replicateBean(params[i-copyOffset]);
+              }
+          }else{
+              for(int i=copyOffset; i<targetMethodParameterTypes.length; ++i) {
+                  if (i-copyOffset==userIdParamIndex) {
+                      if (!eraseIdParam) {
+                          Object o = params[i-copyOffset];
+                          if (o!=null) {
+                              targetParams[i]=authApiProvider_.findContextById(o.toString());
+                          }else{
+                              targetParams[i]=authApiProvider_.getAnonimousContext();
+                          }
+                          continue;
+                      }else{
+                          --copyOffset;
+                      }
+                  }
+                  targetParams[i]=params[i-copyOffset];
+              }
+          }
+        }
+
+        if (!checkMethodPermissions(targetMethod,targetParams, userContext)) {
+           throw new RuntimeException("Access denied");
+        }
+
+        retval = targetMethod.invoke(targetObject, targetParams);
+
      }catch(RuntimeException ex){
         Log log = LogFactory.getLog(GWTServlet.class);
         log.info("exception during call of server object",ex);
@@ -293,28 +448,7 @@ public class GWTServlet extends RemoteServiceServlet
           log.info("exception during call of server object",ex);
         }
         responsePayload = RPC.encodeResponseForFailure(null, ex, rpcRequest.getSerializationPolicy());
-      }
-    }
-    Object retval = null;
-    if (responsePayload==null) {
-      Method method = rpcRequest.getMethod();
-      Object[] params = rpcRequest.getParameters();
-      if (inputParametersReplicator_!=null) {
-         Object[] newParams = new Object[params.length];
-         for(int i=0; i<params.length; ++i) {
-            newParams[i]=inputParametersReplicator_.replicateBean(params[i]);
-         } 
-         params=newParams;
-      }
-      try {
-         Method targetObjectMethod = targetObject.getClass().getMethod(method.getName(), method.getParameterTypes());
-         retval = targetObjectMethod.invoke(targetObject, params);
-      }catch(Exception ex){
-         Log log = LogFactory.getLog(GWTServlet.class);
-         log.info("exception during call",ex);
-         responsePayload = RPC.encodeResponseForFailure(
-                                  rpcRequest.getMethod(), ex);
-      }
+     }
     }
     if (responsePayload==null) {
       if (resultReplicator_!=null) {
@@ -350,6 +484,12 @@ public class GWTServlet extends RemoteServiceServlet
        Log log = LogFactory.getLog(GWTServlet.class);
        log.info("retrieveTarget object for name "+objectName);
      }
+     if (clientSideAuthName_!=null) {
+         if (objectName.equals(clientSideAuthName_)) {
+             return new AuthClientApiHttpRequestScopeImpl(authApiProvider_,request);
+         }
+     }
+
      Object retval = null;
      for(Context context: contexts_) {
          try {
@@ -378,6 +518,59 @@ public class GWTServlet extends RemoteServiceServlet
      return retval;
   }
 
+  private Method  findTargetMethod(Object targetObject, Method originMethod, Object params)
+  {
+    Class<?> parameterTypes[] = originMethod.getParameterTypes();
+    try {
+        return targetObject.getClass().getMethod(originMethod.getName(), parameterTypes);
+    } catch (NoSuchMethodException ex){
+        // check method with UserServerContext with first parameters.
+        Class<?> newParameterTypes[] = new Class<?>[parameterTypes.length+1];
+        newParameterTypes[0]=UserServerContext.class;
+        System.arraycopy(parameterTypes,0 , newParameterTypes, 1, parameterTypes.length);
+        try {
+            return targetObject.getClass().getMethod(originMethod.getName(), newParameterTypes);
+        }catch(NoSuchMethodException ex1){
+            ;// do noting: next try
+        }
+    }
+    // no: may be we have methods with UserIdParam ?
+    UserIdParameter ann = originMethod.getAnnotation(UserIdParameter.class);
+    if (ann==null) {
+        throw new RuntimeException("Can't find method for "+originMethod.getName());
+    }
+    // now try to find server method with userContext on paramIndex
+    Class<?> newParameterTypes[] = new Class<?>[parameterTypes.length];
+    for(int i=0; i<parameterTypes.length; ++i) {
+        if (i==ann.value()) {
+            newParameterTypes[i]=UserServerContext.class;
+        }else{
+            newParameterTypes[i]=parameterTypes[i];
+        }
+    }
+    try {
+        return targetObject.getClass().getMethod(originMethod.getName(), newParameterTypes);
+    }catch(NoSuchMethodException ex1){
+        /* nothing, next try */;
+    }
+    // now try to erase UserServerContext
+    newParameterTypes = new Class<?>[parameterTypes.length-1];
+    for(int i=0; i<parameterTypes.length; ++i) {
+        if (i<ann.value()) {
+            newParameterTypes[i]=parameterTypes[i];
+        }else if (i==ann.value()) {
+            /* do nothing */;
+        }else{
+            newParameterTypes[i-1]=parameterTypes[i];
+        }
+    }
+    try {
+        return targetObject.getClass().getMethod(originMethod.getName(), newParameterTypes);
+    }catch(NoSuchMethodException ex){
+        throw new RuntimeException("Can't find method for "+originMethod.getName());
+    }
+ }
+
 
   private boolean  checkNamedProperty(String paramName, String propertyName,
                                       Map<String,Hashtable<String,String>> namedEnvs,
@@ -404,11 +597,63 @@ public class GWTServlet extends RemoteServiceServlet
 
   }
 
+  private boolean       checkMethodPermissions(Method method,Object[] params,
+                                               UserServerContext user)
+  {
+     RequirePermission rp = method.getAnnotation(RequirePermission.class);
+     if (rp!=null) {
+         return checkMethodPermission(method,params,user,rp.name(),rp.arguments());
+     }
+     Require r = method.getAnnotation(Require.class);
+     if (r!=null) {
+         for(Permission p: r.permissions()) {
+             if (checkMethodPermission(method,params,user,p.name(),p.arguments())) {
+                 return true;
+             }
+         }
+         return false;
+     }
+     // if we here - we have nothing. So
+     return false;
+  }
+
+  private boolean checkMethodPermission(Method method, Object[] params,
+          UserServerContext user, String name,String[] arguments)          
+  {
+      Map<String,String> mapargs = null;
+      if (arguments!=null) {
+          if ((arguments.length % 2) == 0) {
+              throw new IllegalArgumentException("length of arguments must be even");
+          }
+          mapargs = new TreeMap<String,String>();
+          for(int i=0; i<arguments.length; i+=2) {
+              String argname = arguments[i];
+              String argvalue = arguments[i+1];
+              if (argvalue.startsWith("$")) {
+                  try {
+                    int argNumber = Integer.parseInt(argvalue.substring(1));
+                    argvalue = params[argNumber].toString();
+                  }catch(NumberFormatException ex){
+                    throw new IllegalArgumentException("Only references to parameters can start with '$'");  
+                  }
+              }
+              mapargs.put(argname, argvalue);              
+          }
+      }else{
+          mapargs=Collections.<String,String>emptyMap();
+      }
+      return user.checkPermission(name, mapargs);
+  }
+
   private boolean       debug_    = false;
   private List<Context> contexts_ = new LinkedList<Context>();
 
   private BeanReplicator inputParametersReplicator_=null;
   private BeanReplicator resultReplicator_=null;
   private HibernateBeanReplicator resultHibernateBeanReplicator_=null;
+
+  private String authApiProviderName_ = null;
+  private AuthServerApiProvider authApiProvider_=null;
+  private String clientSideAuthName_=null;
 
 }

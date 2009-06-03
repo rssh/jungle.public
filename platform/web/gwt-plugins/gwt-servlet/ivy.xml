@@ -16,13 +16,18 @@
             type="zip" conf="source" />
  </publications>
  <dependencies>
+    <dependency org="ua.gradsoft" name="jungle.auth-api" 
+                rev="[0.9.3,)" conf="*->api" >
+       <artifact name="jungle.auth.api" type="jar" />
+    </dependency>
+                
     <dependency org="net.sf.beanlib" name="beanlib.repackaged" 
        rev="[5.0.1beta.1,)" conf="default->default" transitive="false" >
        <artifact name="beanlib" type="jar" />
        <artifact name="beanlib-hibernate" type="jar" />
     </dependency>
     <dependency org="com.google.gwt" name="gwt.repackaged" 
-       rev="[1.5.3,)" conf="default->*" transitive="false" >
+       rev="[1.6.4,)" conf="default->*" transitive="false" >
        <artifact name="gwt-user" type="jar" />
        <artifact name="gwt-servlet" type="jar" />
     </dependency>    

@@ -59,7 +59,7 @@
         <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/1">
             <compilation-unit>
                 <package-root>src</package-root>
-                <classpath mode="compile">lib/commons-logging-1.1.1.jar:/opt/gwt-linux-1.5.3/gwt-servlet.jar:lib/javaee-api-5.jar:lib/beanlib-5.0.1beta.1.jar:lib/beanlib-hibernate-5.0.1beta.1.jar</classpath>
+                <classpath mode="compile">lib/commons-logging-1.1.1.jar:lib/javaee-api-5.jar:lib/beanlib-5.0.1beta.1.jar:lib/beanlib-hibernate-5.0.1beta.1.jar:lib/gwt-user-1.6.4.jar:lib/jungle.auth.api-0.9.3.jar</classpath>
                 <source-level>1.5</source-level>
             </compilation-unit>
         </java-data>
