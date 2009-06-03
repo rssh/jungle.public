@@ -61,10 +61,10 @@
             </view>
             <subprojects/>
         </general-data>
-        <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/1">
+        <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/2">
             <compilation-unit>
                 <package-root>src/api</package-root>
-                <classpath mode="compile">lib/gwt-user-1.5.3.jar:lib/javaee-api-5.0-1.jar</classpath>
+                <classpath mode="compile">lib/javaee-api-5.0-1.jar:lib/gwt-user-1.6.4.jar</classpath>
                 <built-to>build/api</built-to>
                 <source-level>1.5</source-level>
             </compilation-unit>

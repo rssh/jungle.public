@@ -86,6 +86,17 @@
     </jar>
    </target>
 
+   <target name="build-dummyimpl" depends="build-api">
+        <javac destdir="${build-dummy.dir}" 
+                srcdir="${src-dummy.dir}" 
+                includes="**/*.java" 
+                deprecation="on" 
+                debug="${debug}" >
+            <classpath>
+            </classpath>
+        </javac>
+   </target>
+
    <target name="publish" depends="distributives">
      <ivy:publish resolver="datacenter.gradsoft.ua" pubrevision="${version}" 
                   overwrite="true" 
