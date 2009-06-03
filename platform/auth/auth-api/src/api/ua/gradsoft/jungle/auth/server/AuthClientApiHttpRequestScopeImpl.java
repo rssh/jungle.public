@@ -34,6 +34,7 @@ public class AuthClientApiHttpRequestScopeImpl implements AuthClientApi
         UserRecord ur = new UserRecord(ctx.getId());
         String sessionTicket = ur.getSessionTicket();
         session.setAttribute(sessionTicket, ur);
+        session.setAttribute("lastUserId", ur.userId_);
         return ur.getSessionTicket();
     }
 

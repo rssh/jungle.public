@@ -1,4 +1,4 @@
-package ua.gradsoft.jungle.auth.server;
+package ua.gradsoft.jungle.auth.client;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

@@ -10,10 +10,10 @@ import java.lang.annotation.RetentionPolicy;
  * (specified in <code>permissions</code> field).
  *<p>
  *<pre>
- *&064;Require(
+ *&#064;Require(
  *   permissions={
- *     &064;Permission(name="organizations.edit.all"),
- *     &064;Permission(name="organizations.edit.my",
+ *     &#064;Permission(name="organizations.edit.all"),
+ *     &#064;Permission(name="organizations.edit.my",
  *                     arguments={"organizationId","$0"})
  *   }
  *)
