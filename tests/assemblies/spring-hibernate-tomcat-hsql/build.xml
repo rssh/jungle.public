@@ -98,7 +98,7 @@
         <war destfile="${war.dir}/jungle.tomcat.sh-test.war" 
                 webxml="etc/WEB-INF/web.xml"  
                 index="true">
-            <classes  dir="classes" includes="**/*.class,**/*.xml" />
+            <classes  dir="classes" includes="**/*.class,**/*.xml,**/*.properties" />
             <classes  dir="etc" >
               <include name="META-INF/persistence.xml" />
               <include name="logging.properties" />
@@ -167,6 +167,25 @@
          includes="drop_cluster_keys_hsql-*.sql" />
      </sql>
     </target>
+    
+    <target name="init-db" >
+     <sql driver="${jdbc.driver}" url="${jdbc.url}" 
+          userid="${jdbc.login}"  password="${jdbc.password}" 
+          classpathref="core.path"  >
+       <fileset dir="sql"
+         includes="init_configuration_hsql.sql" />
+     </sql>
+    </target>
+
+    <target name="clean-db" >
+     <sql driver="${jdbc.driver}" url="${jdbc.url}" 
+          userid="${jdbc.login}"  password="${jdbc.password}" 
+          classpathref="core.path"  >
+       <fileset dir="sql"
+         includes="clean_configuration_hsql.sql" />
+     </sql>
+    </target>
+
     
 
 </project>
