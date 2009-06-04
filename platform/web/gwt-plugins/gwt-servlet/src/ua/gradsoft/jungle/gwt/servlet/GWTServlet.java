@@ -56,8 +56,10 @@ import ua.gradsoft.jungle.auth.server.UserServerContext;
  * application, than in external jndi context of ejb server.
  *</p>
  * <p>
- * TODO: interceptor call for access checking subsystem is planned, but
- * not implemented yet.
+ * If authApiProvider is set to configuration, gwtservlet also perform
+ * interceptor call for access checking and implements auth client api.
+ *@see ua.gradsoft.jungle.auth.server.AuthServerApiProvider
+ *@see ua.gradsoft.jungle.auth.client.AuthClientApi
  *</p>
  **/ 
 public class GWTServlet extends RemoteServiceServlet                       

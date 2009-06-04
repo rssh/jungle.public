@@ -17,7 +17,7 @@
  </publications>
  <dependencies>
     <dependency org="ua.gradsoft" name="jungle.auth-api" 
-                rev="[0.9.3,)" conf="*->api" >
+                rev="[0.9.4,)" conf="*->api" >
        <artifact name="jungle.auth.api" type="jar" />
     </dependency>
                 
