@@ -431,8 +431,10 @@ public class GWTServlet extends RemoteServiceServlet
           }
         }
 
-        if (!checkMethodPermissions(targetMethod,targetParams, userContext)) {
-           throw new RuntimeException("Access denied");
+        if (authApiProvider_!=null) {
+          if (!checkMethodPermissions(targetMethod,targetParams, userContext)) {
+             throw new RuntimeException("Access denied");
+          }
         }
 
         retval = targetMethod.invoke(targetObject, targetParams);
