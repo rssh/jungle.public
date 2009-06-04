@@ -10,8 +10,8 @@
   <!-- set classpath -->
   <path id="project.class.path">
     <pathelement path="${java.class.path}/"/>
-    <pathelement path="/opt/gwt-linux-1.5.3/gwt-user.jar"/>
-    <pathelement path="/opt/gwt-linux-1.5.3/gwt-servlet.jar"/>
+    <pathelement path="${gwt.home}/gwt-user.jar"/>
+    <pathelement path="${get.home}/gwt-servlet.jar"/>
     <fileset dir="../lib"
              includes="jungle.configuration-ui-gwt-export-*.jar"/>
     <fileset dir="../lib"
@@ -22,6 +22,8 @@
              includes="gxt-*.jar"/>
     <fileset dir="../lib"
              includes="gwt-math-*.jar"/>
+    <fileset dir="../lib"
+             includes="jungle.persistence.cluster_keys-*.jar"/>
     <!-- Additional dependencies (such as junit) go here -->
   </path>
 
