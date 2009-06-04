@@ -21,6 +21,12 @@
                     <location>src/api</location>
                     <encoding>UTF-8</encoding>
                 </source-folder>
+                <source-folder>
+                    <label>src/dummy</label>
+                    <type>java</type>
+                    <location>src/dummy</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
             </folders>
             <ide-actions>
                 <action name="build">
@@ -42,11 +48,20 @@
                 <location>build/api</location>
                 <build-target>build</build-target>
             </export>
+            <export>
+                <type>folder</type>
+                <location>build/dummy</location>
+                <build-target>build</build-target>
+            </export>
             <view>
                 <items>
                     <source-folder style="packages">
                         <label>src/api</label>
                         <location>src/api</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>src/dummy</label>
+                        <location>src/dummy</location>
                     </source-folder>
                     <source-file>
                         <location>build.xml</location>
@@ -66,6 +81,13 @@
                 <package-root>src/api</package-root>
                 <classpath mode="compile">lib/javaee-api-5.0-1.jar:lib/gwt-user-1.6.4.jar</classpath>
                 <built-to>build/api</built-to>
+                <built-to>build/dummy</built-to>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>src/dummy</package-root>
+                <unit-tests/>
+                <classpath mode="compile">lib/javaee-api-5.0-1.jar:build/api:build/dummy</classpath>
                 <source-level>1.5</source-level>
             </compilation-unit>
         </java-data>

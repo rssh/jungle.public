@@ -16,8 +16,10 @@
     <property name="etc.dir" value="etc"/>
 
     <property name="src-api.dir" value="src/api"/>
+    <property name="src-dummy.dir" value="src/dummy"/>
     
     <property name="build-api.dir" value="${build.dir}/api"/>
+    <property name="build-dummy.dir" value="${build.dir}/dummy"/>
     
     <path id="core.classpath">
        <fileset dir="${lib.dir}" includes="*.jar" />
@@ -28,6 +30,7 @@
     <target name="prepare">
         <mkdir dir="${build.dir}"/>
         <mkdir dir="${build-api.dir}"/>
+        <mkdir dir="${build-dummy.dir}"/>
         
         <mkdir dir="${dist.dir}"/>
     </target>
@@ -51,7 +54,7 @@
     </target>
 
     
-    <target name="build" depends="build-api,build-gwt" >
+    <target name="build" depends="build-api,build-gwt,build-dummyimpl" >
     </target>
     
     <target name="build-api" depends="retrieve-libs,prepare" >
@@ -93,8 +96,15 @@
                 deprecation="on" 
                 debug="${debug}" >
             <classpath>
+              <path refid="core.classpath"/>
+              <pathelement 
+                 location="${dist.dir}/jungle.auth.api-${version}.jar" />
             </classpath>
         </javac>
+        <jar destfile="${dist.dir}/jungle.auth.api-dummyimpl-${version}.jar" 
+             basedir="${build-dummy.dir}" 
+             includes="**/*.class"
+        />
    </target>
 
    <target name="publish" depends="distributives">

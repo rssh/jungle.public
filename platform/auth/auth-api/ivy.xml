@@ -6,10 +6,12 @@
   <conf name="docs" description="documentation" />
   <conf name="source" description="source tarball" />
   <conf name="compile" description="with dependencies for compilations" />
+  <conf name="test" description="with dummy implementation" extends="api" />
  </configurations>
  <publications>
   <artifact name="jungle.auth.api" type="jar" conf="api" />
   <artifact name="jungle.auth.api.gwt" type="jar" conf="gwt-export" />
+  <artifact name="jungle.auth.api-dummyimpl" type="jar" conf="test" />
   <artifact name="jungle.auth.api-docs" type="zip" conf="docs" />
   <artifact name="jungle.auth.api-src" type="zip" conf="source" />
  </publications>
