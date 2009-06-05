@@ -6,14 +6,12 @@ import com.google.gwt.user.server.rpc.RPCRequest;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NameNotFoundException;
@@ -28,10 +26,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import ua.gradsoft.jungle.auth.client.UserIdParameter;
 import ua.gradsoft.jungle.auth.server.AuthClientApiHttpRequestScopeImpl;
+import ua.gradsoft.jungle.auth.server.AuthServerApiHelper;
 import ua.gradsoft.jungle.auth.server.AuthServerApiProvider;
-import ua.gradsoft.jungle.auth.server.Permission;
-import ua.gradsoft.jungle.auth.server.Require;
-import ua.gradsoft.jungle.auth.server.RequirePermission;
 import ua.gradsoft.jungle.auth.server.UserServerContext;
 
 /**
@@ -432,7 +428,7 @@ public class GWTServlet extends RemoteServiceServlet
         }
 
         if (authApiProvider_!=null) {
-          if (!checkMethodPermissions(targetMethod,targetParams, userContext)) {
+          if (!AuthServerApiHelper.checkMethodPermissions(targetMethod,targetParams, userContext)) {
              throw new RuntimeException("Access denied");
           }
         }
@@ -601,53 +597,6 @@ public class GWTServlet extends RemoteServiceServlet
 
   }
 
-  private boolean       checkMethodPermissions(Method method,Object[] params,
-                                               UserServerContext user)
-  {
-     RequirePermission rp = method.getAnnotation(RequirePermission.class);
-     if (rp!=null) {
-         return checkMethodPermission(method,params,user,rp.name(),rp.arguments());
-     }
-     Require r = method.getAnnotation(Require.class);
-     if (r!=null) {
-         for(Permission p: r.permissions()) {
-             if (checkMethodPermission(method,params,user,p.name(),p.arguments())) {
-                 return true;
-             }
-         }
-         return false;
-     }
-     // if we here - we have nothing. So
-     return false;
-  }
-
-  private boolean checkMethodPermission(Method method, Object[] params,
-          UserServerContext user, String name,String[] arguments)          
-  {
-      Map<String,String> mapargs = null;
-      if (arguments!=null) {
-          if ((arguments.length % 2) == 0) {
-              throw new IllegalArgumentException("length of arguments must be even");
-          }
-          mapargs = new TreeMap<String,String>();
-          for(int i=0; i<arguments.length; i+=2) {
-              String argname = arguments[i];
-              String argvalue = arguments[i+1];
-              if (argvalue.startsWith("$")) {
-                  try {
-                    int argNumber = Integer.parseInt(argvalue.substring(1));
-                    argvalue = params[argNumber].toString();
-                  }catch(NumberFormatException ex){
-                    throw new IllegalArgumentException("Only references to parameters can start with '$'");  
-                  }
-              }
-              mapargs.put(argname, argvalue);              
-          }
-      }else{
-          mapargs=Collections.<String,String>emptyMap();
-      }
-      return user.checkPermission(name, mapargs);
-  }
 
   private boolean       debug_    = false;
   private List<Context> contexts_ = new LinkedList<Context>();
