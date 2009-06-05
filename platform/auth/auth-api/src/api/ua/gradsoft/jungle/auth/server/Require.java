@@ -1,6 +1,7 @@
 package ua.gradsoft.jungle.auth.server;
 
 import java.lang.annotation.Documented;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -23,6 +24,7 @@ import java.lang.annotation.RetentionPolicy;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
+@Inherited
 public @interface Require {
 
     public Permission[] permissions();
