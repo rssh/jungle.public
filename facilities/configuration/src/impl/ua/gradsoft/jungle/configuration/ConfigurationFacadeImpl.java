@@ -48,8 +48,6 @@ public class ConfigurationFacadeImpl extends EjbQlAccessObject implements Config
         }
     }
 
-
-
     public <T extends Serializable> T getConfigItemValue(Class<T> type, ConfigItemSelector itemSelector) {
         List<ConfigItem> items=queryByCriteria(ConfigItem.class, itemSelector);
         ConfigItem item = items.get(0);
@@ -100,6 +98,14 @@ public class ConfigurationFacadeImpl extends EjbQlAccessObject implements Config
            curr.setValue(curr.getType().toString(e.getValue()));
            entityManager_.merge(curr);
        }
+    }
+
+    public void  setConfigItemStringValues(Map<BigDecimal,String> objects) {
+        for(Map.Entry<BigDecimal,String> e: objects.entrySet()) {
+            ConfigItem curr = entityManager_.find(ConfigItem.class, e.getKey());
+            curr.setValue(e.getValue());
+            entityManager_.merge(curr);
+        }
     }
 
 

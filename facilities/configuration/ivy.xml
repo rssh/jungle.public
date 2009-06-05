@@ -45,5 +45,10 @@
                rev="[1.0,)"
                conf="default->api;gwt-export->api;api->api;hsql->hsql;pgsql->pgsql">
     </dependency>
+    <dependency org="ua.gradsoft" 
+                name="jungle.auth-api"
+                rev="[0.9.4,)"
+                conf="default->api;gwt-export->gwt-export">
+    </dependency>
  </dependencies>
 </ivy-module>
