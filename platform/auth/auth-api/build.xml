@@ -16,9 +16,11 @@
     <property name="etc.dir" value="etc"/>
 
     <property name="src-api.dir" value="src/api"/>
+    <property name="src-gwt.dir" value="src/gwt"/>
     <property name="src-dummy.dir" value="src/dummy"/>
     
     <property name="build-api.dir" value="${build.dir}/api"/>
+    <property name="build-gwt.dir" value="${build.dir}/gwt"/>
     <property name="build-dummy.dir" value="${build.dir}/dummy"/>
     
     <path id="core.classpath">
@@ -30,6 +32,7 @@
     <target name="prepare">
         <mkdir dir="${build.dir}"/>
         <mkdir dir="${build-api.dir}"/>
+        <mkdir dir="${build-gwt.dir}"/>
         <mkdir dir="${build-dummy.dir}"/>
         
         <mkdir dir="${dist.dir}"/>
@@ -80,11 +83,23 @@
     </target>
 
    <target name="build-gwt" depends="build-api" >
+    <javac destdir="${build-gwt.dir}"
+           srcdir="${src-gwt.dir}" 
+           includes="**/*.java" 
+           deprecation="on" 
+           debug="${debug}" >
+      <classpath>
+         <path refid="core.classpath"/>
+         <pathelement location="${build-api.dir}" />
+      </classpath>
+    </javac>
     <jar destfile="${dist.dir}/jungle.auth.api.gwt-${version}.jar" 
          index="true"
     >
       <fileset dir="${build-api.dir}" includes="**/client/*.class" />
       <fileset dir="${src-api.dir}" includes="**/client/*.java" />
+      <fileset dir="${build-gwt.dir}" includes="**/client/*.class" />
+      <fileset dir="${src-gwt.dir}" includes="**/client/*.java" />
       <fileset dir="etc/gwt" includes="**/*.xml" />
     </jar>
    </target>
@@ -131,6 +146,9 @@
      <javadoc destdir="docs/javadoc" >
        <sourcefiles>
         <fileset dir="src/api">
+          <include name="**/*.java" />
+        </fileset>
+        <fileset dir="src/gwt">
           <include name="**/*.java" />
         </fileset>
        </sourcefiles>
