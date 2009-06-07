@@ -6,14 +6,29 @@ import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Window;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import java.util.HashMap;
 import java.util.Map;
+import ua.gradsoft.jungle.auth.client.AuthClientApiRemoteService;
+import ua.gradsoft.jungle.auth.client.AuthClientApiRemoteServiceAsync;
 
 /**
  *Incapsulate common properties of our gwt application.
  * @author rssh
  */
 public class GwtApplication {
+
+
+    public void  initAuth(String authEntryPoint)
+    {
+      authService_=GWT.create(AuthClientApiRemoteService.class);
+      ServiceDefTarget target = (ServiceDefTarget)authService_;
+      target.setServiceEntryPoint(authEntryPoint);
+    }
+
+    public AuthClientApiRemoteServiceAsync  getAuthService()
+    { return authService_; }
 
     public boolean withDesktop()
     { return desktop_!=null; }
@@ -116,5 +131,6 @@ public class GwtApplication {
     private String    sessionTicket_=null;
     private boolean   logged_=false;
 
+    private AuthClientApiRemoteServiceAsync authService_=null;
 
 }
