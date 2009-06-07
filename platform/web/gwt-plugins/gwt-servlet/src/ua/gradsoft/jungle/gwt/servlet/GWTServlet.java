@@ -428,8 +428,11 @@ public class GWTServlet extends RemoteServiceServlet
         }
 
         if (authApiProvider_!=null) {
-          if (!AuthServerApiHelper.checkMethodPermissions(targetMethod,targetParams, userContext)) {
+          if (!(targetObject instanceof AuthClientApiHttpRequestScopeImpl)) {
+              // call to auth API must be permitted for all
+            if (!AuthServerApiHelper.checkMethodPermissions(targetMethod,targetParams, userContext)) {
              throw new RuntimeException("Access denied");
+            }
           }
         }
 
