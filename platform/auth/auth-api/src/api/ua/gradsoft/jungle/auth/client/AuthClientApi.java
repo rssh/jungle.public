@@ -50,4 +50,10 @@ public interface AuthClientApi
                                    throws InvalidSessionTicketException,
                                           AuthException;
 
+  /**
+   * If this API holds last session ticked, to track client, then
+   *  remove all internal session state.
+   */
+  public void logout();
+
 }

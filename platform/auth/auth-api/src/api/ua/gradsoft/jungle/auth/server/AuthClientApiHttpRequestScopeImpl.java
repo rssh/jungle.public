@@ -26,6 +26,7 @@ public class AuthClientApiHttpRequestScopeImpl implements AuthClientApi
      * Session ticket stored in session context
      */
     @Permission(name="*")
+    @Override
     public String getSessionTicket(String authType, Map<String,String> parameters) throws RedirectException, AuthException {
         UserServerContext ctx = apiProvider_.findAuthenticatedUserContext(authType, parameters);
         if (ctx==null) {
@@ -40,6 +41,7 @@ public class AuthClientApiHttpRequestScopeImpl implements AuthClientApi
     }
 
     @Permission(name="*")
+    @Override
     public ClientUserInfo getUserInfo(String sessionTicket) throws InvalidSessionTicketException, AuthException {
         HttpSession session = request_.getSession(false);
         if (session==null) {
@@ -59,6 +61,15 @@ public class AuthClientApiHttpRequestScopeImpl implements AuthClientApi
         }else{
             throw new InvalidSessionTicketException();
         }
+    }
+
+
+    @Override
+    @Permission(name="*")
+    public void logout()
+    {
+      HttpSession session = request_.getSession(false);
+      session.removeAttribute("lastUserId");
     }
 
     /**
