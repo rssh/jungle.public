@@ -341,7 +341,7 @@ public class GWTServlet extends RemoteServiceServlet
         Class<?> targetMethodParameterTypes[] = targetMethod.getParameterTypes();
         UserServerContext userContext=null;
         if (authApiProvider_!=null) {
-            HttpSession session = getThreadLocalRequest().getSession(false);
+            HttpSession session = getThreadLocalRequest().getSession(true);
             Object o = session.getAttribute("lastUserId");
             if (o==null) {
                 userContext = authApiProvider_.getAnonimousContext();
