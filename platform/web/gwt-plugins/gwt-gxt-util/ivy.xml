@@ -27,5 +27,10 @@
                 rev="[1.2.3,)" conf="default" >
       <artifact name="gxt" type="jar" />
     </dependency>
+    <dependency org="ua.gradsoft" name="jungle.auth-api" 
+                rev="[0.9.4,)" conf="default->gwt-export" >
+      <artifact name="jungle.auth.api.gwt" type="jar" />
+    </dependency>
+
  </dependencies>
 </ivy-module>
