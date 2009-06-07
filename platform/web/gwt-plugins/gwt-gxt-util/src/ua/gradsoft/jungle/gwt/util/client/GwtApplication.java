@@ -2,6 +2,10 @@
 package ua.gradsoft.jungle.gwt.util.client;
 
 import com.extjs.gxt.desktop.client.Desktop;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.MenuEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.Window;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,7 +22,17 @@ public class GwtApplication {
     {
        desktop_=desktop;
     }
-    
+
+    public Desktop getDesktop()
+    {
+       return desktop_;
+    }
+
+    public SelectionListener  getDesktopSelectionListener()
+    {
+       return desktopSelectionListener_;
+    }
+
 
     public boolean isLogged()
     { return logged_; }
@@ -75,6 +89,29 @@ public class GwtApplication {
 
 
     private Desktop   desktop_ = null;
+    private SelectionListener  desktopSelectionListener_ = new SelectionListener()
+    {
+          @Override
+          public void componentSelected(ComponentEvent ce) {
+              Window w = null;
+              if (ce instanceof MenuEvent) {
+                  MenuEvent me = (MenuEvent)ce;
+                  w = me.item.getData("window");
+              } else {
+                  w = ce.component.getData("window");
+              }
+              if (w!=null) {
+                  if (!desktop_.getWindows().contains(w)) {
+                     desktop_.addWindow(w);
+                  }
+                  if (!w.isVisible()) {
+                    w.show();
+                  }else{
+                    w.toFront();
+                  }
+              }
+          }
+    };
 
     private String    sessionTicket_=null;
     private boolean   logged_=false;
