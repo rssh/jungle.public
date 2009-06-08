@@ -40,8 +40,18 @@ public class ConfigurationUI extends GwtApplicationComponent
     {
       service_ = GWT.create(ConfigurationRemoteService.class);
       if (entryPoint_!=null) {
-       ServiceDefTarget target = (ServiceDefTarget)service_;
-       target.setServiceEntryPoint(entryPoint_);
+        ServiceDefTarget target = (ServiceDefTarget)service_;
+        target.setServiceEntryPoint(entryPoint_);
+        Desktop desktop = application.getDesktop();
+        if (desktop!=null) {
+          MenuItem mi = new MenuItem("Configuration");
+          Window w = getTableWindow("app2");
+          mi.setData("window", w);
+          mi.addSelectionListener(application.getDesktopSelectionListener());
+          mi.setItemId("id-ConfigurationUI");
+          mi.disable();
+          desktop.getStartMenu().add(mi);
+        }
       }
     }
 
@@ -52,30 +62,29 @@ public class ConfigurationUI extends GwtApplicationComponent
 
       readAccessReaded_=false;
       application.getAuthService().checkUserPermission(
-              application.getSessionTicket(), 
+              fApplication.getSessionTicket(),
               "jungle.configuration.read", new HashMap<String,String>(),
               new AsyncCallback<Boolean>()
       {
             public void onFailure(Throwable caught) {
-                MessageBox.alert("Failure:","Can't check user permission:"+caught.getMessage(), null);
+                MessageBox.alert("Failure:","Can't check user permission:"+caught.getMessage() , null);
             }
 
             public void onSuccess(Boolean result) {
                 readAccess_=result;
-                if (readAccess_) {
-                    Desktop desktop = fApplication.getDesktop();
-                    if (desktop==null) return;
+                readAccessReaded_=true;
+                Desktop desktop = fApplication.getDesktop();
+                if (desktop!=null) {
                     StartMenu startMenu = desktop.getStartMenu();
-                    Item i = startMenu.getItemByItemId("id-ConfigurationUI");
-                    if (i==null) {
-                        MenuItem mi = new MenuItem("Configuration");
-                        mi.setData("window", getTableWindow("app2"));
-                        mi.addSelectionListener(fApplication.getDesktopSelectionListener());
-                        mi.setItemId("id-ConfigurationUI");
-                        startMenu.add(mi);
+                    Item item = startMenu.getItemByItemId("id-ConfigurationUI");
+                    if (item!=null) {
+                        if (result) {
+                            item.enable();
+                        } else {
+                            item.disable();
+                        }
                     }
                 }
-                readAccessReaded_=true;
             }          
       }
       );  
@@ -107,7 +116,8 @@ public class ConfigurationUI extends GwtApplicationComponent
             StartMenu startMenu = desktop.getStartMenu();
             Item i = startMenu.getItemByItemId("id-ConfigurationUI");
             if (i!=null) {
-                startMenu.remove(i);
+                i.disable();
+                ((Window)i.getData("window")).close();
             }
         }
         readAccessReaded_=false;
