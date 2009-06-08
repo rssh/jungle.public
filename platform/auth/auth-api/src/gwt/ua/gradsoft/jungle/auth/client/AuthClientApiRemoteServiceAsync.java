@@ -8,14 +8,14 @@ import java.util.Map;
  *Async interface for AuthClientApi
  * @author rssh
  */
-public interface AuthClientApiRemoteServiceAsync {
+public interface AuthClientApiRemoteServiceAsync  {
 
   void  getSessionTicket(String authType, Map<String,String> parameters,
-                                 AsyncCallback<String> callback);
+                                 AsyncCallback<String> asyncCallback);
 
   void  getUserInfo(String sessionTicket, AsyncCallback<String> callback);
 
-  void  checkPermission(String sessionTicket, String permission,
+  void  checkUserPermission(String sessionTicket, String permission,
                         Map<String,String> parameters,
                         AsyncCallback<Boolean> callback);
 

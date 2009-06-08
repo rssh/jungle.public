@@ -96,7 +96,7 @@
     <jar destfile="${dist.dir}/jungle.auth.api.gwt-${version}.jar" 
          index="true"
     >
-      <fileset dir="${build-api.dir}" includes="**/client/*.class" />
+      <fileset dir="${build-api.dir}" includes="**/*.class" />
       <fileset dir="${src-api.dir}" includes="**/client/*.java" />
       <fileset dir="${build-gwt.dir}" includes="**/client/*.class" />
       <fileset dir="${src-gwt.dir}" includes="**/client/*.java" />
