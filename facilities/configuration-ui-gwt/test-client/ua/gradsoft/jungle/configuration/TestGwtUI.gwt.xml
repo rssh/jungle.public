@@ -9,5 +9,7 @@
       <servlet path="/TestConfiguration"
         class="ua.gradsoft.jungle.configuration.server.TestConfigurationRemoteServiceImpl" />
 
+      <servlet path="/auth"
+        class="ua.gradsoft.jungle.configuration.server.TestAuthRemoteServiceImpl" />
 	
 </module>

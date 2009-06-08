@@ -53,9 +53,11 @@
       <artifact name="jungle.configuration.gwt" type="jar" />
     </dependency>
     <dependency org="ua.gradsoft" name="jungle.gwt.util" 
-                rev="[1.0.0,)"
+                rev="[1.0.1,)"
                 conf="default->default" >
       <artifact name="jungle.gwt.util" type="jar" />
     </dependency>
+
+
  </dependencies>
 </ivy-module>

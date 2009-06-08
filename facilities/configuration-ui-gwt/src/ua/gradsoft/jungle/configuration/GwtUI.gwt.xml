@@ -21,6 +21,8 @@
 
 
       <inherits  name='com.extjs.gxt.ui.GXT' />
+      <inherits name='com.extjs.gxt.desktop.WebDesktop' />
+
 
       <!-- Specify the application specific style sheet.              -->
       <stylesheet src='css/ext-all.css' />
