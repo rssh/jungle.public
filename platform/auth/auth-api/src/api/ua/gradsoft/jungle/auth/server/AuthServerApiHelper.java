@@ -78,17 +78,23 @@ public class AuthServerApiHelper {
    * Unlike method.getAnnotation() method, check not only in
    * supreclasses, but in interfaces.
    */
-  private static <T> T  findAnnotation(Method m, Class<T> annotationClass)
+  private static <T extends Annotation> T  findAnnotation(Method m, Class<T> annotationClass)
   {
+      System.err.print("find annotation "+annotationClass.getName()+" for method "+m);
       Annotation retval = authAnnotationsHash_.get(m);
 
       if (retval==null) {
-         Class cls =  m.getDeclaringClass();
-         retval=cls.getAnnotation(annotationClass);
+         retval=m.getAnnotation(annotationClass);
          if (retval==null) {
+             Class cls = m.getDeclaringClass();         
              Class[] interfaces = cls.getInterfaces();
-             for(int i=0; i<interfaces.length; ++i) {
-                 retval=interfaces[i].getAnnotation(annotationClass);
+             for(int i=0; i<interfaces.length; ++i) {               
+                 try {
+                   Method mi = interfaces[i].getMethod(m.getName(), m.getParameterTypes());
+                   retval=mi.getAnnotation(annotationClass);
+                 }catch(NoSuchMethodException ex){
+                    continue;
+                 }                 
                  if (retval!=null) {
                      break;
                  }
@@ -97,9 +103,11 @@ public class AuthServerApiHelper {
       }
 
       if (retval!=null) {
+          System.err.println("found");
           authAnnotationsHash_.put(m, retval);
           return (T)retval;
       }else{
+          System.err.println("not found");
           return null;
       }
       

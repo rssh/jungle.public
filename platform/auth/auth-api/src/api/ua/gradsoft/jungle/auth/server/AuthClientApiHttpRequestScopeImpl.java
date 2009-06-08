@@ -58,8 +58,8 @@ public class AuthClientApiHttpRequestScopeImpl implements AuthClientApi
                                    Map<String,String> params)
                                             throws InvalidSessionTicketException,
                                                    AuthException
-    {
-        UserRecord ur = getUserRecord(sessionTicket);
+    {      
+        UserRecord ur = getUserRecord(sessionTicket);       
         UserServerContext ctx = apiProvider_.findContextById(ur.getUserId());
         return ctx.checkPermission(permission, params);
     }

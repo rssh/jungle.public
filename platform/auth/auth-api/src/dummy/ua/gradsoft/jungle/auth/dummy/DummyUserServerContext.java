@@ -41,22 +41,32 @@ public class DummyUserServerContext implements UserServerContext
 
     // does not use params, only
     public boolean checkPermission(String permissionName, Map<String, String> permissionArguments) {
-        if (!inversePermissions_) {
-            return !permissions_.contains(permissionName);
+        boolean retval;
+        System.err.println("check permission "+permissionName+" for user "+login_);
+        if (inversePermissions_) {
+            retval=!permissions_.contains(permissionName);
         } else {
-            return permissions_.contains(permissionName);
+            retval=permissions_.contains(permissionName);
         }
+        System.err.println("return "+retval);
+        return retval;
     }
+
 
     boolean checkPassword(String password)
     {
+
       return password_.equals(password);
     }
+
+
+
 
     private String login_;
     private String password_;
     private Map<String,String> properties_;
     private boolean inversePermissions_;
     private Set<String> permissions_;
+
 
 }
