@@ -49,7 +49,7 @@ public class AuthServerApiHelper {
   {
       Map<String,String> mapargs = null;
       if (arguments!=null) {
-          if ((arguments.length % 2) == 0) {
+          if ((arguments.length % 2) != 0) {
               throw new IllegalArgumentException("length of arguments must be even");
           }
           mapargs = new TreeMap<String,String>();
