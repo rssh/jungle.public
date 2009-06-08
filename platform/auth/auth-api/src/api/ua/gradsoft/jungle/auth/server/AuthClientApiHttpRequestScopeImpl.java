@@ -2,6 +2,7 @@
 package ua.gradsoft.jungle.auth.server;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
@@ -55,16 +56,12 @@ public class AuthClientApiHttpRequestScopeImpl implements AuthClientApi
     @Permission(name="*")
     public boolean checkUserPermission(String sessionTicket, String permission,
                                    Map<String,String> params)
-                                            throws InvalidSessionTicketException
+                                            throws InvalidSessionTicketException,
+                                                   AuthException
     {
-      try {
         UserRecord ur = getUserRecord(sessionTicket);
         UserServerContext ctx = apiProvider_.findContextById(ur.getUserId());
         return ctx.checkPermission(permission, params);
-      }catch(AuthException ex){
-          // on this we  need
-          throw new IllegalStateException("exception during permission checking",ex);
-      }
     }
 
 
