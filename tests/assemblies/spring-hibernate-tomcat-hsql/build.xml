@@ -48,7 +48,7 @@
     </target>
   
     <target name="build-gwt" depends="retrieve-libs, retrieve-compile-libs" >
-      <available property="gwt.js.generated" file="gwt-ui/www" />
+      <available property="gwt.js.generated" file="gwt-ui/war" />
       <antcall target="gwt-js-compile" />
     </target>
 
@@ -111,7 +111,7 @@
 <!--
             <fileset  dir="web.groovy" />
 -->
-            <fileset  dir="gwt-ui/www/ua.gradsoft.jungle.testapp.GwtUI/" />
+            <fileset  dir="gwt-ui/war/ua.gradsoft.jungle.testapp.GwtUI/" />
 
 
             <webinf   dir="etc/WEB-INF" includes="**/*.xml" />

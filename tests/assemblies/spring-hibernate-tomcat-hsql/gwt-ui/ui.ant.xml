@@ -24,12 +24,27 @@
              includes="gwt-math-*.jar"/>
     <fileset dir="../lib"
              includes="jungle.persistence.cluster_keys-*.jar"/>
+    <fileset dir="../lib"
+             includes="jungle.gwt.util-*.jar"/>
+    <fileset dir="../lib"
+             includes="jungle.auth.api.gwt-*.jar"/>
+    <fileset dir="../lib"
+             includes="jungle.auth.api-*.jar"/>
     <!-- Additional dependencies (such as junit) go here -->
   </path>
 
   <target name="compile" description="Compile src to bin">
     <mkdir dir="bin"/>
     <javac srcdir="src:test" destdir="bin" includes="**" debug="on" debuglevel="lines,vars,source" >
+      <classpath refid="project.class.path"/>
+    </javac>
+  </target>
+
+  <target name="compile-new" description="Compile src to war/WEB-INF/classes">
+    <mkdir dir="war"/>
+    <mkdir dir="war/WEB-INF"/>
+    <mkdir dir="war/WEB-INF/classes"/>
+    <javac srcdir="src:test" destdir="war/WEB-INF/classes" includes="**" debug="on" debuglevel="lines,vars,source" >
       <classpath refid="project.class.path"/>
     </javac>
   </target>
@@ -51,6 +66,40 @@
     </java>
   </target>
 
+  <target name="js-compile-new" description="generation of local test ui here"
+                            depends="compile" >
+    <java classname="com.google.gwt.dev.Compiler" fork="true">
+      <classpath>
+        <pathelement location="src" />
+        <path refid="project.class.path" />
+        <fileset dir="${gwt.home}" includes="gwt-dev-*.jar" />
+      </classpath>
+      <jvmarg value="-Xmx256M" />
+      <arg value="-logLevel" />
+      <arg value="INFO" />
+      <arg value="ua.gradsoft.jungle.testapp.GwtUI" />
+    </java>
+  </target>
+
+  <target name="run.hosted.shell">
+    <java classname="com.google.gwt.dev.HostedMode" fork="true" >
+     <classpath>
+        <pathelement location="src" />
+        <pathelement location="bin" />
+        <path refid="project.class.path" />
+        <fileset dir="${gwt.home}" includes="gwt-dev-*.jar" />
+     </classpath>
+     <arg value='-logLevel' />
+     <arg value='ALL' />
+     <arg value='-noserver' />
+     <arg value='-whitelist' />
+     <arg value='http[:][/][/]127[.]0[.]0[.]1[:]8080[/].*' />
+     <arg value="-startupUrl" />
+     <arg value="http://127.0.0.1:8080/jungle.tomcat.sh-test" />
+     <!--<arg value="/ua.gradsoft.jungle.testapp.GwtUI/index.html" />-->
+     <arg value="ua.gradsoft.jungle.testapp.GwtUI" />
+    </java>
+  </target>
 
   <target name="package" depends="compile" description="Package up the project as a jar">
     <jar destfile="ui.jar">

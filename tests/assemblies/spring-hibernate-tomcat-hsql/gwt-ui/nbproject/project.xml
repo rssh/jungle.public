@@ -66,7 +66,7 @@
         <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/1">
             <compilation-unit>
                 <package-root>src</package-root>
-                <classpath mode="compile">/opt/gwt-linux-1.5.3/gwt-user.jar:../lib/gxt-1.2.3.jar:../lib/jungle.configuration-ui-gwt-export-1.0.3.jar</classpath>
+                <classpath mode="compile">/opt/gwt-linux-1.6.4/gwt-user.jar:../lib/jungle.auth.api.gwt-0.9.4.jar:../lib/jungle.configuration-ui-gwt-export-1.0.6.jar:../lib/gxt-1.2.4.jar:../lib/jungle.gwt.util-1.0.2.jar</classpath>
                 <built-to>bin</built-to>
                 <source-level>1.5</source-level>
             </compilation-unit>

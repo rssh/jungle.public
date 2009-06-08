@@ -30,6 +30,10 @@
            destroy-method="shutdown"
           >
     </bean>
+    <bean id="DummyAuthApiProvider"
+           class="ua.gradsoft.jungle.auth.dummy.DummyAuthServerApiProvider" 
+          >
+    </bean>
 
      <bean id="persistenceUnitManager" 
         class="org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager">
@@ -103,6 +107,8 @@
                         value-ref="AppregistryFacade" />
                 <entry key="ConfigurationFacade" 
                         value-ref="ConfigurationFacade" />
+                <entry key="DummyAuthApiProvider" 
+                        value-ref="DummyAuthApiProvider" />
             </map>
         </property>
     </bean>
