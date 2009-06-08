@@ -151,7 +151,7 @@ public class ConfigItemsTableWidget extends LayoutContainer
            public void handleEvent(GridEvent e) {
                Object oeditable = e.model.get("editable");
                boolean editable = (oeditable!=null && (Boolean)oeditable);
-               if (!editable) {
+               if (!editable || !configurationUI_.withWriteAccess()) {
                    e.doit=false;
                }else{
                    ConfigItemType type = (ConfigItemType)e.model.get("type");
