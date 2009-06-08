@@ -43,24 +43,28 @@ public class AuthClientApiHttpRequestScopeImpl implements AuthClientApi
     @Permission(name="*")
     @Override
     public ClientUserInfo getUserInfo(String sessionTicket) throws InvalidSessionTicketException, AuthException {
-        HttpSession session = request_.getSession(false);
-        if (session==null) {
-            throw new AuthException("no session");
+        UserRecord ur = getUserRecord(sessionTicket);
+        ClientUserInfo retval = new ClientUserInfo();
+        if (copyUserAttributes(retval,ur)) {
+            request_.getSession().setAttribute(sessionTicket, ur);
         }
-        Object o = session.getAttribute(sessionTicket);
-        if (o==null) {
-            throw new InvalidSessionTicketException();
-        }
-        if (o instanceof UserRecord) {
-            UserRecord ur = (UserRecord)o;
-            ClientUserInfo retval = new ClientUserInfo();
-            if (copyUserAttributes(retval,ur)) {
-                session.setAttribute(sessionTicket, ur);
-            }
-            return retval;
-        }else{
-            throw new InvalidSessionTicketException();
-        }
+        return retval;
+    }
+
+    @Override
+    @Permission(name="*")
+    public boolean checkUserPermission(String sessionTicket, String permission,
+                                   Map<String,String> params)
+                                            throws InvalidSessionTicketException
+    {
+      try {
+        UserRecord ur = getUserRecord(sessionTicket);
+        UserServerContext ctx = apiProvider_.findContextById(ur.getUserId());
+        return ctx.checkPermission(permission, params);
+      }catch(AuthException ex){
+          // on this we  need
+          throw new IllegalStateException("exception during permission checking",ex);
+      }
     }
 
 
@@ -71,6 +75,25 @@ public class AuthClientApiHttpRequestScopeImpl implements AuthClientApi
       HttpSession session = request_.getSession(false);
       session.removeAttribute("lastUserId");
     }
+
+    
+    private UserRecord getUserRecord(String sessionTicket) throws AuthException, InvalidSessionTicketException
+    {
+        HttpSession session = request_.getSession(false);
+        if (session==null) {
+            throw new AuthException("no session");
+        }
+        Object o = session.getAttribute(sessionTicket);
+        if (o==null) {
+            throw new InvalidSessionTicketException();
+        }
+        if (o instanceof UserRecord) {
+            return (UserRecord)o;
+        }else{
+            throw new InvalidSessionTicketException();            
+        }        
+    }
+
 
     /**
      * copy user attributes.

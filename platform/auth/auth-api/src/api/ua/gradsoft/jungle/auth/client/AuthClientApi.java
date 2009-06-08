@@ -50,6 +50,22 @@ public interface AuthClientApi
                                    throws InvalidSessionTicketException,
                                           AuthException;
 
+
+  /**
+   * Check permission with name <code> permission </code>
+   * @param sessionTicket - session ticket, received by <code> getSessionTicket </code>
+   * @param permission - permission to check
+   * @param params - permission parameters to check
+   * @return true if user have such permission, otherwise false
+   * @throws ua.gradsoft.jungle.auth.client.InvalidSessionTicketException
+   * @throws ua.gradsoft.jungle.auth.client.AuthException
+   */
+  public boolean checkUserPermission(String sessionTicket, String permission,
+                                     Map<String,String> params)
+                                      throws InvalidSessionTicketException,
+                                             AuthException;
+
+
   /**
    * If this API holds last session ticked, to track client, then
    *  remove all internal session state.

@@ -15,4 +15,10 @@ public interface AuthClientApiRemoteServiceAsync {
 
   void  getUserInfo(String sessionTicket, AsyncCallback<String> callback);
 
+  void  checkPermission(String sessionTicket, String permission,
+                        Map<String,String> parameters,
+                        AsyncCallback<Boolean> callback);
+
+  void  logout(AsyncCallback<Void> callback);
+
 }
