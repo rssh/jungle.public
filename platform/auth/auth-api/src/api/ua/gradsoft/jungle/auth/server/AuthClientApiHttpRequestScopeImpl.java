@@ -199,8 +199,9 @@ public class AuthClientApiHttpRequestScopeImpl implements AuthClientApi
 
     public static class UserRecord implements Serializable
     {
-        public UserRecord(String userId_)
+        public UserRecord(String userId)
         {
+         userId_=userId;
          String msg = userId_+Long.toHexString(System.currentTimeMillis())+Integer.toHexString(random.nextInt());
          sessionTicket_=md5Hash(msg);
         }

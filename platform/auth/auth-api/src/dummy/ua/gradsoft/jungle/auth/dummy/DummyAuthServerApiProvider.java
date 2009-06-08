@@ -64,7 +64,7 @@ public class DummyAuthServerApiProvider implements AuthServerApiProvider
         users_.put("a1",
                 new DummyUserServerContext("a1","a1",
                                            Collections.<String,String>emptyMap(),
-                                           false, Arrays.asList("view.configuration",
+                                           false, Arrays.asList("jungle.configuration.read",
                                                                 "x2","x3")
                                                                 )
                 );
@@ -72,7 +72,8 @@ public class DummyAuthServerApiProvider implements AuthServerApiProvider
         users_.put("a2",
                 new DummyUserServerContext("a2","a2",
                                            Collections.<String,String>emptyMap(),
-                                           false, Arrays.asList("view.configuration",
+                                           false, Arrays.asList("jungle.configuration.read",
+                                                                "jungle.configuration.write",
                                                                 "x2","x3")
                                                                 )
                 );
