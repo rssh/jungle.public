@@ -13,10 +13,12 @@
            dest="origin" />
     <copy file="origin/gxt-${origin.version}/gxt.jar"
            tofile="dist/gxt-${version}.jar" />
+<!--
     <zip basedir="origin/gxt-${origin.version}" 
          destfile="dist/extjs.resources.css-${version}.zip">
       <fileset dir="." includes="resources/**/*.*" />
     </zip>
+-->
     <delete dir="origin/gxt-${origin.version}" />
   </target>
 

@@ -6,16 +6,15 @@
  </configurations>
  <publications>
    <artifact name="gxt" type="jar" />
-   <artifact name="extjs.resources.css" type="zip" />
  </publications>
  <dependencies>
     <dependency org="com.extjs" 
                name="gxt.origin"
-               rev="1.2.3" 
+               rev="1.2.4" 
                conf="origin->*"
                >
        <artifact name="gxt" type="zip" 
-             url="http://extjs.com/products/gxt/download.php?dl=gxt123" />
+             url="http://extjs.com/products/gxt/download.php?dl=gxt124" />
     </dependency>
  </dependencies>
 </ivy-module>
