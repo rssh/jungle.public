@@ -2,9 +2,11 @@ package ua.gradsoft.jungle.configuration.client;
 
 import com.extjs.gxt.desktop.client.Desktop;
 import com.extjs.gxt.desktop.client.StartMenu;
+import com.extjs.gxt.ui.client.data.BeanModel;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.Window.CloseAction;
+import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.menu.Item;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.core.client.GWT;
@@ -80,6 +82,9 @@ public class ConfigurationUI extends GwtApplicationComponent
                     if (item!=null) {
                         if (result) {
                             item.enable();
+                            if (grid_!=null) {
+                                grid_.getStore().getLoader().load();
+                            }
                         } else {
                             item.disable();
                         }
@@ -111,6 +116,7 @@ public class ConfigurationUI extends GwtApplicationComponent
 
     @Override
     public void onLogout(GwtApplication application) {
+        MessageBox.alert("", "ConfigurationUI.onLogout", null);
         Desktop desktop = application.getDesktop();
         if (desktop!=null) {
             StartMenu startMenu = desktop.getStartMenu();
@@ -158,11 +164,18 @@ public class ConfigurationUI extends GwtApplicationComponent
         return w;
     }
 
+    public void setGrid(EditorGrid<BeanModel> grid)
+    {
+      grid_=grid;  
+    }
+
     private ConfigurationRemoteServiceAsync service_=null;
     private String                          entryPoint_=null;
     private boolean                         readAccess_=false;
     private boolean                         readAccessReaded_=false;
     private boolean                         writeAccess_=false;
     private boolean                         writeAccessReaded_=false;
+
+    private EditorGrid<BeanModel>         grid_;
 
 }

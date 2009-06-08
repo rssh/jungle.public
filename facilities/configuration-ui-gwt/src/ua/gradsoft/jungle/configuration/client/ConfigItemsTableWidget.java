@@ -61,6 +61,9 @@ public class ConfigItemsTableWidget extends LayoutContainer
        RpcProxy proxy = new RpcProxy() {
           @Override
           public void load(Object loadConfig, AsyncCallback callback) {
+              if (!configurationUI_.withReadAccess()) {
+                  return;
+              }
               PagingLoadConfig pagingLoadConfig = (PagingLoadConfig)loadConfig;
               ConfigItemSelectorByNames selector = new ConfigItemSelectorByNames(null,null);
               selector.setAppName(fAppName);
@@ -186,6 +189,7 @@ public class ConfigItemsTableWidget extends LayoutContainer
        //setAutoWidth(true);
 
        add(cn);
+       configurationUI.setGrid(grid);
     }
 
     /**
@@ -204,6 +208,7 @@ public class ConfigItemsTableWidget extends LayoutContainer
     {
         statusBar_=statusBar;
     }
+
 
     static class ValueCellEditor extends CellEditor
     {
@@ -329,4 +334,5 @@ public class ConfigItemsTableWidget extends LayoutContainer
 
     private StatusBar       statusBar_;
     private ConfigurationUI configurationUI_;
+   
 }

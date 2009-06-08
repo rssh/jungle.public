@@ -29,9 +29,8 @@
        <artifact name="gwt-math-server" type="jar" />
     </dependency>
     <dependency org="com.extjs" name="gxt.repackaged" 
-                rev="[1.2.3,)" conf="default" >
+                rev="[1.2.4,)" conf="default" >
       <artifact name="gxt" type="jar" />
-      <artifact name="extjs.resources.css" type="zip" />
     </dependency>
   <!--
     <dependency org="ua.gradsoft" 
