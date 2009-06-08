@@ -22,6 +22,8 @@ public class GwtUI implements EntryPoint {
     ConfigurationUI ui = new ConfigurationUI(GWT.getModuleBaseURL()+"/TestConfiguration");
     application_.addComponent(ui);
 
+    application_.markLogin("1");
+
     Widget w = ui.getTableWidget("app2");    
     RootPanel.get().add(w);
     RootPanel.get().setVisible(true);
