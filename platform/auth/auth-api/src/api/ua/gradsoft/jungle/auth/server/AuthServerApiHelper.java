@@ -80,7 +80,6 @@ public class AuthServerApiHelper {
    */
   private static <T extends Annotation> T  findAnnotation(Method m, Class<T> annotationClass)
   {
-      System.err.print("find annotation "+annotationClass.getName()+" for method "+m);
       Annotation retval = authAnnotationsHash_.get(m);
 
       if (retval==null) {
@@ -103,11 +102,9 @@ public class AuthServerApiHelper {
       }
 
       if (retval!=null) {
-          System.err.println("found");
           authAnnotationsHash_.put(m, retval);
           return (T)retval;
       }else{
-          System.err.println("not found");
           return null;
       }
       
