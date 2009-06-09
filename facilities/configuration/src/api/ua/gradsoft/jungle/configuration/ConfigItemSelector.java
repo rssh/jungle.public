@@ -7,7 +7,7 @@ import java.io.Serializable;
  **/ 
 public abstract class ConfigItemSelector implements Serializable
 {
-    
+
     public int getFirstResult()
     { return firstResult_; }
     
@@ -20,6 +20,6 @@ public abstract class ConfigItemSelector implements Serializable
     public void setMaxResults(int maxResults)
     { maxResults_=maxResults; }
 
-    private int firstResult_;
-    private int maxResults_;
+    private int firstResult_=0;
+    private int maxResults_=0;
 }
