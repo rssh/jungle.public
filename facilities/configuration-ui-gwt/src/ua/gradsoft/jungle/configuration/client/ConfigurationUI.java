@@ -115,8 +115,7 @@ public class ConfigurationUI extends GwtApplicationComponent
     }
 
     @Override
-    public void onLogout(GwtApplication application) {
-        MessageBox.alert("", "ConfigurationUI.onLogout", null);
+    public void onLogout(GwtApplication application) {     
         Desktop desktop = application.getDesktop();
         if (desktop!=null) {
             StartMenu startMenu = desktop.getStartMenu();
