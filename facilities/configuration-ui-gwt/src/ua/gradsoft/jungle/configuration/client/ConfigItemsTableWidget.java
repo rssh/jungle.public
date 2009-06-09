@@ -66,7 +66,8 @@ public class ConfigItemsTableWidget extends LayoutContainer
           public void load(PagingLoadConfig loadConfig, AsyncCallback<PagingLoadResult<ConfigItem>> callback) {
               //System.err.println("RpcProxy.load-2");
               if (!configurationUI_.withReadAccess()) {
-                  callback.onSuccess(new BasePagingLoadResult<ConfigItem>(Collections.<ConfigItem>emptyList(),0,0));
+                                                                           // Collections.emptyList is not in gwt
+                  callback.onSuccess(new BasePagingLoadResult<ConfigItem>(new ArrayList<ConfigItem>(),0,0));
                   return;
               }            
               ConfigItemSelectorByNames selector = new ConfigItemSelectorByNames(null,null);
@@ -93,7 +94,7 @@ public class ConfigItemsTableWidget extends LayoutContainer
        loader.setLimit(5);
 
        loader.setRemoteSort(true);
-       loader.load(0,5);
+       loader.load();
     
        loader.addLoadListener(new ConfigItemsLoadExceptionListener() );
 
@@ -312,7 +313,7 @@ public class ConfigItemsTableWidget extends LayoutContainer
            @Override
            public void loaderLoadException(LoadEvent event) {
                event.exception.printStackTrace();
-               MessageBox mb = MessageBox.alert("exception during data load", event.exception.getMessage() , null);
+               MessageBox mb = MessageBox.alert("exception during data load",event.exception.toString()+":"+event.exception.getMessage() , null);
            }
 
     }
