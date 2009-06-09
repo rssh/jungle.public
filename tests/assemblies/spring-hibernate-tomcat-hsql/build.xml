@@ -111,7 +111,7 @@
 <!--
             <fileset  dir="web.groovy" />
 -->
-            <fileset  dir="gwt-ui/war/ua.gradsoft.jungle.testapp.GwtUI/" />
+            <fileset  dir="gwt-ui/www/ua.gradsoft.jungle.testapp.GwtUI/" />
 
 
             <webinf   dir="etc/WEB-INF" includes="**/*.xml" />

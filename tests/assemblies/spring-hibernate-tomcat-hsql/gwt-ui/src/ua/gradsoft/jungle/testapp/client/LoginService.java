@@ -83,8 +83,7 @@ public class LoginService extends GwtApplicationComponent
                            MessageBox.alert("Login failed.", caught.getMessage(), null);
                        }
 
-                       public void onSuccess(String sessionTicket) {
-                           MessageBox.alert("successlogin", "success logim, sessionTicket="+sessionTicket, null);
+                       public void onSuccess(String sessionTicket) {                           
                            sessionTicket_=sessionTicket;
                            topLoginFormWindow_.close();
                            Desktop desktop = application_.getDesktop();
