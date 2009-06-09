@@ -1,6 +1,4 @@
-<module rename-to="gwtUI">
-
-   <inherits name='com.google.gwt.user.User'/>
+<module >
 
    <inherits name='ua.gradsoft.jungle.configuration.GwtUI'/>
 

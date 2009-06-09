@@ -75,6 +75,24 @@
         <property name="entityManagerFactory" ref="entityManagerFactory" />
     </bean>
     <tx:annotation-driven />
+
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+      <tx:attributes>
+       <tx:method name="get*" read-only="true" />
+       <tx:method name="*" />
+      </tx:attributes>
+    </tx:advice>
+
+    <aop:config>
+     <aop:pointcut id="ConfigurationFacadeOperation"
+        expression="execution(* 
+               ua.gradsoft.jungle.configuration.ConfigurationFacadeImpl.*(..))" 
+       />
+     <aop:advisor advice-ref="txAdvice" 
+                  pointcut-ref="ConfigurationFacadeOperation"
+      />
+    </aop:config>
+
     <!-- postprocessing -->
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
     <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
