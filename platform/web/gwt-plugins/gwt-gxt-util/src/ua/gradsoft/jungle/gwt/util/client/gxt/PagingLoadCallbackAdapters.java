@@ -31,12 +31,12 @@ public class PagingLoadCallbackAdapters<T>  {
     }
     
     
-    public void onJoinSuccess()
-    {
-        baseCallback_.onSuccess(new BasePagingLoadResult<T>(list_,offset_,totalCount_));
-        list_=null;
+    public synchronized void onJoinSuccess()
+    {        
         listReceived_=false;
         countReceived_=false;        
+        baseCallback_.onSuccess(new BasePagingLoadResult<T>(list_,offset_,totalCount_));        
+        list_=null;
     }
     
     public class PagingListCallbackAdapter implements AsyncCallback<List<T>>
