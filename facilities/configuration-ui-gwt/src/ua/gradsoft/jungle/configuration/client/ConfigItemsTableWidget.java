@@ -12,6 +12,7 @@ import com.extjs.gxt.ui.client.data.BeanModelReader;
 import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -37,6 +38,7 @@ import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,12 +61,12 @@ public class ConfigItemsTableWidget extends LayoutContainer
 
        final String fAppName = appName;
        
-       RpcProxy proxy = new RpcProxy() {
+       RpcProxy<PagingLoadConfig,PagingLoadResult<BeanModel>> proxy = new RpcProxy<PagingLoadConfig,PagingLoadResult<BeanModel>>() {
           @Override
-          public void load(Object loadConfig, AsyncCallback callback) {
+          public void load(PagingLoadConfig loadConfig, AsyncCallback<PagingLoadResult<BeanModel>> callback) {
               //System.err.println("RpcProxy.load-2");
               if (!configurationUI_.withReadAccess()) {
-                  callback.onSuccess(new ArrayList<BeanModel>());
+                  callback.onSuccess(new BasePagingLoadResult<BeanModel>(Collections.<BeanModel>emptyList(),0,0));
                   return;
               }
               PagingLoadConfig pagingLoadConfig = (PagingLoadConfig)loadConfig;
