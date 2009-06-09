@@ -1,0 +1,202 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" 
+          module="test.spring.hibernate.tomcat.hsql"/>
+       
+    <configurations>
+      <conf name="default" description="standard war" />
+      <conf name="compile.only" 
+                       description="with libs for compiling" 
+                       />
+      <conf name="tomcat.conf" 
+            description="additional libraries for tomcat commons" />
+    </configurations>
+    <publications>
+      <artifact name="ifs.test1" type="war" conf="default" />
+    </publications>
+    <dependencies>
+        <dependency org="ua.gradsoft" name="jungle.appregistry" 
+                    rev="latest.integration" 
+                    conf="default->hsql" >
+          <artifact name="jungle.appregistry.api" type="jar" />
+          <artifact name="jungle.appregistry.impl" type="jar" />
+          <artifact name="jungle.appregistry.persistence.xml" type="part" />
+          <artifact name="create_appregistry_hsql" type="sql" />
+          <artifact name="drop_appregistry_hsql" type="sql" />
+        </dependency>
+        <dependency org="ua.gradsoft" name="jungle.configuration" 
+                    rev="latest.integration" 
+                    conf="default->hsql" >
+	  <artifact name="jungle.configuration.api" type="jar" />
+	  <artifact name="jungle.configuration.impl" type="jar" />
+          <artifact name="jungle.configuration.persistence.xml" type="part" />
+          <artifact name="create_configuration_hsql" type="sql" />
+          <artifact name="drop_configuration_hsql" type="sql" />
+        </dependency>
+
+        <dependency org="org.apache" name="commons-logging" rev="1.1.1" 
+                    conf="default->default" >
+          <artifact name="commons-logging" type="jar" />
+        </dependency>
+        <dependency org="ua.gradsoft" name="jungle.persistence.ejbqlao" 
+                    rev="latest.integration" 
+                    conf="default->std" >
+          <artifact name="jungle.persistence.ejbqlao" type="jar" />
+        </dependency>
+        <dependency org="ua.gradsoft" name="jungle.caching" 
+                    rev="latest.integration" conf="default->default" >
+          <artifact name="jungle.caching" type="jar" />
+        </dependency>
+        <dependency org="ua.gradsoft" name="jungle.persistence.jpaex" 
+                    rev="latest.integration" 
+                    conf="default->spring" >
+        </dependency>
+        <dependency org="org.jabsorb" name="jabsorb" rev="latest.integration" 
+                    transitive="false" conf="default->jar" >
+          <artifact name="jabsorb" type="jar" />
+        </dependency>
+        <dependency org="org.slf4j" name="slf4j-api" rev="1.5.6" 
+                    conf="default->default" >
+          <!-- slf4j used by jackorb servlet --> 
+          <artifact name="slf4j-api" type="jar" />
+        </dependency>
+<!--
+        <dependency org="org.slf4j" name="slf4j-jcl" rev="1.5.6" 
+                    conf="default->default" >
+          <artifact name="slf4j-jcl" type="jar" />
+        </dependency>
+-->
+        <dependency org="org.slf4j" name="slf4j-jdk14" rev="1.5.6" 
+                    conf="default->default" >
+          <artifact name="slf4j-jdk14" type="jar" />
+        </dependency>
+        <dependency org="org.springframework" name="spring" rev="2.5.6"
+                    transitive="true" conf="default->default" >
+          <artifact name="spring" type="jar" />
+        </dependency>
+        <dependency org="org.springframework" name="spring-aop" rev="2.5.6"
+                    transitive="true" conf="default->default" >
+          <artifact name="spring-aop" type="jar" />
+        </dependency>
+        <dependency org="org.aspectj" name="aspectjrt" rev="1.6.1"
+                    transitive="true" conf="default->default" >
+          <artifact name="aspectjrt" type="jar" />
+        </dependency>
+        <dependency org="org.aspectj" name="aspectjweaver" rev="1.6.1"
+                    transitive="true" conf="default->default" >
+          <artifact name="aspectjweaver" type="jar" />
+        </dependency>
+        <dependency org="org.hibernate" name="hibernate-core" rev="3.3.1.GA" 
+                    transitive="true" conf="default->default" >
+          <artifact name="hibernate-core" type="jar" />
+        </dependency>
+        <dependency org="org.hibernate" name="hibernate-annotations" 
+                    rev="3.4.0.GA"  transitive="true" conf="default->default" >
+          <artifact name="hibernate-annotations" type="jar" />
+        </dependency>
+        <dependency org="org.hibernate" name="hibernate-entitymanager" 
+                    rev="3.3.2.GA"  transitive="true" conf="default->default" >
+          <artifact name="hibernate-entitymanager" type="jar" />
+        </dependency>
+        <dependency org="org.apache.xbean" name="xbean-spring" 
+                    rev="3.4.3"  transitive="false" conf="default->default" >
+          <artifact name="xbean-spring" type="jar" />
+        </dependency>
+        <dependency org="org.hsqldb" name="hsqldb" rev="[1.8.0,)" 
+                    conf="default->default">
+        </dependency>
+        <dependency org="org.apache" name="commons-dbcp" rev="1.2.2" 
+                    conf="default->default" >
+          <artifact name="commons-dbcp" type="jar" />
+        </dependency>
+
+        <dependency org="org.apache.openejb" 
+               name="javaee-api"
+               rev="5.0-1" 
+               conf="compile.only->*"
+               transitive="false"
+               >
+          <artifact name="javaee-api" type="jar" />
+        </dependency>
+
+        <dependency org="org.codehaus.groovy" name="groovy-all" rev="1.5.7" 
+                         conf="default->default" >
+          <artifact name="groovy-all" type="jar" />
+        </dependency>
+
+        <dependency org="org.springframework" name="spring-tomcat-weaver" 
+                    rev="2.5.6" conf="tomcat.conf->default" 
+                    transitive="false" >
+          <artifact name="spring-tomcat-weaver" type="jar" />
+        </dependency>
+
+        <dependency org="ua.gradsoft" name="jungle.persistence.jpaex"  
+                    rev="latest.integration" conf="default->spring" >
+          <artifact name="jungle.persistence.jpaex-spring" type="jar" />
+        </dependency>
+
+        <dependency org="ua.gradsoft" name="jabsorb.class.serializer" 
+                    rev="latest.integration" conf="default->default" 
+                    transitive="false" >
+          <artifact name="jabsorb.class.serializer" type="jar" />
+        </dependency>
+        <dependency org="ua.gradsoft" name="jabsorb.jpa.hint" 
+                    rev="latest.integration" 
+                    conf="default->default" transitive="false" >
+          <artifact name="jabsorb.jpa.hint" type="jar" />
+        </dependency>
+        <dependency org="ua.gradsoft" name="jabsorb.bigdecimal.serializer" 
+                    rev="latest.integration" 
+                    conf="default->default" transitive="false" >
+          <artifact name="jabsorb.bigdecimal.serializer" type="jar" />
+        </dependency>
+        <dependency org="ua.gradsoft" name="spring.jabsorb.initializer" 
+                    rev="latest.integration" 
+                    conf="default->default" transitive="false" >
+          <artifact name="spring.jabsorb.initializer" type="jar" />
+        </dependency>
+
+        <!-- ui part -->
+        <dependency org="ua.gradsoft" name="jungle.gwt.gwtservlet" 
+                    rev="latest.integration"
+                    conf="default->default" >
+          <artifact name="jungle.gwt.gwtservlet"   type="jar" />
+        </dependency>
+        <dependency org="com.google.gwt" name="gwt.repackaged" 
+                    rev="1.6.4"  transitive="false"
+                    conf="default->server" >
+          <artifact name="gwt-servlet" type="jar" />
+        </dependency>
+        <dependency org="net.sf.beanlib" name="beanlib.repackaged" 
+                    rev="[5.0.1beta,)"
+                    conf="default" >
+          <artifact name="beanlib" type="jar" />
+          <artifact name="beanlib-hibernate" type="jar" />
+        </dependency>
+
+
+        <dependency org="ua.gradsoft" name="jungle.configuration-ui-gwt" 
+                    rev="latest.integration"
+                    conf="default->default" >
+          <artifact name="jungle.configuration-ui-gwt-export" type="jar" />
+        </dependency>
+ 
+        <dependency org="ua.gradsoft" name="jungle.auth-api" 
+                    rev="latest.integration"
+                    conf="default->test;default->gwt-export" >
+          <artifact name="jungle.auth.api" type="jar" />
+          <artifact name="jungle.auth.api.gwt" type="jar" />
+          <artifact name="jungle.auth.api-dummyimpl" type="jar" />
+        </dependency>
+ 
+        <dependency org="ua.gradsoft" name="jungle.gwt.util" 
+                    rev="latest.integration"
+                    conf="default->default" >
+          <artifact name="jungle.gwt.util" type="jar" />
+        </dependency>
+      
+
+    </dependencies>
+</ivy-module>
+
+
+
