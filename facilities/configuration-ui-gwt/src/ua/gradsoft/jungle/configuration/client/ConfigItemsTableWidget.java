@@ -61,34 +61,30 @@ public class ConfigItemsTableWidget extends LayoutContainer
 
        final String fAppName = appName;
        
-       RpcProxy<PagingLoadConfig,PagingLoadResult<BeanModel>> proxy = new RpcProxy<PagingLoadConfig,PagingLoadResult<BeanModel>>() {
+       RpcProxy<PagingLoadConfig,PagingLoadResult<ConfigItem>> proxy = new RpcProxy<PagingLoadConfig,PagingLoadResult<ConfigItem>>() {
           @Override
-          public void load(PagingLoadConfig loadConfig, AsyncCallback<PagingLoadResult<BeanModel>> callback) {
+          public void load(PagingLoadConfig loadConfig, AsyncCallback<PagingLoadResult<ConfigItem>> callback) {
               //System.err.println("RpcProxy.load-2");
               if (!configurationUI_.withReadAccess()) {
-                  callback.onSuccess(new BasePagingLoadResult<BeanModel>(Collections.<BeanModel>emptyList(),0,0));
+                  callback.onSuccess(new BasePagingLoadResult<ConfigItem>(Collections.<ConfigItem>emptyList(),0,0));
                   return;
-              }
-              PagingLoadConfig pagingLoadConfig = (PagingLoadConfig)loadConfig;
+              }            
               ConfigItemSelectorByNames selector = new ConfigItemSelectorByNames(null,null);
               selector.setAppName(fAppName);
-              PagingLoadCallbackAdapters adapters = new PagingLoadCallbackAdapters<ConfigItem>(callback,pagingLoadConfig.getOffset());
+              PagingLoadCallbackAdapters<ConfigItem> adapters = new PagingLoadCallbackAdapters<ConfigItem>(callback,loadConfig.getOffset());
 
-              selector.setFirstResult(pagingLoadConfig.getOffset());
-              selector.setMaxResults(pagingLoadConfig.getLimit());
+              selector.setFirstResult(loadConfig.getOffset());
+              selector.setMaxResults(loadConfig.getLimit());
               configurationUI_.getService().getConfigItems(selector, 
                                                            adapters.getListCallbackAdapter());
+              //MessageBox.alert("selector:", selector.toString() , callback);
               configurationUI_.getService().getConfigItemsCount(selector, adapters.getTotalCountCallbackAdapter());
           }
        };
        
-       BeanModelReader reader = new BeanModelReader();
+       BeanModelReader<PagingLoadConfig> reader = new BeanModelReader<PagingLoadConfig>();
 
-       ConfigItem item = new ConfigItem();
-       item.setId(BigDecimal.valueOf(1L));
-       item.setName("name-value");
-
-       BasePagingLoader loader = new BasePagingLoader(proxy, reader);
+       BasePagingLoader<PagingLoadConfig,PagingLoadResult<ConfigItem>> loader = new BasePagingLoader<PagingLoadConfig,PagingLoadResult<ConfigItem>>(proxy, reader);
        ListStore<BeanModel> store = new ListStore<BeanModel>(loader);
        final PagingToolBar toolBar = new PagingToolBar(50);
        toolBar.bind(loader);
@@ -97,7 +93,7 @@ public class ConfigItemsTableWidget extends LayoutContainer
        loader.setLimit(5);
 
        loader.setRemoteSort(true);
-       loader.load();
+       loader.load(0,5);
     
        loader.addLoadListener(new ConfigItemsLoadExceptionListener() );
 
