@@ -23,7 +23,7 @@
     <property name="build-impl.dir" value="${build.dir}/impl"/>
     
     <path id="core.classpath">
-        <pathelement location="${lib.dir}/javaee-api-5.0-1.jar"/>
+        <fileset dir="lib" includes="javaee-api-*.jar" />
     </path>
 
 
