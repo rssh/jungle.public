@@ -65,6 +65,7 @@ public class ConfigItemsTableWidget extends LayoutContainer
               //System.err.println("RpcProxy.load-2");
               if (!configurationUI_.withReadAccess()) {
                   callback.onSuccess(new ArrayList<BeanModel>());
+                  return;
               }
               PagingLoadConfig pagingLoadConfig = (PagingLoadConfig)loadConfig;
               ConfigItemSelectorByNames selector = new ConfigItemSelectorByNames(null,null);
