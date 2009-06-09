@@ -8,16 +8,6 @@
             <properties/>
             <folders>
                 <source-folder>
-                    <label>public</label>
-                    <type>doc_root</type>
-                    <location>src/ua/gradsoft/jungle/configuration/public</location>
-                </source-folder>
-                <source-folder>
-                    <label>conf</label>
-                    <type>web_inf</type>
-                    <location>tomcat/conf</location>
-                </source-folder>
-                <source-folder>
                     <label>src</label>
                     <type>java</type>
                     <location>src</location>
@@ -31,6 +21,16 @@
                     <label>test-server</label>
                     <type>java</type>
                     <location>test-server</location>
+                </source-folder>
+                <source-folder>
+                    <label>public</label>
+                    <type>doc_root</type>
+                    <location>src/ua/gradsoft/jungle/configuration/public</location>
+                </source-folder>
+                <source-folder>
+                    <label>conf</label>
+                    <type>web_inf</type>
+                    <location>tomcat/conf</location>
                 </source-folder>
             </folders>
             <ide-actions>
@@ -87,7 +87,7 @@
         <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/2">
             <compilation-unit>
                 <package-root>src</package-root>
-                <classpath mode="compile">lib/gxt-1.2.3.jar:lib/jungle.configuration.gwt-1.0.4.jar:/opt/gwt-linux-1.6.4/gwt-user.jar:lib/jungle.configuration.gwt-1.1.0.jar:lib/jungle.auth.api.gwt-0.9.4.jar:lib/jungle.gwt.util-1.0.1.jar</classpath>
+                <classpath mode="compile">lib/jungle.configuration.gwt-1.0.4.jar:/opt/gwt-linux-1.6.4/gwt-user.jar:lib/jungle.configuration.gwt-1.1.0.jar:lib/jungle.auth.api.gwt-0.9.4.jar:lib/jungle.gwt.util-1.0.1.jar:lib/gxt-1.2.4.jar</classpath>
                 <built-to>jungle.configuration-ui-gwt.jar</built-to>
                 <source-level>1.5</source-level>
             </compilation-unit>

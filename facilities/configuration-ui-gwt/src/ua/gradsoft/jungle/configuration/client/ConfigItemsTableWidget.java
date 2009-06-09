@@ -5,6 +5,7 @@
 package ua.gradsoft.jungle.configuration.client;
 
 import com.extjs.gxt.ui.client.Events;
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.BasePagingLoader;
 import com.extjs.gxt.ui.client.data.BeanModel;
 import com.extjs.gxt.ui.client.data.BeanModelReader;
@@ -61,8 +62,9 @@ public class ConfigItemsTableWidget extends LayoutContainer
        RpcProxy proxy = new RpcProxy() {
           @Override
           public void load(Object loadConfig, AsyncCallback callback) {
+              //System.err.println("RpcProxy.load-2");
               if (!configurationUI_.withReadAccess()) {
-                  return;
+                  callback.onSuccess(new ArrayList<BeanModel>());
               }
               PagingLoadConfig pagingLoadConfig = (PagingLoadConfig)loadConfig;
               ConfigItemSelectorByNames selector = new ConfigItemSelectorByNames(null,null);
@@ -88,11 +90,11 @@ public class ConfigItemsTableWidget extends LayoutContainer
        final PagingToolBar toolBar = new PagingToolBar(50);
        toolBar.bind(loader);
 
-       //loader.setOffset(0);
-       //loader.setLimit(5);
+       loader.setOffset(0);
+       loader.setLimit(5);
 
        loader.setRemoteSort(true);
-       loader.load(0, 5);
+       loader.load();
     
        loader.addLoadListener(new ConfigItemsLoadExceptionListener() );
 
