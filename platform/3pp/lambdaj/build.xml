@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="net.sf.jsch" default="publish" basedir="."
+  xmlns:ivy="antlib:fr.jayasoft.ivy.ant"
+ >
+
+  <property file="build.properties" />
+
+  <import file="build-ivy.xml" />
+
+   <target name="publish" depends="retrieve-origin">
+     <ivy:publish resolver="datacenter.gradsoft.ua" pubrevision="${version}" 
+                  overwrite="true" 
+                  >
+       <artifacts pattern="origin/[artifact]-[revision].[ext]" />
+     </ivy:publish>
+    </target>
+
+   <target name="publish.local" depends="retrieve-origin">
+     <ivy:publish resolver="jungle.repo" pubrevision="${version}" 
+                  overwrite="true" 
+                  >
+       <artifacts pattern="origin/[artifact]-[revision].[ext]" />
+     </ivy:publish>
+    </target>
+
+
+</project>
