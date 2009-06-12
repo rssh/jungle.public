@@ -9,10 +9,11 @@ public interface CriteriaHelper<T> {
 
     /**
      * create query
-     * @param criteria
-     * @return
+     * @param criteria - criteris
+     * @return query which return entries, selected by criteria.
      */
     public QueryWithParams  getSelectQueryWithParams(T criteria);
+
 
     public QueryWithParams  getCountQueryWithParams(T criteria);
 
