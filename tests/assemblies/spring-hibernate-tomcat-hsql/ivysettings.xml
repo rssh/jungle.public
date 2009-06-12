@@ -147,11 +147,12 @@
            <chain name="external.chain" returnFirst="true" >
                   <resolver ref="ibiblio" /> 
                   <resolver ref="java.net" /> 
-            </chain>
-                <chain name="global.chain" returnFirst="true">
+           </chain>
+           <chain name="global.chain" returnFirst="true">
+                  <resolver ref="jungle.repo" />
                   <resolver ref="build.local" />
                   <resolver ref="external.chain" />
-                </chain>
+           </chain>
         </resolvers>
         <modules>
           <module organisation="ua.gradsoft" 

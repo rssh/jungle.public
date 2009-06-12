@@ -57,7 +57,7 @@
         <path refid="project.class.path" />
         <fileset dir="${gwt.home}" includes="gwt-dev-*.jar" />
       </classpath>
-      <jvmarg value="-Xmx256M" />
+      <jvmarg value="-Xmx512M" />
       <arg value="-logLevel" />
       <arg value="INFO" />
       <arg value="-out" />

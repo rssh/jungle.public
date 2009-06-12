@@ -77,28 +77,46 @@
  </target>
 
  <target name="resolve-ivy" depends="declare-ivy">
+   <echo message="before resolve ____PROJECT test-spring-hibernate-tomcat _______"/>
    <ivy:configure file="ivysettings.xml" />
    <ivy:resolve />
+   <echo message="after  resolve ____PROJECT test-spring-hibernate-tomcat _______"/>
  </target>
 
  <target name="retrieve-libs" depends="resolve-ivy" >
+   <echo message="before retrieve ____PROJECT test-spring-hibernate-tomcat _______"/>
    <ivy:retrieve  pattern="lib/[artifact]-[revision].[ext]" 
-                  conf="default"
+                  conf="default" type="jar,part"
    />
    <ivy:artifactproperty name="[module].version" conf="default"
                         value="[revision]" />
+   <echo message="after  retrieve ____PROJECT test-spring-hibernate-tomcat _______"/>
+ </target>
+
+ <target name="retrieve-sql" depends="resolve-ivy" >
+   <echo message="before retrieve ____PROJECT test-spring-hibernate-tomcat _______"/>
+   <ivy:retrieve  pattern="sql/[artifact]-[revision].[ext]" 
+                  conf="default" type="sql"
+   />
+   <ivy:artifactproperty name="[module].version" conf="default"
+                        value="[revision]" />
+   <echo message="after  retrieve ____PROJECT test-spring-hibernate-tomcat _______"/>
  </target>
 
  <target name="retrieve-compile-libs" depends="resolve-ivy" >
+   <echo message="before retrieve ____PROJECT test-spring-hibernate-tomcat _______"/>
    <ivy:retrieve  pattern="lib.compileonly/[artifact]-[revision].[ext]" 
                   conf="compile.only"
    />
+   <echo message="after  retrieve ____PROJECT test-spring-hibernate-tomcat _______"/>
  </target>
 
  <target name="retrieve-tomcat-libs" depends="resolve-ivy" >
+   <echo message="before retrieve ____PROJECT test-spring-hibernate-tomcat _______"/>
    <ivy:retrieve  pattern="lib.common.tomcat/[artifact]-[revision].[ext]" 
                   conf="tomcat.conf"
    />
+   <echo message="after  retrieve ____PROJECT test-spring-hibernate-tomcat _______"/>
  </target>
 
 </project>

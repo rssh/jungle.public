@@ -15,7 +15,7 @@
     <property name="src.dir" value="src"/>
     
     <path id="core.classpath">
-       <pathelement location="${gwt.home}/gwt-servlet.jar" />
+       <pathelement location="${lib.dir}/gwt-servlet.jar" />
        <fileset dir="${lib.dir}" includes="*.jar" />
     </path>
 

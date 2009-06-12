@@ -87,6 +87,11 @@
                buildDirectory="${platform.public.home}/persistence/cluster_keys"
                publishTarget="publish.local"
              />
+             <dependencyBuild
+               organization="ua.gradsoft" name="jungle.gwt.gwtservlet"
+               buildDirectory="${platform.public.home}/web/gwt-plugins/gwt-servlet"
+               publishTarget="publish.local"
+             />
            </build>
 
            <url name="read.datacenter.gradsoft.ua" namespace="gradsoft">

@@ -9,6 +9,7 @@
 
     <property name="lib.dir" value="lib" />
     <property name="compile.lib.dir" value="lib.compileonly" />
+    <property name="tomcat.lib.dir" value="lib.common.tomcat" />
     <property name="dist.dir" value="dist" />
     <property name="war.dir" value="${dist.dir}/war" />
     
@@ -27,6 +28,9 @@
     <target name="prepare">
         <mkdir dir="${dist.dir}"/>
         <mkdir dir="${war.dir}"/>
+        <mkdir dir="${lib.dir}"/>
+        <mkdir dir="${compile.lib.dir}"/>
+        <mkdir dir="${tomcat.lib.dir}"/>
     </target>
     
     <target name="clean">
@@ -38,7 +42,15 @@
     <target name="assemble" depends="build-war">
     </target>
 
-    <target name="build" depends="retrieve-libs, retrieve-compile-libs" >
+    <target name="pre-build">
+      <echo message="before build ____PROJECT test-spring-hibernate-tomcat____________"/>
+    </target>
+
+    <target name="post-build">
+      <echo message="after  build ____PROJECT test-spring-hibernate-tomcat____________"/>
+    </target>
+
+    <target name="build" depends="retrieve-libs, retrieve-compile-libs, pre-build" >
       <javac  srcdir="src" includes="**/*.java" deprecation="on"
               debug="on" 
               destdir="classes"
@@ -87,14 +99,16 @@
          <filter token="DB_FILE" value="${db.file}" />
        </filterset>
       </copy>
-      <delete dir="sql" includes="*.sql" />
-      <move todir="sql"> 
+    </target>
+
+    <target name="build-sql" depends="retrieve-sql">
+      <!-- <move todir="sql" overwrite="true"> 
         <fileset dir="lib" includes="*.sql" />
-      </move>
+      </move> -->
     </target>
 
     <target name="build-war" depends="prepare, build, build-persistence, 
-                                      build-gwt" >
+                                      build-gwt, post-build" >
         <war destfile="${war.dir}/jungle.tomcat.sh-test.war" 
                 webxml="etc/WEB-INF/web.xml"  
                 index="true">
@@ -120,16 +134,20 @@
         </war>
     </target>
 
-    <target name="deploy" 
-            depends="build-war,retrieve-tomcat-libs,check-tomcat-home" 
+    <!--        depends="build-war,retrieve-tomcat-libs,check-tomcat-home" -->
+    <target name="deploy" depends="check-tomcat-home"
                           if="tomcat.home.is.set">
       <echo message="tomcat.home is set to ${tomcat.home}" />
       <copy file="lib.common.tomcat/spring-tomcat-weaver-2.5.6.jar" 
             todir="${tomcat.home}/lib" />
-      <copy file="${war.dir}/ifs.tomcat-test-${version}.war" 
+      <copy file="${war.dir}/jungle.tomcat.sh-test.war" 
             todir="${tomcat.home}/webapps" 
             overwrite="true" />
       <echo message="please, restart tomcat" />
+    </target>
+
+    <target name="undeploy">
+      <delete file="${tomcat.home}/webapps/jungle.tomcat.sh-test.war" />
     </target>
     
     <target name="check-tomcat-home"> 
@@ -138,7 +156,7 @@
       </condition>
     </target>
 
-    <target name="create-db" depends="build-persistence" >
+    <target name="create-db" depends="build-sql" >
       <antcall target="create-db.only" />
     </target>
 
@@ -155,7 +173,7 @@
      </sql>
     </target>
 
-    <target name="drop-db" depends="build-persistence" >
+    <target name="drop-db" depends="build-sql" >
      <sql driver="${jdbc.driver}" url="${jdbc.url}" 
           userid="${jdbc.login}"  password="${jdbc.password}" 
           classpathref="core.path"  >

@@ -1,27 +1,33 @@
 <ivy-module version="1.4">
- <info organisation="ua.gradsoft" module="jungle.gwt.util" />
- <configurations>
-  <conf name="default" description="default build of gwt module" />
-  <conf name="source" description="sources" />
-  <conf name="docs" description="docs" />
-  <conf name="compile" 
-        description="compiling module with compile dependencies" />
- </configurations>
- <publications>
-  <artifact name="jungle.gwt.util" 
-            type="jar" conf="default" />
-  <artifact name="jungle.gwt.util-docs" 
-            type="zip" conf="docs" />
-  <artifact name="jungle.gwt.util-src" 
-            type="zip" conf="source" />
- </publications>
- <dependencies>
-   <dependency org="com.googlecode" 
-               name="gwt-math"
-               rev="2.0.3p1" 
-               conf="default->default"
-               >
-       <artifact name="gwt-math" type="jar" />
+
+  <info organisation="ua.gradsoft" module="jungle.gwt.util" />
+  <configurations>
+    <conf name="default" description="default build of gwt module" />
+    <conf name="source" description="sources" />
+    <conf name="docs" description="docs" />
+    <conf name="compile" 
+          description="compiling module with compile dependencies" />
+  </configurations>
+
+  <publications>
+    <artifact name="jungle.gwt.util" 
+              type="jar" conf="default" />
+    <artifact name="jungle.gwt.util-docs" 
+              type="zip" conf="docs" />
+    <artifact name="jungle.gwt.util-src" 
+              type="zip" conf="source" />
+  </publications>
+
+  <dependencies>
+    <dependency org="com.googlecode" name="gwt-math"
+                rev="2.0.3p1" 
+                conf="default->default" transitive="false" >
+      <artifact name="gwt-math" type="jar" />
+    </dependency>
+    <dependency org="com.google.gwt" name="gwt.repackaged" 
+                rev="[1.6.4p1,)" 
+                conf="default->server" transitive="false" >
+      <artifact name="gwt-servlet" type="jar" />
     </dependency>
     <dependency org="com.extjs" name="gxt.repackaged" 
                 rev="[1.2.4,)" conf="default" >
@@ -31,6 +37,6 @@
                 rev="[0.9.4,)" conf="default->gwt-export" >
       <artifact name="jungle.auth.api.gwt" type="jar" />
     </dependency>
-
  </dependencies>
+
 </ivy-module>
