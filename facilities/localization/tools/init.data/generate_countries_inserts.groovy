@@ -142,32 +142,34 @@ new File("ISO-3166.txt").eachLine {
    String countryName=countryNames[countryCode];
 
    String sql;
-   if (defaultLanguage!=null) {
-     sql="""
+   if (countryName!=null) {
+     if (defaultLanguage!=null) {
+       sql="""
        insert into countries_linfos(code, name_eng, default_language_code)
            values('${countryCode}','${countryName}','${defaultLanguage}');
-     """;
-   }else{
-     sql="""
-       insert into countries_linfos(code, name_eng, default_language_code)
+       """;
+     }else{
+       sql="""
+         insert into countries_linfos(code, name_eng, default_language_code)
            values('${countryCode}','${countryName}',NULL);
-     """;
-   }
+       """;
+     }
 
-   xout.println(sql);
+     xout.println(sql);
 
-   if (alls!=null && false) {
+     if (alls!=null && false) {
 
 //     println("alls:${alls}");
 
-     alls.each {
-       def languageCode = byIso639_2Code[it];
-       if (languageCode!=null) {
-         sql="""
-           insert into languages_in_countries(language_code, country_code)
-              values('${languageCode}','${countryCode}');
-         """;
-         xout.println(sql);
+       alls.each {
+         def languageCode = byIso639_2Code[it];
+         if (languageCode!=null) {
+           sql="""
+             insert into languages_in_countries(language_code, country_code)
+                values('${languageCode}','${countryCode}');
+           """;
+           xout.println(sql);
+         }
        }
      }
    }

@@ -30,7 +30,7 @@ new File("ISO-639-2_utf-8.txt").eachLine {
 
  if (iso_639_1.length() > 0) {
    String tmpl="""
-     insert into languages(code,code_iso639_2,name_eng)
+     insert into languages(code,code_iso_639_2,name_eng)
        values('${iso_639_1}','${iso_639_2}','${fln}');
      """;
 
