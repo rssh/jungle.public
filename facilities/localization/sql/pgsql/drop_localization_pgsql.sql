@@ -1,17 +1,17 @@
 
-drop table localization_bundle_table_columns if exists;
+drop table if exists localization_bundle_table_columns;
 
-drop table localization_bundle_tables if exists;
+drop table if exists localization_bundle_tables;
 
-drop table localization_bundles if exists;
+drop table if exists localization_bundles;
 
-drop table localization_type if exists;
+drop table if exists localization_type;
 
-drop table languages_in_countries if exists;
+drop table if exists languages_in_countries;
 
-drop table countries_linfos if exists;
+drop table if exists countries_linfos;
 
-drop table languages if exists;
+drop table if exists languages;
 
 
 

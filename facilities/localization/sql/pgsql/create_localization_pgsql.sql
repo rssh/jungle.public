@@ -19,14 +19,14 @@ create table countries_linfos
 create table languages_in_countries
 (
   LANGUAGE_CODE CHAR(2)  references languages(code),
-  COUNTRY_CODE  CHAR(2)  references county_linfos(code)
+  COUNTRY_CODE  CHAR(2)  references countries_linfos(code),
  primary key(country_code, language_code)
 );
 
 create table localization_type
 (
   ID                 INTEGER primary key,
-  ONE_TABLE          CHAR(1) default '0'
+  ONE_TABLE          CHAR(1) default '0',
   TRANSLATE_TABLES   CHAR(1) default '0'
 );
 
@@ -39,10 +39,10 @@ create table localization_bundles
 
 
 create table localization_bundle_languages
-{
-  bundle_name   NAME(64) references localization_bundles(name),
-  language_code  CHAR(2) references languages(id)
-}
+(
+  bundle_name   VARCHAR(64) references localization_bundles(name),
+  language_code  CHAR(2) references languages(code)
+);
 
 create table localization_bundle_tables
 (
@@ -50,7 +50,7 @@ create table localization_bundle_tables
   TRANSLATION_TABLE_NAME  VARCHAR(64) unique,
   PK_COLUMN_NAME     VARCHAR(32),
   BUNDLE_NAME        VARCHAR(64) references localization_bundles(name),
-  ENTITY_CLASSNAME   VARCHAR2(255) unique
+  ENTITY_CLASSNAME   VARCHAR(255) unique
 );
 
 
@@ -58,7 +58,7 @@ create table localization_bundle_tables
 create table localization_bundle_table_columns
 (
   TABLE_NAME          VARCHAR(64),
-  COLUMN_PREFIX         VARCHAR(64)
-      primary key(table_prefix, column_prefix),
+  COLUMN_PREFIX         VARCHAR(64),
+      primary key(table_prefix, column_prefix)
 );
   
