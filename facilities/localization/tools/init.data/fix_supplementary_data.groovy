@@ -20,7 +20,11 @@ if (!withOut) {
   xout=xxout;
 }
 
-
+try {
+  println("countryNames.size() is "+countryNames.size());
+}catch(MissingPropertyException ex){
+  println("Missint property countryNames ");
+}
 
 class CLDRSaxHandler extends DefaultHandler
 {
@@ -45,12 +49,17 @@ class CLDRSaxHandler extends DefaultHandler
   def inBcp47KeywordMappings=false;
   def inReferences=false;
   def xout;
+  def countryNames;
 
   void setXout(PrintWriter exout)
   {
    xout=exout;
   }
 
+  void setCountryNames(Map<String,String> eCountryNames)
+  {
+   countryNames = eCountryNames;
+  }
 
   void startElement(String ns, String localName, String qName, 
                     Attributes attrs)
@@ -96,10 +105,16 @@ class CLDRSaxHandler extends DefaultHandler
                 """);
                }
                if (populationPercent > 10) {
-                xout.println("""
-                 insert into languages_in_countries(language_code, country_code)
-                  values('${languageName}','${currentTerritory}');
+                if (currentTerritory!=null &&
+                    countryNames[currentTerritory]!=null) {
+                 xout.println("""
+                   insert into languages_in_countries(
+                             language_code, country_code)
+                   values('${languageName}','${currentTerritory}');
                 """);
+                }else{
+                  xout.println("--skip  ${currentTerritory} null or no country");
+                }
                }
               }
             }else{
@@ -250,7 +265,12 @@ class CLDRSaxHandler extends DefaultHandler
 File cldrFile = new File("CLDR/supplementalData.xml");
 def cldrHandler = new CLDRSaxHandler();
 cldrHandler.setXout(xout);
+cldrHandler.setCountryNames(countryNames);
 def reader = SAXParserFactory.newInstance().newSAXParser().xmlReader;
 reader.setContentHandler(cldrHandler);
-reader.parse(new InputSource(new FileInputStream(cldrFile)));
+try {
+  reader.parse(new InputSource(new FileInputStream(cldrFile)));
+}catch(Exception ex){
+  ex.printStackTrace();
+}
 

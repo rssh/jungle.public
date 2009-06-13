@@ -30,7 +30,9 @@
      <groovy>
       GroovyShell shell = new GroovyShell();
       def xout = new PrintWriter("init.sql");
+      def countryNames = [:];
       shell.setProperty("xout", xout);
+      shell.setProperty("countryNames", countryNames);
       shell.run(new File("generate_languages_inserts.groovy"),[]);
       shell.run(new File("generate_countries_inserts.groovy"),[]);
       shell.run(new File("fix_supplementary_data.groovy"),[]);

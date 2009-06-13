@@ -3,6 +3,8 @@ drop table localization_bundle_table_columns if exists;
 
 drop table localization_bundle_tables if exists;
 
+drop table localization_bundle_languages if exists;
+
 drop table localization_bundles if exists;
 
 drop table localization_type if exists;

@@ -3,7 +3,7 @@
 create table languages
 (
   CODE CHAR(2)  PRIMARY KEY,  -- iso639-1 language code
-  CODE_ISO_639_2 CHAR(2) unique not null, -- appropriative 639_2 language code
+  CODE_ISO_639_2 CHAR(3) unique not null, -- appropriative 639_2 language code
   NAME_ENG   VARCHAR(64)  unique not null -- english name of language.
 );
 
@@ -59,6 +59,6 @@ create table localization_bundle_table_columns
 (
   TABLE_NAME          VARCHAR(64),
   COLUMN_PREFIX         VARCHAR(64),
-      primary key(table_prefix, column_prefix)
+      primary key(table_name, column_prefix)
 );
   

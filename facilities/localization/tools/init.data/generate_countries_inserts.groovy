@@ -24,7 +24,6 @@ def byCountryCode = [:];
 def byCountryCodeOrigins = [:];
 def byIso639_1Code = [:];
 def byIso639_2Code = [:];
-def countryNames=[:];
 
 int maxLanguagesPerCountry = 0;
 String maxCountryCode=null;
@@ -143,6 +142,7 @@ new File("ISO-3166.txt").eachLine {
 
    String sql;
    if (countryName!=null) {
+     countryName=countryName.replace("'","''");
      if (defaultLanguage!=null) {
        sql="""
        insert into countries_linfos(code, name_eng, default_language_code)
