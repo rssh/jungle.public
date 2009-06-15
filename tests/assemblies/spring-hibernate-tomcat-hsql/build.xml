@@ -65,7 +65,7 @@
     </target>
 
     <target name="gwt-js-compile" unless="gwt.js.generated"  >
-      <ant dir="gwt-ui" antfile="ui.ant.xml" target="js-compile" />
+      <ant dir="gwt-ui" antfile="ui.ant.xml" target="js-compile-new" />
     </target>
 
 
@@ -134,8 +134,8 @@
         </war>
     </target>
 
-    <!--        depends="build-war,retrieve-tomcat-libs,check-tomcat-home" -->
-    <target name="deploy" depends="check-tomcat-home"
+    <!--        depends="build-war -->
+    <target name="deploy" depends="retrieve-tomcat-libs,check-tomcat-home"
                           if="tomcat.home.is.set">
       <echo message="tomcat.home is set to ${tomcat.home}" />
       <copy file="lib.common.tomcat/spring-tomcat-weaver-2.5.6.jar" 

@@ -118,7 +118,7 @@
           <artifact name="javaee-api" type="jar" />
         </dependency>
 
-        <dependency org="org.codehaus.groovy" name="groovy-all" rev="1.5.7" 
+        <dependency org="org.codehaus.groovy" name="groovy-all" rev="1.6.1" 
                          conf="default->default" >
           <artifact name="groovy-all" type="jar" />
         </dependency>
@@ -162,9 +162,15 @@
           <artifact name="jungle.gwt.gwtservlet"   type="jar" />
         </dependency>
         <dependency org="com.google.gwt" name="gwt.repackaged" 
-                    rev="1.6.4"  transitive="false"
+                    rev="[1.6.4p1,)"  transitive="false"
                     conf="default->server" >
           <artifact name="gwt-servlet" type="jar" />
+          <artifact name="gwt-user" type="jar" />
+        </dependency>
+        <dependency org="com.google.gwt" name="gwt.repackaged" 
+                    rev="[1.6.4p1,)" 
+                    conf="compile.only->server" transitive="false" >
+          <artifact name="gwt-dev-linux" type="jar" />
         </dependency>
         <dependency org="net.sf.beanlib" name="beanlib.repackaged" 
                     rev="[5.0.1beta,)"
@@ -172,7 +178,6 @@
           <artifact name="beanlib" type="jar" />
           <artifact name="beanlib-hibernate" type="jar" />
         </dependency>
-
 
         <dependency org="ua.gradsoft" name="jungle.configuration-ui-gwt" 
                     rev="latest.integration"

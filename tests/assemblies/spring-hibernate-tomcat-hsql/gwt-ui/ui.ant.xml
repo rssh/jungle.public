@@ -10,8 +10,10 @@
   <!-- set classpath -->
   <path id="project.class.path">
     <pathelement path="${java.class.path}/"/>
-    <pathelement path="${gwt.home}/gwt-user.jar"/>
-    <pathelement path="${get.home}/gwt-servlet.jar"/>
+    <fileset dir="../lib" 
+             includes="gwt-user-*.jar"/>
+    <fileset dir="../lib"
+             includes="gwt-servlet-*.jar"/>
     <fileset dir="../lib"
              includes="jungle.configuration-ui-gwt-export-*.jar"/>
     <fileset dir="../lib"
@@ -55,9 +57,10 @@
       <classpath>
         <pathelement location="src" />
         <path refid="project.class.path" />
-        <fileset dir="${gwt.home}" includes="gwt-dev-*.jar" />
+        <fileset dir="../${compile.lib.dir}" includes="gwt-dev-*.jar" />
       </classpath>
       <jvmarg value="-Xmx512M" />
+      <jvmarg value="-Xss8M" />
       <arg value="-logLevel" />
       <arg value="INFO" />
       <arg value="-out" />
@@ -71,12 +74,15 @@
     <java classname="com.google.gwt.dev.Compiler" fork="true">
       <classpath>
         <pathelement location="src" />
-        <path refid="project.class.path" />
-        <fileset dir="${gwt.home}" includes="gwt-dev-*.jar" />
-      </classpath>
-      <jvmarg value="-Xmx256M" />
+       <path refid="project.class.path" />
+       <fileset dir="../${compile.lib.dir}" includes="gwt-dev-*.jar" />
+     </classpath>
+      <jvmarg value="-Xmx512M" />
+      <jvmarg value="-Xss8M" />
       <arg value="-logLevel" />
       <arg value="INFO" />
+      <arg value="-war" />
+      <arg value="www" />
       <arg value="ua.gradsoft.jungle.testapp.GwtUI" />
     </java>
   </target>
@@ -87,7 +93,7 @@
         <pathelement location="src" />
         <pathelement location="bin" />
         <path refid="project.class.path" />
-        <fileset dir="${gwt.home}" includes="gwt-dev-*.jar" />
+        <fileset dir="../${compile.lib.dir}" includes="gwt-dev-*.jar" />
      </classpath>
      <arg value='-logLevel' />
      <arg value='ALL' />

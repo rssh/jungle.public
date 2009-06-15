@@ -92,6 +92,11 @@
                buildDirectory="${platform.public.home}/web/gwt-plugins/gwt-servlet"
                publishTarget="publish.local"
              />
+             <dependencyBuild
+               organization="ua.gradsoft" name="gxt.repackaged"
+               buildDirectory="${platform.public.home}/web/3pp/gwt-plugins/gxt"
+               publishTarget="publish.local"
+             />
            </build>
 
            <url name="read.datacenter.gradsoft.ua" namespace="gradsoft">
