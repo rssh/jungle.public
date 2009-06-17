@@ -55,12 +55,21 @@ public class DummyUserServerContext implements UserServerContext
 
     boolean checkPassword(String password)
     {
-
       return password_.equals(password);
     }
 
 
+    // configuration stuff.
+    void setInversePermissions(boolean newInversePermissions)
+    {
+      inversePermissions_=true;
+    }
 
+    void setPermissions(List<String> newPermissions)
+    {
+        permissions_=new TreeSet<String>();
+        permissions_.addAll(newPermissions);
+    }
 
     private String login_;
     private String password_;

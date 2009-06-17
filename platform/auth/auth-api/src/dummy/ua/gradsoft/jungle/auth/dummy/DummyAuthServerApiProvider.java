@@ -3,6 +3,7 @@ package ua.gradsoft.jungle.auth.dummy;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import ua.gradsoft.jungle.auth.client.AuthException;
 import ua.gradsoft.jungle.auth.client.RedirectException;
@@ -45,6 +46,38 @@ public class DummyAuthServerApiProvider implements AuthServerApiProvider
 
     public UserServerContext getAnonimousContext() throws AuthException {
         return users_.get("anonimous");
+    }
+
+    /**
+     * Add user to instance of provider.  Usefull fr call from configuration for
+     * initializing of test set of users.
+     * @param name
+     * @param inversePermission
+     * @param permissions
+     */
+    public void addUser(String name, String password,
+                        boolean inversePermission,
+                        List<String> permissions)
+    {
+       users_.put(name, new DummyUserServerContext(name,password,
+                                 Collections.<String,String>emptyMap(),
+                                 inversePermission,
+                                 permissions
+                                 )
+                  );
+    }
+
+    /**
+     * Set permission to user with given name.
+     * Usefull for call from configuration for initializing of test set of users.
+     */
+    public void setPermissions(String name, boolean inversePermission,
+                               List<String> permissions)
+    {
+        DummyUserServerContext usc = users_.get(name);
+        if (usc==null) {
+            throw new RuntimeException("User with name "+name+" is not found");
+        }
     }
 
 
