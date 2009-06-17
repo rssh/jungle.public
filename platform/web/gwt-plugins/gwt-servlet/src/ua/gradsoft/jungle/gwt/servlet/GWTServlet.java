@@ -17,6 +17,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
+import javax.naming.NoInitialContextException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -226,7 +227,26 @@ public class GWTServlet extends RemoteServiceServlet
          try {
            Context ctx=( defaultEnv.isEmpty() ? new InitialContext() :
                                                 new InitialContext(defaultEnv));
-           contexts_.add(ctx);
+           // some servers (such as jetty) created dummy context, which
+           //  is not work and throw exception on first lookup, when
+           //  so, let's look on unexistent and check that exceptions 
+           //  is NameNotFoundException
+           boolean skip=false;
+           try {
+              Object o = ctx.lookup("unexistent");
+           }catch(NameNotFoundException ex){
+               // all ok
+               skip=false;
+           }catch(NoInitialContextException ex){
+               skip=true;
+           }catch(NamingException ex){
+               Log log = LogFactory.getLog(GWTServlet.class);
+               log.warn("strange exception during resolving unexistend object in defaut context, ex");
+               skip=true;
+           }
+           if (!skip) {
+             contexts_.add(ctx);
+           }
          }catch(NamingException ex){
            Log log = LogFactory.getLog(GWTServlet.class);
            log.error("Can't init default name service", ex);
@@ -432,7 +452,11 @@ public class GWTServlet extends RemoteServiceServlet
           if (!(targetObject instanceof AuthClientApiHttpRequestScopeImpl)) {
               // call to auth API must be permitted for all
             if (!AuthServerApiHelper.checkMethodPermissions(targetMethod,targetParams, userContext)) {
-             throw new RuntimeException("Access denied");
+              if (debug_) {
+                  Log log = LogFactory.getLog(GWTServlet.class);
+                  log.info("Access denied for method "+targetMethod.getDeclaringClass().getName()+"."+targetMethod.getName()+" to user "+userContext.getId());
+              }
+              throw new RuntimeException("Access denied for method "+targetMethod.getDeclaringClass().getName()+"."+targetMethod.getName()+" to user "+userContext.getId());
             }
           }
         }
