@@ -2,6 +2,7 @@
 package ua.gradsoft.jungle.auth.server;
 
 import java.lang.annotation.Annotation;
+import java.lang.ref.SoftReference;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
@@ -86,7 +87,7 @@ public class AuthServerApiHelper {
          retval=m.getAnnotation(annotationClass);
          if (retval==null) {
              Class cls = m.getDeclaringClass();         
-             Class[] interfaces = cls.getInterfaces();
+             Class[] interfaces = cls.getInterfaces();             
              for(int i=0; i<interfaces.length; ++i) {               
                  try {
                    Method mi = interfaces[i].getMethod(m.getName(), m.getParameterTypes());
@@ -97,6 +98,7 @@ public class AuthServerApiHelper {
                  if (retval!=null) {
                      break;
                  }
+
              }
          }
       }
