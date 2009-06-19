@@ -5,11 +5,50 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import ua.gradsoft.jungle.auth.client.AuthException;
 import ua.gradsoft.jungle.auth.client.RedirectException;
 import ua.gradsoft.jungle.auth.server.AuthServerApiProvider;
 import ua.gradsoft.jungle.auth.server.UserServerContext;
 
+/**
+ * DummyAuthServerApi provider - dummy provider for mocks
+ * Typical spring configuration:
+ *<pre>
+ *    &lt;bean id="DummyAuthApiProvider"
+           class="ua.gradsoft.jungle.auth.dummy.DummyAuthServerApiProvider"
+          >
+     &lt;property name="users">
+       &lt;list>
+         &lt;bean class="ua.gradsoft.jungle.auth.dummy.DummyUserServerContext">
+           &lt;property name="id" value="anonimous" />
+           &lt;property name="inversePermissions" value="false" />
+           &lt;property name="permissions">
+              &lt;list>
+                &lt;value>jungle.parties.read&lt;/value>
+                &lt;value>jungle.parties.write&lt;/value>
+                &lt;value>jungle.person.read&lt;/value>
+                &lt;value>jungle.person.write&lt;/value>
+              &lt;/list>
+           &lt;/property>
+         &lt;/bean>
+ *          &lt;bean class="ua.gradsoft.jungle.auth.dummy.DummyUserServerContext">
+           &lt;property name="id" value="a1" />
+           &lt;property name="password" value="a1" />
+           &lt;property name="permissions">
+             &lt;list>
+                &lt;value>jungle.parties.read&lt;/value>
+                &lt;value>jungle.parties.write&lt;/value>
+                &lt;value>jungle.person.read&lt;/value>
+                &lt;value>jungle.person.write&lt;/value>
+             &lt;/list>
+           &lt;/property>
+         &lt;/bean>
+       &lt;/list>
+     &lt;/property>
+   &lt;/bean>
+ *</pre>
+ */
 public class DummyAuthServerApiProvider implements AuthServerApiProvider
 {
 
@@ -67,11 +106,25 @@ public class DummyAuthServerApiProvider implements AuthServerApiProvider
                   );
     }
 
+
+    /**
+     * Set list of users (instead default).
+     * Usefull for configuring inside configuration file.
+     * Note, that user with name 'anonimous' must be present in this list.
+     */
+    public void setUsers(List<DummyUserServerContext> users)
+    {
+      users_=new TreeMap<String,DummyUserServerContext>();
+      for(DummyUserServerContext u: users) {
+          users_.put(u.getId(), u);
+      }
+    }
+
     /**
      * Set permission to user with given name.
      * Usefull for call from configuration for initializing of test set of users.
      */
-    public void setPermissions(String name, boolean inversePermission,
+    public void setPermissionsForUser(String name, boolean inversePermission,
                                List<String> permissions)
     {
         DummyUserServerContext usc = users_.get(name);

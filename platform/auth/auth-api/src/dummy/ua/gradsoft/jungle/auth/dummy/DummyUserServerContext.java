@@ -1,6 +1,7 @@
 
 package ua.gradsoft.jungle.auth.dummy;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -13,7 +14,24 @@ import ua.gradsoft.jungle.auth.server.UserServerContext;
  */
 public class DummyUserServerContext implements UserServerContext
 {
+    
+    /**
+     * Enoty constructor, required for instantiation from configuration
+     *of some application containers. Usially container call setter methods
+     *on properties before instantiation. 
+     */
+    public DummyUserServerContext()
+    {}
 
+
+    /**
+     * Constructor, whith all properties.
+     * @param login
+     * @param password
+     * @param properties
+     * @param inversePermissions
+     * @param permissions
+     */
     public DummyUserServerContext(String login, String password,
                                   Map<String,String> properties,
                                   boolean inversePermissions,
@@ -30,6 +48,47 @@ public class DummyUserServerContext implements UserServerContext
 
     public String getId() {
         return login_;
+    }
+
+    public void setId(String login)
+    {  login_=login; }
+
+    public String getPassword()
+    {
+       return password_;
+    }
+
+    public void setPassword(String password)
+    {
+        password_=password;
+    }
+
+    public boolean getInversePermissions()
+    {
+        return inversePermissions_;
+    }
+
+
+    public void setInversePermissions(boolean value)
+    {
+      inversePermissions_=value;
+    }
+
+    public Collection<String> getPermissions()
+    { return permissions_; }
+
+    public void setPermissions(Collection<String> newPermissions)
+    {
+        permissions_=new TreeSet<String>();
+        permissions_.addAll(newPermissions);
+    }
+
+    public Map<String,String>  getProperties()
+    { return properties_; }
+
+    public void setProperties(Map<String,String> properties)
+    {
+      properties_=properties;
     }
 
     public String getProperty(String propertyName) {
@@ -59,17 +118,6 @@ public class DummyUserServerContext implements UserServerContext
     }
 
 
-    // configuration stuff.
-    void setInversePermissions(boolean newInversePermissions)
-    {
-      inversePermissions_=true;
-    }
-
-    void setPermissions(List<String> newPermissions)
-    {
-        permissions_=new TreeSet<String>();
-        permissions_.addAll(newPermissions);
-    }
 
     private String login_;
     private String password_;
