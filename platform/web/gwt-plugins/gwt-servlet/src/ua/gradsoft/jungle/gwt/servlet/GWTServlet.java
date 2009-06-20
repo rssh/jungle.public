@@ -463,6 +463,7 @@ public class GWTServlet extends RemoteServiceServlet
 
         retval = targetMethod.invoke(targetObject, targetParams);
 
+
      }catch(RuntimeException ex){
         Log log = LogFactory.getLog(GWTServlet.class);
         log.info("exception during call of server object",ex);
@@ -492,18 +493,22 @@ public class GWTServlet extends RemoteServiceServlet
      }
     }
     if (responsePayload==null) {
-      if (resultReplicator_!=null) {
-          retval = resultReplicator_.replicateBean(retval);
-      }else if(resultHibernateBeanReplicator_!=null){
-          retval = resultHibernateBeanReplicator_.deepCopy(retval);
-      }
       try {
+        if (resultReplicator_!=null) {
+          retval = resultReplicator_.replicateBean(retval);
+        }else if(resultHibernateBeanReplicator_!=null){
+          retval = resultHibernateBeanReplicator_.deepCopy(retval);
+        }
         responsePayload = RPC.encodeResponseForSuccess(rpcRequest.getMethod(),
                                                        retval,
                                                        rpcRequest.getSerializationPolicy());
       }catch(IllegalArgumentException ex){
         Log log = LogFactory.getLog(GWTServlet.class);
-        log.error("error diring ecoding server response",ex);
+        log.error("error during ecoding server response",ex);
+        responsePayload = RPC.encodeResponseForFailure(rpcRequest.getMethod(), ex);
+      }catch(Exception ex){
+        Log log = LogFactory.getLog(GWTServlet.class);
+        log.error("error during ecoding server response",ex);
         responsePayload = RPC.encodeResponseForFailure(rpcRequest.getMethod(), ex);
       }
     }
