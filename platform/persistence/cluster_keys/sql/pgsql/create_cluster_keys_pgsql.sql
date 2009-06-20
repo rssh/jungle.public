@@ -1,8 +1,15 @@
+/**
+ * run this with ant sql task with delimiter="/" delimitertype="row"
+ *keepformat="true"
+ */
+drop schema if exists clusterization cascade;
+/
 
-drop schema clusterization cascade;
 create schema clusterization;
+/
 
 set search_path = clusterization, pg_catalog;
+/
 
 /**
  * Node ifno for 'this' cluster.
@@ -14,17 +21,41 @@ create table my_cluster_node_info
  org_id       INTEGER  not null,
   primary key(node_id, org_id)
 );
+/
 
-insert into my_cluster_node_info(node_id, org_id) values(1,1);
+drop function if exists host_number(inet);
+/
+
+
+create or replace function host_number(inet) returns integer
+as $$$$
+declare
+ sbytes text[];
+ r      INTEGER;
+begin 
+ sbytes:=string_to_array(host($1),'.');
+ r:=cast(sbytes[1] as INTEGER);
+ r:=(r<<8)+cast(sbytes[2] as INTEGER);
+ r:=(r<<8)+cast(sbytes[3] as INTEGER);
+ r:=(r<<8)+cast(sbytes[4] as INTEGER);
+ return r;
+end $$$$ LANGUAGE plpgsql; 
+/
+
+
+insert into my_cluster_node_info(node_id, org_id) 
+    values(host_number(inet_server_addr()),1);
+/
 
 create table  db_cluster_neightboards
 (
  node_id  INTEGER  primary key,
  org_id   INTEGER 
 );
+/
 
 create or replace function generate_number_key(BIGINT) returns NUMERIC(40,0)
-as $$
+as $$$$
 declare
  cn INTEGER;
  vorg_id INTEGER;
@@ -42,10 +73,11 @@ begin
  retval:=vorg_id*cast(2^32 as NUMERIC(40,0))+cn;
  retval:=retval*cast(2^64 as NUMERIC(40,0))+x;
  return retval;
-end $$ LANGUAGE plpgsql;
+end $$$$ LANGUAGE plpgsql;
+/
 
 create or replace function generate_character_key(BIGINT) returns CHAR(24)
-as $$
+as $$$$
 declare
  cn INTEGER;
  vorg_id INTEGER;
@@ -81,6 +113,9 @@ begin
        )
              ,'base64'),0,23);
   return retval;
-end $$ LANGUAGE plpgsql;
+end $$$$ LANGUAGE plpgsql;
+/
 
 
+set search_path = public, pg_catalog;
+/
