@@ -54,7 +54,8 @@
         <path refid="project.class.path" />
         <fileset dir="${gwt.home}" includes="gwt-dev-*.jar" />
       </classpath>
-      <jvmarg value="-Xmx256M" /> 
+      <jvmarg value="-Xmx512M" />
+      <jvmarg value="-Xss8M" />
       <arg value="-logLevel" />
       <arg value="INFO" />
       <arg value="-out" />
@@ -63,22 +64,63 @@
     </java>
   </target>
 
-  <target name="run.shell.only" description="run local shell here">
+  <target name="js-compile-new" description="generation of local test ui here"
+                            depends="compile" >
+    <java classname="com.google.gwt.dev.Compiler" fork="true">
+      <classpath>
+        <pathelement location="src" />
+        <pathelement location="test-client" />
+        <path refid="project.class.path" />
+        <fileset dir="${gwt.home}" includes="gwt-dev-*.jar" />
+      </classpath>
+      <jvmarg value="-Xmx512M" />
+      <jvmarg value="-Xss8M" />
+      <arg value="-logLevel" />
+      <arg value="INFO" />
+      <arg value="-war" />
+      <arg value="www" />
+      <arg value="ua.gradsoft.jungle.configuration.TestGwtUI" />
+    </java>
+  </target>
+
+  <target name="run.shell.old" description="run local shell here">
     <java classname="com.google.gwt.dev.GWTShell" fork="true">
-     <classpath>
+      <classpath>
         <pathelement location="src" />
         <pathelement location="test-client" />
         <pathelement location="bin" />
         <path refid="project.class.path" />
         <fileset dir="${gwt.home}" includes="gwt-dev-*.jar" />
-     </classpath>
-      <jvmarg value="-Xmx256M" /> 
+      </classpath>
+      <jvmarg value="-Xmx512M" />
+      <jvmarg value="-Xss8M" />
       <arg value="-out" />
       <arg value="www" />
       <arg value="ua.gradsoft.jungle.configuration.TestGwtUI" />
     </java>
   </target>
                            
+  <target name="run.hosted.shell.new" description="run local shell here">
+    <java classname="com.google.gwt.dev.HostedMode" fork="true" >
+      <classpath>
+        <pathelement location="src" />
+        <pathelement location="test-client" />
+        <pathelement location="bin" />
+        <path refid="project.class.path" />
+        <fileset dir="${gwt.home}" includes="gwt-dev-*.jar" />
+      </classpath>
+      <jvmarg value="-Xmx512M" />
+      <jvmarg value="-Xss8M" />
+      <arg value="-war" />
+      <arg value="www" />
+      <arg value='-whitelist' />
+      <arg value='http[:][/][/]127[.]0[.]0[.]1[:]8888[/].*' />
+      <arg value="-startupUrl" />
+      <arg value="/ua.gradsoft.jungle.configuration.TestGwtUI/index.html" />
+      <arg value="ua.gradsoft.jungle.configuration.TestGwtUI" />
+    </java>
+  </target>
+
 
   <target name="clean">
     <!-- Delete the bin directory tree -->

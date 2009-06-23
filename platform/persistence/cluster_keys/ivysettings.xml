@@ -80,12 +80,12 @@
              <resolver ref="jungle.repo" />
              <dependencyBuild   
                organization="ua.gradsoft" name="jungle.persistence.jdbcex"
-               buildDirectory="${platform.home}/persistency/jdbcex"
+               buildDirectory="${platform.home}/persistence/jdbcex"
                publishTarget="publish.local"
              />
              <dependencyBuild   
                organization="ua.gradsoft" name="jungle.persistence.jpaex"
-               buildDirectory="${platform.home}/persistency/jpaex"
+               buildDirectory="${platform.home}/persistence/jpaex"
                publishTarget="publish.local"
              />
            </build>

@@ -68,6 +68,9 @@
       <ant dir="gwt-ui" antfile="ui.ant.xml" target="js-compile-new" />
     </target>
 
+    <target name="gwt-run">
+      <ant dir="gwt-ui" antfile="ui.ant.xml" target="run.hosted.shell" />
+    </target>
 
     <target name="build-persistence" depends="retrieve-libs">
       <loadfile property="jungle.appregistry.classes" 
@@ -117,16 +120,12 @@
               <include name="META-INF/persistence.xml" />
               <include name="logging.properties" />
             </classes>
-
 <!--
             <fileset  dir="${resources-web.dir}" />
             <fileset  dir="${platform-web-resources.dir}" />
-          -->
-<!--
             <fileset  dir="web.groovy" />
 -->
             <fileset  dir="gwt-ui/www/ua.gradsoft.jungle.testapp.GwtUI/" />
-
 
             <webinf   dir="etc/WEB-INF" includes="**/*.xml" />
             <metainf  dir="etc/META-INF" includes="context.xml" />

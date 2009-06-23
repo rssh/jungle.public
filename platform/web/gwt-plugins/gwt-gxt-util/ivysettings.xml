@@ -97,6 +97,16 @@
                buildDirectory="${platform.public.home}/web/3pp/gwt-plugins/gxt"
                publishTarget="publish.local"
              />
+             <dependencyBuild
+               organization="com.google.gwt" name="gwt.repackaged"
+               buildDirectory="${platform.public.home}/3pp/gwt"
+               publishTarget="publish.local"
+             />
+             <dependencyBuild
+               organization="com.googlecode" name="gwt-math"
+               buildDirectory="${platform.public.home}/web/3pp/gwt-plugins/gwt-math"
+               publishTarget="publish.local"
+             />
            </build>
 
            <url name="read.datacenter.gradsoft.ua" namespace="gradsoft">

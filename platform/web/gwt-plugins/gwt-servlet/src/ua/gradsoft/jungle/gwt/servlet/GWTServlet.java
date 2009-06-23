@@ -466,7 +466,7 @@ public class GWTServlet extends RemoteServiceServlet
 
      }catch(RuntimeException ex){
         Log log = LogFactory.getLog(GWTServlet.class);
-        log.info("exception during call of server object",ex);
+        log.error("exception during call of server object",ex);
         responsePayload = RPC.encodeResponseForFailure(null, ex, rpcRequest.getSerializationPolicy());
      }catch(InvocationTargetException ex){
          Throwable thr1 = ex.getTargetException();
@@ -474,11 +474,11 @@ public class GWTServlet extends RemoteServiceServlet
              boolean toLog= ((!(thr1 instanceof Serializable))||debug_);
              if (toLog) {
                 Log log = LogFactory.getLog(GWTServlet.class);
-                log.info("exception during call of server object",thr1);
+                log.error("exception during call of server object",thr1);
              }
          }else{
              Log log = LogFactory.getLog(GWTServlet.class);
-             log.info("throwable during call of server object",thr1);
+             log.error("throwable during call of server object",thr1);
          }
          responsePayload = RPC.encodeResponseForFailure(null, thr1, rpcRequest.getSerializationPolicy());
      }catch(Exception ex){
@@ -487,7 +487,7 @@ public class GWTServlet extends RemoteServiceServlet
         boolean toLog= ((!(ex instanceof Serializable))||debug_);
         if (toLog) {
           Log log = LogFactory.getLog(GWTServlet.class);
-          log.info("exception during call of server object",ex);
+          log.error("exception during call of server object",ex);
         }
         responsePayload = RPC.encodeResponseForFailure(null, ex, rpcRequest.getSerializationPolicy());
      }

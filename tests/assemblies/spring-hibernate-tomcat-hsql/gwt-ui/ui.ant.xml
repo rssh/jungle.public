@@ -74,9 +74,9 @@
     <java classname="com.google.gwt.dev.Compiler" fork="true">
       <classpath>
         <pathelement location="src" />
-       <path refid="project.class.path" />
-       <fileset dir="../${compile.lib.dir}" includes="gwt-dev-*.jar" />
-     </classpath>
+        <path refid="project.class.path" />
+        <fileset dir="../${compile.lib.dir}" includes="gwt-dev-*.jar" />
+      </classpath>
       <jvmarg value="-Xmx512M" />
       <jvmarg value="-Xss8M" />
       <arg value="-logLevel" />
@@ -89,21 +89,25 @@
 
   <target name="run.hosted.shell">
     <java classname="com.google.gwt.dev.HostedMode" fork="true" >
-     <classpath>
+      <classpath>
         <pathelement location="src" />
         <pathelement location="bin" />
         <path refid="project.class.path" />
-        <fileset dir="../${compile.lib.dir}" includes="gwt-dev-*.jar" />
-     </classpath>
-     <arg value='-logLevel' />
-     <arg value='ALL' />
-     <arg value='-noserver' />
-     <arg value='-whitelist' />
-     <arg value='http[:][/][/]127[.]0[.]0[.]1[:]8080[/].*' />
-     <arg value="-startupUrl" />
-     <arg value="http://127.0.0.1:8080/jungle.tomcat.sh-test" />
+        <fileset dir="${gwt.home}" includes="gwt-dev-*.jar" />
+      </classpath>
+      <jvmarg value="-Xmx512M" />
+      <jvmarg value="-Xss8M" />
+      <arg value='-logLevel' />
+      <arg value='ALL' />
+      <arg value="-war" />
+      <arg value="www" />
+      <arg value='-noserver' />
+      <arg value='-whitelist' />
+      <arg value='http[:][/][/]127[.]0[.]0[.]1[:]8080[/].*' />
+      <arg value="-startupUrl" />
+      <arg value="http://127.0.0.1:8080/jungle.tomcat.sh-test" />
      <!--<arg value="/ua.gradsoft.jungle.testapp.GwtUI/index.html" />-->
-     <arg value="ua.gradsoft.jungle.testapp.GwtUI" />
+      <arg value="ua.gradsoft.jungle.testapp.GwtUI" />
     </java>
   </target>
 
