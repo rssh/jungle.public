@@ -81,7 +81,15 @@ public class AuthServerApiHelper {
    */
   private static <T extends Annotation> T  findAnnotation(Method m, Class<T> annotationClass)
   {
-      Annotation retval = authAnnotationsHash_.get(m);
+      Annotation retval = null;
+      TreeMap<String,Annotation> hashed = authAnnotationsHashes_.get(m);
+      if (hashed==null) {
+          hashed=new TreeMap<String,Annotation>();
+          authAnnotationsHashes_.put(m, hashed);
+          retval=null;
+      }else{
+          retval = hashed.get(annotationClass.getName());
+      }
 
       if (retval==null) {
          retval=m.getAnnotation(annotationClass);
@@ -104,7 +112,7 @@ public class AuthServerApiHelper {
       }
 
       if (retval!=null) {
-          authAnnotationsHash_.put(m, retval);
+          hashed.put(annotationClass.getName(),retval);
           return (T)retval;
       }else{
           return null;
@@ -113,6 +121,6 @@ public class AuthServerApiHelper {
   }
 
 
-  private static HashMap<Method,Annotation> authAnnotationsHash_ = new HashMap<Method,Annotation>();
+  private static HashMap<Method,TreeMap<String,Annotation>> authAnnotationsHashes_ = new HashMap<Method,TreeMap<String,Annotation>>();
 
 }

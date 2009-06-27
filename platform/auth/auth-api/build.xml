@@ -125,6 +125,7 @@
    <target name="publish" depends="distributives">
      <ivy:publish resolver="datacenter.gradsoft.ua" pubrevision="${version}" 
                   overwrite="true" 
+                  replacedynamicrev="false"
                   >
        <artifacts pattern="dist/[artifact]-[revision].[ext]" />
      </ivy:publish>
