@@ -632,7 +632,7 @@ public abstract class EjbQlAccessObject implements CRUDFacade
           throw new IllegalArgumentException("Can't instantiate class "+helperClass.getName(),ex);
       }
       if (!(helperInterface.isAssignableFrom(helperClass))) {
-          throw new IllegalArgumentException("bad helper: "+helperClass.getClass().getName()+" must implement "+helperInterface.getName());
+          throw new IllegalArgumentException("bad helper: "+helperClass.getName()+" must implement "+helperInterface.getName());
       }
       return (CH)o;
   }
