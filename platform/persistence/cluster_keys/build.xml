@@ -179,6 +179,7 @@
      <ivy:publish resolver="write.datacenter.gradsoft.ua" 
                   pubrevision="${version}" 
                   overwrite="true" 
+                  replacedynamicrev="false"
                   >
        <artifacts pattern="target/[artifact]-[revision].[ext]" />
      </ivy:publish>
@@ -188,6 +189,7 @@
      <ivy:publish resolver="jungle.repo" 
                   pubrevision="${version}" 
                   overwrite="true" 
+                  replacedynamicrev="false"
                   >
        <artifacts pattern="target/[artifact]-[revision].[ext]" />
      </ivy:publish>
