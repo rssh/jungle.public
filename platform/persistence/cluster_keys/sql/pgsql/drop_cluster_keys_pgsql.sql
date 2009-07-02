@@ -1,4 +1,4 @@
 
-drop schema clusterization cascade;
+drop schema if exists clusterization cascade;
 
 
