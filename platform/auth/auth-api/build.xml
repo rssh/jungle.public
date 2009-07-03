@@ -97,9 +97,9 @@
          index="true"
     >
       <fileset dir="${build-api.dir}" includes="**/*.class" />
-      <fileset dir="${src-api.dir}" includes="**/client/*.java" />
-      <fileset dir="${build-gwt.dir}" includes="**/client/*.class" />
-      <fileset dir="${src-gwt.dir}" includes="**/client/*.java" />
+      <fileset dir="${src-api.dir}" includes="**/client/**/*.java" />
+      <fileset dir="${build-gwt.dir}" includes="**/client/**/*.class" />
+      <fileset dir="${src-gwt.dir}" includes="**/client/**/*.java" />
       <fileset dir="etc/gwt" includes="**/*.xml" />
     </jar>
    </target>
