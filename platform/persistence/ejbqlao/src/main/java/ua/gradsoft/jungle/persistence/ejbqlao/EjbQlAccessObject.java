@@ -273,6 +273,9 @@ public abstract class EjbQlAccessObject implements CRUDFacade
           throw new IllegalArgumentException("Class" +entityClass.getName()+" has not @Entity annotation");
       }
       SequenceKey key = getSequenceKeyAnnotation(entityClass,null,null);
+      if (key==null) {
+          throw new IllegalArgumentException("SequenceKey annotation is missing in class "+entityClass.getName());
+      }
       Object retval=null;
       switch(key.type()) {
           case CLUSTER:
@@ -320,9 +323,9 @@ public abstract class EjbQlAccessObject implements CRUDFacade
           keyAnnotation = m.getAnnotation(SequenceKey.class);
           if (keyAnnotation!=null) {
               if (methodHolder!=null) {
-                  methodHolder[0]=m;
-                  break;
+                  methodHolder[0]=m;                  
               }
+              break;
           }
       }
       if (keyAnnotation==null) {
@@ -334,6 +337,7 @@ public abstract class EjbQlAccessObject implements CRUDFacade
                   if (fieldHolder!=null) {
                       fieldHolder[0]=field;
                   }
+                  break;
               }
           }
       }
