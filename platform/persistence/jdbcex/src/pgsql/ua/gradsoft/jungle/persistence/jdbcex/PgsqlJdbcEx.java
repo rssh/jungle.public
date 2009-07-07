@@ -36,6 +36,7 @@ public class PgsqlJdbcEx extends JdbcEx
       st = cn.prepareStatement("select nextval(?)");
       st.setString(1,sequenceName);
       ResultSet rs = st.executeQuery();
+      rs.next();
       return rs.getLong(1);
     }catch(SQLException ex){
         throw new RuntimeSqlException(ex);

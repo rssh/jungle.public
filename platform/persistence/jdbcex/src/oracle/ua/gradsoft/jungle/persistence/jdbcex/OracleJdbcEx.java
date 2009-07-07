@@ -41,6 +41,7 @@ public class OracleJdbcEx extends JdbcEx
     try {
       st = cn.createStatement();
       ResultSet rs = st.executeQuery(sb.toString());
+      rs.next();
       return rs.getLong(1);
     }catch(SQLException ex){
         throw new RuntimeSqlException(ex);
