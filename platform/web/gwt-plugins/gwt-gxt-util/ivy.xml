@@ -20,7 +20,7 @@
 
   <dependencies>
     <dependency org="com.googlecode" name="gwt-math"
-                rev="2.0.3p1" 
+                rev="[2.0.3p2,)" 
                 conf="default->default" transitive="false" >
       <artifact name="gwt-math" type="jar" />
     </dependency>
