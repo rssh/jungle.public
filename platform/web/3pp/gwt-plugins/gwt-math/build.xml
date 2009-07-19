@@ -22,6 +22,7 @@
   <target name="patch" depends="unjar" 
               description="apply patches">
     <patch patchfile="patches/patch.1" strip="0" /> 
+    <patch patchfile="patches/patch.2" strip="0" /> 
   </target>
 
   <target name="package" depends="patch" 
