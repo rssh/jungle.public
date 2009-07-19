@@ -30,7 +30,7 @@
       <artifact name="gwt-servlet" type="jar" />
     </dependency>
     <dependency org="com.extjs" name="gxt.repackaged" 
-                rev="[1.2.4,)" conf="default" >
+                rev="[2.0,)" conf="default" >
       <artifact name="gxt" type="jar" />
     </dependency>
     <dependency org="ua.gradsoft" name="jungle.auth-api" 
