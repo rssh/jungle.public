@@ -6,6 +6,7 @@
  </configurations>
  <publications>
    <artifact name="gxt" type="jar" />
+   <artifact name="gxt.resources" type="zip" />
  </publications>
  <dependencies>
     <dependency org="com.extjs" 

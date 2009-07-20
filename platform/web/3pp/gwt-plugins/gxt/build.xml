@@ -13,12 +13,9 @@
            dest="origin" />
     <copy file="origin/gxt-${origin.version}/gxt.jar"
            tofile="dist/gxt-${version}.jar" />
-<!--
-    <zip basedir="origin/gxt-${origin.version}" 
-         destfile="dist/extjs.resources.css-${version}.zip">
-      <fileset dir="." includes="resources/**/*.*" />
+    <zip  destfile="dist/gxt.resources-${version}.zip">
+      <fileset dir="origin/gxt-${origin.version}" includes="resources/**/*.*" />
     </zip>
--->
     <delete dir="origin/gxt-${origin.version}" />
   </target>
 
@@ -26,7 +23,7 @@
     <!-- Delete the bin directory tree -->
     <delete file="origin/gxt-${origin.version}.zip" />
     <delete file="dist/gxt-${version}.jar" />
-    <delete file="dist/extjs.resources.css-${version}.zip" />
+    <delete file="dist/gxt.resources-${version}.zip" />
     <delete file="dist/ivy-${version}.xml" />
   </target>
 
