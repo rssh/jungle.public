@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app>
+
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
+
+
+     <servlet>
+        <servlet-name>TestConfiguration</servlet-name>
+	<servlet-class>ua.gradsoft.jungle.configuration.server.TestConfigurationRemoteServiceImpl</servlet-class>
+     </servlet>
+	
+     <servlet-mapping>
+	<servlet-name>TestConfiguration</servlet-name>
+	<url-pattern>/ua.gradsoft.jungle.configuration.TestGwtUI/TestConfiguration</url-pattern>
+	<url-pattern>/ua.gradsoft.jungle.configuration.TestGwtUI//TestConfiguration</url-pattern>
+     </servlet-mapping>
+
+     <servlet>
+        <servlet-name>Auth</servlet-name>
+	<servlet-class>ua.gradsoft.jungle.configuration.server.TestAuthRemoteServiceImpl</servlet-class>
+     </servlet>
+	
+      <servlet-mapping>
+	<servlet-name>Auth</servlet-name>
+	<url-pattern>/ua.gradsoft.jungle.configuration.TestGwtUI/auth</url-pattern>
+	<url-pattern>/ua.gradsoft.jungle.configuration.TestGwtUI//auth</url-pattern>
+      </servlet-mapping>
+
+
+</web-app>

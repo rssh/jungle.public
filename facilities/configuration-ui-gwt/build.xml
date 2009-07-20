@@ -57,26 +57,7 @@
   </target>
 
 
-  <target name="js-compile-old" description="generation of local test ui here"
-                            depends="retrieve-libs" >
-    <java classname="com.google.gwt.dev.GWTCompiler" fork="true">
-      <classpath>
-        <pathelement location="src" />
-        <pathelement location="test-client" />
-        <path refid="project.class.path" />
-        <fileset dir="${gwt.home}" includes="gwt-dev-*.jar" />
-      </classpath>
-      <jvmarg value="-Xmx512M" />
-      <jvmarg value="-Xss8M" />
-      <arg value="-logLevel" />
-      <arg value="INFO" />
-      <arg value="-out" />
-      <arg value="www" />
-      <arg value="ua.gradsoft.jungle.configuration.TestGwtUI" />
-    </java>
-  </target>
-
-  <target name="js-compile-new" description="generation of local test ui here"
+  <target name="js-compile" description="generation of local test ui here"
                             depends="compile" >
     <java classname="com.google.gwt.dev.Compiler" fork="true">
       <classpath>
@@ -104,27 +85,10 @@
   </target>
 
 
-  <target name="war" depends="js-compile-new,prepare-resources,war-libs">
+  <target name="war" depends="js-compile,prepare-resources,war-libs">
   </target>
 
-  <target name="run.shell.old" description="run local shell here">
-    <java classname="com.google.gwt.dev.GWTShell" fork="true">
-      <classpath>
-        <pathelement location="src" />
-        <pathelement location="test-client" />
-        <pathelement location="bin" />
-        <path refid="project.class.path" />
-        <fileset dir="${gwt.home}" includes="gwt-dev-*.jar" />
-      </classpath>
-      <jvmarg value="-Xmx512M" />
-      <jvmarg value="-Xss8M" />
-      <arg value="-out" />
-      <arg value="www" />
-      <arg value="ua.gradsoft.jungle.configuration.TestGwtUI" />
-    </java>
-  </target>
-                           
-  <target name="run.hosted.shell.new" description="run local shell here">
+  <target name="run.hosted.only" description="run local shell here">
     <java classname="com.google.gwt.dev.HostedMode" fork="true" >
       <classpath>
         <pathelement location="src" />
