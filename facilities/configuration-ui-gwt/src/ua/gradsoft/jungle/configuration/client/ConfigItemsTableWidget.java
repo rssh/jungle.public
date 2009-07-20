@@ -4,7 +4,6 @@
  */
 package ua.gradsoft.jungle.configuration.client;
 
-import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.BasePagingLoader;
 import com.extjs.gxt.ui.client.data.BeanModel;
@@ -14,6 +13,7 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.LoadListener;
@@ -24,8 +24,7 @@ import com.extjs.gxt.ui.client.store.StoreListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.PagingToolBar;
-import com.extjs.gxt.ui.client.widget.StatusBar;
+import com.extjs.gxt.ui.client.widget.Status;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.CellEditor;
@@ -35,10 +34,10 @@ import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.grid.GridViewConfig;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,9 +60,10 @@ public class ConfigItemsTableWidget extends LayoutContainer
 
        final String fAppName = appName;
        
-       RpcProxy<PagingLoadConfig,PagingLoadResult<ConfigItem>> proxy = new RpcProxy<PagingLoadConfig,PagingLoadResult<ConfigItem>>() {
+       RpcProxy<PagingLoadResult<ConfigItem>> proxy = new RpcProxy<PagingLoadResult<ConfigItem>>() {
           @Override
-          public void load(PagingLoadConfig loadConfig, AsyncCallback<PagingLoadResult<ConfigItem>> callback) {
+          public void load(Object objectLoadConfig, AsyncCallback<PagingLoadResult<ConfigItem>> callback) {
+              PagingLoadConfig loadConfig = (PagingLoadConfig)objectLoadConfig;
               //System.err.println("RpcProxy.load-2");
               if (!configurationUI_.withReadAccess()) {
                                                                            // Collections.emptyList is not in gwt
@@ -83,9 +83,9 @@ public class ConfigItemsTableWidget extends LayoutContainer
           }
        };
        
-       BeanModelReader<PagingLoadConfig> reader = new BeanModelReader<PagingLoadConfig>();
+       BeanModelReader reader = new BeanModelReader();
 
-       BasePagingLoader<PagingLoadConfig,PagingLoadResult<ConfigItem>> loader = new BasePagingLoader<PagingLoadConfig,PagingLoadResult<ConfigItem>>(proxy, reader);
+       BasePagingLoader<PagingLoadResult<ConfigItem>> loader = new BasePagingLoader<PagingLoadResult<ConfigItem>>(proxy, reader);
        ListStore<BeanModel> store = new ListStore<BeanModel>(loader);
        final PagingToolBar toolBar = new PagingToolBar(50);
        toolBar.bind(loader);
@@ -154,18 +154,19 @@ public class ConfigItemsTableWidget extends LayoutContainer
 
        grid.addListener(Events.BeforeEdit, new Listener<GridEvent>(){
            public void handleEvent(GridEvent e) {
-               Object oeditable = e.model.get("editable");
+               Object oeditable = e.getModel().get("editable");
                boolean editable = (oeditable!=null && (Boolean)oeditable);
                if (!editable || !configurationUI_.withWriteAccess()) {
-                   e.doit=false;
+                   e.setCancelled(true);
+                   //e.doIt=false
                }else{
-                   ConfigItemType type = (ConfigItemType)e.model.get("type");
-                   ColumnModel cm = e.grid.getColumnModel();                                
+                   ConfigItemType type = (ConfigItemType)e.getModel().get("type");
+                   ColumnModel cm = e.getGrid().getColumnModel();
                    int columnIndex = cm.getIndexById("value");           
                    ValueCellEditor vce = (ValueCellEditor)cm.getEditor(columnIndex);
                    vce.setConfigItemType(type);
-                   vce.setItemName((String)e.model.get("name"));
-                   vce.setPreviousValue(e.value);
+                   vce.setItemName((String)e.getModel().get("name"));
+                   vce.setPreviousValue(e.getValue());
                }               
            }
        });
@@ -197,18 +198,18 @@ public class ConfigItemsTableWidget extends LayoutContainer
     /**
      * @return parent status bar if was set, otherwise - return null
      */
-    public StatusBar getStatusBar()
+    public Status getStatus()
     {
-        return statusBar_;
+        return status_;
     }
     
     /**
      * Set parent status bar. When one is set - TableWidget shows on it 
      * current state.  
      */
-    public void setStatusBar(StatusBar statusBar)
+    public void setStatus(Status status)
     {
-        statusBar_=statusBar;
+        status_=status;
     }
 
 
@@ -293,8 +294,8 @@ public class ConfigItemsTableWidget extends LayoutContainer
     {
         @Override
         public void storeUpdate(StoreEvent<M> event) {
-            if (event.operation!=RecordUpdate.REJECT) {
-               BeanModel model = event.model;
+            if (event.getOperation()!=RecordUpdate.REJECT) {
+               BeanModel model = event.getModel();
                ConfigItem ci = (ConfigItem)model.getBean();
                // singletonMap is not in list of serialized classes.
                //Map<BigDecimal,String> param = Collections.singletonMap(ci.getId(), ci.getValue());
@@ -327,14 +328,14 @@ public class ConfigItemsTableWidget extends LayoutContainer
         }
 
         public void onSuccess(Void result) {
-            if (statusBar_!=null) {
-                statusBar_.setMessage("value saved");
+            if (status_!=null) {
+                status_.setText("stored");
             }
         }
 
     }
 
-    private StatusBar       statusBar_;
+    private Status          status_;
     private ConfigurationUI configurationUI_;
    
 }

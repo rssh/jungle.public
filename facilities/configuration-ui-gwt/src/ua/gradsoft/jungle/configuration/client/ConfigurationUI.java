@@ -3,11 +3,10 @@ package ua.gradsoft.jungle.configuration.client;
 import com.extjs.gxt.desktop.client.Desktop;
 import com.extjs.gxt.desktop.client.StartMenu;
 import com.extjs.gxt.ui.client.data.BeanModel;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.Window.CloseAction;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
-import com.extjs.gxt.ui.client.widget.menu.Item;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -78,7 +77,7 @@ public class ConfigurationUI extends GwtApplicationComponent
                 Desktop desktop = fApplication.getDesktop();
                 if (desktop!=null) {
                     StartMenu startMenu = desktop.getStartMenu();
-                    Item item = startMenu.getItemByItemId("id-ConfigurationUI");
+                    Component item = startMenu.getItemByItemId("id-ConfigurationUI");
                     if (item!=null) {
                         if (result) {
                             item.enable();
@@ -119,7 +118,7 @@ public class ConfigurationUI extends GwtApplicationComponent
         Desktop desktop = application.getDesktop();
         if (desktop!=null) {
             StartMenu startMenu = desktop.getStartMenu();
-            Item i = startMenu.getItemByItemId("id-ConfigurationUI");
+            Component i = startMenu.getItemByItemId("id-ConfigurationUI");
             if (i!=null) {
                 i.disable();
                 ((Window)i.getData("window")).close();
@@ -154,7 +153,7 @@ public class ConfigurationUI extends GwtApplicationComponent
     public Window getTableWindow(String appName)
     {
         Window w = new Window();
-        w.setCloseAction(CloseAction.CLOSE);
+        w.setClosable(true);
         w.setMinimizable(true);
         w.setMaximizable(false);
         w.setHeading("Configuration for app2");

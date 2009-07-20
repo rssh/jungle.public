@@ -30,6 +30,17 @@
     </javac>
   </target>
 
+
+  <target name="prepare-resources" description="prepare gxt resources" 
+                                   depends="retrieve-libs">
+    <!--<unzip dest="www/ua.gradsoft.jungle.configuration.TestGwtUI" >-->
+    <unzip dest="war/ua.gradsoft.jungle.configuration.TestGwtUI" >
+      <fileset dir="lib" includes="gxt.resources-*.zip" />
+      <mapper type="regexp"
+              from="resources/(.*)" to="\1" />
+    </unzip>
+  </target>
+
   <target name="package" depends="prepare,compile" description="Package up the project as a jar">
     <jar destfile="dist/jungle.configuration-ui-gwt-export-${version}.jar">
       <fileset dir="bin">
@@ -45,7 +56,8 @@
     </jar>
   </target>
 
-  <target name="js-compile" description="generation of local test ui here"
+
+  <target name="js-compile-old" description="generation of local test ui here"
                             depends="retrieve-libs" >
     <java classname="com.google.gwt.dev.GWTCompiler" fork="true">
       <classpath>
@@ -77,10 +89,22 @@
       <jvmarg value="-Xss8M" />
       <arg value="-logLevel" />
       <arg value="INFO" />
-      <arg value="-war" />
-      <arg value="www" />
       <arg value="ua.gradsoft.jungle.configuration.TestGwtUI" />
     </java>
+  </target>
+
+  <target name="war-libs" depends="compile">
+    <copy  todir="war/WEB-INF/classes" >
+      <fileset dir="bin"
+          includes="ua/gradsoft/jungle/configuration/server/**.*" />
+    </copy>
+    <copy todir="war/WEB-INF/lib">
+     <fileset dir="lib" includes="**/*.jar" />
+    </copy>
+  </target>
+
+
+  <target name="war" depends="js-compile-new,prepare-resources,war-libs">
   </target>
 
   <target name="run.shell.old" description="run local shell here">
@@ -112,7 +136,7 @@
       <jvmarg value="-Xmx512M" />
       <jvmarg value="-Xss8M" />
       <arg value="-war" />
-      <arg value="www" />
+      <arg value="war" />
       <arg value='-whitelist' />
       <arg value='http[:][/][/]127[.]0[.]0[.]1[:]8888[/].*' />
       <arg value="-startupUrl" />
