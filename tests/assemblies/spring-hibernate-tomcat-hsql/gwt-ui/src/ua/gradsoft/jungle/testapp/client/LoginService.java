@@ -4,7 +4,9 @@ package ua.gradsoft.jungle.testapp.client;
 import com.extjs.gxt.desktop.client.Desktop;
 import com.extjs.gxt.desktop.client.StartMenu;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
@@ -69,9 +71,10 @@ public class LoginService extends GwtApplicationComponent
       panel.setButtonAlign(HorizontalAlignment.CENTER);
 
       Button loginButton = new Button("Login");
+
       loginButton.addSelectionListener(
-              new SelectionListener<ComponentEvent>() {
-               public void componentSelected(ComponentEvent e) {                   
+              new SelectionListener<ButtonEvent>() {
+               public void componentSelected(ButtonEvent e) {
                    login_=username.getValue();
                    password_=password.getValue();
                    Map<String,String> loginParams = new HashMap<String,String>();
@@ -103,8 +106,8 @@ public class LoginService extends GwtApplicationComponent
 
       Button cancelButton = new Button("Cancle");
       cancelButton.addSelectionListener(
-              new SelectionListener<ComponentEvent>() {
-               public void componentSelected(ComponentEvent e) {                  
+              new SelectionListener<ButtonEvent>() {
+               public void componentSelected(ButtonEvent e) {
                   topLoginFormWindow_.close();
                }
       }
@@ -141,9 +144,9 @@ public class LoginService extends GwtApplicationComponent
     item.setText("Logout");
     item.setData("window", null);
     item.addSelectionListener(
-            new SelectionListener<ComponentEvent>() {
+            new SelectionListener<MenuEvent>() {
             @Override
-            public void componentSelected(ComponentEvent ce) {
+            public void componentSelected(MenuEvent ce) {
                 Desktop desktop = application_.getDesktop();
                 logout();
                 if (desktop==null) {

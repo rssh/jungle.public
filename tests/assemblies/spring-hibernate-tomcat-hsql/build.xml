@@ -38,6 +38,13 @@
       <fileset dir="classes" includes="**/*.class" />
      </delete>
     </target>
+
+    <target name="clean-all" depends="clean">
+     <delete>
+      <fileset dir="lib" includes="**/*.jar,**/*.xml,**/*.part" />
+     </delete>
+    </target>
+
  
     <target name="assemble" depends="build-war">
     </target>
