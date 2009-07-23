@@ -43,6 +43,10 @@
      <delete>
       <fileset dir="lib" includes="**/*.jar,**/*.xml,**/*.part" />
      </delete>
+     <delete dir="gwt-ui/www" />
+     <delete>
+      <fileset dir="dist/war" includes="**/*.war" />
+     </delete>
     </target>
 
  
@@ -73,6 +77,7 @@
 
     <target name="gwt-js-compile" unless="gwt.js.generated"  >
       <ant dir="gwt-ui" antfile="ui.ant.xml" target="js-compile-new" />
+      <ant dir="gwt-ui" antfile="ui.ant.xml" target="copy-gxt-resources" />
     </target>
 
     <target name="gwt-run">

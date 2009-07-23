@@ -2,10 +2,10 @@
 
    <inherits name='ua.gradsoft.jungle.configuration.GwtUI'/>
 
+   <inherits name='com.extjs.gxt.themes.Themes' />
    <inherits name='com.extjs.gxt.desktop.WebDesktop' />
 
    <inherits name='ua.gradsoft.jungle.gwt.util.Util' />
-
    <inherits name='ua.gradsoft.jungle.auth.AuthApi' />
   
    <entry-point class="ua.gradsoft.jungle.testapp.client.GwtUI" />

@@ -87,6 +87,13 @@
     </java>
   </target>
 
+  <target name="copy-gxt-resources">
+   <unzip dest="www/ua.gradsoft.jungle.testapp.GwtUI" >
+     <fileset dir="../lib" includes="gxt.resources-*.zip" />
+     <mapper type="regexp" from="resources/(.*)" to="\1" />
+   </unzip>
+  </target>
+
   <target name="run.hosted.shell">
     <java classname="com.google.gwt.dev.HostedMode" fork="true" >
       <classpath>

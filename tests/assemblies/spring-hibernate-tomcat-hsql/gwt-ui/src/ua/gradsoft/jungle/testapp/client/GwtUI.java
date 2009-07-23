@@ -1,12 +1,8 @@
 package ua.gradsoft.jungle.testapp.client;
 
 import com.extjs.gxt.desktop.client.Desktop;
-import com.extjs.gxt.desktop.client.Shortcut;
 import com.extjs.gxt.desktop.client.StartMenu;
 import com.extjs.gxt.desktop.client.TaskBar;
-import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import ua.gradsoft.jungle.configuration.client.ConfigurationUI;
@@ -17,14 +13,18 @@ public class GwtUI implements EntryPoint
 {
 
   private GwtApplication application;
-  private Desktop desktop = new Desktop();
+  private Desktop desktop = null;
 
   public void onModuleLoad() {
+
+       desktop = new Desktop();
+
+
+       System.err.println("style is:"+desktop.getDesktop().getStyleName());
 
        application = new GwtApplication();
        application.setDesktop(desktop);
        application.initAuth(GWT.getModuleBaseURL()+"/GWT-RPC/auth");
-
 
        ConfigurationUI configurationUI = new ConfigurationUI(
                       GWT.getModuleBaseURL()+"/GWT-RPC/ConfigurationFacade");

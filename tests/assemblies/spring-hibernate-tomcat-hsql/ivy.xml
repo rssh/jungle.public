@@ -162,13 +162,13 @@
           <artifact name="jungle.gwt.gwtservlet"   type="jar" />
         </dependency>
         <dependency org="com.google.gwt" name="gwt.repackaged" 
-                    rev="[1.6.4p1,)"  transitive="false"
+                    rev="[1.7.0,)"  transitive="false"
                     conf="default->server" >
           <artifact name="gwt-servlet" type="jar" />
           <artifact name="gwt-user" type="jar" />
         </dependency>
         <dependency org="com.google.gwt" name="gwt.repackaged" 
-                    rev="[1.6.4p1,)" 
+                    rev="[1.7.0,)" 
                     conf="compile.only->server" transitive="false" >
           <artifact name="gwt-dev-linux" type="jar" />
         </dependency>
@@ -198,7 +198,7 @@
                     conf="default->default" >
           <artifact name="jungle.gwt.util" type="jar" />
         </dependency>
-      
+
 
     </dependencies>
 </ivy-module>
