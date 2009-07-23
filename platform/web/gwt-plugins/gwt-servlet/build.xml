@@ -71,6 +71,7 @@
    <target name="publish" depends="distributives">
      <ivy:publish resolver="datacenter.gradsoft.ua" pubrevision="${version}" 
                   overwrite="true" 
+                  replacedynamicrev="false"
                   >
        <artifacts pattern="dist/[artifact]-[revision].[ext]" />
      </ivy:publish>
@@ -79,6 +80,7 @@
    <target name="publish.local" depends="distributives">
      <ivy:publish resolver="jungle.repo" pubrevision="${version}" 
                   overwrite="true" 
+                  replacedynamicrev="false"
                   >
        <artifacts pattern="dist/[artifact]-[revision].[ext]" />
      </ivy:publish>
