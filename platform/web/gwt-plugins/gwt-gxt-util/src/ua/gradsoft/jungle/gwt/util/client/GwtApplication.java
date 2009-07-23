@@ -111,7 +111,7 @@ public class GwtApplication {
               Window w = null;
               if (ce instanceof MenuEvent) {
                   MenuEvent me = (MenuEvent)ce;
-                  me.getItem().getData("window");
+                  w = me.getItem().getData("window");
               } else {
                   w = ce.getComponent().getData("window");
               }

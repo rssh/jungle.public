@@ -38,7 +38,7 @@
 
     <target name="clean-all" depends="clean" >
      <delete>
-      <fileset dir="lib" includes="**/*.jar" />
+      <fileset dir="lib" includes="**/*.jar,**/*.zip" />
      <!--
       <fileset dir="dist" includes="**/*.xml,**/*.jar,**/*.sql,**/*.zip" />
      -->
