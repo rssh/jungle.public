@@ -111,10 +111,15 @@
 
 
   <target name="clean">
-    <!-- Delete the bin directory tree -->
-    <delete file="dist/jungle.configuation-ui-gwt-export.jar"/>
     <delete>
       <fileset dir="bin" includes="**/*.class"/>
+    </delete>
+  </target>
+
+  <target name="clean-all" depends="clean">
+    <delete>
+     <fileset dir="dist" includes="**/*.xml,**/*.jar,**/*.zip" />
+     <fileset dir="lib" includes="**/*.xml,**/*.jar,**/*.zip" />
     </delete>
   </target>
 
@@ -170,6 +175,7 @@
    <target name="publish" depends="distributives">
      <ivy:publish resolver="datacenter.gradsoft.ua" pubrevision="${version}" 
                   overwrite="true" 
+                  replacedynamicrev="false"
                   >
        <artifacts pattern="dist/[artifact]-[revision].[ext]" />
      </ivy:publish>
@@ -178,6 +184,7 @@
    <target name="publish.local" depends="distributives">
      <ivy:publish resolver="jungle.repo" pubrevision="${version}" 
                   overwrite="true" 
+                  replacedynamicrev="false"
                   >
        <artifacts pattern="dist/[artifact]-[revision].[ext]" />
      </ivy:publish>
