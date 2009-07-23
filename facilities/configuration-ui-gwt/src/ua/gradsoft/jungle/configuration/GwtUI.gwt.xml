@@ -6,7 +6,10 @@
       <!-- Inherit the default GWT style sheet.  You can change       -->
       <!-- the theme of your GWT application by uncommenting          -->
       <!-- any one of the following lines.                            -->
-      <inherits name='com.google.gwt.user.theme.standard.Standard'/>
+      <!--
+         we use gxt instead standard css
+        <inherits name='com.google.gwt.user.theme.standard.Standard'/>
+      -->
       <!-- <inherits name='com.google.gwt.user.theme.chrome.Chrome'/> -->
       <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
 
@@ -16,12 +19,14 @@
       <inherits 
        name='ua.gradsoft.jungle.configuration.JungleConfigurationService'/>
 
-      <inherits
-       name='ua.gradsoft.jungle.gwt.util.Util'/>
+      <inherits name='ua.gradsoft.jungle.gwt.util.Util'/>
+      
 
 
       <inherits  name='com.extjs.gxt.ui.GXT' />
+      <inherits name='com.extjs.gxt.themes.Themes' />
       <inherits name='com.extjs.gxt.desktop.WebDesktop' />
+
 
 
       <!-- Specify the application specific style sheet.              -->
