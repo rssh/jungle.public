@@ -45,6 +45,8 @@
       <fileset dir="origin" includes="*.jar" />
       <fileset dir="dist" includes="*.jar,*.xml" />
     </delete>
+    <delete dir="origin/gwt-math" />
+    <delete dir="origin/gwt-math-server" />
   </target>
 
   
