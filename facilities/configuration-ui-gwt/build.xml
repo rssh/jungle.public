@@ -4,6 +4,8 @@
  >
 
   <property file="build.properties" />
+  <property file="build.local.properties" />
+
 
   <import file="build-ivy.xml" />
 
