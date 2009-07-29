@@ -32,7 +32,7 @@ public class ConfigItemSelectorByNamesCriteriaHelper implements CriteriaHelper<C
      }
      boolean firstCondition=true;
      if (selector.getAppName()!=null) {
-         query.append(" item.appName = ?appName ");
+         query.append(" item.appName = :appName ");
          params.put("appName", selector.getAppName());
          firstCondition=false;
      }
@@ -40,7 +40,7 @@ public class ConfigItemSelectorByNamesCriteriaHelper implements CriteriaHelper<C
          if (!firstCondition) {
              query.append(" and ");
          }
-         query.append("item.name = ?itemName");
+         query.append("item.name = :itemName");
          params.put("itemName", selector.getItemName());
          firstCondition = false;
      }
