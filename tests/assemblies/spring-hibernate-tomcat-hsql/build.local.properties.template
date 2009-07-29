@@ -1,0 +1,4 @@
+
+gwt.home=/opt/gwt-linux-1.7.0
+tomcat.home=/usr/share/tomcat6
+

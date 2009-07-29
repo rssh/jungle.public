@@ -6,6 +6,8 @@
   </description>
 
   <property file="../build.properties" />
+  <property file="../build.local.properties" />
+
 
   <!-- set classpath -->
   <path id="project.class.path">
@@ -32,6 +34,8 @@
              includes="jungle.auth.api.gwt-*.jar"/>
     <fileset dir="../lib"
              includes="jungle.auth.api-*.jar"/>
+    <fileset dir="${gwt.home}"
+             includes="**/*.jar" />
     <!-- Additional dependencies (such as junit) go here -->
   </path>
 

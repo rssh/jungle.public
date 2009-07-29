@@ -62,6 +62,7 @@
            </rule>
     	</namespace>
     	<namespace name="java.net" />
+        <namespace name="gradsoft" />
 	</namespaces>
 
         <resolvers>
@@ -144,6 +145,15 @@
                   publishTarget="publish.local"
               />
            </build>
+           <url name="read.datacenter.gradsoft.ua" namespace="gradsoft">
+             <ivy pattern="http://datacenter.gradsoft.ua/public.repository/[organization]/[module]/ivys/ivy-[revision].xml" />
+             <artifact pattern="http://datacenter.gradsoft.ua/public.repository/[organization]/[module]/[type]s/[artifact]-[revision].xml" />
+           </url>
+           <ssh name="datacenter.gradsoft.ua" namespace="gradsoft"
+                publishPermissions="0664" >
+            <ivy pattern="ssh://datacenter.gradsoft.ua/repo/[organization]/[module]/ivys/ivy-[revision].xml" />
+            <artifact pattern="ssh://datacenter.gradsoft.ua/repo/[organization]/[module]/[type]s/[artifact]-[revision].[ext]" />
+           </ssh>
            <chain name="external.chain" returnFirst="true" >
                   <resolver ref="ibiblio" /> 
                   <resolver ref="java.net" /> 
