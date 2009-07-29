@@ -25,7 +25,7 @@ public class ConfigItemSelectorByNamesCriteriaHelper implements CriteriaHelper<C
      StringBuilder query = new StringBuilder();
      query.append("select ");
      query.append(isCount ? "count(item)" : "item");
-     query.append(" from ConfitItem item ");
+     query.append(" from ConfigItem item ");
      Map<String,Object> params = new TreeMap<String,Object>();
      if (selector.getAppName()!=null || selector.getItemName()!=null) {
          query.append("where ");
