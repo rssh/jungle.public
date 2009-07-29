@@ -4,6 +4,7 @@ import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.server.rpc.RPC;
 import com.google.gwt.user.server.rpc.RPCRequest;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.google.gwt.user.server.rpc.SerializationPolicy;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -463,33 +464,11 @@ public class GWTServlet extends RemoteServiceServlet
 
         retval = targetMethod.invoke(targetObject, targetParams);
 
-
-     }catch(RuntimeException ex){
-        Log log = LogFactory.getLog(GWTServlet.class);
-        log.error("exception during call of server object",ex);
-        responsePayload = RPC.encodeResponseForFailure(null, ex, rpcRequest.getSerializationPolicy());
      }catch(InvocationTargetException ex){
          Throwable thr1 = ex.getTargetException();
-         if (thr1 instanceof Exception) {
-             boolean toLog= ((!(thr1 instanceof Serializable))||debug_);
-             if (toLog) {
-                Log log = LogFactory.getLog(GWTServlet.class);
-                log.error("exception during call of server object",thr1);
-             }
-         }else{
-             Log log = LogFactory.getLog(GWTServlet.class);
-             log.error("throwable during call of server object",thr1);
-         }
-         responsePayload = RPC.encodeResponseForFailure(null, thr1, rpcRequest.getSerializationPolicy());
+         responsePayload = encodeAndLogFailureResponse(thr1, rpcRequest, "throwable during call of server object");
      }catch(Exception ex){
-        // it's not runtime exception, so log only if debug is enabled or
-        //exception can't be passed to client.
-        boolean toLog= ((!(ex instanceof Serializable))||debug_);
-        if (toLog) {
-          Log log = LogFactory.getLog(GWTServlet.class);
-          log.error("exception during call of server object",ex);
-        }
-        responsePayload = RPC.encodeResponseForFailure(null, ex, rpcRequest.getSerializationPolicy());
+        responsePayload = encodeAndLogFailureResponse(ex, rpcRequest, "throwable during call of server object");
      }
     }
     if (responsePayload==null) {
@@ -499,6 +478,7 @@ public class GWTServlet extends RemoteServiceServlet
         }else if(resultHibernateBeanReplicator_!=null){
           retval = resultHibernateBeanReplicator_.deepCopy(retval);
         }
+
         responsePayload = RPC.encodeResponseForSuccess(rpcRequest.getMethod(),
                                                        retval,
                                                        rpcRequest.getSerializationPolicy());
@@ -643,6 +623,36 @@ public class GWTServlet extends RemoteServiceServlet
 
   }
 
+
+  private String  encodeAndLogFailureResponse(Throwable ex, RPCRequest rpcRequest, String message) throws SerializationException
+  {
+    boolean toLog = ( (!(ex instanceof Serializable)) ||
+                      (ex instanceof RuntimeException)||
+                      debug_);
+    if (toLog) {
+        Log log = LogFactory.getLog(GWTServlet.class);
+        log.error(message,ex);
+    }
+    Method m = null;
+    SerializationPolicy sp = null;
+    try {
+      if (rpcRequest!=null) {
+          m = rpcRequest.getMethod();
+          sp = rpcRequest.getSerializationPolicy();
+      }
+      return RPC.encodeResponseForFailure(m, ex, sp);
+    } catch (SerializationException ex1){
+        // it means, that exception can't be passed to gwt side,
+        //so, let's output one here if it was not logged yet.
+        if (!toLog) {
+          Log log = LogFactory.getLog(GWTServlet.class);
+          log.error(message,ex);
+        }
+        //throw new SerializationException("Can't encode response",ex1);
+        // thow this exception yet one.
+        return RPC.encodeResponseForFailure(m, ex, sp);
+    }
+  }
 
   private boolean       debug_    = false;
   private List<Context> contexts_ = new LinkedList<Context>();
