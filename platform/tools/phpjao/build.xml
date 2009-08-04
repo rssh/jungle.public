@@ -108,6 +108,14 @@
   </delete>
  </target>
 
+ <target name="clean-all" depends="clean">
+  <delete>
+    <fileset dir="lib" includes="**/*.jar" />
+    <fileset dir="target" includes="**/*.xml,**/*.jar,**/*.php" />
+  </delete>
+ </target>
+
+
  <target name="build-tests" depends="build,retrieve-test-libs">
   <javac srcdir="src/test/java" includes="**/*.java" deprecation="on" 
          debug="${debug}" >
@@ -184,6 +192,7 @@
    <target name="publish" depends="distributives">
      <ivy:publish resolver="datacenter.gradsoft.ua" pubrevision="${version}" 
                   overwrite="true" 
+                  replacedynamicrev="false"
                   >
        <artifacts pattern="target/[artifact]-[revision].[ext]" />
      </ivy:publish>
@@ -192,6 +201,7 @@
    <target name="publish.local" depends="distributives">
      <ivy:publish resolver="jungle.repo" pubrevision="${version}" 
                   overwrite="true" 
+                  replacedynamicrev="false"
                   >
        <artifacts pattern="target/[artifact]-[revision].[ext]" />
      </ivy:publish>

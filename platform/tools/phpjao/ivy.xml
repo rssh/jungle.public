@@ -19,12 +19,12 @@
          <dependency org="org.junit" name="junit" rev="4.5" 
          conf="test->default"/>
          <dependency org="ua.gradsoft" name="termwarephp" 
-                     rev="${termwarephp.version}" 
+                     rev="[${termwarephp.version},)" 
                      conf="default->default">
           <artifact name="TermWarePhp" type="jar" conf="default-default" />
          </dependency>
          <dependency org="ua.gradsoft" name="javachecker" 
-                     rev="${javachecker.version}" 
+                     rev="[${javachecker.version},)" 
                      conf="default->jar">
           <artifact name="JavaChecker" type="jar" />
           <artifact name="JavaChecker2Annotations" type="jar" />
