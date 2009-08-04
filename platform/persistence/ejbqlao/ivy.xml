@@ -31,8 +31,10 @@
            url="http://odt2html.gradsoft.ua/files/odt2html-1.1.jar"
          />
         </dependency>
-        <dependency org="javaee" name="javaee-api" rev="5" 
-                    conf="build->default" />
+        <dependency org="org.apache.openejb" name="javaee-api" rev="[5.0-1,)" 
+                    conf="build->default" >
+          <artifact name="javaee-api" type="jar" />
+        </dependency>
         <dependency org="ua.gradsoft" name="jungle.caching" 
                     rev="[1.0.2,)"
                     conf="*->default" >
