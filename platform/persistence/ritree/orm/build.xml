@@ -20,7 +20,7 @@
     <property name="build-server.dir" value="${build.dir}/server"/>
     
     <path id="core.classpath">
-        <pathelement location="${lib.dir}/javaee-api-5.0-1.jar"/>
+        <fileset dir="${lib.dir}"  includes="**/*.jar"/>
     </path>
 
     <!-- targets -->
@@ -96,6 +96,7 @@
      <ivy:publish resolver="datacenter.gradsoft.ua" 
                   pubrevision="${version}" 
                   overwrite="true" 
+                  replacedynamicrev="false"
                   >
        <artifacts pattern="dist/[artifact]-[revision].[ext]" />
      </ivy:publish>
@@ -104,6 +105,7 @@
    <target name="publish.local" depends="resolve-ivy,build">
      <ivy:publish resolver="local.repo" pubrevision="${version}" 
                   overwrite="true" 
+                  replacedynamicrev="false"
                   >
        <artifacts pattern="dist/[artifact]-[revision].[ext]" />
      </ivy:publish>
