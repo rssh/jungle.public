@@ -1,10 +1,13 @@
 
 package ua.gradsoft.jungle.persistence.ejbqlao;
 
+import java.io.Serializable;
+
 /**
  *Criteria, where we can set limit and offset.
  */
-public interface PagingCriteria {
+public interface PagingCriteria extends Serializable
+{
 
     /**
      * @return offset, from which read.
