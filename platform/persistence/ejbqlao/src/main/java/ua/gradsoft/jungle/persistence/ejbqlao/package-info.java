@@ -1,7 +1,9 @@
 /**
  * 'ejbqlao' is a shortcut for EJB/QL Access Object.
  *
- * Idea is simple -- write more or less universal access object,
- * with remote api, which can be used as base for JPA DAO Objects.
+ * more or less universal access object, with remote api, 
+ * which can be used as base for JPA DAO Objects.
+ *@see CRUDFacade
+ *@see EjbQlAccessObject
  **/
 package ua.gradsoft.jungle.persistence.ejbqlao;

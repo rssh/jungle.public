@@ -28,15 +28,22 @@ public class QueryWithParams {
     }
 
     public String getQuery()
-    {
-      return query_;
-    }
+    { return query_; }
+
+    public void  setQuery(String query)
+    { query_=query; }
 
     public Map<String,Object> getNamedParameters()
     { return namedParameters_; }
 
+    public void  setNamedParameters(Map<String,Object> namedParameters)
+    { namedParameters_=namedParameters; }
+
     public Map<String,Object>  getOptions()
     { return options_; }
+
+    public void setOptions(Map<String,Object> options)
+    { options_=options; }
 
     private String query_;   
     private Map<String,Object> namedParameters_;

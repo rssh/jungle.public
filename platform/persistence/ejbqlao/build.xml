@@ -125,6 +125,10 @@
   <jar destfile="target/jungle.persistence.ejbqlao-gwt-export-${version}.jar" >
      <fileset dir="src/main/java" includes="**/CRUDFacade.class" />
      <fileset dir="src/main/java" includes="**/CRUDFacade.java" />
+     <fileset dir="src/main/java" includes="**/PagingCriteria.class" />
+     <fileset dir="src/main/java" includes="**/PagingCriteria.java" />
+     <fileset dir="src/main/java" includes="**/BasePagingCriteria.class" />
+     <fileset dir="src/main/java" includes="**/BasePagingCriteria.java" />
      <fileset dir="etc/gwt" includes="**/*.xml" />
   </jar>
  </target>
