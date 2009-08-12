@@ -342,22 +342,25 @@ public class GWTServlet extends RemoteServiceServlet
     String responsePayload = null;
     RPCRequest rpcRequest = null;
     Object targetObject = null;
-    if (responsePayload==null) {
-      try {
+    if (debugLevel_ > 9) {
+       LOG.trace("trying to decode request");
+    }
+    try {
         rpcRequest = RPC.decodeRequest(payload, null, this);
-      } catch (NullPointerException ex) {     
+    } catch (NullPointerException ex) {     
         LOG.info("empty rpc request");
         throw new RuntimeException("Empty rpc request");
-      }
+    } catch (Exception ex) {
+        LOG.info("Can't decode request:",ex);
+        responsePayload = encodeAndLogFailureResponse(ex, null, "Can't decode request");
     }
     Object retval=null;
+    if (debugLevel_ > 9) {    
+       LOG.trace("request decoded");
+    }
     if (responsePayload == null) {
      try {
         targetObject = retrieveTargetObject(this.getThreadLocalRequest());
-        if (targetObject == null) {       
-           LOG.info("can't retrieve target object");
-           throw new RuntimeException("target object not found");
-        }
         Method method = rpcRequest.getMethod();
         Object[] params = rpcRequest.getParameters();
         Method targetMethod = findTargetMethod(targetObject, method , params);
@@ -412,6 +415,9 @@ public class GWTServlet extends RemoteServiceServlet
               eraseIdParam = true;
         } else {
             // impossible.
+            if (debugLevel_>0) {
+                LOG.error("Impossible situation with params length before server call");
+            }
             throw new IllegalStateException("Impossible situation with params length before server call");
         }
         if (copy) {
@@ -476,7 +482,7 @@ public class GWTServlet extends RemoteServiceServlet
      }catch(InvocationTargetException ex){
          Throwable thr1 = ex.getTargetException();
          responsePayload = encodeAndLogFailureResponse(thr1, rpcRequest, "throwable during call of server object");
-     }catch(Exception ex){
+     }catch(Exception ex){       
         responsePayload = encodeAndLogFailureResponse(ex, rpcRequest, "throwable during call of server object");
      }
     }
