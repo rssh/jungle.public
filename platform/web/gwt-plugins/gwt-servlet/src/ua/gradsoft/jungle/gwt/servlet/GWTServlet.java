@@ -114,9 +114,9 @@ public class GWTServlet extends RemoteServiceServlet
    *  set 'name' of client-side auth object, i, e.
    *
    * <pre>
-   *  debug = 1 or 0
+   *  debugLevel
    * </pre>
-   *  enable or disable debug.
+   *  value from 0 to 10, 0: debug is disabled, 10 - maximally enabled.
    *
    *
    * @param servletConfig
@@ -160,16 +160,32 @@ public class GWTServlet extends RemoteServiceServlet
               }
           }
           if (!b) {
+              // deprecared by debugLevel. still here.
               if (name.equals("debug")) {
-                  if (value.equals("1")||value.equalsIgnoreCase("true")) {
-                      debug_=true;
-                  }else if (value.equals("0")||value.equalsIgnoreCase("false")) {
-                      debug_=false;
+                  if (value.equalsIgnoreCase("true")) {
+                      debugLevel_=1;
+                  }else if (value.equalsIgnoreCase("false")) {
+                      debugLevel_=0;
                   }else{
-                      Log log = LogFactory.getLog(GWTServlet.class);
-                      log.warn("invalud value of debug parameter, must be 0 or 1; set to true");
-                      debug_=true;
+                      try {
+                        debugLevel_=Integer.parseInt(value);
+                      }catch(NumberFormatException ex){                     
+                        LOG.warn("invalud value of debug parameter, must be integer",ex);
+                        debugLevel_=1;
+                      }
                   }
+                  b=true;
+              }
+          }
+          if (!b) {
+              if (name.equals("debugLevel")) {
+                  try {
+                    debugLevel_=Integer.parseInt(value);
+                  }catch(NumberFormatException ex){                
+                    LOG.warn("invalud value of debugLevel parameter, must be integer",ex);
+                    debugLevel_=1;
+                  }
+                  b=true;
               }
           }
           if (!b) {
@@ -186,9 +202,8 @@ public class GWTServlet extends RemoteServiceServlet
           }
           if (!b) {
               int pos = name.indexOf(".");
-              if (pos==-1) {
-                Log log = LogFactory.getLog(GWTServlet.class);
-                log.warn("unknown init parameter "+name);
+              if (pos==-1) {           
+                LOG.warn("unknown init parameter "+name);
               }
               //String prefix = name.substring(0,pos);
               String rest = name.substring(pos+1);
@@ -196,13 +211,11 @@ public class GWTServlet extends RemoteServiceServlet
                   b=checkNamedProperty(name,rest,namedEnvs,defaultEnv,
                                        servletConfig.getInitParameter(name));
                   if (!b) {
-                     // impossible.
-                     Log log = LogFactory.getLog(GWTServlet.class);
-                     log.warn("internal error durting handling init parameter "+name);
+                     // impossible.                  
+                     LOG.warn("internal error durting handling init parameter "+name);
                   }
-              }else{
-                Log log = LogFactory.getLog(GWTServlet.class);
-                log.warn("unknown init parameter "+name);
+              }else{             
+                LOG.warn("unknown init parameter "+name);
               }
           }
       }
@@ -212,14 +225,12 @@ public class GWTServlet extends RemoteServiceServlet
                 Context ctx = new InitialContext(je.getValue());
                 if (contexts_==null) {
                   // bust be initialized in costructor, but .. (?)
-                  contexts_=new LinkedList<Context>();
-                  Log log = LogFactory.getLog(GWTServlet.class);
-                  log.warn("servlet context field was not initialized, check version of web container");
+                  contexts_=new LinkedList<Context>();             
+                  LOG.warn("servlet context field was not initialized, check version of web container");
                 }
                 contexts_.add(ctx);
-              }catch(NamingException ex){
-                  Log log = LogFactory.getLog(GWTServlet.class);
-                  log.error("Can't init name service for "+je.getKey(), ex);
+              }catch(NamingException ex){           
+                  LOG.error("Can't init name service for "+je.getKey(), ex);
                   throw new ServletException("Can't init name service for "+je.getKey(),ex);
               }
           }
@@ -241,16 +252,14 @@ public class GWTServlet extends RemoteServiceServlet
            }catch(NoInitialContextException ex){
                skip=true;
            }catch(NamingException ex){
-               Log log = LogFactory.getLog(GWTServlet.class);
-               log.warn("strange exception during resolving unexistend object in defaut context, ex");
+               LOG.warn("strange exception during resolving unexistend object in defaut context, ex");
                skip=true;
            }
            if (!skip) {
              contexts_.add(ctx);
            }
-         }catch(NamingException ex){
-           Log log = LogFactory.getLog(GWTServlet.class);
-           log.error("Can't init default name service", ex);
+         }catch(NamingException ex){       
+           LOG.error("Can't init default name service", ex);
            throw new ServletException("Can't init default name service",ex);
          }
       }
@@ -263,22 +272,18 @@ public class GWTServlet extends RemoteServiceServlet
                resultReplicator_ = (BeanReplicator)o;
             }else if (o instanceof HibernateBeanReplicator){
                resultHibernateBeanReplicator_ = (HibernateBeanReplicator)o;
-            }else{
-              Log log = LogFactory.getLog(GWTServlet.class);
-              log.fatal("output replicator class is not BeanReplicator or HibernateBeanReplicator");
+            }else{            
+              LOG.fatal("output replicator class is not BeanReplicator or HibernateBeanReplicator");
               throw new ServletException("output replicator "+o.getClass()+" is not BeanReplicator or HibernateBeanReplicator");
             }
-          }catch(ClassNotFoundException ex){
-              Log log = LogFactory.getLog(GWTServlet.class);
-              log.fatal("output replicator class not found", ex);
+          }catch(ClassNotFoundException ex){          
+              LOG.fatal("output replicator class not found", ex);
               throw new ServletException("output replicator class not found", ex);
-          }catch(InstantiationException ex){
-              Log log = LogFactory.getLog(GWTServlet.class);
-              log.fatal("Can't instantiate output replicator",ex);
+          }catch(InstantiationException ex){           
+              LOG.fatal("Can't instantiate output replicator",ex);
               throw new ServletException("Can't instantiate output replicator",ex);
-          }catch(IllegalAccessException ex){
-              Log log = LogFactory.getLog(GWTServlet.class);
-              log.fatal("Can't instantiate output replicator",ex);
+          }catch(IllegalAccessException ex){           
+              LOG.fatal("Can't instantiate output replicator",ex);
               throw new ServletException("Can't instantiate output replicator",ex);
           }
       }
@@ -287,17 +292,14 @@ public class GWTServlet extends RemoteServiceServlet
           try {
             Class<?> inputReplicatorClass = Class.forName(inputReplicatorClassname);
             inputParametersReplicator_ = (BeanReplicator)inputReplicatorClass.newInstance();
-          }catch(ClassNotFoundException ex){
-              Log log = LogFactory.getLog(GWTServlet.class);
-              log.fatal("input replicator class not found", ex);
+          }catch(ClassNotFoundException ex){           
+              LOG.fatal("input replicator class not found", ex);
               throw new ServletException("input replicator class not found", ex);
-          }catch(InstantiationException ex){
-              Log log = LogFactory.getLog(GWTServlet.class);
-              log.fatal("Can't instantiate input replicator",ex);
+          }catch(InstantiationException ex){          
+              LOG.fatal("Can't instantiate input replicator",ex);
               throw new ServletException("Can't instantiate input replicator",ex);
-          }catch(IllegalAccessException ex){
-              Log log = LogFactory.getLog(GWTServlet.class);
-              log.fatal("Can't instantiate input replicator",ex);
+          }catch(IllegalAccessException ex){           
+              LOG.fatal("Can't instantiate input replicator",ex);
               throw new ServletException("Can't instantiate input replicator",ex);
           }
       }
@@ -315,11 +317,13 @@ public class GWTServlet extends RemoteServiceServlet
                 }
             }catch(NameNotFoundException ex){
                 /* do nothing */
-            }catch(NamingException ex){
+            }catch(NamingException ex){           
+                LOG.error("Can't locate Api provider with name "+authApiProviderName_,ex);
                 throw new ServletException("Can't locate api provider:"+authApiProviderName_,ex);
             }
           }
-          if (authApiProvider_==null) {
+          if (authApiProvider_==null) {         
+              LOG.error("AuthApiPrivider with name "+authApiProviderName_+" is not found");
               throw new ServletException("AuthApiProivider with name "+authApiProviderName_+" is not found");
           }
 
@@ -341,8 +345,7 @@ public class GWTServlet extends RemoteServiceServlet
     if (responsePayload==null) {
       try {
         rpcRequest = RPC.decodeRequest(payload, null, this);
-      } catch (NullPointerException ex) {
-        Log LOG = LogFactory.getLog(GWTServlet.class);
+      } catch (NullPointerException ex) {     
         LOG.info("empty rpc request");
         throw new RuntimeException("Empty rpc request");
       }
@@ -351,9 +354,8 @@ public class GWTServlet extends RemoteServiceServlet
     if (responsePayload == null) {
      try {
         targetObject = retrieveTargetObject(this.getThreadLocalRequest());
-        if (targetObject == null) {
-           Log log = LogFactory.getLog(GWTServlet.class);
-           log.info("can't retrieve target object");
+        if (targetObject == null) {       
+           LOG.info("can't retrieve target object");
            throw new RuntimeException("target object not found");
         }
         Method method = rpcRequest.getMethod();
@@ -373,6 +375,7 @@ public class GWTServlet extends RemoteServiceServlet
                 } else if (o instanceof String) {
                     userContext = authApiProvider_.findContextById((String)o);
                 } else {
+                    LOG.error("Internal error: can't determinate user");
                     throw new RuntimeException("Internal error: can't deteminate user");
                 }
             }
@@ -453,7 +456,7 @@ public class GWTServlet extends RemoteServiceServlet
           if (!(targetObject instanceof AuthClientApiHttpRequestScopeImpl)) {
               // call to auth API must be permitted for all
             if (!AuthServerApiHelper.checkMethodPermissions(targetMethod,targetParams, userContext)) {
-              if (debug_) {
+              if (debugLevel_ > 0) {
                   Log log = LogFactory.getLog(GWTServlet.class);
                   log.info("Access denied for method "+targetMethod.getDeclaringClass().getName()+"."+targetMethod.getName()+" to user "+userContext.getId());
               }
@@ -462,7 +465,13 @@ public class GWTServlet extends RemoteServiceServlet
           }
         }
 
+        if (debugLevel_>9) {
+          LOG.debug("befor call of method "+targetMethod.getName());
+        }
         retval = targetMethod.invoke(targetObject, targetParams);
+        if (debugLevel_ > 9) {
+           LOG.debug("after call of method "+targetMethod.getName());
+        }
 
      }catch(InvocationTargetException ex){
          Throwable thr1 = ex.getTargetException();
@@ -482,13 +491,11 @@ public class GWTServlet extends RemoteServiceServlet
         responsePayload = RPC.encodeResponseForSuccess(rpcRequest.getMethod(),
                                                        retval,
                                                        rpcRequest.getSerializationPolicy());
-      }catch(IllegalArgumentException ex){
-        Log log = LogFactory.getLog(GWTServlet.class);
-        log.error("error during ecoding server response",ex);
+      }catch(IllegalArgumentException ex){ 
+        LOG.error("error during ecoding server response",ex);
         responsePayload = RPC.encodeResponseForFailure(rpcRequest.getMethod(), ex);
-      }catch(Exception ex){
-        Log log = LogFactory.getLog(GWTServlet.class);
-        log.error("error during ecoding server response",ex);
+      }catch(Exception ex){      
+        LOG.error("error during ecoding server response",ex);
         responsePayload = RPC.encodeResponseForFailure(rpcRequest.getMethod(), ex);
       }
     }
@@ -506,7 +513,7 @@ public class GWTServlet extends RemoteServiceServlet
      if (objectName.startsWith("/")) {
          objectName=objectName.substring(1);
      }
-     if (debug_) {
+     if (debugLevel_ > 0) {
        Log log = LogFactory.getLog(GWTServlet.class);
        log.info("retrieveTarget object for name "+objectName);
      }
@@ -519,26 +526,26 @@ public class GWTServlet extends RemoteServiceServlet
      Object retval = null;
      for(Context context: contexts_) {
          try {
-             if (debug_) {
-               Log log = LogFactory.getLog(GWTServlet.class);
-               log.info("search in "+context.toString());
+             if (debugLevel_ > 2) {
+               LOG.info("search in "+context.toString());
              }
              retval = context.lookup(objectName);
          }catch(NameNotFoundException ex){
-             if (debug_) {
-                 Log log = LogFactory.getLog(GWTServlet.class);
-                 log.info("Not found.");
+             if (debugLevel_ > 2) {
+                 LOG.info("Not found.");
              }
              ;
-         }catch(NamingException ex){
-             Log log = LogFactory.getLog(GWTServlet.class);
-             log.error("error during server object lookup",ex);
+         }catch(NamingException ex){       
+             LOG.error("error during server object lookup",ex);
          }
          if (retval!=null) {
              break;
          }
      }
      if (retval==null) {
+         if (debugLevel_ > 0) {
+            LOG.info("can't retrieve target object with name "+objectName);
+         }
          throw new RuntimeException("Can't find object with name "+objectName);
      }
      return retval;
@@ -593,6 +600,9 @@ public class GWTServlet extends RemoteServiceServlet
     try {
         return targetObject.getClass().getMethod(originMethod.getName(), newParameterTypes);
     }catch(NoSuchMethodException ex){
+        if (debugLevel_>0) {
+          LOG.info("Can't find method for "+originMethod.getName());
+        }
         throw new RuntimeException("Can't find method for "+originMethod.getName());
     }
  }
@@ -628,10 +638,9 @@ public class GWTServlet extends RemoteServiceServlet
   {
     boolean toLog = ( (!(ex instanceof Serializable)) ||
                       (ex instanceof RuntimeException)||
-                      debug_);
-    if (toLog) {
-        Log log = LogFactory.getLog(GWTServlet.class);
-        log.error(message,ex);
+                      (debugLevel_ > 0) );
+    if (toLog) {      
+        LOG.error(message,ex);
     }
     Method m = null;
     SerializationPolicy sp = null;
@@ -644,9 +653,8 @@ public class GWTServlet extends RemoteServiceServlet
     } catch (SerializationException ex1){
         // it means, that exception can't be passed to gwt side,
         //so, let's output one here if it was not logged yet.
-        if (!toLog) {
-          Log log = LogFactory.getLog(GWTServlet.class);
-          log.error(message,ex);
+        if (!toLog) {      
+          LOG.error(message,ex);
         }
         //throw new SerializationException("Can't encode response",ex1);
         // thow this exception yet one.
@@ -654,7 +662,9 @@ public class GWTServlet extends RemoteServiceServlet
     }
   }
 
-  private boolean       debug_    = false;
+  private int           debugLevel_    = 0;
+  private static final  Log  LOG = LogFactory.getLog(GWTServlet.class);
+
   private List<Context> contexts_ = new LinkedList<Context>();
 
   private BeanReplicator inputParametersReplicator_=null;
@@ -664,5 +674,6 @@ public class GWTServlet extends RemoteServiceServlet
   private String authApiProviderName_ = null;
   private AuthServerApiProvider authApiProvider_=null;
   private String clientSideAuthName_=null;
+
 
 }
