@@ -38,7 +38,7 @@
     </publications>
     <dependencies>
         <dependency org="ua.gradsoft" name="jungle.persistence.jdbcex" 
-                    rev="[1.0,)" 
+                    rev="[1.0.1,)" 
                     conf="api->api" >
           <artifact name="jungle.persistence.jdbcex-api" type="jar" />
         </dependency>
