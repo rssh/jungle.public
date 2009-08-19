@@ -40,7 +40,7 @@ public class LoginService extends GwtApplicationComponent
      Window loginWindow = createLoginWindow();
      MenuItem menuItem = new MenuItem("Login");
      menuItem.setData("window", loginWindow);
-     menuItem.addSelectionListener(application.getDesktopSelectionListener());
+     menuItem.addSelectionListener(application.getDesktopMeSelectionListener());
      menuItem.setItemId("id-login");
      application.getDesktop().getStartMenu().add(menuItem);    
 

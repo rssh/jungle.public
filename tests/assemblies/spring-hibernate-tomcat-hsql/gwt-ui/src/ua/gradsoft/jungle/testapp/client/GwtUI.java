@@ -19,9 +19,6 @@ public class GwtUI implements EntryPoint
 
        desktop = new Desktop();
 
-
-       System.err.println("style is:"+desktop.getDesktop().getStyleName());
-
        application = new GwtApplication();
        application.setDesktop(desktop);
        application.initAuth(GWT.getModuleBaseURL()+"/GWT-RPC/auth");

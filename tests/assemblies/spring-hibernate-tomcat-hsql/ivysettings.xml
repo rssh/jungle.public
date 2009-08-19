@@ -144,6 +144,11 @@
                   buildDirectory="${facilities.home}/configuration-ui-gwt"
                   publishTarget="publish.local"
               />
+              <dependencyBuild
+                  organization="ua.gradsoft" name="jungle.auth-api"
+                  buildDirectory="${platform.public.home}/auth/auth-api"
+                  publishTarget="publish.local"
+              />
            </build>
            <url name="read.datacenter.gradsoft.ua" namespace="gradsoft">
              <ivy pattern="http://datacenter.gradsoft.ua/public.repository/[organization]/[module]/ivys/ivy-[revision].xml" />
