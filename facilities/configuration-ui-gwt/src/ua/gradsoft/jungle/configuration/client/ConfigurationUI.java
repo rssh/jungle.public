@@ -48,7 +48,7 @@ public class ConfigurationUI extends GwtApplicationComponent
           MenuItem mi = new MenuItem("Configuration");
           Window w = getTableWindow("app2");
           mi.setData("window", w);
-          mi.addSelectionListener(application.getDesktopSelectionListener());
+          mi.addSelectionListener(application.getDesktopMeSelectionListener());
           mi.setItemId("id-ConfigurationUI");
           mi.disable();
           desktop.getStartMenu().add(mi);
