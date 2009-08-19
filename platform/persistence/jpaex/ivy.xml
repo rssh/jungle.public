@@ -43,7 +43,7 @@
           <artifact name="commons-logging" type="jar" />
         </dependency>
         <dependency org="ua.gradsoft" name="jungle.persistence.jdbcex" 
-                    rev="[1.0,)" conf="api->api" > 
+                    rev="[1.0.1,)" conf="api->api" > 
           <artifact name="jungle.persistence.jdbcex-api" type="jar" />
         </dependency>
         <dependency org="org.junit" name="junit" rev="[4.4,)" 

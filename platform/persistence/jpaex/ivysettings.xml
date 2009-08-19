@@ -77,6 +77,11 @@
            <build name="build.local"   
                   buildResolverDir="${ivy.build.resolver.dir}" >
              <resolver ref="local.jungle.repo" />
+             <dependencyBuild
+                  organization="ua.gradsoft" name="jungle.persistence.jdbcex"
+                  buildDirectory="${platform.home}/persistence/jdbcex"
+                  publishTarget="publish.local"
+             />
            </build>
            <url name="read.datacenter.gradsoft.ua" namespace="gradsoft">
              <ivy pattern="http://datacenter.gradsoft.ua/public.repository/[organization]/[module]/ivys/ivy-[revision].xml" />
