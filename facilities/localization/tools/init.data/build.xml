@@ -27,15 +27,18 @@
     
    <target name="build-yes" depends="check.init.sql.done, init-groovy"
                             unless="init.sql.done" >
+     <echo message="basedir=${basedir}" />
      <groovy>
       GroovyShell shell = new GroovyShell();
-      def xout = new PrintWriter("init.sql");
+      def basedir = properties["basedir"];
+      def xout = new PrintWriter("${basedir}/init.sql");
       def countryNames = [:];
       shell.setProperty("xout", xout);
       shell.setProperty("countryNames", countryNames);
-      shell.run(new File("generate_languages_inserts.groovy"),[]);
-      shell.run(new File("generate_countries_inserts.groovy"),[]);
-      shell.run(new File("fix_supplementary_data.groovy"),[]);
+      shell.setProperty("basedir", basedir);
+      shell.run(new File("${basedir}/generate_languages_inserts.groovy"),[]);
+      shell.run(new File("${basedir}/generate_countries_inserts.groovy"),[]);
+      shell.run(new File("${basedir}/fix_supplementary_data.groovy"),[]);
       println("Hello!");
       xout.close();
      </groovy>

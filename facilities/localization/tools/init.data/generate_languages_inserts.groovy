@@ -3,7 +3,12 @@
 def withOut=false;
 def xxout=System.out;
 
-println("0 ");
+try {
+ xbasedir=basedir;
+}catch(MissingPropertyException){
+ def basedir="."
+}
+println("now basedir is ${basedir}");
 
 try {
  xxout = xout;
@@ -19,7 +24,8 @@ if (!withOut) {
   println("out was here ");
 }
 
-new File("ISO-639-2_utf-8.txt").eachLine {
+
+new File("${basedir}/ISO-639-2_utf-8.txt").eachLine {
 
  String[] names = it.toUpperCase().split("\\|");
  String   fln = names[3].split(";")[0];

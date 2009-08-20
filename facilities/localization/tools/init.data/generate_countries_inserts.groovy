@@ -3,7 +3,11 @@
 def withOut=false;
 def xxout=System.out;
 
-println("0 ");
+try {
+  def xbasedir=basedir;
+}catch(MissingPropertyException ex){
+  def basedir="."; 
+}
 
 try {
  xxout = xout;
@@ -30,7 +34,7 @@ String maxCountryCode=null;
 int maxLanguagesPerCountryOrigins = 0;
 String maxCountryCodeOrigins=null;
 
-new File("ISO-639-2_utf-8.txt").eachLine {
+new File("${basedir}/ISO-639-2_utf-8.txt").eachLine {
 
  String[] names = it.toUpperCase().split("\\|");
  String   fln = names[3].split(";")[0];
@@ -46,7 +50,7 @@ new File("ISO-639-2_utf-8.txt").eachLine {
 
 }
 
-new File("ethnologue/LanguageIndex.tab").eachLine {
+new File("${basedir}/ethnologue/LanguageIndex.tab").eachLine {
 
  String[] names = it.toUpperCase().split("[\t]+");
  String   fln = names[3].split(";")[0];
@@ -76,7 +80,7 @@ new File("ethnologue/LanguageIndex.tab").eachLine {
 
 //println("max_languages_per_country:"+maxLanguagesPerCountry+" in "+maxCountryCode);
 
-new File("ethnologue/LanguageCodes.tab").eachLine {
+new File("${basedir}/ethnologue/LanguageCodes.tab").eachLine {
  
  String[] names = it.toUpperCase().split("[\t]+");
  String   fln = names[3].split(";")[0];
@@ -104,7 +108,7 @@ new File("ethnologue/LanguageCodes.tab").eachLine {
 
 //println("max_languages_per_country_origins:"+maxLanguagesPerCountryOrigins+" in "+maxCountryCodeOrigins);
 
-new File("ethnologue/CountryCodes.tab").eachLine{
+new File("${basedir}/ethnologue/CountryCodes.tab").eachLine{
 
  String[] fields = it.split("[\t]+");
 
@@ -118,7 +122,7 @@ new File("ethnologue/CountryCodes.tab").eachLine{
 
 }
 
-new File("ISO-3166.txt").eachLine {
+new File("${basedir}/ISO-3166.txt").eachLine {
 
  String[] names = it.split("[\t]+");
  if (names.length > 1) {
