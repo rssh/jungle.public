@@ -56,7 +56,7 @@ public class TranslationTable
      * @return owner for this bundle.
      */
     @ManyToOne
-    @JoinColumn(name="bundle_name", referencedColumnName="bundle_name")
+    @JoinColumn(name="bundle_name", referencedColumnName="name")
     public BundleInfo  getBundle()
     { return bundle_; }
 

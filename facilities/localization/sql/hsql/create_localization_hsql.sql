@@ -23,18 +23,26 @@ create table languages_in_countries
  primary key(country_code, language_code)
 );
 
-create table localization_type
+create table localization_types
 (
   ID                 INTEGER primary key,
-  ONE_TABLE          CHAR(1) default '0'
-  TRANSLATE_TABLES   CHAR(1) default '0'
+  NAME               VARCHAR(32) unique,
+  DESCRIPTION        VARCHAR(1024)  
 );
+
+insert into localization_types(id,name,description)
+ values(1,'OneRowPerEntity',
+  'for each localized entity we have additional table with one row, where\n'||
+  'for each field which must be translated we have (nLang) fields in \n'||
+  'additional table with names like <origin_name>_ua, <origin_name>_ra, .. etc'
+);
+
 
 create table localization_bundles
 (
   NAME              VARCHAR(64) PRIMARY KEY,
   PRIMARY_LANGUAGE  CHAR(2) references languages(code),
-  LOCALIZATION_TYPE INTEGER
+  LOCALIZATION_TYPE INTEGER references localization_types(id)
 );
 
 create table localization_bundle_tables
