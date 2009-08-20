@@ -28,7 +28,7 @@ drop function if exists host_number(inet);
 
 
 create or replace function host_number(inet) returns integer
-as $$$$
+as $$
 declare
  sbytes text[];
  r      INTEGER;
@@ -39,7 +39,7 @@ begin
  r:=(r<<8)+cast(sbytes[3] as INTEGER);
  r:=(r<<8)+cast(sbytes[4] as INTEGER);
  return r;
-end $$$$ LANGUAGE plpgsql; 
+end $$ LANGUAGE plpgsql; 
 /
 
 
@@ -55,7 +55,7 @@ create table  db_cluster_neightboards
 /
 
 create or replace function generate_number_key(BIGINT) returns NUMERIC(40,0)
-as $$$$
+as $$
 declare
  cn INTEGER;
  vorg_id INTEGER;
@@ -73,11 +73,11 @@ begin
  retval:=vorg_id*cast(2^32 as NUMERIC(40,0))+cn;
  retval:=retval*cast(2^64 as NUMERIC(40,0))+x;
  return retval;
-end $$$$ LANGUAGE plpgsql;
+end $$ LANGUAGE plpgsql;
 /
 
 create or replace function generate_character_key(BIGINT) returns CHAR(24)
-as $$$$
+as $$
 declare
  cn INTEGER;
  vorg_id INTEGER;
@@ -113,7 +113,7 @@ begin
        )
              ,'base64'),0,23);
   return retval;
-end $$$$ LANGUAGE plpgsql;
+end $$ LANGUAGE plpgsql;
 /
 
 
