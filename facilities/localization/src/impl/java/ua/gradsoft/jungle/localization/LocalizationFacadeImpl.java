@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import java.util.Map;
+import java.util.TreeMap;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -70,7 +71,7 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
     public List<String> getSupportedLanguagesForBundle(String bundleName) {
         BundleInfo bi = getBundleInfo(bundleName);
         List<String> retval = new ArrayList<String>();
-        List<LanguageInfo> lli = bi.getSupportedLanguaged();
+        List<LanguageInfo> lli = bi.getSupportedLanguages();
         for(LanguageInfo li:lli) {
             retval.add(li.getCode());
         }
@@ -112,7 +113,7 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
       try {
         if (bi.getPrimaryLanguage().getCode().equals(language)){
          entityClass = Class.forName(entityName);       
-        } else if (bi.getSupportedLanguaged().contains(language)) {
+        } else if (bi.getSupportedLanguages().contains(language)) {
          entityClass = Class.forName(entityName);
         } else {
           throw new IllegalArgumentException("Language "+language+" is not supported for bundle "+bi.getName());
@@ -285,19 +286,19 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
                                   fieldNames).get(0);
     }
 
-    public<T>  T  translateBean(T bean, String languageCode)
+    public<T>  T  translateBean(T bean, String languageCode, boolean deep)
     {
       if (bean instanceof Collection) {
-          return (T)translateBeans((Collection)bean,languageCode);
+          return (T)translateBeans((Collection)bean,languageCode, deep);
       }else if (bean instanceof Map) {
           Map<Object,Object> m = (Map<Object,Object>)bean;
           for(Map.Entry<Object,Object> e: m.entrySet()) {
-              Object tv = translateBean(e.getValue(),languageCode);
+              Object tv = translateBean(e.getValue(),languageCode, deep);
               m.put(e.getKey(), tv);
           }
           return (T)m;
       }else if (bean.getClass().isAnnotationPresent(Entity.class)) {
-          Collection<T> rb = translateBeans(Collections.<T>singletonList(bean),languageCode);
+          Collection<T> rb = translateBeans(Collections.<T>singletonList(bean),languageCode,deep);
           return rb.iterator().next();
       }else {
           // return unchanged
@@ -309,13 +310,14 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
     /**
      * note, that beans must be detached.
      */
-    public<T> Collection<T>  translateBeans(Collection<T> beans, String languageCode)
+    public<T> Collection<T>  translateBeans(Collection<T> beans, String languageCode, boolean deep)
     {
         Iterator<T> it = beans.iterator();
         if (!it.hasNext()) {
             // collection is empty, return unchanged.
             return beans;
         }
+        String lc = languageCode.toUpperCase();
         Class entityClass;
         List<JpaEntityProperty> allProperties;
         {
@@ -328,68 +330,120 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
          allProperties = JpaHelper.getAllJpaProperties(entityClass);
         }
         
-        TranslationTable tt = getTranslationTable(entityClass.getName());
-        BundleInfo bi = tt.getBundle();
-        if (!bi.getSupportedLanguaged().contains(languageCode)) {
-            throw new IllegalArgumentException("Language "+languageCode+" is not supported");
-        }
-        List<String> fieldNames = new ArrayList<String>();
-        List<JpaEntityProperty> fieldProperties = new ArrayList<JpaEntityProperty>();
-        List<JpaEntityProperty> complexTranslatedProperties = new ArrayList<JpaEntityProperty>();
-        JpaEntityProperty jp = JpaEntityProperty.findId(entityClass);
-
-        for(TranslationTableColumn tc: tt.getTranslatedColumns()) {
-            String fieldName = tc.getColumnName().toLowerCase();
-            if (fieldName.endsWith("_eng")) {
-                fieldName=fieldName.substring(0,fieldName.length()-4);
+        Map<String,TranslationTable> tts = new TreeMap<String,TranslationTable>();
+        Map<String,BundleInfo> bis = new TreeMap<String, BundleInfo>();
+        Map<String,JpaEntityProperty> propertiesToTranslate = new HashMap<String,JpaEntityProperty>();
+        JpaEntityProperty idProperty=null;
+        for(JpaEntityProperty p: allProperties) {          
+            if (p.isId()) {
+                idProperty=p;
+                continue;
             }
-            fieldNames.add(fieldName);
-            JpaEntityProperty fieldProperty  = JpaEntityProperty.findByColumnName(entityClass, fieldName);
-            fieldProperties.add(fieldProperty);
-        }
-        List<Object> ids = new ArrayList<Object>();
-        
-        for(T bean:beans) {
-            Object id = jp.getValue(bean);
-            ids.add(id);
+            String key = p.getEntityClass().getName();
+            if (!p.getPropertyClass().equals(String.class) &&
+                !p.getPropertyClass().equals(Character.class)) {
+                continue;
+            }
+            if (!tts.containsKey(key)) {
+                TranslationTable tt = findTranslationTableForProperty(p);
+                if (tt==null) {
+                    continue;
+                }
+                propertiesToTranslate.put(p.getColumnName(),p);
+                tts.put(key, tt);
+                if (!bis.containsKey(key)) {
+                    BundleInfo bi = tt.getBundle();
+                    bis.put(key, bi);
+                    boolean supportedLanguageFound = false;
+                    for(LanguageInfo li: bi.getSupportedLanguages()) {
+                        if (li.getName().equalsIgnoreCase(languageCode)) {
+                            supportedLanguageFound=true;
+                            break;
+                        }
+                    }
+                    if (!supportedLanguageFound) {
+                        throw new IllegalArgumentException("Language "+languageCode+" is not supported");
+                    }
+                }               
+               
+            }
         }
 
-        List<List<String>> translated =  translateFieldsByIds(languageCode,
-                                                   entityClass.getName(), ids,
-                                                   fieldNames);
+        // now prepare list of ids
+        List<Object> ids = new ArrayList<Object>();
+        for(T bean: beans) {
+            ids.add(idProperty.getValue(bean));
+        }
+
+        Map<String,List<List<String>>> translatedPerClass = new TreeMap<String, List<List<String>>>();
+        Map<String,List<JpaEntityProperty>> propertiesPerClass = new TreeMap<String,List<JpaEntityProperty>>();
+        for(Map.Entry<String,TranslationTable> e: tts.entrySet()) {
+          TranslationTable tt = e.getValue();
+          List<String> fieldNames = new ArrayList<String>();
+          List<JpaEntityProperty> fieldProperties = new ArrayList<JpaEntityProperty>();
+          for(TranslationTableColumn tc: tt.getTranslatedColumns()) {
+            String fieldName = normalizeFieldName(tc.getColumnName());
+            fieldNames.add(fieldName);
+            JpaEntityProperty fieldProperty  = propertiesToTranslate.get(tc.getColumnName());
+            fieldProperties.add(fieldProperty);
+          }
+
+          List<List<String>> translatedForKey =  translateFieldsByIds(languageCode,
+                                                                       e.getKey(), ids,
+                                                                       fieldNames);
+
+          translatedPerClass.put(e.getKey(), translatedForKey);
+          propertiesPerClass.put(e.getKey(), fieldProperties);
+
+        }
+
 
         it = beans.iterator();
         for(int i=0; it.hasNext() ;++i) {
-            List<String> translatedRow = translated.get(i);
-            T bean = it.next();
-            for(int j=0; j<fieldNames.size(); ++j) {
+          T bean = it.next();
+          for(Map.Entry<String,List<List<String>>> e: translatedPerClass.entrySet()) {
+            List<String> translatedRow = e.getValue().get(i);
+            List<JpaEntityProperty> fieldProperties =  propertiesPerClass.get(e.getKey());
+
+            for(int j=0; j<fieldProperties.size(); ++j) {
                 fieldProperties.get(j).setValue(bean,translatedRow.get(j));
             }
-            // now translate non-trivial complex properties
+          }
+
+          // now translate non-trivial complex properties
+          if (deep) {
             for(JpaEntityProperty p: allProperties) {
                 Class propertyClass = p.getPropertyClass();
                 if (!propertyClass.isPrimitive()) {
                   Object v = p.getValue(bean);
-                  Object tv = translateBean(v,languageCode);
+                  Object tv = translateBean(v,languageCode,deep);
                   p.setValue(bean, tv);
                 }
             }
+          }
         }
 
         return beans;
 
     }
 
+
     
     private String getColumnForTranslatedName(String fieldName, String language)
     {
-        String name = fieldName;
-        if (name.endsWith("_eng")||name.endsWith("_ENG")) {
-            name=name.substring(0,name.length()-4);
-        }
-        return name+"_"+language;
+        return normalizeFieldName(fieldName)+"_"+language;
     }
 
+    private String normalizeFieldName(final String fieldName)
+    {
+      String name = fieldName;
+      if (name.endsWith("_eng")||name.endsWith("_ENG")) {
+          name=name.substring(0,name.length()-4);
+      }else if (fieldName.endsWith("_en")||fieldName.endsWith("_EN")) {
+          name=name.substring(0, name.length()-3);
+      }
+      return name.toUpperCase();
+    }
 
     private TranslationTable getTranslationTable(String entityClassName)
     {
@@ -411,6 +465,34 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
       }
       TranslationTable tt = ltt.get(0);        
       return tt;
+    }
+
+    private TranslationTable  findTranslationTableForProperty(JpaEntityProperty property)
+    {
+      List<TranslationTable> ltt;  
+      String entityClassName = property.getEntityClass().getName();
+      Cache metadataCache = getMetadataCache();
+      Object o = metadataCache.get("TT"+entityClassName);
+      if (o!=null) {
+          ltt = (List<TranslationTable>)o;
+      } else {
+          ltt = executeQuery(TranslationTable.class,
+                    "select tt from TranslationTable tt \n"+
+                                 " where tt.entityClassName=:name",
+                             Collections.<String,Object>singletonMap("name", entityClassName),
+                             Collections.<String,Object>emptyMap());
+          metadataCache.put(new Element("TT"+entityClassName,ltt));
+      }      
+      if (ltt.size()==0) {
+          return null;          
+      }
+      TranslationTable tt = ltt.get(0);
+      for(TranslationTableColumn c: tt.getTranslatedColumns()) {
+          if (c.getColumnName().equalsIgnoreCase(property.getColumnName())) {
+              return tt;
+          }
+      }
+      return null;
     }
 
     private List<String> getCachedTranslation(Object id, Class entity, String language, List<String> fieldNames)

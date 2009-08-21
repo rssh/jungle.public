@@ -51,6 +51,11 @@ public class CountryLinfo implements Serializable
       return defaultLanguageCode_;  
     }
     
+    public void setDefaultLanguageCode(String defaultLanguageCode)
+    {
+        defaultLanguageCode_=defaultLanguageCode;
+    }
+
     /**     
      * @return list of languages, used in this country
      */

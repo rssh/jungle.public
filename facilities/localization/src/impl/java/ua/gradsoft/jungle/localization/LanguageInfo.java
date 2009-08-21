@@ -40,6 +40,11 @@ public class LanguageInfo implements Serializable
       return codeIso639_2_;
     }
 
+    public void setCodeIso639_2(String codeIso639_2)
+    {
+      codeIso639_2_=codeIso639_2;  
+    }
+
 
     /**
      * get name of language (by default - in english).

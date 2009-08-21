@@ -11,6 +11,11 @@
             <properties/>
             <folders>
                 <source-folder>
+                    <label>jungle.localization</label>
+                    <location>.</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
                     <label>src\api\java</label>
                     <type>java</type>
                     <location>src/api/java</location>
@@ -20,11 +25,6 @@
                     <label>src\impl\java</label>
                     <type>java</type>
                     <location>src/impl/java</location>
-                    <encoding>UTF-8</encoding>
-                </source-folder>
-                <source-folder>
-                    <label>jungle.localization</label>
-                    <location>.</location>
                     <encoding>UTF-8</encoding>
                 </source-folder>
             </folders>
@@ -74,6 +74,7 @@
                     <ide-action name="javadoc"/>
                 </context-menu>
             </view>
+            <subprojects/>
         </general-data>
         <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/1">
             <compilation-unit>
@@ -84,7 +85,7 @@
             </compilation-unit>
             <compilation-unit>
                 <package-root>src/impl/java</package-root>
-                <classpath mode="compile">lib/javaee-api-5.0-1.jar;lib/commons-logging-1.1.1.jar;lib/jungle.caching-1.0.3.jar;lib/jungle.persistence.cluster_keys-1.0.6.jar;lib/jungle.persistence.ejbqlao-2.0.4.jar;lib/jungle.persistence.jdbcex-api-1.0.1.jar;lib/jungle.persistence.jpaex-api-1.2.0.jar;lib/ehcache-1.6.0.jar</classpath>
+                <classpath mode="compile">lib/javaee-api-5.0-1.jar:lib/commons-logging-1.1.1.jar:lib/jungle.caching-1.0.3.jar:lib/jungle.persistence.cluster_keys-1.0.6.jar:lib/jungle.persistence.jdbcex-api-1.0.1.jar:lib/ehcache-1.6.0.jar:lib/jungle.persistence.jpaex-api-1.2.1.jar:lib/jungle.persistence.ejbqlao-2.0.8.jar</classpath>
                 <built-to>build/impl</built-to>
                 <source-level>1.5</source-level>
             </compilation-unit>

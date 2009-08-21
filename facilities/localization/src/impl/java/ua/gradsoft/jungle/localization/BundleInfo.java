@@ -37,21 +37,25 @@ public class BundleInfo implements Serializable
       return primaryLanguage_;
     }
 
-    public void setLanguageInfo(LanguageInfo primaryLanguage)
+    public void setPrimaryLanguage(LanguageInfo primaryLanguage)
     {
       primaryLanguage_=primaryLanguage;
     }
 
+
     @ManyToMany(fetch=FetchType.LAZY)
     @JoinTable(name="localization_bundle_languages",
-      joinColumns=@JoinColumn(name="bundle_name", referencedColumnName="code "),
-      inverseJoinColumns=@JoinColumn(name="language_code", referencedColumnName="code")
+      joinColumns=@JoinColumn(name="name"/*, referencedColumnName="bundle_name"*/),
+      inverseJoinColumns=@JoinColumn(name="code" /*, referencedColumnName="language_code"*/)
     )
-    public List<LanguageInfo> getSupportedLanguaged()
+    public List<LanguageInfo> getSupportedLanguages()
     {
         return supportedLanguages_;
     }
 
+
+    public void setSupportedLanguages(List<LanguageInfo> supportedLanguages)
+    { supportedLanguages_=supportedLanguages; }
 
     private String name_;
     private LanguageInfo  primaryLanguage_;

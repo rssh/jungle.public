@@ -66,7 +66,7 @@ public interface LocalizationFacade
    /**
     * By list of of entity id's receive translation of fields from entities with
     * such ids.
-    * @param language - 2-letter iso 639-1 language code (uppercase).
+    * @param language - 2-letter iso 639-1 language code
     * @param ids - list of id's
     * @param fieldNames - list of fields to translate.
     * @return list of list of translated fields, if such entity exists and fields
@@ -81,20 +81,22 @@ public interface LocalizationFacade
     * translate bean to given language. Can recursive process subbeans.
     * @param <T>  bean type
     * @param bean to translate
-    * @param languageCode 2-letter iso 639-1 language code (uppercase).
+    * @param languageCode 2-letter iso 639-1 language code.
+    * @param deep  if true - translate complex properties, otherwise skip non-string properties.
     * @return translated bean (as specified in bundle) ot throw RuntimeException
     *  if something is incorrect.
     */
-   public<T>  T  translateBean(T bean, String languageCode);
+   public<T>  T  translateBean(T bean, String languageCode, boolean deep);
 
    /**
     * translate collections of bean to given language. Can recursive process subbeans.
     * @param <T>  bean type
     * @param beans to translate. Note, that type of beans must be the same in all collection.
     * @param languageCode 2-letter iso 639-1 language code (uppercase).
+    * @param deep if true - translate complex properies (i. e. beans inside), otherwise skip ones
     * @return translated beans (as specified in bundle) ot throw RuntimeException
     *  if something is incorrect.
     */
-   public<T> Collection<T>  translateBeans(Collection<T> beans, String languageCode);
+   public<T> Collection<T>  translateBeans(Collection<T> beans, String languageCode, boolean deep);
 
 }
