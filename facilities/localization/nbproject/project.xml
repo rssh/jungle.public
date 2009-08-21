@@ -85,7 +85,7 @@
             </compilation-unit>
             <compilation-unit>
                 <package-root>src/impl/java</package-root>
-                <classpath mode="compile">lib/javaee-api-5.0-1.jar:lib/commons-logging-1.1.1.jar:lib/jungle.caching-1.0.3.jar:lib/jungle.persistence.cluster_keys-1.0.6.jar:lib/jungle.persistence.jdbcex-api-1.0.1.jar:lib/ehcache-1.6.0.jar:lib/jungle.persistence.jpaex-api-1.2.1.jar:lib/jungle.persistence.ejbqlao-2.0.8.jar</classpath>
+                <classpath mode="compile">lib/javaee-api-5.0-1.jar:lib/commons-logging-1.1.1.jar:lib/jungle.caching-1.0.3.jar:lib/jungle.persistence.cluster_keys-1.0.6.jar:lib/ehcache-1.6.0.jar:lib/jungle.persistence.jpaex-api-1.2.1.jar:lib/jungle.persistence.ejbqlao-2.0.8.jar:lib/jungle.persistence.jdbcex-api-1.0.2.jar</classpath>
                 <built-to>build/impl</built-to>
                 <source-level>1.5</source-level>
             </compilation-unit>

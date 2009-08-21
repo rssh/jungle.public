@@ -64,7 +64,7 @@ public class TranslationTable
     { bundle_=bundle; }
 
     @OneToMany
-    @JoinColumn(name="table_name", referencedColumnName="table_name" )
+    @JoinColumn(name="table_name")
     public List<TranslationTableColumn>  getTranslatedColumns()
     { return translatedColumns_; }
     

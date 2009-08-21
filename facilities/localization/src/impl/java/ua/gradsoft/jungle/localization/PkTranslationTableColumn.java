@@ -2,6 +2,7 @@
 package ua.gradsoft.jungle.localization;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 
 /**
  *Primary Key for associations between translation table and column
@@ -10,6 +11,7 @@ import java.io.Serializable;
 public class PkTranslationTableColumn implements Serializable
 {
 
+    @Column(name="table_name") // bug in hibernate
     public String getTableName()
     {
       return tableName_;  
@@ -20,6 +22,7 @@ public class PkTranslationTableColumn implements Serializable
       tableName_=tableName;
     }
 
+    @Column(name="column_prefix") // bug in hibernate
     public String getColumnName()
     {
       return columnName_;

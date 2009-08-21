@@ -45,8 +45,8 @@ public class BundleInfo implements Serializable
 
     @ManyToMany(fetch=FetchType.LAZY)
     @JoinTable(name="localization_bundle_languages",
-      joinColumns=@JoinColumn(name="name"/*, referencedColumnName="bundle_name"*/),
-      inverseJoinColumns=@JoinColumn(name="code" /*, referencedColumnName="language_code"*/)
+      joinColumns=@JoinColumn(name="bundle_name"/*, referencedColumnName="bundle_name"*/),
+      inverseJoinColumns=@JoinColumn(name="language_code" /*, referencedColumnName="language_code"*/)
     )
     public List<LanguageInfo> getSupportedLanguages()
     {

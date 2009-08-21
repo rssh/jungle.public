@@ -52,30 +52,31 @@ public interface LocalizationFacade
     * we translate fields with names, as in <code> fieldNames</code>
     * for entity with id <code> id </code>.
     * @param language - 2-letter iso369-1 language code, for la
-    * @param entityClassname - classname of entity, as described in bundle.
-    * @param id - entity if
-    * @param fieldNames - list of fields to translate.
+    * @param tableName - name of 'main' entity table.
+    * @param id - entity id
+    * @param columnNames - list of columns to translate.
     * @return list of translated fields, if such entity exists and fields
     * can be translated, otherwise exception.
     */
-   public List<String>   translateFieldsById(String language,
-                                             String entityClassname,
-                                             Object id,
-                                             List<String> fieldNames);
+   public List<String>   translateTableFieldsById(String language,
+                                                  String tableName,
+                                                  Object id,
+                                                  List<String> columnNames);
 
    /**
     * By list of of entity id's receive translation of fields from entities with
     * such ids.
     * @param language - 2-letter iso 639-1 language code
+    * @param tableName - name of'main table' of entity.
     * @param ids - list of id's
-    * @param fieldNames - list of fields to translate.
+    * @param columnNames - list of column names to translate.
     * @return list of list of translated fields, if such entity exists and fields
     * can be translated, otherwise throw exception. (Usially IleagaAccessException)
     */
-   public List<List<String>> translateFieldsByIds(String language,
-                                                  String entityClassname,
-                                                  List<Object> ids,
-                                                  List<String> fieldNames);
+   public List<List<String>> translateTableFieldsByIds(String language,
+                                                       String tableName,
+                                                       List<Object> ids,
+                                                       List<String> columnNames);
 
    /**
     * translate bean to given language. Can recursive process subbeans.
