@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="commons-logging.republish" 
+         default="republish.local" basedir="."
+  xmlns:ivy="antlib:fr.jayasoft.ivy.ant"
+ >
+
+  <property file="build.properties" />
+
+  <import file="build-ivy.xml" />
+
+   <target name="republish" depends="resolve-ivy">
+     <ivy:install organisation="org.apache" 
+                  module="commons-logging"
+                  revision="1.1.1" 
+                  from="external.chain"
+                  to="datacenter.gradsoft.ua"
+                  />
+    </target>
+
+   <target name="check-commons-logging.jar.exists" >
+      <available property="commons-logging.jar.exists"
+                 file="${repo.home}/org.apache/commons-logging/jars/commons-logging-1.1.1.jar"
+      />
+   </target>
+
+   <target name="republish.local" 
+           depends="check-commons-logging.jar.exists,resolve-ivy"
+           unless="commons-logging.jar.exists"
+           >
+     <ivy:install organisation="org.apache" 
+                  module="commons-logging"
+                  revision="1.1.1" 
+                  from="external.chain"
+                  to="jungle.repo"
+                  />
+    </target>
+
+
+</project>
