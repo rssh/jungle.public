@@ -1,0 +1,13 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" 
+          module="spring-and-aspectj.republish" />
+    <configurations>
+      <conf name="default"  />
+      <conf name="tomcat.conf"  />
+    </configurations>
+    <dependencies>
+    </dependencies>
+</ivy-module>
+
+
+
