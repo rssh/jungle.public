@@ -64,7 +64,8 @@ create table localization_bundle_tables
 
 create table localization_bundle_table_columns
 (
-  TABLE_NAME          VARCHAR(64),
+  TABLE_NAME          VARCHAR(64) 
+       references localization_bundle_tables(table_name),
   COLUMN_PREFIX         VARCHAR(64),
       primary key(table_name, column_prefix)
 );
