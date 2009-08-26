@@ -318,7 +318,9 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
 
     public<T>  T  translateBean(T bean, String languageCode, boolean deep)
     {
-      if (bean instanceof Collection) {
+      if (bean==null) {
+          return null;
+      } else if (bean instanceof Collection) {
           return (T)translateBeans((Collection)bean,languageCode, deep);
       }else if (bean instanceof Map) {
           Map<Object,Object> m = (Map<Object,Object>)bean;
@@ -419,7 +421,7 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
 
         }
 
-        //System.err.println("now translate beans to "+languageCode);
+        System.err.println("now translate beans to "+languageCode);
 
         it = beans.iterator();
         for(int i=0; it.hasNext() ;++i) {
@@ -432,13 +434,15 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
             List<JpaEntityProperty<? super T,String>> fieldProperties =  propertiesPerClass.get(e.getKey());
 
             for(int j=0; j<fieldProperties.size(); ++j) {
-                System.err.print("set area for property "+fieldProperties.get(j).getName()+", translation="+translatedRow.get(j));
+                System.err.println("set area for property "+fieldProperties.get(j).getName()+", translation="+translatedRow.get(j));
                 fieldProperties.get(j).setValue(bean,translatedRow.get(j));
             }
           }
 
+
           // now translate non-trivial complex properties
           if (deep) {
+            System.err.println("translate intenal beans:");
             for(JpaEntityProperty p: JpaHelper.getAllJpaProperties(entityClass)) {
                 Class propertyClass = p.getPropertyClass();
                 if (!propertyClass.isPrimitive()) {
@@ -447,9 +451,11 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
                   p.setValue(bean, tv);
                 }
             }
+            System.err.println("intenal beans translate end:");
           }
 
         }
+        System.err.println("ok, all translated");
 
         return beans;
 
