@@ -129,6 +129,10 @@
      <fileset dir="src/main/java" includes="**/PagingCriteria.java" />
      <fileset dir="src/main/java" includes="**/BasePagingCriteria.class" />
      <fileset dir="src/main/java" includes="**/BasePagingCriteria.java" />
+     <fileset dir="src/main/java" includes="**/Pair.class" />
+     <fileset dir="src/main/java" includes="**/Pair.java" />
+     <fileset dir="src/main/java" includes="**/Triplet.class" />
+     <fileset dir="src/main/java" includes="**/Triplet.java" />
      <fileset dir="etc/gwt" includes="**/*.xml" />
   </jar>
  </target>
@@ -147,7 +151,6 @@
     <fileset dir="target" includes="*.xml" />
     <fileset dir="target" includes="*.jar" />
    </delete>
-   <ivy:cleancache />
  </target>
 
 
