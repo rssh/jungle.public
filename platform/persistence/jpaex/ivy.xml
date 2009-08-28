@@ -32,13 +32,13 @@
     <dependencies>
         <dependency org="org.apache.openejb" 
                name="javaee-api"
-               rev="5.0-1" 
+               rev="[5.0-1,)" 
                conf="build->default"
                transitive="false"
                >
           <artifact name="javaee-api" type="jar" />
         </dependency>
-        <dependency org="org.apache" name="commons-logging" rev="1.1.1" 
+        <dependency org="org.apache" name="commons-logging" rev="[1.1.1,)" 
                     transitive="false" conf="hibernate,jtads->default" >
           <artifact name="commons-logging" type="jar" />
         </dependency>

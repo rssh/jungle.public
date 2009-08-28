@@ -3,6 +3,7 @@ package ua.gradsoft.jungle.persistence.jpaex.impl;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -41,14 +42,10 @@ public class JpaEntityCloner {
           return hashed;
       }
       if (o instanceof Map) {
-        if (Map.class.isAssignableFrom(objClass)||objClass.equals(Object.class)) {
           return unjpaMap(objClass,(Map)o, visited);
-        }
       }
       if (o instanceof Collection) {
-        if (Collection.class.isAssignableFrom(objClass)||objClass.equals(Object.class)) {
-            return unjpaCollection(objClass, (Collection)o, visited);
-        }    
+         return unjpaCollection(objClass, (Collection)o, visited);
       }
       
       Class entityClass = JpaHelper.findSameOrSuperJpaEntity(o.getClass());
@@ -72,6 +69,14 @@ public class JpaEntityCloner {
     
     public static Object unjpaEntity(Class<?> entityClass,Object entity, IdentityHashMap<Object,Object> visited)
     {
+      if ((entityClass.getModifiers() & Modifier.ABSTRACT)!=0) {
+        // get entityClass as one of concrete superclass of entity
+        entityClass=JpaHelper.findSameOrSuperJpaEntity(entity.getClass());
+        if ((entityClass.getModifiers() & Modifier.ABSTRACT)!=0) {
+            // it means, that we have no non-abstract non-generate property,
+            entityClass = entity.getClass();
+        }
+      }
       try {
         Constructor cn = entityClass.getConstructor(emptyClassArray);
         Object retval = cn.newInstance(emptyObjectArray);
