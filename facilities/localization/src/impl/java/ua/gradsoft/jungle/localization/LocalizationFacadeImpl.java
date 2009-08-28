@@ -27,6 +27,7 @@ import ua.gradsoft.jungle.persistence.ejbqlao.EjbQlAccessObject;
 import ua.gradsoft.jungle.persistence.jdbcex.RuntimeSqlException;
 import ua.gradsoft.jungle.persistence.jpaex.JdbcConnectionWrapper;
 import ua.gradsoft.jungle.persistence.jpaex.JpaEntityProperty;
+import ua.gradsoft.jungle.persistence.jpaex.JpaEx;
 import ua.gradsoft.jungle.persistence.jpaex.JpaHelper;
 
 public class LocalizationFacadeImpl extends EjbQlAccessObject implements LocalizationFacade
@@ -317,20 +318,28 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
 
 
     public<T>  T  translateBean(T bean, String languageCode, boolean deep)
+    { return translateBean(bean,languageCode, deep, false); }
+
+    public<T>  T  translateBean(T bean, String languageCode, boolean deep, boolean detached)
     {
+      System.err.println("translateBean("+bean.toString()+","+languageCode+","+deep+")");
       if (bean==null) {
           return null;
-      } else if (bean instanceof Collection) {
-          return (T)translateBeans((Collection)bean,languageCode, deep);
+      }
+      if (!detached) {
+          bean = JpaEx.serializeAndDeserialize(bean);
+      }
+      if (bean instanceof Collection) {
+          return (T)translateBeans((Collection)bean,languageCode, deep, true);
       }else if (bean instanceof Map) {
           Map<Object,Object> m = (Map<Object,Object>)bean;
           for(Map.Entry<Object,Object> e: m.entrySet()) {
-              Object tv = translateBean(e.getValue(),languageCode, deep);
+              Object tv = translateBean(e.getValue(),languageCode, deep, true);
               m.put(e.getKey(), tv);
           }
           return (T)m;
       }else if (bean.getClass().isAnnotationPresent(Entity.class)) {
-          Collection<T> rb = translateBeans(Collections.<T>singletonList(bean),languageCode,deep);
+          Collection<T> rb = translateBeans(Collections.<T>singletonList(bean),languageCode,deep, true);
           return rb.iterator().next();
       }else {
           // return unchanged
@@ -338,13 +347,24 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
       }
     }
 
-
-    /**
-     * note, that beans must be detached.
-     */
     public<T> Collection<T>  translateBeans(Collection<T> beans, String languageCode, boolean deep)
     {
+      return translateBeans(beans,languageCode, deep, false);
+    }
+
+
+    /**
+     * translate beans to choosen language. (detach ones if needed)
+     */
+    public<T> Collection<T>  translateBeans(Collection<T> beans, String languageCode, boolean deep, boolean detached)
+    {
         System.err.println("call of translateBeans");
+        if (beans==null) {
+            return beans;
+        }
+        if (!detached) {
+            beans = JpaEx.<Collection<T>>serializeAndDeserialize(beans);
+        }
         Iterator<T> it = beans.iterator();
         if (!it.hasNext()) {
             // collection is empty, return unchanged.
@@ -444,11 +464,17 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
           if (deep) {
             System.err.println("translate intenal beans:");
             for(JpaEntityProperty p: JpaHelper.getAllJpaProperties(entityClass)) {
+                System.err.print("check for property with name "+p.getName());
                 Class propertyClass = p.getPropertyClass();
-                if (!propertyClass.isPrimitive()) {
+                if (!propertyClass.isPrimitive() &&
+                    !Number.class.isAssignableFrom(propertyClass) &&
+                    !String.class.isAssignableFrom(propertyClass)) {
                   Object v = p.getValue(bean);
-                  Object tv = translateBean(v,languageCode,deep);
-                  p.setValue(bean, tv);
+                  if (v!=null) {
+                    System.err.println("translate bean for "+v.toString());
+                    Object tv = translateBean(v,languageCode,deep, true);
+                    p.setValue(bean, tv);
+                  }
                 }
             }
             System.err.println("intenal beans translate end:");

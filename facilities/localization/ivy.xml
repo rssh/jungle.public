@@ -49,7 +49,7 @@
     </dependency>
     <dependency org="ua.gradsoft" 
                name="jungle.persistence.jpaex"
-               rev="[1.2.0,)"
+               rev="[1.2.2,)"
                conf="default->api">
        <artifact name="jungle.persistence.jpaex-api" type="jar" />
     </dependency>
