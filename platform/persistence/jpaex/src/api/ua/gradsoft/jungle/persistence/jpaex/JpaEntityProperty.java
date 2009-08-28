@@ -1,5 +1,6 @@
 package ua.gradsoft.jungle.persistence.jpaex;
 
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
@@ -10,9 +11,14 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.EmbeddedId;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import ua.gradsoft.jungle.persistence.jpaex.impl.JpaEntityComplexIdClassProperty;
 import ua.gradsoft.jungle.persistence.jpaex.impl.JpaEntityFieldProperty;
@@ -272,7 +278,12 @@ public abstract class JpaEntityProperty<E,T>
              m.isAnnotationPresent(Temporal.class) ||
              m.isAnnotationPresent(Embedded.class) ||
              m.isAnnotationPresent(Lob.class) ||
-             m.isAnnotationPresent(EmbeddedId.class)
+             m.isAnnotationPresent(Enumerated.class) ||
+             m.isAnnotationPresent(EmbeddedId.class) ||
+             m.isAnnotationPresent(OneToMany.class) ||
+             m.isAnnotationPresent(OneToOne.class) ||
+             m.isAnnotationPresent(ManyToMany.class) ||
+             m.isAnnotationPresent(ManyToOne.class)
              ;
     }
 

@@ -1,5 +1,12 @@
 package ua.gradsoft.jungle.persistence.jpaex;
 
+
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.sql.Connection;
 import javax.persistence.EntityManager;
 import ua.gradsoft.jungle.persistence.jdbcex.JdbcEx;
@@ -116,6 +123,45 @@ public abstract class JpaEx
        throw new UnsupportedOperationException();
      }
   }
+
+
+    /**
+     * detach bean from entity object. (If API does not explicit
+     *  support this operation, than serialize and deserialize one)
+     * @param em - enityManager fron which we want detach object/
+     * @param bean - object to detach.
+     * @return detached object.
+     */
+    public static <T> T detached(EntityManager em, T bean)
+    {
+      return serializeAndDeserialize(bean);      
+    }
+
+    /**
+     * detach object by  serialize, than deserialize one.
+     */
+    public static <T>  T serializeAndDeserialize(T obj)
+    {
+      //TODO: check that entity-manager is open-ejb, which 'can' serialize
+      // via API
+      try {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(bos);
+        oos.writeObject(obj);
+        oos.flush();
+        oos.close();
+
+        ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+        ObjectInputStream ois = new ObjectInputStream(bis);
+        T retval = (T)ois.readObject();
+        return retval;
+      }catch(IOException ex){
+          throw new JPAIOException(ex);
+      }catch(ClassNotFoundException ex){
+          // impossible, object was just saved
+          throw new IllegalStateException("Can't deserialized serialized object",ex);
+      }
+    }
 
 
 

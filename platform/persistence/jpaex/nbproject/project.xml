@@ -123,7 +123,7 @@
         <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/2">
             <compilation-unit>
                 <package-root>src/api</package-root>
-                <classpath mode="compile">lib/javaee-api-5.jar:lib/jungle.persistence.jdbcex-api-1.0.jar</classpath>
+                <classpath mode="compile">lib/jungle.persistence.jdbcex-api-1.0.jar:lib/javaee-api-5.0-1.jar</classpath>
                 <built-to>src/api</built-to>
                 <source-level>1.5</source-level>
             </compilation-unit>

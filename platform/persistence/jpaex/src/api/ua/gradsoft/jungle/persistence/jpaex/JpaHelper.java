@@ -1,6 +1,7 @@
 
 package ua.gradsoft.jungle.persistence.jpaex;
 
+
 import java.util.List;
 import javax.persistence.Entity;
 
