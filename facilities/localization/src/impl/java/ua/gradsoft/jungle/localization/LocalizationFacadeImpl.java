@@ -244,12 +244,12 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
                   int nAdded=0;
                   Map<Object,Integer> indexesByIds = new HashMap<Object,Integer>();
                   for(int i=0; i<ids.size(); ++i) {
-                      if (!isFirst) {
-                          sqlBuilder.append(", ");
-                      }
                       Object id = ids.get(i);
                       List<String> row = getCachedTranslation(id,e.entityClass,language,fields);
                       if (row==null) {
+                        if (!isFirst) {
+                          sqlBuilder.append(", ");
+                        }
                         sqlBuilder.append("?");
                         isFirst=false;
                         ++nAdded;
@@ -258,9 +258,14 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
                   sqlBuilder.append(")");
                   if (nAdded!=0) {
                     PreparedStatement st = cn.prepareStatement(sqlBuilder.toString());
-                    for(int i=0; i<ids.size(); ++i) {
-                      st.setObject(i+1, ids.get(i));
-                      indexesByIds.put(ids.get(i),i);
+                    //System.err.println("sql is "+sqlBuilder.toString());
+                    for(int i=0, j=0; i<ids.size(); ++i) {
+                      Object id = ids.get(i);
+                      List<String> row = getCachedTranslation(id,e.entityClass,language,fields);
+                      if (row==null) {
+                        st.setObject(++j, ids.get(i));
+                        indexesByIds.put(ids.get(i),i);
+                      }
                       retval.add(new ArrayList<String>());
                     }
                     ResultSet rs = st.executeQuery();
@@ -279,6 +284,10 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
                           retRow.add(value);
                       }
                       putCachedTranslation(rsid,e.entityClass,language,fields,retRow);
+                    }
+                  }else{
+                    for(int i=0; i<ids.size(); ++i) {
+                      retval.add(new ArrayList<String>());
                     }
                   }
                   // now fill cached or untranslated parts
@@ -322,12 +331,11 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
 
     public<T>  T  translateBean(T bean, String languageCode, boolean deep, boolean detached)
     {
-      System.err.println("translateBean("+bean.toString()+","+languageCode+","+deep+")");
       if (bean==null) {
           return null;
       }
       if (!detached) {
-          bean = JpaEx.serializeAndDeserialize(bean);
+          bean = JpaEx.getInstance().detached(getEntityManager(), bean);
       }
       if (bean instanceof Collection) {
           return (T)translateBeans((Collection)bean,languageCode, deep, true);
@@ -358,19 +366,18 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
      */
     public<T> Collection<T>  translateBeans(Collection<T> beans, String languageCode, boolean deep, boolean detached)
     {
-        System.err.println("call of translateBeans");
         if (beans==null) {
             return beans;
         }
         if (!detached) {
-            beans = JpaEx.<Collection<T>>serializeAndDeserialize(beans);
+            beans = JpaEx.getInstance().<Collection<T>>detached(getEntityManager(),beans);
         }
         Iterator<T> it = beans.iterator();
         if (!it.hasNext()) {
             // collection is empty, return unchanged.
             return beans;
         }
-        String lc = languageCode.toUpperCase();
+        languageCode = languageCode.toUpperCase();
         Class<T> entityClass;
         {
          T bean = it.next();
@@ -385,7 +392,6 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
         if (metaDataEntry==null) {
             throw new IllegalArgumentException("class "+entityClass+" can;t be translated (translation metainfo not found)");
         }
-
 
         Map<String,BundleInfo> bis = new TreeMap<String, BundleInfo>();
         for(JpaEntityProperty<T,String> p: metaDataEntry.stringPropertiesByName.values()) {
@@ -441,7 +447,6 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
 
         }
 
-        System.err.println("now translate beans to "+languageCode);
 
         it = beans.iterator();
         for(int i=0; it.hasNext() ;++i) {
@@ -452,37 +457,40 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
             }
             List<String> translatedRow = e.getValue().get(i);
             List<JpaEntityProperty<? super T,String>> fieldProperties =  propertiesPerClass.get(e.getKey());
+            if (fieldProperties.size()==0) {
+               continue;
+            }
 
             for(int j=0; j<fieldProperties.size(); ++j) {
-                System.err.println("set area for property "+fieldProperties.get(j).getName()+", translation="+translatedRow.get(j));
-                fieldProperties.get(j).setValue(bean,translatedRow.get(j));
+                String translation = translatedRow.get(j);
+                fieldProperties.get(j).setValue(bean,translation);
             }
-          }
 
+          }
 
           // now translate non-trivial complex properties
           if (deep) {
-            System.err.println("translate intenal beans:");
-            for(JpaEntityProperty p: JpaHelper.getAllJpaProperties(entityClass)) {
-                System.err.print("check for property with name "+p.getName());
+            List<JpaEntityProperty> properties = JpaHelper.getAllJpaProperties(entityClass);
+            for(JpaEntityProperty p: properties) {
                 Class propertyClass = p.getPropertyClass();
                 if (!propertyClass.isPrimitive() &&
                     !Number.class.isAssignableFrom(propertyClass) &&
                     !String.class.isAssignableFrom(propertyClass)) {
+                    //System.err.println("translated propertyClass "+propertyClass.getName()+", for name "+p.getName());
+                    //System.err.println("bean class is "+bean.getClass().getName());
+                    //System.err.println("property entity class is "+p.getEntityClass());
                   Object v = p.getValue(bean);
                   if (v!=null) {
-                    System.err.println("translate bean for "+v.toString());
                     Object tv = translateBean(v,languageCode,deep, true);
                     p.setValue(bean, tv);
                   }
                 }
             }
-            System.err.println("intenal beans translate end:");
           }
 
-        }
-        System.err.println("ok, all translated");
 
+        }
+        
         return beans;
 
     }
@@ -555,11 +563,9 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
       List<JpaEntityProperty> properties=JpaHelper.getAllJpaProperties(entry.entityClass);
       entry.stringPropertiesByNormalizedColumnName=new TreeMap<String,JpaEntityProperty<T,String>>();
       entry.stringPropertiesByName = new TreeMap<String,JpaEntityProperty<T,String>>();
-      System.err.println("fillEntityEntry, class = "+entry.entityClass.getName());
       for(JpaEntityProperty p: properties) {
           boolean used=false;
           if (p.getPropertyClass().isAssignableFrom(String.class)) {
-              System.err.println("property, name="+p.getName()+", columnName="+p.getColumnName());
               entry.stringPropertiesByNormalizedColumnName.put(normalizeColumnName(p.getColumnName()), p);
               entry.stringPropertiesByName.put(p.getName(), p);
               used=true;
