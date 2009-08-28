@@ -11,6 +11,7 @@ import java.sql.Connection;
 import javax.persistence.EntityManager;
 import ua.gradsoft.jungle.persistence.jdbcex.JdbcEx;
 import ua.gradsoft.jungle.persistence.jpaex.impl.DefaultJdbcWorkExecutor;
+import ua.gradsoft.jungle.persistence.jpaex.impl.JpaEntityCloner;
 
 
 
@@ -126,19 +127,23 @@ public abstract class JpaEx
 
 
     /**
-     * detach bean from entity object. (If API does not explicit
-     *  support this operation, than serialize and deserialize one)
+     * detach bean from entity object, perform instantiations of
+     * lazy-loaded parts, if needed.  By default use algorith,
+     * defined in JPAEntityCloner (but can be overriden in vendor-specific
+     *  subclasses)
      * @param em - enityManager fron which we want detach object/
      * @param bean - object to detach.
      * @return detached object.
      */
-    public static <T> T detached(EntityManager em, T bean)
+    public <T> T detached(EntityManager em, T bean)
     {
-      return serializeAndDeserialize(bean);      
+      return (T)JpaEntityCloner.unjpaObject(Object.class, bean, null);
     }
 
     /**
      * detach object by  serialize, than deserialize one.
+     *Note, that in general, this does not work with lazy
+     *loading.
      */
     public static <T>  T serializeAndDeserialize(T obj)
     {
