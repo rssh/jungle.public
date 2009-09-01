@@ -1,11 +1,6 @@
 
 package ua.gradsoft.jungle.gwt.util.client.gxt;
 
-import ua.gradsoft.jungle.gwt.util.client.gxt.DetailsTabsEventListener;
-import ua.gradsoft.jungle.gwt.util.client.gxt.SelectionListWithDetailBaseWidget;
-import ua.gradsoft.jungle.gwt.util.client.gxt.BeanModelSelectionEvents;
-import ua.gradsoft.jungle.gwt.util.client.gxt.BeanModelDetailWidget;
-import ua.gradsoft.jungle.gwt.util.client.gxt.DetailsTabsEvents;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.data.BeanModel;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
@@ -47,7 +42,8 @@ public abstract class BaseDetailFormPanel extends FormPanel
                 if (event==DetailsTabsEvents.TABS_CLOSED || event==DetailsTabsEvents.TAB_CLOSED) {
                     saveData();
                 } else if (event==DetailsTabsEvents.TABS_OPENED || event==DetailsTabsEvents.TAB_OPENED) {
-                    StoreSelectionModel<BeanModel> sl = owner_.getSelection().getSelectionModel();
+                    BeanModelSelectionWidget selectionWidget = owner_.getSelection();
+                    StoreSelectionModel<BeanModel> sl = selectionWidget.getSelectionModel();
                     List<BeanModel> selected = sl.getSelectedItems();
                     BeanModel bm = null;
                     if (selected.size()>0) {

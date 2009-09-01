@@ -5,8 +5,12 @@ import com.extjs.gxt.desktop.client.Desktop;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Layout;
 import com.extjs.gxt.ui.client.widget.Status;
 import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.widget.layout.CardLayout;
 import com.extjs.gxt.ui.client.widget.menu.MenuBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -94,6 +98,7 @@ public class GwtApplication {
     {
        return menuBar_!=null;
     }
+
     /**
      * set MenuBar for application. Usually called during initialization.
      * @param menuBar - menuBar to set.
@@ -136,6 +141,31 @@ public class GwtApplication {
     public Status getStatus()
     {
        return status_;
+    }
+
+
+    /**
+     * if this application have internal content panel ?
+     *   (on which all components will shown)
+     * @return true
+     */
+    public boolean withInternalContentPanel()
+    {
+       return internalContentPanel_!=null;
+    }
+
+    public ContentPanel getInternalContentPanel()
+    { return internalContentPanel_; }
+
+    public void         setInternalContentPanel(ContentPanel cn)
+    {
+      internalContentPanel_=cn;
+    }
+
+
+    public SelectionListener<MenuEvent> getInternalContentPanelMeSelectionListener()
+    {
+      return cardContentPanelSelectionListener_;
     }
 
 
@@ -233,6 +263,17 @@ public class GwtApplication {
           }
       }
     }
+    
+    private void componentToFrontOnInternalContentPanel(Component w)
+    {
+        Layout l = internalContentPanel_.getLayout();
+        if (l instanceof CardLayout) {
+            CardLayout cl = (CardLayout)l;
+            cl.setActiveItem(w);
+        }else{
+            throw new IllegalStateException("InternalContentPanel must have card layout");
+        }
+    }
 
     private HashMap<String,GwtApplicationComponent> components_ = 
                                      new HashMap<String,GwtApplicationComponent>();
@@ -242,6 +283,8 @@ public class GwtApplication {
     private Desktop   desktop_ = null;
     private Status status_ = null;
     private MenuBar menuBar_ = null;
+    private ContentPanel internalContentPanel_=null;
+    //private CardLayout   internalCardLayout_=null;
 
 
 
@@ -262,6 +305,14 @@ public class GwtApplication {
           }
     };
 
+
+    private SelectionListener<MenuEvent>  cardContentPanelSelectionListener_ = new SelectionListener<MenuEvent>() {
+        @Override
+        public void componentSelected(MenuEvent me) {
+            Component c = me.getItem().getData("component");
+            componentToFrontOnInternalContentPanel(c);
+        }
+    };
 
 
     private String    sessionTicket_=null;

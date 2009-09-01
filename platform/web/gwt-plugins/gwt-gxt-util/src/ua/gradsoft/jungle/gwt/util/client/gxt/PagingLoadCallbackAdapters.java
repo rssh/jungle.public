@@ -34,7 +34,7 @@ public class PagingLoadCallbackAdapters<T>  {
     public synchronized void onJoinSuccess()
     {        
         listReceived_=false;
-        countReceived_=false;        
+        countReceived_=false;
         baseCallback_.onSuccess(new BasePagingLoadResult<T>(list_,offset_,totalCount_));        
         list_=null;
     }
