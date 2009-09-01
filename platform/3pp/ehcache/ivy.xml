@@ -1,0 +1,9 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" 
+          module="ehcache.republish" />
+    <dependencies>
+    </dependencies>
+</ivy-module>
+
+
+

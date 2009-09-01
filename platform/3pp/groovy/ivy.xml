@@ -1,0 +1,11 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" 
+          module="groovy.republish" />
+    <configurations>
+    </configurations>
+    <dependencies>
+    </dependencies>
+</ivy-module>
+
+
+

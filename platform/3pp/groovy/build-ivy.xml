@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!-- build file for dependency-manager part -->
-<project name="internal-build-ivy" 
+<project name="net.sf.jsch-build-ivy" 
         default="retrieve-libs" basedir="."
         xmlns:ivy='antlib:fr.jayasoft.ivy.ant'
 >
