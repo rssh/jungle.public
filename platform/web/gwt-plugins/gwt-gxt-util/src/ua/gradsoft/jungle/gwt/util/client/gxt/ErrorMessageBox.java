@@ -1,5 +1,5 @@
 
-package ua.gradsoft.jungle.gwt.util.client;
+package ua.gradsoft.jungle.gwt.util.client.gxt;
 
 import com.extjs.gxt.ui.client.widget.MessageBox;
 

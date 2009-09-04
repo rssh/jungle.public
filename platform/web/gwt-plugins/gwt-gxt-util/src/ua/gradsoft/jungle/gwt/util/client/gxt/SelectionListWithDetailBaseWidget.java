@@ -5,6 +5,7 @@ import com.extjs.gxt.ui.client.data.BeanModel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import java.util.LinkedList;
 import java.util.List;
+import ua.gradsoft.jungle.gwt.util.client.ValidationException;
 
 /**
  *Base widget for selection list with details
@@ -24,7 +25,7 @@ public class SelectionListWithDetailBaseWidget extends LayoutContainer
       return beanModelSelectionEventListeners_;
     }
 
-    public void fireBeanModelSelectionEvent(int event, BeanModel bm)
+    public void fireBeanModelSelectionEvent(int event, BeanModel bm) throws ValidationException
     {
        for(BeanModelSelectionEventListener l: beanModelSelectionEventListeners_) {
            l.handleBeanModelSelectionEvent(event, bm);

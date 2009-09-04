@@ -185,7 +185,7 @@ public class GwtApplication {
       sessionTicket_=sessionTicket;
       logged_=true;
       for(Map.Entry<String,GwtApplicationComponent> e: components_.entrySet()) {
-          e.getValue().onLogin(this);
+          e.getValue().onLogin();
       }
     }
 
@@ -201,7 +201,7 @@ public class GwtApplication {
     public void markLogout()
     {
       for(Map.Entry<String,GwtApplicationComponent> e: components_.entrySet()) {
-          e.getValue().onLogout(this);
+          e.getValue().onLogout();
       }        
       sessionTicket_=null;
       logged_=false;
@@ -214,7 +214,8 @@ public class GwtApplication {
     public void addComponent(GwtApplicationComponent component)
     {
         components_.put(component.getName(), component);
-        component.onRegistered(this);
+        component.setGwtApplication(this);
+        component.onRegistered();
     }
 
     /**
@@ -236,7 +237,7 @@ public class GwtApplication {
     {
       GwtApplicationComponent retval = components_.remove(name);
       if (retval!=null) {
-        retval.onUnregistered(this);
+        retval.onUnregistered();
       }
       return retval;
     }

@@ -10,6 +10,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.selection.StoreSelectionModel;
 import java.util.List;
+import ua.gradsoft.jungle.gwt.util.client.ValidationException;
 
 /**
  *Base detail widget, which can situated inside detail tabs
@@ -23,13 +24,13 @@ public abstract class BaseDetailFormPanel extends FormPanel
     public BaseDetailFormPanel(SelectionListWithDetailBaseWidget owner)
     { owner_=owner; }
     
-    protected abstract void fillDataAndFormWithBeanModel(BeanModel bm);
+    protected abstract void fillDataAndFormWithBeanModel(BeanModel bm) throws ValidationException;
 
     protected  void clearDataAndForm(BeanModel bm) {}
 
     protected abstract void fillFormFromData();
 
-    protected abstract boolean fillDataFromForm();
+    protected abstract boolean fillDataFromForm() throws ValidationException;
 
     protected abstract void saveData();
     
@@ -38,7 +39,8 @@ public abstract class BaseDetailFormPanel extends FormPanel
       fillFormFromData();
     }
 
-    public void handleTabEvent(int event, Component source) {
+    public void handleTabEvent(int event, Component source) throws ValidationException
+    {
                 if (event==DetailsTabsEvents.TABS_CLOSED || event==DetailsTabsEvents.TAB_CLOSED) {
                     saveData();
                 } else if (event==DetailsTabsEvents.TABS_OPENED || event==DetailsTabsEvents.TAB_OPENED) {
@@ -56,7 +58,8 @@ public abstract class BaseDetailFormPanel extends FormPanel
 
     }
 
-    public void handleBeanModelSelectionEvent(int event, BeanModel bm) {
+    public void handleBeanModelSelectionEvent(int event, BeanModel bm) throws ValidationException
+    {
         if (event==BeanModelSelectionEvents.ADD || event==BeanModelSelectionEvents.SELECT) {
             fillDataAndFormWithBeanModel(bm);
         } else if (event==BeanModelSelectionEvents.DELETE) {

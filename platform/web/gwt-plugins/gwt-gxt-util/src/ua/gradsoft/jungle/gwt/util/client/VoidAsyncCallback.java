@@ -1,5 +1,6 @@
 package ua.gradsoft.jungle.gwt.util.client;
 
+import ua.gradsoft.jungle.gwt.util.client.gxt.ErrorMessageBox;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
