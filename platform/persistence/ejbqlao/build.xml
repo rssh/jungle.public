@@ -2,6 +2,7 @@
 <!-- build file for Jungle/cppp project -->
 <project name="EjbQlAccessObject" default="build" basedir="."
     xmlns:ivy="antlib:fr.jayasoft.ivy.ant"
+    xmlns:phpjao="antlib:ua.gradsoft.phpjao" 
  >
 
  <property file="build.properties" />
@@ -58,7 +59,8 @@
  </target>
 
  <target name="retrieve-build-libs" depends="init-ivy" unless="offline">
-  <ivy:retrieve pattern="lib/[artifact]-[revision].[ext]" conf="build" />
+  <ivy:retrieve pattern="lib/[artifact]-[revision].[ext]" 
+                conf="build,php-export" />
  </target>
 
  <target name="retrieve-test-libs" depends="declare-ivy" unless="offline" >
@@ -137,7 +139,36 @@
   </jar>
  </target>
 
- <target name="build" depends="build-std,build-gwt-export" />
+ <target name="declare-phpjao" depends="retrieve-build-libs" >
+  <path id="phpjao.lib.path">
+     <fileset dir="lib" includes="jungle.tools.phpjao-*.jar" />
+     <fileset dir="lib" includes="TermWare-*.jar" />
+     <fileset dir="lib" includes="TermWarePhp-*.jar" />
+     <fileset dir="lib" includes="JavaChecker-*.jar" />
+     <fileset dir="lib" includes="JavaChecker2Annotations-*.jar" />
+     <fileset dir="lib" includes="TermWareJPP-*.jar" />
+  </path>
+    <taskdef resource="ua/gradsoft/phpjao/antlib.xml" 
+                uri="antlib:ua.gradsoft.phpjao" 
+                classpathref="phpjao.lib.path"/>
+ </target>
+
+ <target name="build-php-export" depends="build-std, declare-phpjao">
+   <phpjao:generate 
+        outputfile="target/jungle.persistence.ejbqlao-php-export-${version}.php"
+        phpHeader="PHPJAO-${jungle.tools.phpjao.version}.php">
+      <includedirs dir="${basedir}/src/main/java" />
+      <includejars>
+        <fileset dir="lib" includes="*.jar" />
+      </includejars>
+      <class name="ua.gradsoft.jungle.persistence.ejbqlao.PagingCriteria" />
+      <class name="ua.gradsoft.jungle.persistence.ejbqlao.BasePagingCriteria" />
+   </phpjao:generate>
+ </target>
+
+
+
+ <target name="build" depends="build-std,build-gwt-export,build-php-export" />
 
  <target name="clean">
   <delete>

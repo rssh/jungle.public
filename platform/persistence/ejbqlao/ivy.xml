@@ -4,6 +4,7 @@
     <configurations>
       <conf name="std" description="standard build" />
       <conf name="gwt-export" description="export CRUDFacade to gwt clients" />
+      <conf name="php-export" description="export CRUDFacade to php clients" />
       <conf name="test" description="test version with junit test" 
                         extends="std" />
       <conf name="doc" description="with tool for building documentations" 
@@ -19,6 +20,8 @@
              type="tar.gz" ext="tar.gz" conf="doc" />
       <artifact name="jungle.persistence.ejbqlao-gwt-export" type="jar"
              conf="gwt-export" />
+      <artifact name="jungle.persistence.ejbqlao-php-export" type="php"
+             conf="php-export" />
     </publications>
     <dependencies>
         <dependency org="org.apache" name="commons-logging" rev="[1.1.1,)" 
@@ -47,6 +50,10 @@
         <dependency org="ua.gradsoft" name="jungle.persistence.cluster_keys"
                     conf="std->api" rev="[1.0.7,)" >
          <artifact name="jungle.persistence.cluster_keys" type="jar" />
+        </dependency>
+        <dependency org="ua.gradsoft" name="jungle.tools.phpjao"
+                  conf="php-export->default" rev="[1.0-a1,)" >
+           <artifact name="jungle.tools.phpjao" type="jar" />
         </dependency>
     </dependencies>
 </ivy-module>
