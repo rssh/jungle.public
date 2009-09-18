@@ -1,4 +1,6 @@
-
+#
+# slony ranges: 58
+#
 
 create table languages
 (
@@ -48,7 +50,8 @@ create table localization_bundles
 create table localization_bundle_languages
 (
   bundle_name   VARCHAR(64) references localization_bundles(name),
-  language_code  CHAR(2) references languages(code)
+  language_code  CHAR(2) references languages(code),
+ primary key(bundle_name, language_code)
 );
 
 create table localization_bundle_tables
