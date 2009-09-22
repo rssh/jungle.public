@@ -27,7 +27,7 @@
     <classpath refid="compile.path" />
   </javac>
   <jar destfile="target/jungle.http.server.ipfilter-${version}.jar"
-       basedir="src" includes="**/*.jar"
+       basedir="src" includes="**/*.class"
        index="true"
   />
  </target>
