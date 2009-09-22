@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="jdbc.postgresql.republish" 
+         default="republish.local" basedir="."
+  xmlns:ivy="antlib:fr.jayasoft.ivy.ant"
+ >
+
+  <property file="build.properties" />
+
+  <import file="build-ivy.xml" />
+
+   <target name="republish" depends="resolve-ivy">
+     <ivy:install organisation="org.postgresql" 
+                  module="jdbc4"
+                  revision="8.3-604" 
+                  overwrite="true"
+                  from="external.chain"
+                  to="datacenter.gradsoft.ua"
+                  />
+    </target>
+
+   <target name="check-postgresql-jdbc.jar.exists" >
+    <available property="postgresql-jdbc.jar.exists"
+     file="${repo.home}/org.postgresql/jdbc4/jars/postgresql-jdbc4-8.3-604.jar"
+    />
+   </target>
+
+   <target name="republish.local" 
+           depends="check-postgresql-jdbc.jar.exists,resolve-ivy"
+           unless="postgresql-jdbc.jar.exists"
+           >
+     <ivy:install organisation="org.postgresql" 
+                  module="jdbc4"
+                  revision="8.3-604" 
+                  from="external.chain"
+                  to="jungle.repo"
+                  />
+    </target>
+
+
+</project>
