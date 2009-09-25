@@ -13,7 +13,7 @@ public interface AuthClientApiRemoteServiceAsync  {
   void  getSessionTicket(String authType, Map<String,String> parameters,
                                  AsyncCallback<String> asyncCallback);
 
-  void  getUserInfo(String sessionTicket, AsyncCallback<String> callback);
+  void  getUserInfo(String sessionTicket, AsyncCallback<ClientUserInfo> callback);
 
   void  checkUserPermission(String sessionTicket, String permission,
                         Map<String,String> parameters,
