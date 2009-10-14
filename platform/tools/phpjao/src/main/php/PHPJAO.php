@@ -125,7 +125,6 @@ class PHPJAO
     return $retval;
   }
 
-  // TODO: do check of errors.
   static function callOperation($url, $objname, $method, $arguments)
   {
     $requestArguments = self::toJson($arguments,null);
@@ -145,8 +144,35 @@ class PHPJAO
     curl_setopt($ch,CURLOPT_POST,true);
     curl_setopt($ch,CURLOPT_POSTFIELDS,json_encode($request));
     $encodedResult=curl_exec($ch);
+    if (curl_errno($ch)) {
+        throw new PHPJAOException("curl_error:".curl_error($ch));
+    }
     curl_close($ch);
     $result=self::fromJson(json_decode($encodedResult,true));
+    if (version_compare(PHP_VERSION,'5.3.0') == 1) {
+      //will be enabled in PHP-5.3.0
+      switch(json_last_error()) {
+         case JSON_ERROR_DEPTH:
+              throw new PHPJAOException("json_error: structur to big");
+         case JSON_ERROR_CTRL_CHAR:
+              throw new PHPJAOException("json_error: unexpected control character in reply");
+         case JSON_ERROR_SYNTAX:
+             throw new PHPJAOException("json_error: non-json reply");
+         case JSON_ERROR_NONE:
+            // all ok.
+            break;
+       default:
+            throw new PHPJAOException("json_error:".json_last_error()); 
+      }
+   } else {
+      // let's explicit check some bad cases.
+      if ($result==NULL) {
+        if (strlen($encodedResult)>10) {
+          //echo "possible error: ($encodedResult)";
+           throw new PHPJAOException("json_parsing error:".substr($encodedResult,0,255)); 
+        }
+      }
+   }
     if (is_array($result)) {
       if (isset($result['id']))
       {
