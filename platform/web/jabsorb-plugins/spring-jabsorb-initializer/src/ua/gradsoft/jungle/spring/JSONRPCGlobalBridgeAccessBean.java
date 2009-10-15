@@ -61,6 +61,26 @@ public class JSONRPCGlobalBridgeAccessBean
       }
     }
 
+    public boolean getFixupCircRefs()
+    {
+     return JSONRPCBridge.getGlobalBridge().getSerializer().getFixupCircRefs();
+    }
+
+    public void setFixUpCircRefs(boolean value)
+    {
+     JSONRPCBridge.getGlobalBridge().getSerializer().setFixupCircRefs(value);
+    }
+
+    public boolean getFixupDuplicates()
+    {
+     return JSONRPCBridge.getGlobalBridge().getSerializer().getFixupDuplicates();
+    }
+
+    public void setFixUpDuplicates(boolean value)
+    {
+     JSONRPCBridge.getGlobalBridge().getSerializer().setFixupDuplicates(value);
+    }
+
     List<String> serializerClasses_;
     List<String> marshallClassHintClasses_;
 }
