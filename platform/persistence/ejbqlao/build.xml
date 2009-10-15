@@ -156,7 +156,7 @@
  <target name="build-php-export" depends="build-std, declare-phpjao">
    <phpjao:generate 
         outputfile="target/jungle.persistence.ejbqlao-php-export-${version}.php"
-        phpHeader="PHPJAO-${jungle.tools.phpjao.version}.php">
+        withoutRequireHeader="true">
       <includedirs dir="${basedir}/src/main/java" />
       <includejars>
         <fileset dir="lib" includes="*.jar" />
