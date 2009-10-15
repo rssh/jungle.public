@@ -66,7 +66,7 @@ public class JSONRPCGlobalBridgeAccessBean
      return JSONRPCBridge.getGlobalBridge().getSerializer().getFixupCircRefs();
     }
 
-    public void setFixUpCircRefs(boolean value)
+    public void setFixupCircRefs(boolean value)
     {
      JSONRPCBridge.getGlobalBridge().getSerializer().setFixupCircRefs(value);
     }
@@ -76,7 +76,7 @@ public class JSONRPCGlobalBridgeAccessBean
      return JSONRPCBridge.getGlobalBridge().getSerializer().getFixupDuplicates();
     }
 
-    public void setFixUpDuplicates(boolean value)
+    public void setFixupDuplicates(boolean value)
     {
      JSONRPCBridge.getGlobalBridge().getSerializer().setFixupDuplicates(value);
     }
