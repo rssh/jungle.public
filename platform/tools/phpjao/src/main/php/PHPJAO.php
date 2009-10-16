@@ -100,8 +100,8 @@ class PHPJAO
         $phpType=self::findType($o['javaClass']);
       }
       if ($phpType!=null) {
-        $helperReflection = self::$customJsonMapping[$phpType];
-        if ($helperReflection!=null) {
+        if (isset(self::$customJsonMapping[$phpType])) {
+           $helperReflection = self::$customJsonMapping[$phpType];
            $fromJson=$helperReflection->getMethod('fromJson');
            $retval=$fromJson->invoke(null,$o);
         }else{
