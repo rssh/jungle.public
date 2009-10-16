@@ -176,7 +176,7 @@ domain(phpjao,
 
       JavaEntity(
         EnumModel($modifiers,$name,$implements,
-                  $contstants,$methods) 
+                  $contstants,$methods,$model) 
                  ) -> HtmlBlocks(
                         HtmlBlock("\n<!-- enum "),
                         HtmlBlock($name),
