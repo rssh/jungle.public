@@ -16,7 +16,7 @@ domain(phpjao,
                              $body,$context) 
                  ) -> HtmlBlocks(
                         HtmlBlock("<!-- interface "),
-                        HtmlBlock(general.getAsString($name)),
+                        HtmlBlock($name),
                         HtmlBlock("-->")
                       ),
 
@@ -77,7 +77,12 @@ domain(phpjao,
        JavaEntityMembers([$x:$y]) 
           [isPropertyEntityMember($x)] -> cons(translateEntityMember($x),
                                                JavaEntityMembers($y))
-                                      !->
+         |
+          [isPrimitiveConstantMember($x)] 
+                                  -> 
+                                     cons(translatePrimitiveConstant($x),
+                                          JavaEntityMembers($y))
+                                 !->
                                           JavaEntityMembers($y),
 
       
@@ -120,6 +125,33 @@ domain(phpjao,
 
       cons(insertMembers($x,$y),$z) -> cons($x,cons($y,$z)),
       
+      isPrimitiveConstantMember(
+          MemberVariableModel($modifiers,TypeRef($t,$mt), 
+                              $name, $initializer,$model)
+      ) 
+        [ $model.isConstant() 
+          && 
+           ($mt.isPrimitiveType() 
+            || $mt.getFullName().equals("java.lang.String"))
+        ]  -> true
+          !-> false,
+
+      isPrimitiveConstantMember($x) -> false,
+
+      translatePrimitiveConstant(
+          MemberVariableModel($modifiers,TypeRef($t,$mt), 
+                              $name, $initializer,$model)
+      )
+         -> MemberConstantDeclaration([],
+                                   $name,
+                                   translateConstantExpression($initializer),
+                                   EndOfStatement()),
+
+      translateConstantExpression(IntegerLiteral($x)) -> $x,
+
+      translateConstantExpression(StringLiteral($x)) -> SingleStringLiteral($x),
+
+      translateConstantExpression($x) -> $x,
 
       nameFromGetter(Identifier($s)) -> Identifier($n)
                                          [ getNameFromGetterString($s,$n) ],
@@ -140,6 +172,16 @@ domain(phpjao,
                 ),
                 EndOfStatement()
               ), 
+
+
+      JavaEntity(
+        EnumModel($modifiers,$name,$implements,
+                  $contstants,$methods) 
+                 ) -> HtmlBlocks(
+                        HtmlBlock("\n<!-- enum "),
+                        HtmlBlock($name),
+                        HtmlBlock("-->\n")
+                      ),
            
 
       p($x) -> $x [println($x)],       

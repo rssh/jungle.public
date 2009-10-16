@@ -42,6 +42,7 @@ public class Facade {
       }
       JavaCheckerFacade.setHomeRequired(false);
       JavaCheckerFacade.setMandatoryCheckersLoading(false);
+      JavaCheckerFacade.setInEmbeddedMode(true);
       try {
           JavaCheckerFacade.init();
       }catch(ConfigException ex){

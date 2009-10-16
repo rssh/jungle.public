@@ -39,6 +39,12 @@ public class AntCallTest {
         Assert.assertTrue(checkOutputFile("testdata/t2/phpoutput2.log"));
     }
 
+    @Test
+    public void testT4() throws Exception
+    {
+       doAntCall("testdata/t4","test-generated");
+       Assert.assertTrue(checkOutputFile("testdata/t4/phpoutput.log"));
+    }
 
 
     private boolean checkOutputFile(String fname) throws Exception
