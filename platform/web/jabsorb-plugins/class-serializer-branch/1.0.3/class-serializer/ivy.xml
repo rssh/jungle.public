@@ -1,0 +1,20 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" module="jabsorb.class.serializer"/>
+       
+    <configurations>
+      <conf name="default" description="standard build" />
+      <conf name="src" description="standard build with sources" />
+    </configurations>
+    <publications>
+      <artifact name="jabsorb.class.serializer" type="jar" />
+      <artifact name="jabsorb.class.serializer-src" type="zip" conf="src" />
+    </publications>
+    <dependencies>
+        <dependency org="org.jabsorb" name="jabsorb" rev="${jabsorb.version}"
+                    transitive="false" >
+        </dependency>
+    </dependencies>
+</ivy-module>
+
+
+
