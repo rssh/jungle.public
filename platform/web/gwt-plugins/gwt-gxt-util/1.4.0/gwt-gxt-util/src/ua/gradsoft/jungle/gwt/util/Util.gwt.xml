@@ -1,0 +1,6 @@
+<module>
+  <inherits name='com.google.gwt.user.User'/>
+  <inherits name="com.googlecode.gwt.math.Math"/>
+  <inherits  name='com.extjs.gxt.ui.GXT' />
+  <inherits  name='ua.gradsoft.jungle.auth.AuthApi' />
+</module>
