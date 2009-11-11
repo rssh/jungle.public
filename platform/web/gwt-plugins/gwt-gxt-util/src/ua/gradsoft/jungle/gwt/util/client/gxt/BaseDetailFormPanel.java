@@ -32,7 +32,7 @@ public abstract class BaseDetailFormPanel extends FormPanel
 
     protected abstract boolean fillDataFromForm() throws ValidationException;
 
-    protected abstract void saveData();
+    protected abstract void saveData() throws ValidationException;
     
     protected void rejectData()
     {
@@ -78,7 +78,11 @@ public abstract class BaseDetailFormPanel extends FormPanel
       submitButton.addSelectionListener(new SelectionListener(){
             @Override
             public void componentSelected(ComponentEvent ce) {
-                saveData();
+                try {
+                  saveData();
+                }catch(ValidationException ex){
+                  ErrorMessageBox.alert(ex.getMessage());
+                }
             }
       }
       );

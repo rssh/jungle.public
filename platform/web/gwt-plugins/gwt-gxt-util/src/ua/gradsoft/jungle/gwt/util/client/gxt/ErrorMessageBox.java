@@ -11,8 +11,18 @@ public class ErrorMessageBox {
 
     public static void alert(String message, Throwable ex)
     {
-     // ex.printStackTrace();
-     MessageBox.alert("error", message+":"+ex.getMessage(), null);   
+     if (ex!=null) {
+       MessageBox.alert("error", message+":"+ex.getMessage(), null);
+     }else{
+       alert(message);
+     }
     }
+
+    public static void alert(String message)
+    {
+     // ex.printStackTrace();
+     MessageBox.alert("error", message, null);
+    }
+
 
 }
