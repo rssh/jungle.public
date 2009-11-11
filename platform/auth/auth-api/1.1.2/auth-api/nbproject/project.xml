@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://www.netbeans.org/ns/project/1">
+    <type>org.netbeans.modules.ant.freeform</type>
+    <configuration>
+        <general-data xmlns="http://www.netbeans.org/ns/freeform-project/1">
+            <name>jungle.auth-api</name>
+        </general-data>
+        <general-data xmlns="http://www.netbeans.org/ns/freeform-project/2">
+            <!-- Do not use Project Properties customizer when editing this file manually. -->
+            <name>jungle.auth-api</name>
+            <properties/>
+            <folders>
+                <source-folder>
+                    <label>jungle.auth-api</label>
+                    <location>.</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>src/api</label>
+                    <type>java</type>
+                    <location>src/api</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>src/dummy</label>
+                    <type>java</type>
+                    <location>src/dummy</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>src/gwt</label>
+                    <type>java</type>
+                    <location>src/gwt</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+            </folders>
+            <ide-actions>
+                <action name="build">
+                    <target>build</target>
+                </action>
+                <action name="clean">
+                    <target>clean</target>
+                </action>
+                <action name="javadoc">
+                    <target>javadoc</target>
+                </action>
+                <action name="rebuild">
+                    <target>clean</target>
+                    <target>build</target>
+                </action>
+            </ide-actions>
+            <export>
+                <type>folder</type>
+                <location>build/api</location>
+                <build-target>build</build-target>
+            </export>
+            <export>
+                <type>folder</type>
+                <location>build/dummy</location>
+                <build-target>build</build-target>
+            </export>
+            <view>
+                <items>
+                    <source-folder style="packages">
+                        <label>src/api</label>
+                        <location>src/api</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>src/dummy</label>
+                        <location>src/dummy</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>src/gwt</label>
+                        <location>src/gwt</location>
+                    </source-folder>
+                    <source-file>
+                        <location>build.xml</location>
+                    </source-file>
+                </items>
+                <context-menu>
+                    <ide-action name="build"/>
+                    <ide-action name="rebuild"/>
+                    <ide-action name="clean"/>
+                    <ide-action name="javadoc"/>
+                </context-menu>
+            </view>
+            <subprojects/>
+        </general-data>
+        <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/2">
+            <compilation-unit>
+                <package-root>src/api</package-root>
+                <classpath mode="compile">lib/javaee-api-5.0-1.jar:lib/gwt-user-1.6.4.jar</classpath>
+                <built-to>build/api</built-to>
+                <built-to>build/dummy</built-to>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>src/dummy</package-root>
+                <unit-tests/>
+                <classpath mode="compile">lib/javaee-api-5.0-1.jar:build/api:build/dummy</classpath>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>src/gwt</package-root>
+                <classpath mode="compile">build/api:/opt/gwt-linux-1.6.4/gwt-user.jar</classpath>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+        </java-data>
+    </configuration>
+</project>
