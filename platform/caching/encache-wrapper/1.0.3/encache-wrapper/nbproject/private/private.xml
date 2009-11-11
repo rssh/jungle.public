@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/1"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/1">
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/main/java/ua/gradsoft/caching/AnnotationBasedClassCachingPolicyDescription.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/main/java/ua/gradsoft/caching/CacheAction.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/main/java/ua/gradsoft/caching/CacheInvocationHandler.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/main/java/ua/gradsoft/caching/CachingPolicyInterceptor.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/main/java/ua/gradsoft/caching/CachingRuleDescription.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/main/java/ua/gradsoft/caching/CachingSystemException.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/main/java/ua/gradsoft/caching/CachingWrapper.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/main/java/ua/gradsoft/caching/ClassCachingPolicy.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/main/java/ua/gradsoft/caching/ClassCachingPolicyDescription.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/main/java/ua/gradsoft/caching/FederatedClassCachingPolicyDescription.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/main/java/ua/gradsoft/caching/MethodCachingPolicy.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/main/java/ua/gradsoft/caching/MethodCachingPolicyDescription.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/main/java/ua/gradsoft/caching/ValueBuilder.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/main/java/ua/gradsoft/caching/XmlClassAdapter.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/main/java/ua/gradsoft/caching/XmlClassCachingPolicyDescription.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/main/java/ua/gradsoft/caching/XmlMethodCachingPolicyEntry.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/main/java/ua/gradsoft/caching/XmlMethodCachingPolicyMapAdapter.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/main/java/ua/gradsoft/caching/annotations/Caching.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/main/java/ua/gradsoft/caching/annotations/CachingRule.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/main/java/ua/gradsoft/caching/annotations/CachingRuleAction.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/main/java/ua/gradsoft/caching/annotations/CachingRules.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/main/java/ua/gradsoft/caching/cfg/CachingConfiguration.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/main/java/ua/gradsoft/caching/cfg/XmlCacheConfigEntries.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/main/java/ua/gradsoft/caching/cfg/XmlCacheConfigEntriesMapAdapter.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/main/java/ua/gradsoft/caching/jaxb.index</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/main/java/ua/gradsoft/caching/util/AllArguments.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/main/java/ua/gradsoft/caching/util/Argument0.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/main/java/ua/gradsoft/caching/util/Argument1.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/main/java/ua/gradsoft/caching/util/Argument2.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/main/java/ua/gradsoft/caching/util/EmptyValueBuilder.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/main/java/ua/gradsoft/caching/util/IdCachingPolicyInterceptor.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/main/java/ua/gradsoft/caching/util/IdValueTransformer.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/main/java/ua/gradsoft/caching/util/MethodName.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/main/java/ua/gradsoft/caching/util/ValueByteBuffer.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/test/java/commons-logging.properties</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/test/java/ua/gradsoft/caching/CachingTest.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/test/java/ua/gradsoft/caching/SerializationTest.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/test/java/ua/gradsoft/caching/testclasses/CachedClass1.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/test/java/ua/gradsoft/caching/testclasses/CachedClass2.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/test/java/ua/gradsoft/caching/testclasses/InterfaceForTest1.java</file>
+        <file>file:/home/rssh/w1/repos/Jungle/trunk/Jungle/platform/caching/declarative-wrapper/src/test/java/ua/gradsoft/caching/testclasses/InterfaceForTest2.java</file>
+    </open-files>
+</project-private>

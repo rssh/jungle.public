@@ -1,0 +1,31 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" module="jungle.caching"/>
+       
+    <configurations>
+      <conf name="default" description="standard build" />
+      <conf name="test" description="test version with junit test" 
+                        extends="default" />
+      <conf name="doc" description="with tool for building documentations" 
+                        extends="default" />
+    </configurations>
+    <publications>
+      <artifact name="jungle.caching" type="jar" />
+      <artifact name="jungle.caching-src" type="tar.gz" ext="tar.gz" />
+      <artifact name="jungle.caching-doc" type="tar.gz" ext="tar.gz" />
+    </publications>
+    <dependencies>
+        <dependency org="org.apache" name="commons-logging" rev="[1.1.1,)" 
+         conf="*->default" transitive="false" />
+        <dependency org="net.sf.ehcache" name="ehcache" 
+            rev="[1.6.0,1.6.1)"  
+            conf="default->default" >
+           <artifact name="ehcache" type="jar" />
+           <!-- note, that ehcahce-1.6.1.pom is invalid on sf.net now -->
+        </dependency> 
+        <dependency org="org.junit" name="junit" rev="[4.4,)" 
+         conf="test->default"/>
+    </dependencies>
+</ivy-module>
+
+
+
