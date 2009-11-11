@@ -10,7 +10,7 @@
 
    <target name="republish" depends="resolve-ivy">
      <ivy:install organisation="org.postgresql" 
-                  module="jdbc4"
+                  module="postgresql-jdbc4"
                   revision="8.3-604" 
                   overwrite="true"
                   from="external.chain"
@@ -29,7 +29,7 @@
            unless="postgresql-jdbc.jar.exists"
            >
      <ivy:install organisation="org.postgresql" 
-                  module="jdbc4"
+                  module="postgresql-jdbc4"
                   revision="8.3-604" 
                   from="external.chain"
                   to="jungle.repo"
