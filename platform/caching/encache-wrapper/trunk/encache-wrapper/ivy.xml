@@ -17,7 +17,7 @@
         <dependency org="org.apache" name="commons-logging" rev="[1.1.1,)" 
          conf="*->default" transitive="false" />
         <dependency org="net.sf.ehcache" name="ehcache" 
-            rev="[1.6.0-beta2,1.6.1)"  
+            rev="[1.6.0,1.6.1)"  
             conf="default->default" >
            <artifact name="ehcache" type="jar" />
            <!-- note, that ehcahce-1.6.1.pom is invalid on sf.net now -->
