@@ -135,6 +135,10 @@
      <fileset dir="src/main/java" includes="**/Pair.java" />
      <fileset dir="src/main/java" includes="**/Triplet.class" />
      <fileset dir="src/main/java" includes="**/Triplet.java" />
+     <fileset dir="src/main/java" includes="**/JpaEntity.class" />
+     <fileset dir="src/main/java" includes="**/JpaEntity.java" />
+     <fileset dir="src/main/java" includes="**/JpaCloneableEntity.class" />
+     <fileset dir="src/main/java" includes="**/JpaCloneableEntity.java" />
      <fileset dir="etc/gwt" includes="**/*.xml" />
   </jar>
  </target>
@@ -155,7 +159,7 @@
 
  <target name="build-php-export" depends="build-std, declare-phpjao">
    <phpjao:generate 
-        outputfile="target/jungle.persistence.ejbqlao-php-export-${version}.php"
+        outputfile="${basedir}/target/jungle.persistence.ejbqlao-php-export-${version}.php"
         withoutRequireHeader="true">
       <includedirs dir="${basedir}/src/main/java" />
       <includejars>
