@@ -79,22 +79,22 @@
              <resolver ref="jungle.repo" />
              <dependencyBuild   
                organization="ua.gradsoft" name="jungle.caching"
-               buildDirectory="${platform.home}/caching/declarative-wrapper"
+               buildDirectory="${platform.home}/caching/encache-wrapper/trunk/encache-wrapper"
                publishTarget="publish.local"
              />
              <dependencyBuild   
                organization="ua.gradsoft" name="jungle.persistence.jpaex"
-               buildDirectory="${platform.home}/persistence/jpaex"
+               buildDirectory="${platform.home}/persistence/jpaex/trunk/jpaex"
                publishTarget="publish.local"
              />
              <dependencyBuild   
                organization="ua.gradsoft" name="jungle.persistence.jdbcex"
-               buildDirectory="${platform.home}/persistence/jdbcex"
+               buildDirectory="${platform.home}/persistence/jdbcex/trunk/jdbcex"
                publishTarget="publish.local"
              />
              <dependencyBuild   
                organization="ua.gradsoft" name="jungle.persistence.cluster_keys"
-               buildDirectory="${platform.home}/persistence/cluster_keys"
+               buildDirectory="${platform.home}/persistence/cluster-keys/trunk/cluster-keys"
                publishTarget="publish.local"
              />
            </build>
