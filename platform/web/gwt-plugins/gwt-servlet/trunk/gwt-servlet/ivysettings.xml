@@ -79,17 +79,17 @@
              <resolver ref="jungle.repo" />
              <dependencyBuild
                organization="ua.gradsoft" name="jungle.persistence.ejbqlao"
-               buildDirectory="${platform.public.home}/persistence/ejbqlao"
+               buildDirectory="${platform.public.home}/persistence/ejbqlao/trunk/ejbqlao"
                publishTarget="publish.local"
              />
              <dependencyBuild
                organization="ua.gradsoft" name="jungle.persistence.cluster_keys"
-               buildDirectory="${platform.public.home}/persistence/cluster_keys"
+               buildDirectory="${platform.public.home}/persistence/cluster-keys/trunk/cluster-keys"
                publishTarget="publish.local"
              />
              <dependencyBuild
                organization="ua.gradsoft" name="jungle.auth-api"
-               buildDirectory="${platform.public.home}/auth/auth-api"
+               buildDirectory="${platform.public.home}/auth/auth-api/trunk/auth-api"
                publishTarget="publish.local"
              />
              <dependencyBuild
