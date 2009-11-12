@@ -43,6 +43,12 @@
         <delete dir="${build.dir}"/>
         <delete dir="${dist.dir}"/>
     </target>
+
+    <target name="clean-all" depends="clean">
+        <delete>
+          <fileset dir="lib" includes="**/*.jar" />
+        </delete>
+    </target>
     
     <target name="build" depends="build-common, 
                                   build-server" >
