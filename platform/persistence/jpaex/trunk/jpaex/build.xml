@@ -194,7 +194,10 @@
     <fileset dir="target" includes="*.jar" />
     <fileset dir="target" includes="*.tar.gz" />
    </delete>
+   <delete dir="docs/api" />
+   <!--
    <ivy:cleancache />
+   -->
  </target>
 
  <target name="api-docs" depends="retrieve-libs" >

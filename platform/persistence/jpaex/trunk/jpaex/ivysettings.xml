@@ -79,7 +79,7 @@
              <resolver ref="local.jungle.repo" />
              <dependencyBuild
                   organization="ua.gradsoft" name="jungle.persistence.jdbcex"
-                  buildDirectory="${platform.home}/persistence/jdbcex"
+                  buildDirectory="${platform.home}/persistence/jdbcex/trunk/jdbcex"
                   publishTarget="publish.local"
              />
            </build>
