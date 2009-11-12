@@ -166,7 +166,10 @@
     <fileset dir="target" includes="*.jar" />
     <fileset dir="target" includes="*.xml" />
    </delete>
+   <delete dir="docs/api" />
+   <!--
    <ivy:cleancache />
+   -->
  </target>
 
  <target name="api-docs" depends="retrieve-libs" >
