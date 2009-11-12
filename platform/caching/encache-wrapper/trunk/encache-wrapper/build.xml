@@ -45,10 +45,6 @@
  </target>
 
 
-  <target name="clean-ivy" description="--> clean the ivy installation">
-    <delete dir="${ivy.jar.dir}"/>
-  </target>
-
  <target name="init-ivy" depends="declare-ivy" unless="offline">
   <ivy:resolve />
  </target>
@@ -132,6 +128,14 @@
     <fileset dir="src" includes="**/*.class" />
     <fileset dir="build" includes="**/*.class" />
   </delete>
+ </target>
+
+ <target name="clean-all" depends="clean">
+  <delete>
+    <fileset dir="lib" includes="**/*.jar" />
+    <fileset dir="target" includes="**/*.xml,**/*.jar,**/*.tar.gz" />
+  </delete>
+  <delete dir="docs/api" />
  </target>
 
  <target name="build-tests" depends="build,retrieve-test-libs">
