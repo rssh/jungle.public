@@ -54,6 +54,7 @@
       <fileset dir="lib" includes="**/*.jar" />
       <fileset dir="dist" includes="**/*.xml,**/*.jar,**/*.sql,**/*.part" />
      </delete>
+     <delete dir="docs/javadoc" />
     </target>
 
     
