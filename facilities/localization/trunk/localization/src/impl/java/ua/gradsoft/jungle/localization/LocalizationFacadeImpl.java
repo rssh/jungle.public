@@ -19,6 +19,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
+import net.sf.ehcache.ObjectExistsException;
 import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -670,7 +671,16 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
                                 60*3, // cacheConfig.getDiskExpireThreadInterval(),
                                  null
                                  );
-             wr.getCacheManager().addCache(retval);
+             try {
+               wr.getCacheManager().addCache(retval);
+               LOG.info("cache with name "+name+" added");
+             }catch(ObjectExistsException ex){
+                 LOG.info("cache with name "+name+" exists");
+                 retval = wr.getCacheManager().getCache(name);
+                 if (retval==null) {
+                     LOG.error("cache exists, but is not accessible from CacheManager");
+                 }
+             }
         }
         return retval;
     }
