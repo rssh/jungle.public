@@ -4,7 +4,7 @@ abstract class PHPJAOException extends Exception
 {
 };
 
-class PHPJAOTransportException extends PHPJAOTransportException 
+class PHPJAOTransportException extends PHPJAOException 
 {
 };
 
@@ -241,7 +241,7 @@ class PHPJaoRemoteProxy
      } catch (PHPJAOTransportException $ex) {
        error_log($ex->getMessage());
        $lastEroror=$ex;
-       ++$i
+       ++$i;
        if ($i!=count($this->urls)) {
          $this->currIndex=($this->currIndex+1)%count($this->urls);
          $this->url=$this->urls[$this->currIndex];
@@ -417,4 +417,3 @@ PHPJAO::registerType('java.util.ArrayList','ArrayList');
 PHPJAO::registerCustomType('ArrayList','ArrayListPHPJAOHelper');
 
 ?>
-
