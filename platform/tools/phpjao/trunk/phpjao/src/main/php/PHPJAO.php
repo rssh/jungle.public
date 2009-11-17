@@ -1,6 +1,17 @@
 <?php
 
-class PHPJAOException extends Exception {};
+abstract class PHPJAOException extends Exception 
+{
+};
+
+class PHPJAOTransportException extends PHPJAOTransportException 
+{
+};
+
+class PHPJAORemoteException extends PHPJAOException 
+{
+};
+
 
 class PHPJAO
 {
@@ -145,7 +156,7 @@ class PHPJAO
     curl_setopt($ch,CURLOPT_POSTFIELDS,json_encode($request));
     $encodedResult=curl_exec($ch);
     if (curl_errno($ch)) {
-        throw new PHPJAOException("curl_error:".curl_error($ch));
+        throw new PHPJAOTransportException("curl_error:".curl_error($ch));
     }
     curl_close($ch);
     $result=self::fromJson(json_decode($encodedResult,true));
@@ -153,23 +164,23 @@ class PHPJAO
       //will be enabled in PHP-5.3.0
       switch(json_last_error()) {
          case JSON_ERROR_DEPTH:
-              throw new PHPJAOException("json_error: structur to big");
+              throw new PHPJAOTransportException("json_error: structur to big");
          case JSON_ERROR_CTRL_CHAR:
-              throw new PHPJAOException("json_error: unexpected control character in reply");
+              throw new PHPJAOTransportException("json_error: unexpected control character in reply");
          case JSON_ERROR_SYNTAX:
-             throw new PHPJAOException("json_error: non-json reply");
+             throw new PHPJAOTransportException("json_error: non-json reply");
          case JSON_ERROR_NONE:
             // all ok.
             break;
        default:
-            throw new PHPJAOException("json_error:".json_last_error()); 
+           throw new PHPJAOTransportException("json_error:".json_last_error()); 
       }
    } else {
       // let's explicit check some bad cases.
       if ($result==NULL) {
         if (strlen($encodedResult)>10) {
           //echo "possible error: ($encodedResult)";
-           throw new PHPJAOException("json_parsing error:".substr($encodedResult,0,255)); 
+           throw new PHPJAOTransportException("json_parsing error:".substr($encodedResult,0,255)); 
         }
       }
    }
@@ -184,14 +195,11 @@ class PHPJAO
           $error = $result['error'];
           $message = $error['msg'];
           $code = $error['code'];
-          throw new PHPJAOException($message, $code);
+          throw new PHPJAORemoteException($message, $code);
       }
       if (isset($result['result']))
       {
           $result = $result['result'];
-//          if ($r!=null) {
-//            $result=$r;
-//          }
       }
     }
     return $result;
@@ -202,27 +210,53 @@ class PHPJAO
     return new PHPJaoRemoteProxy($uri,$name);
   }
 
+
 }
 
 
 class PHPJaoRemoteProxy
 {
- public function __construct($theUrl, $theObjName)
+ public function __construct($theUrls, $theObjName)
  { 
-   $this->url=$theUrl;
    $this->objname=$theObjName;
+   if (is_array($theUrls)) {
+     $this->urls=$theUrls;
+     $this->currIndex=rand()%count($theUrls);
+     $this->url=$theUrls[$this->currIndex];
+   } else {
+     $this->urls=array($theUrls);
+     $this->currIndex=0;
+     $this->url=$theUrls;
+   }
  }
 
  public function  getUrl() { return $url; }
 
  public function __call($method, $args)
  {
-   return PHPJAO::callOperation($this->url,$this->objname,$method,$args);
+   $i=0;
+   while($i<count($this->urls)) {
+     try {
+       return PHPJAO::callOperation($this->url,$this->objname,$method,$args);
+     } catch (PHPJAOTransportException $ex) {
+       error_log($ex->getMessage());
+       $lastEroror=$ex;
+       ++$i
+       if ($i!=count($this->urls)) {
+         $this->currIndex=($this->currIndex+1)%count($this->urls);
+         $this->url=$this->urls[$this->currIndex];
+         error_log("PHPJAO:switched to $this->url");
+       }
+     }
+   }
+   error_log("PHPJAO: fata: all url-s for remote cal of $objname failed");
  }
  
 
  private $url;
  private $objname;
+ private $urls;
+ private $currIndex;
 }
 
 class DateTimePHPJAOHelper
