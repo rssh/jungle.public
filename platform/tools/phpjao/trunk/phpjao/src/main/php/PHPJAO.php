@@ -250,6 +250,7 @@ class PHPJaoRemoteProxy
      }
    }
    error_log("PHPJAO: fata: all url-s for remote cal of $objname failed");
+   throw $lastError;
  }
  
 
