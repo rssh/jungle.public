@@ -167,6 +167,7 @@
       </includejars>
       <class name="ua.gradsoft.jungle.persistence.ejbqlao.PagingCriteria" />
       <class name="ua.gradsoft.jungle.persistence.ejbqlao.BasePagingCriteria" />
+      <class name="ua.gradsoft.jungle.persistence.ejbqlao.util.Pair" />
    </phpjao:generate>
  </target>
 
