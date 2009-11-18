@@ -58,6 +58,17 @@ public class Pair<T1, T2> implements Serializable
         return hash;
     }
 
+    @Override
+    public String toString()
+    {
+     StringBuilder sb=new StringBuilder();
+     sb.append("(");
+     sb.append(frs_==null? "null" : frs_.toString());
+     sb.append(", ");
+     sb.append(snd_==null? "null" : snd_.toString());
+     sb.append(")");
+     return sb.toString();
+    }
 
 
     private T1 frs_;
