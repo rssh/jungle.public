@@ -1,0 +1,5 @@
+<class>ua.gradsoft.jungle.localization.BundleInfo</class>
+<class>ua.gradsoft.jungle.localization.CountryLinfo</class>
+<class>ua.gradsoft.jungle.localization.LanguageInfo</class>
+<class>ua.gradsoft.jungle.localization.TranslationTable</class>
+<class>ua.gradsoft.jungle.localization.TranslationTableColumn</class>
