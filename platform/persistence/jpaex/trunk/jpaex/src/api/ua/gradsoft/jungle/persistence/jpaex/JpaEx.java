@@ -125,6 +125,15 @@ public abstract class JpaEx
      }
   }
 
+  /**
+   * true, if this JPA implementation have vendor-specific method
+   * for detach of beans, otherwise - false. In this method return true,
+   * than
+   */
+  public boolean hasVendorSpecificDetached()
+  {
+    return false;
+  }
 
     /**
      * detach bean from entity object, perform instantiations of
@@ -139,35 +148,6 @@ public abstract class JpaEx
     {
       return (T)JpaEntityCloner.unjpaObject(Object.class, bean, null);
     }
-
-    /**
-     * detach object by  serialize, than deserialize one.
-     *Note, that in general, this does not work with lazy
-     *loading.
-     */
-    public static <T>  T serializeAndDeserialize(T obj)
-    {
-      //TODO: check that entity-manager is open-ejb, which 'can' serialize
-      // via API
-      try {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(bos);
-        oos.writeObject(obj);
-        oos.flush();
-        oos.close();
-
-        ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-        ObjectInputStream ois = new ObjectInputStream(bis);
-        T retval = (T)ois.readObject();
-        return retval;
-      }catch(IOException ex){
-          throw new JPAIOException(ex);
-      }catch(ClassNotFoundException ex){
-          // impossible, object was just saved
-          throw new IllegalStateException("Can't deserialized serialized object",ex);
-      }
-    }
-
 
 
   /**

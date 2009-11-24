@@ -5,8 +5,11 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -60,6 +63,24 @@ public abstract class JpaEntityProperty<E,T>
     public abstract Class<E>  getEntityClass();
     
     public abstract Class<T>  getPropertyClass();
+
+    public JpaCollectionType  getJpaCollectionType()
+    {
+       Class<T> propertyClass = getPropertyClass();
+       if (Collection.class.isAssignableFrom(propertyClass)) {
+         if (List.class.isAssignableFrom(propertyClass)) {
+            return JpaCollectionType.LIST;
+         } else if (Set.class.isAssignableFrom(propertyClass)) {
+            return JpaCollectionType.SET;
+         } else {
+            return JpaCollectionType.COLLECTION;
+         }
+       } else if (Map.class.isAssignableFrom(propertyClass)) {
+           return JpaCollectionType.MAP;
+       } else {
+           return JpaCollectionType.NONE;
+       }
+    }
 
     /**
      *Find JPA property with name <code> name </code> in class <code> entityClass </code>

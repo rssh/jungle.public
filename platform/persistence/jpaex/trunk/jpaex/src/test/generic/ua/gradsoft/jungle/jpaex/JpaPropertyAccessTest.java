@@ -5,6 +5,8 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 import ua.gradsoft.jungle.jpaex.testent.Ent1;
+import ua.gradsoft.jungle.jpaex.testent.Ent2;
+import ua.gradsoft.jungle.persistence.jpaex.JpaCollectionType;
 import ua.gradsoft.jungle.persistence.jpaex.JpaEntityProperty;
 import ua.gradsoft.jungle.persistence.jpaex.JpaEntityPropertyNotFoundException;
 import ua.gradsoft.jungle.persistence.jpaex.JpaHelper;
@@ -56,6 +58,14 @@ public class JpaPropertyAccessTest
        wasCatched=true;
    }
    Assert.assertTrue(wasCatched);
+  }
+
+
+  @Test
+  public void testJpaCollectionType()
+  {
+      JpaEntityProperty<Ent1,List<Ent2>> vp = JpaEntityProperty.findByColumnName(Ent1.class,"ent2s");
+      Assert.assertTrue(vp.getJpaCollectionType()==JpaCollectionType.LIST);
   }
 
 
