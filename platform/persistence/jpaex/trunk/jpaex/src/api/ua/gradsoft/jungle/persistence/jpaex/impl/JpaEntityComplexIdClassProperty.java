@@ -1,5 +1,6 @@
 package ua.gradsoft.jungle.persistence.jpaex.impl;
 
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -50,6 +51,15 @@ public class JpaEntityComplexIdClassProperty<E,T> extends JpaEntityProperty<E,T>
     @Override
     public Class<T> getPropertyClass() {
         return idClass_;
+    }
+
+    /**
+     * @return entity class, since IdClass annotated class.
+     */
+    @Override
+    public AnnotatedElement getAnnotatedElement()
+    {
+      return getEntityClass();  
     }
 
     @Override

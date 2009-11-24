@@ -1,6 +1,7 @@
 
 package ua.gradsoft.jungle.persistence.jpaex.impl;
 
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import javax.persistence.Column;
@@ -58,6 +59,15 @@ public class JpaEntityMethodPairProperty<E,T> extends JpaEntityProperty<E,T>
         return (Class<E>)getter_.getDeclaringClass();
     }
 
+    /**
+     * get AnnotatedElement.
+     * @return getter 
+     */
+    @Override
+    public AnnotatedElement getAnnotatedElement()
+    {
+      return getter_;
+    }
     
     public Class<T> getPropertyClass()
     {

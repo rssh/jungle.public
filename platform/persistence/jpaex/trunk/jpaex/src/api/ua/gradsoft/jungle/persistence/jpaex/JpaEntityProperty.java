@@ -3,6 +3,7 @@ package ua.gradsoft.jungle.persistence.jpaex;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -54,6 +55,11 @@ public abstract class JpaEntityProperty<E,T>
       }
     }
 
+    /**
+     * get value of property.
+     * @param entity, where get value
+     * @return value from entity
+     */
     public abstract T getValue(E entity);
 
     public abstract void  setValue(E entity, T value);
@@ -81,6 +87,12 @@ public abstract class JpaEntityProperty<E,T>
            return JpaCollectionType.NONE;
        }
     }
+
+    /**
+     * get AnnotatedElement for this property. (I.e. Field or Method)
+     * @return JPA-annotated element.
+     */
+    public abstract AnnotatedElement  getAnnotatedElement();
 
     /**
      *Find JPA property with name <code> name </code> in class <code> entityClass </code>

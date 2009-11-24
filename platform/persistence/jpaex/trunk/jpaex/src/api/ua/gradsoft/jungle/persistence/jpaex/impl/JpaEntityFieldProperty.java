@@ -1,5 +1,6 @@
 package ua.gradsoft.jungle.persistence.jpaex.impl;
 
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -50,7 +51,11 @@ public  class JpaEntityFieldProperty<E,T> extends JpaEntityProperty<E,T>
         return (Class<T>)field_.getType();
     }
 
-
+    @Override
+    public AnnotatedElement getAnnotatedElement()
+    {
+      return field_;  
+    }
 
     @Override
     protected Column getColumnAnnotation() {
