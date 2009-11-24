@@ -33,9 +33,9 @@ public class JpaHelper {
     /**
      * get list of all JPA properties for class <code> entityClass </code>
      **/
-    public static List<JpaEntityProperty> getAllJpaProperties(Class entityClass)
+    public static<E> List<JpaEntityProperty<E,?>> getAllJpaProperties(Class<E> entityClass)
     {
-      return JpaEntityProperty.getAllPropertiesForEntity(entityClass);
+      return JpaEntityProperty.<E>getAllPropertiesForEntity(entityClass);
     }
 
     /**
@@ -47,5 +47,16 @@ public class JpaHelper {
     {
         return JpaEntityProperty.<E,T>findByName(entityClass, name);
     }
+
+    /**
+     * get Jpa property, with name <code> name </code>
+     *@return JpaEntityProperty with name <code> name </code>
+     *@exception JpaEntityPropertyNotFoundException if such property does not exists.
+     */
+    public static<E,T> JpaEntityProperty<E,T>  findIdJpaProperty(Class<E> entityClass)
+    {
+        return JpaEntityProperty.<E,T>findId(entityClass);
+    }
+
 
 }

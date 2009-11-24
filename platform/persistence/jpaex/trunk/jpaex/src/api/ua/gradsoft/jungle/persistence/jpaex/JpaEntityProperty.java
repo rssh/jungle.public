@@ -242,9 +242,9 @@ public abstract class JpaEntityProperty<E,T>
       throw new JpaEntityPropertyNotFoundException();
     }
 
-    public static List<JpaEntityProperty>  getAllPropertiesForEntity(Class entityClass)
+    public static<E> List<JpaEntityProperty<E,?>>  getAllPropertiesForEntity(Class<E> entityClass)
     {
-       List<JpaEntityProperty> retval = new LinkedList<JpaEntityProperty>();
+       List<JpaEntityProperty<E,?>> retval = new LinkedList<JpaEntityProperty<E,?>>();
        for(Method method: entityClass.getMethods()) {
            if (method.getName().startsWith("get")) {
                if (method.getParameterTypes().length==0 && checkJpaAnnotations(method)) {
