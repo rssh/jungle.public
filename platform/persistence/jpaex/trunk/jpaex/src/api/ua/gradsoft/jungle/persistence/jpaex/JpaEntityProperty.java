@@ -94,6 +94,28 @@ public abstract class JpaEntityProperty<E,T>
      */
     public abstract AnnotatedElement  getAnnotatedElement();
 
+    
+    /**
+     *Perform run-time cast of property. 
+     * @param <E1>  new Entity class. Must be subclass or subinterface of E
+     * @param <T1>  new Property class, Must be subclass or subinterface of T
+     * @param e1 E1.class
+     * @param t1 T2.class
+     * @return same JpaEntityProperty, but casted to new values.
+     */
+    public <E1,T1> JpaEntityProperty<E1,T1> cast(Class<E1> e1, Class<T1> t1)
+    {
+      if (getEntityClass().isAssignableFrom(e1)) {
+          if (getPropertyClass().isAssignableFrom(t1)) {
+             return (JpaEntityProperty<E1,T1>)this;        
+          }else{
+              throw new ClassCastException(getPropertyClass().getName()+" is not assignambel from "+t1.getName());
+          }
+      } else {
+          throw new ClassCastException(getEntityClass().getName()+" is not assignambel from "+e1.getName());
+      } 
+    }
+
     /**
      *Find JPA property with name <code> name </code> in class <code> entityClass </code>
      * @param entityClass - entity, where search properties.
@@ -254,9 +276,9 @@ public abstract class JpaEntityProperty<E,T>
       throw new JpaEntityPropertyNotFoundException();
     }
 
-    public static<E> List<JpaEntityProperty<E,?>>  getAllPropertiesForEntity(Class<E> entityClass)
+    public static<E> List<JpaEntityProperty<E,Object>>  getAllPropertiesForEntity(Class<E> entityClass)
     {
-       List<JpaEntityProperty<E,?>> retval = new LinkedList<JpaEntityProperty<E,?>>();
+       List<JpaEntityProperty<E,Object>> retval = new LinkedList<JpaEntityProperty<E,Object>>();
        for(Method method: entityClass.getMethods()) {
            if (method.getName().startsWith("get")) {
                if (method.getParameterTypes().length==0 && checkJpaAnnotations(method)) {

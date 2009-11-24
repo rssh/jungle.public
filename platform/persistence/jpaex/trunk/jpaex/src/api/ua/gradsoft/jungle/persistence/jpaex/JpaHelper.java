@@ -33,10 +33,11 @@ public class JpaHelper {
     /**
      * get list of all JPA properties for class <code> entityClass </code>
      **/
-    public static<E> List<JpaEntityProperty<E,?>> getAllJpaProperties(Class<E> entityClass)
+    public static<E> List<JpaEntityProperty<E,Object>> getAllJpaProperties(Class<E> entityClass)
     {
       return JpaEntityProperty.<E>getAllPropertiesForEntity(entityClass);
     }
+
 
     /**
      * get Jpa property, with name <code> name </code>
