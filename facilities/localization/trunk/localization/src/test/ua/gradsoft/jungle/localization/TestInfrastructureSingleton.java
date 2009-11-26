@@ -1,7 +1,10 @@
 package ua.gradsoft.jungle.localization;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.Statement;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -28,20 +31,28 @@ public class TestInfrastructureSingleton
   {
     return localizationFacadeImpl_;
   }
-  
+
+  public static EntityManager getEntityManager()
+  {
+      return entityManager_;
+  }
 
   private static void init() throws Exception {
      initInMemoryDb();
+     loadSql();
      createEntityManager();
      createLocalizationFacade();
      initialized_=true;
   }
+
+
 
   private static void initInMemoryDb() throws Exception
   {
       Class.forName("org.hsqldb.jdbcDriver");
       Connection cn=DriverManager.getConnection("jdbc:hsqldb:mem:test","sa","");
   }
+
 
   private static void createEntityManager()
   {
@@ -53,6 +64,28 @@ public class TestInfrastructureSingleton
   {
     localizationFacadeImpl_ = new LocalizationFacadeImpl();
     localizationFacadeImpl_.setEntityManager(entityManager_);
+  }
+
+  private static void loadSql() throws Exception
+  {
+    loadSqlScript("sql/hsql/create_localization_hsql.sql");
+    loadSqlScript("sql/hsql/init_localization_hsql.sql");
+    loadSqlScript("sql/hsql/test/create_testdata.sql");
+  }
+  
+  private static void loadSqlScript(String fname) throws Exception
+  {
+      BufferedReader in = new BufferedReader(new FileReader(fname));
+      StringBuilder sb = new StringBuilder();
+      String s=null;
+      while((s=in.readLine())!=null) {
+          sb.append(s+"\n");
+      }
+      in.close();
+      Connection cn=DriverManager.getConnection("jdbc:hsqldb:mem:test","sa","");
+      Statement st = cn.createStatement();
+      st.executeUpdate(sb.toString());
+      st.close();
   }
 
   //private static EntityManager entityManager_;

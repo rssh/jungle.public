@@ -25,7 +25,7 @@ public class CountryLinfo implements Serializable
      * ISO 31166 Country code.
      */
     @Id
-    @Column(name="CODE", length=CODE_LENGTH)
+    @Column(name="CODE", length=CODE_LENGTH, columnDefinition="char(2) primary key")
     public String getCode()
     { return code_; }
     
@@ -45,7 +45,8 @@ public class CountryLinfo implements Serializable
         nameEng_=nameEng;
     }
     
-    @Column(name="default_language_code", length=LanguageInfo.CODE_LENGTH, nullable=true)
+    @Column(name="default_language_code", length=LanguageInfo.CODE_LENGTH,
+            columnDefinition="char(2)", nullable=true)
     public String getDefaultLanguageCode()
     {
       return defaultLanguageCode_;  

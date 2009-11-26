@@ -19,7 +19,7 @@ public class LanguageInfo implements Serializable
      * @return two-letter iso 639-1 language code (uppercase)
      */
     @Id
-    @Column(name="code",length=CODE_LENGTH)
+    @Column(name="code",length=CODE_LENGTH, columnDefinition="char(2) primary key")
     public String getCode()
     {
       return code_;  
@@ -34,7 +34,8 @@ public class LanguageInfo implements Serializable
      * get three-letter terminologival iso 639-2 language code.
      *(uppercase)
      */
-    @Column(name="code_iso_639_2", length=ISO639_2_CODE_LENGTH, unique=true)
+    @Column(name="code_iso_639_2", length=ISO639_2_CODE_LENGTH, unique=true,
+            columnDefinition="char(3)")
     public String getCodeIso639_2()
     {
       return codeIso639_2_;

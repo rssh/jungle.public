@@ -58,8 +58,8 @@ create table localization_bundle_tables
 (
   TABLE_NAME            VARCHAR(64) primary key,
   TRANSLATION_TABLE_NAME  VARCHAR(64) unique,
-  PK_COLUMN_NAME     VARCHAR(32),
-  BUNDLE_NAME        VARCHAR(64) references localization_bundles(name),
+  PK_COLUMN_NAME     VARCHAR(32) not null,
+  BUNDLE_NAME        VARCHAR(64) not null references localization_bundles(name),
   ENTITY_CLASSNAME   VARCHAR(255) unique
 );
 

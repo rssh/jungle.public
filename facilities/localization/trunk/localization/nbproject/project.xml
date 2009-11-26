@@ -93,13 +93,13 @@
         <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/2">
             <compilation-unit>
                 <package-root>src/api/java</package-root>
-                <classpath mode="compile">lib/javaee-api-5.0-1.jar:lib/jungle.persistence.ejbqlao-2.3.0.jar</classpath>
+                <classpath mode="compile">lib/jungle.persistence.ejbqlao-2.3.0.jar:lib/javaee-api-5.0-2.jar</classpath>
                 <built-to>build/api</built-to>
                 <source-level>1.5</source-level>
             </compilation-unit>
             <compilation-unit>
                 <package-root>src/impl/java</package-root>
-                <classpath mode="compile">lib/javaee-api-5.0-1.jar:lib/commons-logging-1.1.1.jar:lib/jungle.caching-1.0.3.jar:lib/ehcache-1.6.0.jar:lib/jungle.persistence.ejbqlao-2.3.0.jar:lib/jungle.persistence.cluster_keys-1.0.7.jar:lib/jungle.persistence.jdbcex-api-1.0.3.jar:lib/jungle.persistence.jpaex-api-1.2.4.jar:build/api</classpath>
+                <classpath mode="compile">lib/commons-logging-1.1.1.jar:lib/jungle.caching-1.0.3.jar:lib/ehcache-1.6.0.jar:lib/jungle.persistence.ejbqlao-2.3.0.jar:lib/jungle.persistence.cluster_keys-1.0.7.jar:lib/jungle.persistence.jdbcex-api-1.0.3.jar:lib/jungle.persistence.jpaex-api-1.2.4.jar:build/api:lib/javaee-api-5.0-2.jar</classpath>
                 <built-to>build/impl</built-to>
                 <source-level>1.5</source-level>
             </compilation-unit>
