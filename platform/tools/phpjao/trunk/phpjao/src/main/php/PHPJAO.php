@@ -89,11 +89,13 @@ class PHPJAO
     }
     foreach($o as $key => $value) {
        $memberClassHint=null;
-       if ($reflectionClass!=null) {
+       if (!is_null($reflectionClass)) {
          $memberClassHint=$reflectionClass->getConstant("${key}_TYPE");
        }
-       if ($value!=null) {
+       if (!is_null($value)) {
           $retval[$key]=self::toJson($value,$memberClassHint);
+       } else {
+          $retval[$key]=$value;
        }
        //TODO: check type
     }
@@ -110,7 +112,7 @@ class PHPJAO
       if (isset($o['javaClass'])) {
         $phpType=self::findType($o['javaClass']);
       }
-      if ($phpType!=null) {
+      if (!is_null($phpType)) {
         if (isset(self::$customJsonMapping[$phpType])) {
            $helperReflection = self::$customJsonMapping[$phpType];
            $fromJson=$helperReflection->getMethod('fromJson');
@@ -140,7 +142,7 @@ class PHPJAO
   {
     $requestArguments = self::toJson($arguments,null);
     $requestMethod=null; 
-    if ($objname!=null) {
+    if (!is_null($objname)) {
       $requestMethod="$objname.$method";
     } else {
       $requestMethod=$method;
@@ -395,7 +397,7 @@ class ArrayListPHPJAOHelper
         $type = gettype($object);
         throw new PHPJAOException("can't transform object $type to ArrayList");
       }
-    }else if ($object==null) {
+    }else if (is_null($object)) {
       return null;
     }else{
       throw new PHPJAOException("can't transform object to ArrayList");
