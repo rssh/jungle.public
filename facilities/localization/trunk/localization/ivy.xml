@@ -10,6 +10,8 @@
         extends="default" />
   <conf name="hsql" description="build with hsql scripts" 
         extends="default" />
+  <conf name="test" description="build with tests infrastructure" 
+        extends="hsql" />
   <conf name="docs" description="documentation" />
   <conf name="source" description="source tarboll" />
   <conf name="compile" description="with dependencies for compilations" />
@@ -31,14 +33,14 @@
  <dependencies>
     <dependency org="org.apache.openejb" 
                name="javaee-api"
-               rev="5.0-1" 
+               rev="[5.0-1,)" 
                conf="compile"
                >
        <artifact name="javaee-api" type="jar" />
     </dependency>
     <dependency org="ua.gradsoft" 
                name="jungle.persistence.ejbqlao"
-               rev="[2.0.1,)"
+               rev="[2.3.0,)"
                conf="default->std">
        <artifact name="jungle.persistence.ejbqlao" type="jar" />
     </dependency>
@@ -49,7 +51,7 @@
     </dependency>
     <dependency org="ua.gradsoft" 
                name="jungle.persistence.jpaex"
-               rev="[1.2.2,)"
+               rev="[1.2.4,)"
                conf="default->api">
        <artifact name="jungle.persistence.jpaex-api" type="jar" />
     </dependency>
@@ -59,5 +61,41 @@
                conf="default->api">
        <artifact name="jungle.persistence.jdbcex-api" type="jar" />
     </dependency>
+
+    <dependency org="org.hibernate" name="hibernate-core" rev="3.3.1.GA"
+               transitive="true" conf="test->default" >
+       <artifact name="hibernate-core" type="jar" />
+    </dependency>
+    <dependency org="org.hibernate" name="hibernate-annotations" rev="3.4.0.GA"
+               transitive="true" conf="test->default" >
+       <artifact name="hibernate-annotations" type="jar" />
+    </dependency>
+    <dependency org="org.hibernate" name="hibernate-entitymanager" 
+                 rev="3.3.2.GA" transitive="true" conf="test->default" >
+       <artifact name="hibernate-entitymanager" type="jar" />
+    </dependency>
+
+    <dependency org="org.hsqldb" name="hsqldb" 
+                 rev="[1.8.0.10,)" conf="test->default" >
+       <artifact name="hsqldb" type="jar" />
+    </dependency>
+
+    <!-- slf4j used by hibernate -->
+    <dependency org="org.slf4j" name="slf4j-api" rev="1.5.2" 
+               conf="test->default" >
+       <artifact name="slf4j-api" type="jar" />
+    </dependency>
+    <dependency org="org.slf4j" name="slf4j-jdk14" rev="1.5.2" 
+                conf="test->default" >
+       <artifact name="slf4j-jdk14" type="jar" />
+    </dependency>
+
+
+    <dependency org="org.junit" name="junit" rev="[4.4,)"
+                 conf="test->default" >
+       <artifact name="junit" type="jar" />
+    </dependency>
+   
+
  </dependencies>
 </ivy-module>

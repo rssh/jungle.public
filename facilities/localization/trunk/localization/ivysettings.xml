@@ -39,7 +39,7 @@
              <dest org="org.apache" module="$m0"/>
           </tosystem>
           </rule>
-          <rule> <!-- junit -->
+          <rule> 
              <fromsystem>
 	       	<src org="org.junit" module=".+" />
                 <dest org="$m0" module="$m0" />
@@ -47,16 +47,6 @@
               <tosystem>
     	     	<src org="junit" module="junit" />
                 <dest org="org.junit" module="$m0" />
-              </tosystem>
-           </rule>
-           <rule> <!-- hsql -->
-             <fromsystem>
-	       	<src org="org.hsqldb" module=".+" />
-                <dest org="$m0" module="$m0" />
-              </fromsystem>
-              <tosystem>
-    	     	<src org="hsqldb" module="hsqldb" />
-                <dest org="org.hsqldb" module="$m0" />
               </tosystem>
            </rule>
     	</namespace>

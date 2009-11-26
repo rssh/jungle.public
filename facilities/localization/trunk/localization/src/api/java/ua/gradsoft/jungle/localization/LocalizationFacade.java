@@ -2,6 +2,7 @@ package ua.gradsoft.jungle.localization;
 
 import java.util.Collection;
 import java.util.List;
+import ua.gradsoft.jungle.persistence.ejbqlao.JpaCloneableEntity;
 
 /**
  * Facade for localization bundle API

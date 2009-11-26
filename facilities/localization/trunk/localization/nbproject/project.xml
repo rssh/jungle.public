@@ -27,6 +27,12 @@
                     <location>src/impl/java</location>
                     <encoding>UTF-8</encoding>
                 </source-folder>
+                <source-folder>
+                    <label>src/test</label>
+                    <type>java</type>
+                    <location>src/test</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
             </folders>
             <ide-actions>
                 <action name="build">
@@ -63,6 +69,10 @@
                         <label>src\impl\java</label>
                         <location>src/impl/java</location>
                     </source-folder>
+                    <source-folder style="packages">
+                        <label>src/test</label>
+                        <location>src/test</location>
+                    </source-folder>
                     <source-file>
                         <location>build.xml</location>
                     </source-file>
@@ -72,21 +82,31 @@
                     <ide-action name="rebuild"/>
                     <ide-action name="clean"/>
                     <ide-action name="javadoc"/>
+                    <action>
+                        <label>build-test</label>
+                        <target>build-test</target>
+                    </action>
                 </context-menu>
             </view>
             <subprojects/>
         </general-data>
-        <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/1">
+        <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/2">
             <compilation-unit>
                 <package-root>src/api/java</package-root>
-                <classpath mode="compile">lib/javaee-api-5.0-1.jar</classpath>
+                <classpath mode="compile">lib/javaee-api-5.0-1.jar:lib/jungle.persistence.ejbqlao-2.3.0.jar</classpath>
                 <built-to>build/api</built-to>
                 <source-level>1.5</source-level>
             </compilation-unit>
             <compilation-unit>
                 <package-root>src/impl/java</package-root>
-                <classpath mode="compile">lib/javaee-api-5.0-1.jar:lib/commons-logging-1.1.1.jar:lib/jungle.caching-1.0.3.jar:lib/jungle.persistence.cluster_keys-1.0.6.jar:lib/ehcache-1.6.0.jar:lib/jungle.persistence.ejbqlao-2.0.8.jar:lib/jungle.persistence.jdbcex-api-1.0.2.jar:lib/jungle.persistence.jpaex-api-1.2.2.jar</classpath>
+                <classpath mode="compile">lib/javaee-api-5.0-1.jar:lib/commons-logging-1.1.1.jar:lib/jungle.caching-1.0.3.jar:lib/ehcache-1.6.0.jar:lib/jungle.persistence.ejbqlao-2.3.0.jar:lib/jungle.persistence.cluster_keys-1.0.7.jar:lib/jungle.persistence.jdbcex-api-1.0.3.jar:lib/jungle.persistence.jpaex-api-1.2.4.jar:build/api</classpath>
                 <built-to>build/impl</built-to>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>src/test</package-root>
+                <unit-tests/>
+                <classpath mode="compile">lib/javaee-api-5.0-2.jar:build/api:build/impl:lib/hibernate-entitymanager-3.3.2.GA.jar:lib/junit-4.4.jar:dist/jungle.localization.impl-1.0.0.jar:dist/jungle.localization.api-1.0.0.jar:lib/jungle.persistence.ejbqlao-2.3.0.jar</classpath>
                 <source-level>1.5</source-level>
             </compilation-unit>
         </java-data>

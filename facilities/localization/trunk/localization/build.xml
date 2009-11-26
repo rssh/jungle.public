@@ -17,9 +17,11 @@
 
     <property name="src-api.dir" value="src/api"/>
     <property name="src-impl.dir" value="src/impl"/>
+    <property name="src-test.dir" value="src/test"/>
     
     <property name="build-api.dir" value="${build.dir}/api"/>
     <property name="build-impl.dir" value="${build.dir}/impl"/>
+    <property name="build-test.dir" value="${build.dir}/test"/>
     
     <path id="core.classpath">
        <fileset dir="${lib.dir}" includes="*.jar" />
@@ -31,6 +33,7 @@
         <mkdir dir="${build.dir}"/>
         <mkdir dir="${build-api.dir}"/>
         <mkdir dir="${build-impl.dir}"/>
+        <mkdir dir="${build-test.dir}"/>
         
         <mkdir dir="${dist.dir}"/>
     </target>
@@ -49,7 +52,7 @@
     <target name="clean-all">
      <delete>
       <fileset dir="lib" includes="**/*.jar" />
-      <fileset dir="dist" includes="**/*.xml,**/*.jar,**/*.sql,**/*.part" />
+      <fileset dir="dist" includes="**/*.xml,**/*.jar,**/*.sql,**/*.part,**/*.zip" />
      </delete>
     </target>
 
@@ -127,6 +130,24 @@
     </jar>
    </target>
 
+   <target name="build-test" depends="build-impl, build-api">
+      <javac destdir="${build-test.dir}" 
+             srcdir="${src-test.dir}" 
+             includes="**/*.java" 
+             deprecation="on"
+             debug="${debug}"
+      >
+          <classpath>
+            <path refid="core.classpath"/>
+            <pathelement location="${build-api.dir}" />
+            <pathelement location="${build-impl.dir}" />
+          </classpath>
+      </javac>
+      <jar destfile="${dist.dir}/jungle.localization.test-${version}.jar">
+        <fileset dir="${build-test.dir}" includes="**/*.class" />
+        <fileset dir="${src-test.dir}" includes="META-INF/*.*" />
+      </jar>
+   </target>
     
 
    <target name="build-init-sql" >
@@ -205,5 +226,23 @@
      <delete dir="dist/jungle.localization-src-${version}" />
     </target>
 
+    <target name="test" depends="build-test,build-init-sql">
+      <junit printsummary="yes" haltonfailure="yes" showoutput="yes"
+             dir="${basedir}" >
+        <classpath>
+          <path refid="core.classpath"/>
+          <pathelement location="${dist.dir}/jungle.localization.api-${version}.jar" />
+          <pathelement location="${dist.dir}/jungle.localization.impl-${version}.jar" />
+          <pathelement location="${dist.dir}/jungle.localization.test-${version}.jar" />
+        </classpath>
+        <formatter type="plain"/>
+        <batchtest>
+          <fileset dir="src/test">
+           <include name="**/*Test.java" />
+           <exclude name="**/AllTests.java" />
+          </fileset>
+        </batchtest>
+      </junit>
+    </target>
     
 </project>
