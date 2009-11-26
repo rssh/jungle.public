@@ -14,7 +14,7 @@ public class HsqlJdbcEx extends JdbcEx
  *@return "pgsql"
  **/
  public String getDialect()
- { return "pgsql"; }
+ { return "hsql"; }
 
  /**
   *@return true
