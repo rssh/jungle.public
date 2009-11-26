@@ -94,9 +94,7 @@ class PHPJAO
        }
        if (!is_null($value)) {
           $retval[$key]=self::toJson($value,$memberClassHint);
-       } else {
-          $retval[$key]=$value;
-       }
+       } 
        //TODO: check type
     }
     return $retval;
