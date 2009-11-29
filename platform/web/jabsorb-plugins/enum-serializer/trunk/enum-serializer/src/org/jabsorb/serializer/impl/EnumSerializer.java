@@ -1,5 +1,9 @@
 
 /*
+ * Enum serizlier for jabsrb.patched.
+ * ported to patched version by Ruslan Shevchenko <rssh@gradsoft.ua>
+ *
+ * based on:
  * jabsorb - a Java to JavaScript Advanced Object Request Broker
  * http://www.jabsorb.org
  *
@@ -9,7 +13,7 @@
  * JSON-RPC-Java - a JSON-RPC to Java Bridge with dynamic invocation
  *
  * Copyright Metaparadigm Pte. Ltd. 2004.
-  Michael Clark <michael@metaparadigm.com>
+ #  Michael Clark <michael@metaparadigm.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
