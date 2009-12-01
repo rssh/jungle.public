@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import ua.gradsoft.jungle.jpaex.testent.Ent1;
 import ua.gradsoft.jungle.jpaex.testent.Ent2;
+import ua.gradsoft.jungle.jpaex.testent.Ent3;
 import ua.gradsoft.jungle.persistence.jpaex.JpaCollectionType;
 import ua.gradsoft.jungle.persistence.jpaex.JpaEntityProperty;
 import ua.gradsoft.jungle.persistence.jpaex.JpaEntityPropertyNotFoundException;
@@ -32,7 +33,7 @@ public class JpaPropertyAccessTest
   @Test
   public void testGetAllProperties() throws Exception
   {
-      List<JpaEntityProperty> properties = JpaHelper.getAllJpaProperties(Ent1.class);
+      List<JpaEntityProperty<Ent1,Object>> properties = JpaHelper.getAllJpaProperties(Ent1.class);
       Assert.assertTrue(properties.size()>3);
   }
 
@@ -66,6 +67,22 @@ public class JpaPropertyAccessTest
   {
       JpaEntityProperty<Ent1,List<Ent2>> vp = JpaEntityProperty.findByColumnName(Ent1.class,"ent2s");
       Assert.assertTrue(vp.getJpaCollectionType()==JpaCollectionType.LIST);
+  }
+
+  @Test
+  public void testSeqFindId() throws Exception
+  {
+     boolean idFound=false;
+     JpaEntityProperty<Ent3,Object> idProperty=null;
+     for(JpaEntityProperty<Ent3,Object> p: JpaEntityProperty.getAllPropertiesForEntity(Ent3.class) ) {
+         if (p.isId()) {
+             idFound=true;
+             idProperty=p;
+             break;
+         }
+     }
+     Assert.assertTrue(idProperty!=null);
+     Assert.assertTrue(idFound);
   }
 
 

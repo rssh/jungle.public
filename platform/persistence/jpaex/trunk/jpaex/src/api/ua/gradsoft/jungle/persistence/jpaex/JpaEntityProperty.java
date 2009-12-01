@@ -103,7 +103,7 @@ public abstract class JpaEntityProperty<E,T>
      * @param t1 T2.class
      * @return same JpaEntityProperty, but casted to new values.
      */
-    public <E1,T1> JpaEntityProperty<E1,T1> cast(Class<E1> e1, Class<T1> t1)
+    public <E1 extends E,T1 extends T> JpaEntityProperty<E1,T1> downcast(Class<E1> e1, Class<T1> t1)
     {
       if (getEntityClass().isAssignableFrom(e1)) {
           if (getPropertyClass().isAssignableFrom(t1)) {
@@ -115,6 +115,7 @@ public abstract class JpaEntityProperty<E,T>
           throw new ClassCastException(getEntityClass().getName()+" is not assignambel from "+e1.getName());
       } 
     }
+    
 
     /**
      *Find JPA property with name <code> name </code> in class <code> entityClass </code>

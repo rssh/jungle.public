@@ -148,7 +148,7 @@
             <compilation-unit>
                 <package-root>src/test/generic</package-root>
                 <unit-tests/>
-                <classpath mode="compile">src/api:lib/junit-4.4.jar:lib/javaee-api-5.0-2.jar</classpath>
+                <classpath mode="compile">src/api:lib/junit-4.4.jar:lib/javaee-api-5.0-2.jar:target/jungle.persistence.jpaex-api-1.2.4.jar</classpath>
                 <source-level>1.5</source-level>
             </compilation-unit>
         </java-data>
