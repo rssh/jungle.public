@@ -106,7 +106,7 @@
             <compilation-unit>
                 <package-root>src/test</package-root>
                 <unit-tests/>
-                <classpath mode="compile">lib/javaee-api-5.0-2.jar:build/api:build/impl:lib/hibernate-entitymanager-3.3.2.GA.jar:lib/junit-4.4.jar:dist/jungle.localization.impl-1.0.0.jar:dist/jungle.localization.api-1.0.0.jar:lib/jungle.persistence.ejbqlao-2.3.0.jar</classpath>
+                <classpath mode="compile">lib/javaee-api-5.0-2.jar:build/api:build/impl:lib/hibernate-entitymanager-3.3.2.GA.jar:lib/junit-4.4.jar:dist/jungle.localization.impl-1.0.0.jar:dist/jungle.localization.api-1.0.0.jar:lib/jungle.persistence.ejbqlao-2.3.0.jar:lib/jungle.persistence.jpaex-api-1.2.4.jar:lib/jungle.persistence.jpaex-hibernate-1.2.4.jar</classpath>
                 <source-level>1.5</source-level>
             </compilation-unit>
         </java-data>

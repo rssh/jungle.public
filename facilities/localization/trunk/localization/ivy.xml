@@ -90,6 +90,11 @@
        <artifact name="slf4j-jdk14" type="jar" />
     </dependency>
 
+    <dependency org="ua.gradsoft" name="jungle.persistence.jpaex" 
+      rev="[1.2.3,2.0.0)" conf="test->hibernate" >
+       <artifact name="jungle.persistence.jpaex-api" type="jar" />
+       <artifact name="jungle.persistence.jpaex-hibernate" type="jar" />
+    </dependency>
 
     <dependency org="org.junit" name="junit" rev="[4.4,)"
                  conf="test->default" >

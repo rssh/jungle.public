@@ -8,6 +8,8 @@ import java.sql.Statement;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import ua.gradsoft.jungle.persistence.jpaex.HibernateJpaEx;
+import ua.gradsoft.jungle.persistence.jpaex.JpaEx;
 
 /**
  * Singleton, which perform action, needed for setup and initializing
@@ -38,6 +40,7 @@ public class TestInfrastructureSingleton
   }
 
   private static void init() throws Exception {
+     initJpaEx();
      initInMemoryDb();
      loadSql();
      createEntityManager();
@@ -71,6 +74,7 @@ public class TestInfrastructureSingleton
     loadSqlScript("sql/hsql/create_localization_hsql.sql");
     loadSqlScript("sql/hsql/init_localization_hsql.sql");
     loadSqlScript("sql/hsql/test/create_testdata.sql");
+    loadSqlScript("sql/hsql/test/init_testdata.sql");
   }
   
   private static void loadSqlScript(String fname) throws Exception
@@ -86,6 +90,11 @@ public class TestInfrastructureSingleton
       Statement st = cn.createStatement();
       st.executeUpdate(sb.toString());
       st.close();
+  }
+
+  private static void initJpaEx()
+  {
+     JpaEx.setInstance(new HibernateJpaEx()); 
   }
 
   //private static EntityManager entityManager_;

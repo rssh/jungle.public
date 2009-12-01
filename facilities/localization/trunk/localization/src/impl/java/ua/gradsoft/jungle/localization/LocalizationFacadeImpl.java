@@ -422,6 +422,11 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
         // now prepare list of ids
         List<Object> ids = new ArrayList<Object>();
         for (T bean : beans) {
+            JpaEntityProperty idProperty = metaDataEntry.idProperty;
+            if (idProperty==null) {
+                System.err.print("idProperty is null for "+metaDataEntry.entityClass);
+            }
+            Object id = idProperty.getValue(bean);
             ids.add(metaDataEntry.idProperty.getValue(bean));
         }
 
@@ -692,6 +697,7 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
             level.translated=true;
             return;
         }
+        boolean withTranslatedStringProperties=true;
         Class<?> entityClass;
         {
             if (level.property!=null) {
@@ -712,25 +718,31 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
                         if (sbs!=null) {
                             entityClass=sbs;
                         }else{
-                            throw new IllegalStateException("Class "+entityClass+" is not JPA Entity, but reference to appropriate JPA entity is missing in WithTranslateions annotation");
+                            //throw new IllegalStateException("Class "+entityClass+" is not JPA Entity, but reference to appropriate JPA entity is missing in WithTranslateions annotation");
+                            withTranslatedStringProperties=false;
                         }
                     }
                 }
             }
         }
 
-        EntityCacheEntry<Entity> metaDataEntry = getOrCreateEntityCacheEntry(entityClass.getName());
-
-        if (metaDataEntry == null) {
-            throw new IllegalArgumentException("class " + entityClass + " can't be translated (translation metainfo not found)");
-        }
-
-        // translate string properties
         Map<String, BundleInfo> bis = new TreeMap<String, BundleInfo>();
-        for (JpaEntityProperty<Entity, String> p : metaDataEntry.stringPropertiesByName.values()) {
-            String poName = p.getEntityClass().getName();
-            EntityCacheEntry poEntry = getOrCreateEntityCacheEntry(poName);
-            if (!bis.containsKey(poName)) {
+        Map<String, List<List<String>>> translatedPerClass = new TreeMap<String, List<List<String>>>();
+        Map<String, List<JpaEntityProperty<? super Entity, String>>> propertiesPerClass = new TreeMap<String, List<JpaEntityProperty<? super Entity, String>>>();
+        
+        if (withTranslatedStringProperties) {
+    
+            EntityCacheEntry<Entity> metaDataEntry = getOrCreateEntityCacheEntry(entityClass.getName());
+
+            if (metaDataEntry == null) {
+               throw new IllegalArgumentException("class " + entityClass + " can't be translated (translation metainfo not found)");
+            }
+
+            // translate string properties
+            for (JpaEntityProperty<Entity, String> p : metaDataEntry.stringPropertiesByName.values()) {
+               String poName = p.getEntityClass().getName();
+               EntityCacheEntry poEntry = getOrCreateEntityCacheEntry(poName);
+               if (!bis.containsKey(poName)) {
                 if (poEntry.tt != null) {
                     BundleInfo bi = poEntry.tt.getBundle();
                     boolean supportedLanguageFound = false;
@@ -745,34 +757,33 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
                     }
                     bis.put(poName, bi);
                 }
+               }
             }
-        }
 
-        Map<String, List<List<String>>> translatedPerClass = new TreeMap<String, List<List<String>>>();
-        Map<String, List<JpaEntityProperty<? super Entity, String>>> propertiesPerClass = new TreeMap<String, List<JpaEntityProperty<? super Entity, String>>>();
-        for (Map.Entry<String, EntityCacheEntry<? super Entity>> e : metaDataEntry.slicedEntries.entrySet()) {
-            TranslationTable tt = e.getValue().tt;
-            if (tt == null) {
+            for (Map.Entry<String, EntityCacheEntry<? super Entity>> e : metaDataEntry.slicedEntries.entrySet()) {
+              TranslationTable tt = e.getValue().tt;
+              if (tt == null) {
                 continue;
-            }
-            List<JpaEntityProperty<? super Entity, String>> fieldProperties = new ArrayList<JpaEntityProperty<? super Entity, String>>();
-            for (TranslationTableColumn tc : tt.getTranslatedColumns()) {
+              }
+              List<JpaEntityProperty<? super Entity, String>> fieldProperties = new ArrayList<JpaEntityProperty<? super Entity, String>>();
+              for (TranslationTableColumn tc : tt.getTranslatedColumns()) {
                 JpaEntityProperty<? super Entity, String> fieldProperty = e.getValue().stringPropertiesByNormalizedColumnName.get(tc.getColumnName());
                 if (fieldProperty == null) {
                     //impossible
                     throw new IllegalStateException("can't find property for column " + tc.getColumnName());
                 }
                 fieldProperties.add(fieldProperty);
-            }
+              }
 
-            List<List<String>> translatedForKey = translateFieldsByIds(languageCode,
+              List<List<String>> translatedForKey = translateFieldsByIds(languageCode,
                     e.getValue(),
                     level.translations.keySet(),
                     fieldProperties);
 
-            translatedPerClass.put(e.getKey(), translatedForKey);
-            propertiesPerClass.put(e.getKey(), fieldProperties);
+              translatedPerClass.put(e.getKey(), translatedForKey);
+              propertiesPerClass.put(e.getKey(), fieldProperties);
 
+          }
         }
 
         // now forse translation in depended object
@@ -780,9 +791,10 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
             translateZipLevel(child, languageCode, backlinks);
         }
 
-        // now substitute strings and depended stuff
-        Iterator<Map.Entry<Object,Entity>> it = level.translations.entrySet().iterator();
-        for (int i = 0; it.hasNext(); ++i) {
+        if (withTranslatedStringProperties) {
+          // now substitute strings and depended stuff
+          Iterator<Map.Entry<Object,Entity>> it = level.translations.entrySet().iterator();
+          for (int i = 0; it.hasNext(); ++i) {
             Map.Entry<Object,Entity> entry = it.next();
             Object id = entry.getKey();
             Entity bean = entry.getValue();
@@ -801,18 +813,27 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
                     fieldProperties.get(j).setValue(bean, translation);
                 }
 
-                level.substituteTranslated(bean, false, false);
-
             }
+            level.substituteTranslated(bean, false, false);
 
+          }
+        } else {
+          Iterator<Map.Entry<Object,Entity>> it = level.translations.entrySet().iterator();
+          for (int i = 0; it.hasNext(); ++i) {
+            Map.Entry<Object,Entity> entry = it.next();
+            Entity bean = entry.getValue();
+            level.substituteTranslated(bean, false, false);
+          }
         }
 
     }
 
-    private<T> Collection<T> translateBeansDetached(Class<T> entityClass,
-                                                   Collection<T> beans,
-                                                   String language,
-                                                   boolean deep)
+    
+
+    private<T>  void translateBeansDetachedInPlace(Class<T> entityClass,
+                                                Collection<T> beans,
+                                                String language,
+                                                boolean deep)
     {
        HashMap<Class<?>, TranslatedZipLevel<Object, Object>> trace =
                  new HashMap<Class<?>, TranslatedZipLevel<Object, Object>>();
@@ -828,12 +849,6 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
 
        List<TranslatedZipLevel<Object,Object>> backlinks = new LinkedList<TranslatedZipLevel<Object,Object>>();
        translateZipLevel(zipRoot, language, backlinks);
-
-       //TODO: fix backlinls.
-       //fixBacklinks
-
-       // object must be changed inplace
-       return beans;
 
     }
 
@@ -905,7 +920,8 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
                 entry.stringPropertiesByNormalizedColumnName.put(normalizeColumnName(p.getColumnName()), p);
                 entry.stringPropertiesByName.put(p.getName(), p);
                 used = true;
-            } else if (p.isId()) {
+            }
+            if (p.isId()) {
                 entry.idProperty = p;
             }
             if (used) {
