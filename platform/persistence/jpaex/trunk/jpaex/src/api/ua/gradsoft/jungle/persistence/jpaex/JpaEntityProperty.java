@@ -274,7 +274,7 @@ public abstract class JpaEntityProperty<E,T>
           }
       }
 
-      throw new JpaEntityPropertyNotFoundException();
+      throw new JpaEntityPropertyNotFoundException(entityClass,"<id>");
     }
 
     public static<E> List<JpaEntityProperty<E,Object>>  getAllPropertiesForEntity(Class<E> entityClass)
