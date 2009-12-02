@@ -37,18 +37,18 @@ public class ConfigurationUI extends GwtApplicationComponent
      * Initialize remote API.  must be called before any usage of this class.   
      */
     @Override
-    public void onRegistered(GwtApplication application)
+    public void onRegistered()
     {
       service_ = GWT.create(ConfigurationRemoteService.class);
       if (entryPoint_!=null) {
         ServiceDefTarget target = (ServiceDefTarget)service_;
         target.setServiceEntryPoint(entryPoint_);
-        Desktop desktop = application.getDesktop();
+        Desktop desktop = application_.getDesktop();
         if (desktop!=null) {
           MenuItem mi = new MenuItem("Configuration");
           Window w = getTableWindow("app2");
           mi.setData("window", w);
-          mi.addSelectionListener(application.getDesktopMeSelectionListener());
+          mi.addSelectionListener(application_.getDesktopMeSelectionListener());
           mi.setItemId("id-ConfigurationUI");
           mi.disable();
           desktop.getStartMenu().add(mi);
@@ -57,12 +57,12 @@ public class ConfigurationUI extends GwtApplicationComponent
     }
 
     @Override
-    public void onLogin(GwtApplication application)
+    public void onLogin()
     {
-      final GwtApplication fApplication = application;
+      final GwtApplication fApplication = application_;
 
       readAccessReaded_=false;
-      application.getAuthService().checkUserPermission(
+      fApplication.getAuthService().checkUserPermission(
               fApplication.getSessionTicket(),
               "jungle.configuration.read", new HashMap<String,String>(),
               new AsyncCallback<Boolean>()
@@ -94,8 +94,8 @@ public class ConfigurationUI extends GwtApplicationComponent
       );  
       
       writeAccessReaded_=false;
-      application.getAuthService().checkUserPermission(
-              application.getSessionTicket(), "jungle.configuration.write",
+      fApplication.getAuthService().checkUserPermission(
+              fApplication.getSessionTicket(), "jungle.configuration.write",
               new HashMap<String,String>(), 
               new AsyncCallback<Boolean>() {
 
@@ -114,8 +114,8 @@ public class ConfigurationUI extends GwtApplicationComponent
     }
 
     @Override
-    public void onLogout(GwtApplication application) {     
-        Desktop desktop = application.getDesktop();
+    public void onLogout() {     
+        Desktop desktop = application_.getDesktop();
         if (desktop!=null) {
             StartMenu startMenu = desktop.getStartMenu();
             Component i = startMenu.getItemByItemId("id-ConfigurationUI");

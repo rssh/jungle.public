@@ -79,22 +79,17 @@
              <resolver ref="jungle.repo" />
              <dependencyBuild
                organization="ua.gradsoft" name="jungle.configuration"
-               buildDirectory="${jungle.public.home}/facilities/configuration"
+               buildDirectory="${jungle.public.home}/facilities/configuration/trunk/configuration"
                publishTarget="publish.local"
              />
              <dependencyBuild
                organization="ua.gradsoft" name="jungle.persistence.cluster_keys"
-               buildDirectory="${platform.public.home}/persistence/cluster_keys"
+               buildDirectory="${platform.public.home}/persistence/cluster-keys/trunk/cluster-keys"
                publishTarget="publish.local"
              />
              <dependencyBuild
                organization="ua.gradsoft" name="jungle.gwt.util"
-               buildDirectory="${platform.public.home}/web/gwt-plugins/gwt-gxt-util"
-               publishTarget="publish.local"
-             />
-             <dependencyBuild
-               organization="ua.gradsoft" name="jungle.configuration-ui-gwt"
-               buildDirectory="${facilities.home}/configuration-ui-gwt"
+               buildDirectory="${platform.public.home}/web/gwt-plugins/gwt-gxt-util/trunk/gwt-gxt-util"
                publishTarget="publish.local"
              />
            </build>
