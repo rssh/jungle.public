@@ -15,6 +15,7 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
@@ -121,11 +122,12 @@ public abstract class JpaEntityProperty<E,T>
      *Find JPA property with name <code> name </code> in class <code> entityClass </code>
      * @param entityClass - entity, where search properties.
      * @param name - name of property to find.
+     * @param searchInSupers - if true - search also in super-entities throught inheritance.
      * @return JpaEntityProperty with name <code> name </code> if one exists,
      *  otherwise - trow JpaEntityPropertyNotFoundException
      *@exception JpaEntityPropertyNotFoundException
      */
-    public static<EC,TC> JpaEntityProperty<EC,TC> findByName(Class<EC> entityClass, String name)
+    public static<EC,TC> JpaEntityProperty<EC,TC> findByName(Class<EC> entityClass, String name, boolean searchInSupers)
     {
         // at first, generate method-s name and
         String getterName = generateGetterName(name);
@@ -157,6 +159,18 @@ public abstract class JpaEntityProperty<E,T>
         if (field!=null) {
             return new JpaEntityFieldProperty<EC,TC>(field);
         }
+
+        if (searchInSupers) {
+            Class<?> superClass = entityClass.getSuperclass();
+            if (superClass.isAnnotationPresent(Entity.class)) {
+              try {
+                  return (JpaEntityProperty<EC,TC>)findByName(superClass,name,searchInSupers);
+              } catch (JpaEntityPropertyNotFoundException ex){
+                  new JpaEntityPropertyNotFoundException(entityClass,name);
+              }
+            }
+
+        }
         
         // property not found
         throw new JpaEntityPropertyNotFoundException(entityClass,name);
@@ -165,7 +179,8 @@ public abstract class JpaEntityProperty<E,T>
     /**
      * Find in entityClass property, which
      * @param entityClass
-     * @return
+     * @param columnName
+     * @return columnNamr for property.
      */
     public static<EC,TC> JpaEntityProperty<EC,TC> findByColumnName(Class<EC> entityClass, String columnName)
     {
@@ -236,12 +251,14 @@ public abstract class JpaEntityProperty<E,T>
     }
 
 
+
     /**
-     * Find id property. If we have complex id
-     * @param entityClass
+     * Find id property.
+     * @param entityClass - entity, for which we search id.
+     * @param searchInSupers - true when we try to search id property also in superclass
      * @return id property, with class.
      */
-    public static<EC,TC> JpaEntityProperty<EC,TC> findId(Class<EC> entityClass)
+    public static<EC,TC> JpaEntityProperty<EC,TC> findId(Class<EC> entityClass, boolean searchInSuper)
     {
       Annotation idClass = entityClass.getAnnotation(IdClass.class);
       if (idClass!=null) {
@@ -274,13 +291,27 @@ public abstract class JpaEntityProperty<E,T>
           }
       }
 
+      if (searchInSuper) {
+          Class<?> superClass = entityClass.getSuperclass();
+          if (superClass.isAnnotationPresent(Entity.class)) {
+              return (JpaEntityProperty<EC,TC>)findId(superClass,searchInSuper);
+          }
+      }
+
       throw new JpaEntityPropertyNotFoundException(entityClass,"<id>");
     }
 
-    public static<E> List<JpaEntityProperty<E,Object>>  getAllPropertiesForEntity(Class<E> entityClass)
+
+    public static<E> List<JpaEntityProperty<E,Object>>  getAllPropertiesForEntity(Class<E> entityClass, boolean searchInSupers)
     {
        List<JpaEntityProperty<E,Object>> retval = new LinkedList<JpaEntityProperty<E,Object>>();
-       for(Method method: entityClass.getMethods()) {
+       Method[] allMethods;
+       if (searchInSupers) {
+           allMethods = entityClass.getMethods();
+       } else {
+           allMethods = entityClass.getDeclaredMethods();
+       }
+       for(Method method: allMethods) {
            if (method.getName().startsWith("get")) {
                if (method.getParameterTypes().length==0 && checkJpaAnnotations(method)) {
                    //ok, cand
@@ -295,6 +326,13 @@ public abstract class JpaEntityProperty<E,T>
                    }
                }
            }
+       }
+
+       Field[] allFields;
+       if (searchInSupers) {
+           allFields = entityClass.getFields();
+       } else {
+           allFields = entityClass.getDeclaredFields();
        }
 
        for(Field field: entityClass.getFields()) {

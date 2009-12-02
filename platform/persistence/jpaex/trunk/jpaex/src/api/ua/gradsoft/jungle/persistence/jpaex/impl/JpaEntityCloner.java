@@ -81,7 +81,7 @@ public class JpaEntityCloner {
         Constructor cn = entityClass.getConstructor(emptyClassArray);
         Object retval = cn.newInstance(emptyObjectArray);
         visited.put(entity, retval);
-        for(JpaEntityProperty p: JpaHelper.getAllJpaProperties(entityClass)) {
+        for(JpaEntityProperty p: JpaHelper.getAllJpaProperties(entityClass,true)) {
             Object value = p.getValue(entity);
             p.setValue(retval, unjpaObject(p.getPropertyClass(), value, visited));
         }
