@@ -19,7 +19,7 @@ public class JpaPropertyAccessTest
   public void testFindPropertyByName() throws Exception
   {
     JpaEntityProperty<Ent1,String> p;
-    p = JpaHelper.<Ent1,String>findJpaPropertyByName(Ent1.class, "name");
+    p = JpaHelper.<Ent1,String>findJpaPropertyByName(Ent1.class, "name",false);
 
     Ent1 ent1 = new Ent1();
     ent1.setName("aaa");
@@ -33,7 +33,7 @@ public class JpaPropertyAccessTest
   @Test
   public void testGetAllProperties() throws Exception
   {
-      List<JpaEntityProperty<Ent1,Object>> properties = JpaHelper.getAllJpaProperties(Ent1.class);
+      List<JpaEntityProperty<Ent1,Object>> properties = JpaHelper.getAllJpaProperties(Ent1.class,false);
       Assert.assertTrue(properties.size()>3);
   }
 
@@ -74,7 +74,7 @@ public class JpaPropertyAccessTest
   {
      boolean idFound=false;
      JpaEntityProperty<Ent3,Object> idProperty=null;
-     for(JpaEntityProperty<Ent3,Object> p: JpaEntityProperty.getAllPropertiesForEntity(Ent3.class) ) {
+     for(JpaEntityProperty<Ent3,Object> p: JpaEntityProperty.getAllPropertiesForEntity(Ent3.class,true) ) {
          if (p.isId()) {
              idFound=true;
              idProperty=p;

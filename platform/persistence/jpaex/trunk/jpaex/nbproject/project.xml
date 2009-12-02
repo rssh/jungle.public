@@ -57,7 +57,7 @@
                     <target>docs</target>
                 </action>
                 <action name="test">
-                    <target>retrieve-test-libs</target>
+                    <target>test</target>
                 </action>
                 <action name="rebuild">
                     <target>clean</target>
