@@ -17,6 +17,7 @@
     <class>ua.gradsoft.jungle.localization.testdata.Country</class>
     <class>ua.gradsoft.jungle.localization.testdata.City</class>
     <class>ua.gradsoft.jungle.localization.testdata.Message</class>
+    <class>ua.gradsoft.jungle.localization.testdata.CityWithText</class>
    <!-- end testdata part -->
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>

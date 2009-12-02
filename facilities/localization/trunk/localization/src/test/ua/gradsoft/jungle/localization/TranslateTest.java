@@ -61,6 +61,14 @@ public class TranslateTest {
       Assert.assertTrue(ukUkraine);
     }
 
-
+    @Test
+    public void testTranslateCityWithText1()
+    {
+      EntityManager em = TestInfrastructureSingleton.getEntityManager();
+      LocalizationFacade lf = TestInfrastructureSingleton.getLocalizationFacadeImpl();
+      Query q = em.createQuery("select city from CityWithText city");
+      List<City> cities = (List<City>)q.getResultList();
+      Collection<City> translated = lf.translateBeans(cities, "uk", true);
+    }
 
 }

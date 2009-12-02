@@ -4,6 +4,8 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import ua.gradsoft.jungle.localization.WithTranslations;
@@ -13,6 +15,7 @@ import ua.gradsoft.jungle.localization.WithTranslations;
  * @author rssh
  */
 @Entity
+@Inheritance(strategy=InheritanceType.JOINED)
 @WithTranslations
 public class City implements Serializable
 {

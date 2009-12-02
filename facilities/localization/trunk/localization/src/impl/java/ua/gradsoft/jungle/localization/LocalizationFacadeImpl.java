@@ -495,7 +495,7 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
 
             // now translate non-trivial complex properties
             if (deep) {
-                List<JpaEntityProperty<T, Object>> properties = JpaHelper.getAllJpaProperties(entityClass);
+                List<JpaEntityProperty<T, Object>> properties = JpaHelper.getAllJpaProperties(entityClass,true);
                 for (JpaEntityProperty<T, Object> p : properties) {
                     Class<?> propertyClass = p.getPropertyClass();
                     if (!propertyClass.isPrimitive() &&
@@ -539,12 +539,12 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
                 JpaEntityProperty<Parent, Object> property,
                 TranslatedZipLevel<Parent, Object> prev,
                 HashMap<Class<?>, TranslatedZipLevel<Object, Object>> trace) {
-            List<JpaEntityProperty<Entity, Object>> properties = JpaHelper.getAllJpaProperties(entityClass);
+            List<JpaEntityProperty<Entity, Object>> properties = JpaHelper.getAllJpaProperties(entityClass, true);
             TranslatedZipLevel<Entity, Parent> retval = new TranslatedZipLevel<Entity, Parent>();
             retval.prev = prev;
             retval.property = property;
             retval.nexts = new LinkedList<TranslatedZipLevel<Object, Entity>>();
-            retval.idProperty = JpaHelper.findIdJpaProperty(entityClass);
+            retval.idProperty = JpaHelper.findIdJpaProperty(entityClass, true);
             retval.translated = false;
             if (property != null) {
                 retval.backlink = trace.get(entityClass);
@@ -931,7 +931,7 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
     }
 
     private <T> void fillEntityEntry(EntityCacheEntry<T> entry) {
-        List<JpaEntityProperty<T, Object>> properties = JpaHelper.getAllJpaProperties(entry.entityClass);
+        List<JpaEntityProperty<T, Object>> properties = JpaHelper.getAllJpaProperties(entry.entityClass, true);
         entry.stringPropertiesByNormalizedColumnName = new TreeMap<String, JpaEntityProperty<T, String>>();
         entry.stringPropertiesByName = new TreeMap<String, JpaEntityProperty<T, String>>();
         for (JpaEntityProperty p : properties) {

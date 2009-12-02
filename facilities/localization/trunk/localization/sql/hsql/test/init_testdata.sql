@@ -73,6 +73,13 @@ insert into CityNames(id,name_en,name_ru,name_uk,
   values(1,'Kyiv','Киев','Київ',
                          'Good city', 'Хороший город', 'Добре місто');
 
+insert into CityWithText(id,text)
+  values(1, 'Welcome to Kiev');
+
+insert into CityWithTextTranslations(id,text_en,text_ru,text_uk)
+  values(1, 'Welcome to Kiev', 'Добро пожаловать в Киев', 'Вітаємо у Київі');
+  
+
 insert into City(id,country_code,name,description)
   values(2,'RU','Moskow','');
 
@@ -81,8 +88,18 @@ insert into CityNames(id,name_en,name_ru,name_uk,
   values(2,'Moskow','Москва','Москва',
                          'Big city', 'Большой город', 'Велике місто');
 
+insert into CityWithText(id,text)
+  values(2,'Moscow does not believe in tears');
+
+insert into CityWithTextTranslations(id,text_en,text_ru,text_uk)
+  values(2,'Moscow does not believe in tears',
+           'Москва слезам не верит',
+           'Москва сльозам не вірить');
+
+
 insert into City(id,country_code,name,description)
   values(3,'UA','Cherkassy','');
+
 
 insert into CityNames(id,name_en,name_ru,name_uk)
   values(3,'Cherkassy','Черкассы','Черкаси');
@@ -104,7 +121,21 @@ insert into CityNames(id,name_en,name_ru,name_uk,
              'famous as province','знаменито как провинция',
              'відоме як провінція');
 
+insert into City(id,country_code,name,description)
+  values(6,'UA','Odessa','');
 
+insert into CityNames(id,name_en,name_ru,name_uk, 
+                      description_en,description_ru,description_uk)
+  values(6,'Odessa','Одесса','Одеса',
+             'famous with jokes','знаменито своеборазным юмором',
+             'відоме своєрідним гумором');
+
+insert into CityWithText(id,text)
+  values(6,'Odessa-mother');
+
+insert into CityWithTextTranslations(id,text_en,text_ru,text_uk)
+  values(6, 'Odessa-mother', 'Одесса-мама', 'Одеса - мати');
+ 
 
 insert into OrgCities(id,name,location_city, residence_city)
   values(1,'Bank Kiev',1,1);

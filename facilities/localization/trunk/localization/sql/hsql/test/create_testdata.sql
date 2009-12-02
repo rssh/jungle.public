@@ -35,6 +35,22 @@ create table CityNames
    foreign key(id) references city(id)
 );
 
+create table CityWithText
+(
+  ID INTEGER primary key,
+  text VARCHAR(1024),
+   foreign key(id) references city(id)
+);
+
+create table CityWithTextTranslations
+(
+  ID INTEGER primary key,
+  text_en VARCHAR(1024),
+  text_ru VARCHAR(1024),
+  text_uk VARCHAR(1024),
+   foreign key(id) references city(id)
+);
+
 create table OrgCities
 (
  id INTEGER primary key,
