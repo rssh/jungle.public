@@ -4,6 +4,8 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import ua.gradsoft.jungle.localization.WithTranslations;
 
 /**
@@ -45,8 +47,23 @@ public class City implements Serializable
         this.description_ = description;
     }
 
+    @WithTranslations
+    @ManyToOne
+    @JoinColumn(name="country_code")
+    public Country getCountry() {
+        return country_;
+    }
+
+    public void setCountry(Country country)
+    {
+        country_=country;
+    }
+
+
 
     private int id_;
     private String name_;
     private String description_;
+    private Country country_;
+
 }

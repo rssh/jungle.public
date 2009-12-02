@@ -68,17 +68,42 @@ insert into localization_bundle_table_columns(table_name,column_prefix)
 insert into City(id,country_code,name,description)
   values(1,'UA','Kyiv','');
 
+insert into CityNames(id,name_en,name_ru,name_uk,
+                         description_en,description_ru,description_uk)
+  values(1,'Kyiv','Киев','Київ',
+                         'Good city', 'Хороший город', 'Добре місто');
+
 insert into City(id,country_code,name,description)
   values(2,'RU','Moskow','');
+
+insert into CityNames(id,name_en,name_ru,name_uk,
+                         description_en,description_ru,description_uk)
+  values(2,'Moskow','Москва','Москва',
+                         'Big city', 'Большой город', 'Велике місто');
 
 insert into City(id,country_code,name,description)
   values(3,'UA','Cherkassy','');
 
+insert into CityNames(id,name_en,name_ru,name_uk)
+  values(3,'Cherkassy','Черкассы','Черкаси');
+
+
 insert into City(id,country_code,name,description)
   values(4,'UA','Vinnica','');
 
+insert into CityNames(id,name_en,name_ru,name_uk)
+  values(4,'Vinnica','Винница','Вінніца');
+
+
 insert into City(id,country_code,name,description)
   values(5,'UA','Jitomir','');
+
+insert into CityNames(id,name_en,name_ru,name_uk, 
+                      description_en,description_ru,description_uk)
+  values(5,'Jitomir','Житомир','Житомир',
+             'famous as province','знаменито как провинция',
+             'відоме як провінція');
+
 
 
 insert into OrgCities(id,name,location_city, residence_city)

@@ -31,6 +31,7 @@ import org.apache.commons.logging.LogFactory;
 import ua.gradsoft.caching.CachingWrapper;
 import ua.gradsoft.jungle.localization.LocalizationFacadeImpl.TranslatedZipLevel;
 import ua.gradsoft.jungle.persistence.ejbqlao.EjbQlAccessObject;
+import ua.gradsoft.jungle.persistence.ejbqlao.JpaCloneableEntity;
 import ua.gradsoft.jungle.persistence.jdbcex.RuntimeSqlException;
 import ua.gradsoft.jungle.persistence.jpaex.JdbcConnectionWrapper;
 import ua.gradsoft.jungle.persistence.jpaex.JpaCollectionType;
@@ -356,9 +357,23 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
         }
     }
 
-    public <T> Collection<T> translateBeans(Collection<T> beans, String languageCode, boolean deep) {
+    public <T> Collection<T> translateBeans2(Collection<T> beans, String languageCode, boolean deep) {
         return translateBeans(beans, languageCode, deep, false);
     }
+
+    public <T> Collection<T> translateBeans(Collection<T> beans, String languageCode, boolean deep) {
+        if (beans.isEmpty()) {
+            return beans;
+        }else{
+            Iterator<T> it = beans.iterator();
+            T firstBean = it.next();
+            Class<T> beanClass = JpaHelper.findSameOrSuperJpaEntity(firstBean.getClass());
+            beans = JpaEx.getInstance().<Collection<T>>detached(getEntityManager(), beans);
+            translateBeansDetachedInPlace(beanClass, beans, languageCode, deep);
+            return beans;
+        }
+    }
+
 
     /**
      * translate beans to choosen language. (detach ones if needed)
@@ -534,10 +549,14 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
             if (property != null) {
                 retval.backlink = trace.get(entityClass);
             }
-            if (retval.backlink != null) {
+            if (retval.backlink == null) {
+                trace.put(entityClass, (TranslatedZipLevel<Object, Object>)retval);
                 for (JpaEntityProperty<Entity, Object> p : properties) {
                     AnnotatedElement ae = p.getAnnotatedElement();
                     if (ae.getAnnotation(WithTranslations.class) != null) {
+                        if (p.getPropertyClass().equals(String.class)) {
+                            continue;
+                        }
                         TranslatedZipLevel<Object, Entity> newLevel = createZip(p.getPropertyClass(),
                                 p,
                                 (TranslatedZipLevel<Entity, Object>) retval,
@@ -545,6 +564,7 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
                         retval.nexts.add(newLevel);
                     }
                 }
+                retval.translations=new HashMap<Object,Entity>();
             }
             return retval;
         }
@@ -561,7 +581,7 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
                   translations.put(idE, e);
                   for(TranslatedZipLevel n:nexts) {
                       Object nv = n.property.getValue(e);
-                      switch(property.getJpaCollectionType()) {
+                      switch(n.property.getJpaCollectionType()) {
                           case NONE:
                             n.addEntity(nv);
                             break;
