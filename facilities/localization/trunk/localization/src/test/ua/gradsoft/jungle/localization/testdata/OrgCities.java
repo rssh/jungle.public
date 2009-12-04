@@ -1,8 +1,11 @@
 package ua.gradsoft.jungle.localization.testdata;
 
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import ua.gradsoft.jungle.localization.WithTranslations;
 
 /**
@@ -10,7 +13,8 @@ import ua.gradsoft.jungle.localization.WithTranslations;
  * @author rssh
  */
 @Entity
-public class OrgCities {
+@WithTranslations
+public class OrgCities implements Serializable {
 
     @Id
     public int getId() {
@@ -22,7 +26,8 @@ public class OrgCities {
     }
 
     @WithTranslations
-    @Column(name="location_city")
+    @ManyToOne
+    @JoinColumn(name="location_city")
     public City getLocationCity() {
         return locationCity_;
     }
@@ -33,7 +38,7 @@ public class OrgCities {
     }
 
     @WithTranslations
-    @Column()
+    @Column(name="name")
     public String getName() {
         return name_;
     }
@@ -43,7 +48,8 @@ public class OrgCities {
     }
 
     @WithTranslations
-    @Column(name="residence_city")
+    @ManyToOne
+    @JoinColumn(name="residence_city")
     public City getResidenceCity() {
         return residenceCity_;
     }

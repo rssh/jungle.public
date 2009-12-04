@@ -136,21 +136,54 @@ insert into CityWithText(id,text)
 insert into CityWithTextTranslations(id,text_en,text_ru,text_uk)
   values(6, 'Odessa-mother', 'Одесса-мама', 'Одеса - мати');
  
+insert into localization_bundle_tables(table_name,
+                                       translation_table_name,
+                                       pk_column_name,
+                                       bundle_name,
+                                       entity_classname)
+  values('OrgCities','OrgNames','id','testdata',
+              'ua.gradsoft.jungle.localization.testdata.OrgCities');
+
+insert into localization_bundle_table_columns(table_name,column_prefix)
+  values('OrgCities','name');
+
 
 insert into OrgCities(id,name,location_city, residence_city)
   values(1,'Bank Kiev',1,1);
 
+insert into OrgNames(id,name_en,name_ru,name_uk)
+  values(1,'Bank Kiev','Банк Киев', 'Банк Київ');
+
 insert into OrgCities(id,name,location_city, residence_city)
   values(2,'Bank Moskva',2,2);
+
+insert into OrgNames(id,name_en,name_ru,name_uk)
+  values(2,'Bank Moskva','Банк Москва', 'Банк Москва');
 
 insert into OrgCities(id,name,location_city, residence_city)
   values(3,'Moskva-Kiev',2,1);
 
+insert into OrgNames(id,name_en,name_ru,name_uk)
+  values(3,'Moskva-Kiev','Москва-Киев','Москва-Київ');
+
 insert into OrgCities(id,name,location_city, residence_city)
   values(4,'Kiev-Moskva',1,2);
 
+insert into OrgNames(id,name_en,name_ru,name_uk)
+  values(4,'Kiev-Moskva','Киев-Москва','Київ-Москва');
+
 insert into OrgCities(id,name,location_city, residence_city)
   values(5,'KC',1,3);
+
+insert into OrgNames(id,name_en,name_ru,name_uk)
+  values(5,'КС','КС','Кс');
+
+
+insert into OrgCities(id,name,location_city, residence_city)
+  values(6,'Kiev-unknown',1,NULL);
+
+insert into OrgNames(id,name_en,name_ru,name_uk)
+  values(6,'Kiev-unknown','Киев-неизвестно','Київ-невідомо');
 
 insert into message(id, message) values(1,'first message');
 

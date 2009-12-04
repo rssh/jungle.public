@@ -18,6 +18,7 @@
     <class>ua.gradsoft.jungle.localization.testdata.City</class>
     <class>ua.gradsoft.jungle.localization.testdata.Message</class>
     <class>ua.gradsoft.jungle.localization.testdata.CityWithText</class>
+    <class>ua.gradsoft.jungle.localization.testdata.OrgCities</class>
    <!-- end testdata part -->
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>

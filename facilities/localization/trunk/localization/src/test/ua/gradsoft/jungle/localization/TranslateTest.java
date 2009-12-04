@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import ua.gradsoft.jungle.localization.testdata.City;
 import ua.gradsoft.jungle.localization.testdata.Country;
+import ua.gradsoft.jungle.localization.testdata.OrgCities;
 
 /**
  *Test to perform tanslation operation
@@ -69,6 +70,26 @@ public class TranslateTest {
       Query q = em.createQuery("select city from CityWithText city");
       List<City> cities = (List<City>)q.getResultList();
       Collection<City> translated = lf.translateBeans(cities, "uk", true);
+    }
+
+    @Test
+    public void testOrgCitiesWithNulls()
+    {
+      EntityManager em = TestInfrastructureSingleton.getEntityManager();
+      LocalizationFacade lf = TestInfrastructureSingleton.getLocalizationFacadeImpl();
+      Query q = em.createQuery("select oc from OrgCities oc where oc.id < 10");
+      List<OrgCities> ocs = (List<OrgCities>)q.getResultList();
+      Collection<OrgCities> translated = lf.translateBeans(ocs, "uk", true);
+      OrgCities id6 = null;
+      for(OrgCities oc: translated) {
+          if (oc.getId()==6) {
+              id6=oc;
+              break;
+          }
+      }
+      Assert.assertEquals(id6.getLocationCity().getName(), "Київ");
+      Assert.assertEquals(id6.getLocationCity().getCountry().getName(), "Україна");
+      Assert.assertNull(id6.getResidenceCity());
     }
 
 }
