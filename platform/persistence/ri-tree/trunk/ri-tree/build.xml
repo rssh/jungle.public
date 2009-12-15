@@ -2,6 +2,7 @@
 <!-- build file for jungle.persistency.ritree project -->
 <project name="jungle.persistence.ritree" default="build" basedir="."
   xmlns:ivy="antlib:fr.jayasoft.ivy.ant"
+  xmlns:phpjao="antlib:ua.gradsoft.phpjao" 
  >
     <property file="build.properties" />
     <import file="build-ivy.xml" />
@@ -51,7 +52,9 @@
     </target>
     
     <target name="build" depends="build-common, 
-                                  build-server" >
+                                  build-server,
+                                  generate-php,
+                                  build-gwt" >
     </target>
     
     <target name="build-common" depends="retrieve-libs,prepare" >
@@ -97,6 +100,47 @@
             </manifest>
         </jar>
     </target>
+
+    <target name="build-gwt" depends="build-common" >
+      <jar destfile="${dist.dir}/jungle.persistence.ritree-gwt-${version}.jar"
+                index="true">
+            <fileset dir="${build-common.dir}" 
+                     includes="**/*.class"/>
+            <fileset dir="${src-common.dir}" 
+                     includes="**/*.java"/>
+            <fileset dir="etc/gwt" 
+                     includes="**/*.xml"/>
+      </jar>
+    </target>
+
+    <target name="generate-php" depends="declare-phpjao" >
+       <phpjao:generate 
+         outputFile="${basedir}/dist/jungle.persistence.ritree-${version}.php" 
+         withoutRequireHeader="true"
+       >
+         <includedirs dir="${basedir}/src/common" />
+         <includejars>
+          <fileset  dir="lib" includes="*.jar" />
+         </includejars>
+         <class name="ua.gradsoft.jungle.persistence.ritree.RiInterval" />
+         </phpjao:generate>
+    </target>
+
+    <target name="declare-phpjao" depends="retrieve-libs" >
+      <path id="phpjao.lib.path" >
+       <fileset dir="lib" includes="jungle.tools.phpjao-*.jar" />
+       <fileset dir="lib" includes="TermWare-*.jar" />
+       <fileset dir="lib" includes="TermWarePhp-*.jar" />
+       <fileset dir="lib" includes="JavaChecker-*.jar" />
+       <fileset dir="lib" includes="JavaChecker2Annotations-*.jar" />
+       <fileset dir="lib" includes="TermWareJPP-*.jar" />
+      </path>
+      <taskdef resource="ua/gradsoft/phpjao/antlib.xml" 
+               uri="antlib:ua.gradsoft.phpjao" 
+               classpathref="phpjao.lib.path"/>
+    </target>
+
+
 
    <target name="publish" depends="resolve-ivy,build">
      <ivy:publish resolver="datacenter.gradsoft.ua" 

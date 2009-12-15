@@ -3,22 +3,25 @@
  <configurations>
   <conf name="default" description="POJO classes and helper libraries" />
   <conf name="withlibs" description="with ejb api" extends="default" />
+  <conf name="gwt-export" description="with gwt export" extends="default" />
+  <conf name="php-export" description="with php export" extends="default" />
  </configurations>
  <publications>
-  <artifact name="jungle.persistence.ritree" type="jar" />
-  <artifact name="jungle.persistence.ritree.server" type="jar" />
+  <artifact name="jungle.persistence.ritree" type="jar" conf="default" />
+  <artifact name="jungle.persistence.ritree-gwt" type="jar" conf="gwt-export" />
+  <artifact name="jungle.persistence.ritree" type="php" conf="php-export" />
  </publications>
  <dependencies>
-   <!--
-    use gertonimo instead javaee
-    <dependency org="javaee" name="javaee-api" rev="5" />
-   -->
     <dependency org="org.apache.openejb" 
                name="javaee-api"
                rev="[5.0-1,)" 
                conf="withlibs->default"
                >
        <artifact name="javaee-api" type="jar" />
+    </dependency>
+    <dependency org="ua.gradsoft" name="jungle.tools.phpjao" 
+                rev="latest.integration" conf="php-export->default" >
+       <artifact name="jungle.tools.phpjao" type="jar" />
     </dependency>
  </dependencies>
 </ivy-module>
