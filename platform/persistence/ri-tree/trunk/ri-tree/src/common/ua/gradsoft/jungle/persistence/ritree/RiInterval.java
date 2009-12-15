@@ -8,6 +8,15 @@ import javax.persistence.Embeddable;
 public class RiInterval implements Serializable
 {
 
+    public RiInterval()
+    {}
+
+    public RiInterval(long begin, long end)
+    {begin_=begin;
+     end_=end;
+    }
+
+
     public long getBegin()
     { return begin_; }
 
