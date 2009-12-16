@@ -1,5 +1,6 @@
 package ua.gradsoft.jungle.localization;
 
+import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,7 +15,7 @@ import javax.persistence.Table;
  **/
 @Entity
 @Table(name="localization_bundle_tables")
-public class TranslationTable
+public class TranslationTable implements Serializable
 {
 
     @Id

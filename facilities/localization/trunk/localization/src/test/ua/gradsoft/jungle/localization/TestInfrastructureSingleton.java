@@ -20,8 +20,6 @@ public class TestInfrastructureSingleton
 {
 
 
-
-
   public static void lazyInit() throws Exception
   {
    if (!initialized_) {
