@@ -1,0 +1,4 @@
+<class>ua.gradsoft.jungle.persistence.ritree.RiInterval</class>
+<class>ua.gradsoft.hibernateplugin.ritree.RiTreeInterval</class>
+<class>ua.gradsoft.hibernateplugin.ritree.RiBefore</class>
+

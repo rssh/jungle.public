@@ -11,20 +11,26 @@
             <properties/>
             <folders>
                 <source-folder>
+                    <label>jungle.persistence.ritree</label>
+                    <location>.</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
                     <label>src/common</label>
                     <type>java</type>
                     <location>src/common</location>
                     <encoding>UTF-8</encoding>
                 </source-folder>
                 <source-folder>
-                    <label>src/server</label>
+                    <label>src/server/hibernate-plugin</label>
                     <type>java</type>
-                    <location>src/server</location>
+                    <location>src/server/hibernate-plugin</location>
                     <encoding>UTF-8</encoding>
                 </source-folder>
                 <source-folder>
-                    <label>jungle.persistence.ritree</label>
-                    <location>.</location>
+                    <label>src/test/hibernate-plugin</label>
+                    <type>java</type>
+                    <location>src/test/hibernate-plugin</location>
                     <encoding>UTF-8</encoding>
                 </source-folder>
             </folders>
@@ -48,11 +54,6 @@
                 <location>build/common</location>
                 <build-target>build</build-target>
             </export>
-            <export>
-                <type>folder</type>
-                <location>build/server</location>
-                <build-target>build</build-target>
-            </export>
             <view>
                 <items>
                     <source-folder style="packages">
@@ -60,8 +61,12 @@
                         <location>src/common</location>
                     </source-folder>
                     <source-folder style="packages">
-                        <label>src/server</label>
-                        <location>src/server</location>
+                        <label>src/server/hibernate-plugin</label>
+                        <location>src/server/hibernate-plugin</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>src/test/hibernate-plugin</label>
+                        <location>src/test/hibernate-plugin</location>
                     </source-folder>
                     <source-file>
                         <location>build.xml</location>
@@ -72,20 +77,30 @@
                     <ide-action name="rebuild"/>
                     <ide-action name="clean"/>
                     <ide-action name="javadoc"/>
+                    <action>
+                        <label>build-test</label>
+                        <target>build-test</target>
+                    </action>
                 </context-menu>
             </view>
+            <subprojects/>
         </general-data>
-        <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/1">
+        <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/2">
             <compilation-unit>
                 <package-root>src/common</package-root>
-                <classpath mode="compile">lib/javaee-api-5.0-1.jar</classpath>
+                <classpath mode="compile">lib/javaee-api-5.0-2.jar:lib/jungle.persistence.jpaex-api-2.0.0.jar</classpath>
                 <built-to>build/common</built-to>
                 <source-level>1.5</source-level>
             </compilation-unit>
             <compilation-unit>
-                <package-root>src/server</package-root>
-                <classpath mode="compile">lib/javaee-api-5.0-1.jar</classpath>
-                <built-to>build/server</built-to>
+                <package-root>src/server/hibernate-plugin</package-root>
+                <classpath mode="compile">lib/hibernate-entitymanager-3.3.2.GA.jar:lib/hibernate-annotations-3.4.0.GA.jar:lib/hibernate-commons-annotations-3.1.0.GA.jar:lib/ejb3-persistence-1.0.2.GA.jar:dist/jungle.persistence.ritree-0.95.jar:lib/hibernate-core-3.3.2.GA.jar</classpath>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>src/test/hibernate-plugin</package-root>
+                <unit-tests/>
+                <classpath mode="compile">lib/ejb3-persistence-1.0.2.GA.jar:lib/hibernate-annotations-3.4.0.GA.jar:lib/hibernate-commons-annotations-3.1.0.GA.jar:lib/hibernate-entitymanager-3.3.2.GA.jar:lib/jungle.persistence.jpaex-api-2.0.0.jar:lib/jungle.persistence.jpaex-hibernate-2.0.0.jar:lib/junit-4.5.jar:dist/jungle.persistence.ritree-0.95.jar:lib/hibernate-core-3.3.2.GA.jar</classpath>
                 <source-level>1.5</source-level>
             </compilation-unit>
         </java-data>

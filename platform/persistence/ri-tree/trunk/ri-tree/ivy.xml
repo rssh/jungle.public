@@ -14,7 +14,8 @@
   <artifact name="jungle.persistence.ritree" type="jar" conf="default" />
   <artifact name="jungle.persistence.ritree-gwt" type="jar" conf="gwt-export" />
   <artifact name="jungle.persistence.ritree" type="php" conf="php-export" />
-  <artifact name="ritree-hibernate" type="jar" conf="hibernate" />
+  <artifact name="jungle.persistence.ritree-hibernate" 
+                                             type="jar" conf="hibernate" />
  </publications>
  <dependencies>
     <dependency org="org.apache.openejb" 
@@ -28,14 +29,26 @@
                 rev="latest.integration" conf="php-export->default" >
        <artifact name="jungle.tools.phpjao" type="jar" />
     </dependency>
-    <dependency org="org.hibernate" name="hibernate-core" rev="3.3.1.GA"
+   <dependency org="ua.gradsoft" 
+               name="jungle.persistence.jpaex"
+               rev="[2.0.0,3.0.0)"
+               conf="default->api;hibernate->hibernate">
+       <artifact name="jungle.persistence.jpaex-api" type="jar" />
+       <artifact name="jungle.persistence.jpaex-hibernate" type="jar" />
+    </dependency>
+    <dependency org="org.hibernate" name="hibernate-core" 
+                rev="3.3.2.GA"
                 transitive="false" conf="hibernate->default" >
        <artifact name="hibernate-core" type="jar" />
     </dependency>
     <dependency org="org.hibernate" name="hibernate-entitymanager" 
-                rev="3.3.2.GA"  transitive="false" 
+                rev="3.4.0.GA"  transitive="true" 
                 conf="hibernate->default" >
        <artifact name="hibernate-entitymanager" type="jar" />
+    </dependency>
+    <dependency org="org.hibernate" name="hibernate-annotations" 
+                rev="3.4.0.GA"  transitive="false" conf="hibernate->default" >
+       <artifact name="hibernate-annotations" type="jar" />
     </dependency>
    <dependency org="org.postgresql" name="jdbc4" rev="8.4-701" 
                conf="hibernate->default">
@@ -43,5 +56,16 @@
         url="http://jdbc.postgresql.org/download/postgresql-8.4-701.jdbc4.jar"
        />
    </dependency>
+   <!-- slf4j used by hibernate  -->
+   <dependency org="org.slf4j" name="slf4j-api" rev="1.5.2" 
+               conf="test-hibernate->default" >
+     <artifact name="slf4j-api" type="jar" />
+   </dependency>
+   <dependency org="org.slf4j" name="slf4j-jdk14" rev="1.5.2" 
+               conf="test-hibernate->default" >
+     <artifact name="slf4j-jdk14" type="jar" />
+   </dependency>
+   <dependency org="org.junit" name="junit" rev="4.5" 
+               conf="test-hibernate->default"/>
  </dependencies>
 </ivy-module>

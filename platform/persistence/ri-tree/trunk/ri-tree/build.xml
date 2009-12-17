@@ -15,10 +15,18 @@
     <property name="etc.dir" value="etc"/>
 
     <property name="src-common.dir" value="src/common"/>
-    <property name="src-server.dir" value="src/server"/>
+    <property name="src-server-hibernate.dir" 
+                                    value="src/server/hibernate-plugin"/>
+    <property name="src-test-hibernate.dir" 
+                                    value="src/test/hibernate-plugin"/>
     
     <property name="build-common.dir" value="${build.dir}/common"/>
     <property name="build-server.dir" value="${build.dir}/server"/>
+    <property name="build-server-hibernate.dir" 
+                             value="${build.dir}/server/hibernate-plugin"/>
+    <property name="build-test.dir"  value="${build.dir}/test"/>
+    <property name="build-test-hibernate.dir" 
+                             value="${build.dir}/test/hibernate-plugin"/>
     
     <path id="core.classpath">
         <fileset dir="${lib.dir}"  includes="**/*.jar"/>
@@ -30,6 +38,9 @@
         <mkdir dir="${build.dir}"/>
         <mkdir dir="${build-common.dir}"/>
         <mkdir dir="${build-server.dir}"/>
+        <mkdir dir="${build-server-hibernate.dir}"/>
+        <mkdir dir="${build-test.dir}"/>
+        <mkdir dir="${build-test-hibernate.dir}"/>
         
         <mkdir dir="${dist.dir}"/>
     </target>
@@ -52,7 +63,7 @@
     </target>
     
     <target name="build" depends="build-common, 
-                                  build-server,
+                                  build-server-hibernate,
                                   generate-php,
                                   build-gwt" >
     </target>
@@ -79,19 +90,20 @@
         </jar>
     </target>
 
-    <target name="build-server" depends="retrieve-libs,prepare" >
-        <javac destdir="${build-server.dir}" 
-                srcdir="${src-server.dir}" 
+    <target name="build-server-hibernate" depends="build-common" >
+        <javac destdir="${build-server-hibernate.dir}" 
+                srcdir="${src-server-hibernate.dir}" 
                 includes="**/*.java" 
                 deprecation="on" 
                 debug="${debug}" >
             <!--<compilerarg  line="-Xlint:unchecked" />-->
             <classpath>
                 <path refid="core.classpath"/>
+                <pathelement location="${dist.dir}/jungle.persistence.ritree-${version}.jar" />
             </classpath>
         </javac>
-        <jar destfile="${dist.dir}/jungle.persistence.ritree.server-${version}.jar"
-                basedir="${build-server.dir}" 
+        <jar destfile="${dist.dir}/jungle.persistence.ritree.hibernate-${version}.jar"
+                basedir="${build-server-hibernate.dir}" 
                 includes="**/*.class,**/*.dtd,META-INF/**/*" 
                 index="true">
             <include name="build"/>
@@ -100,6 +112,35 @@
             </manifest>
         </jar>
     </target>
+
+
+    <target name="build-test-hibernate" depends="build-server-hibernate" >
+        <javac destdir="${build-test-hibernate.dir}" 
+                srcdir="${src-test-hibernate.dir}" 
+                includes="**/*.java" 
+                deprecation="on" 
+                debug="${debug}" >
+            <!--<compilerarg  line="-Xlint:unchecked" />-->
+            <classpath>
+                <path refid="core.classpath"/>
+                <pathelement location="${dist.dir}/jungle.persistence.ritree-${version}.jar" />
+                <pathelement location="${dist.dir}/jungle.persistence.ritree-${version}.jar" />
+            </classpath>
+        </javac>
+        <jar destfile="${dist.dir}/jungle.persistence.ritree.hibernate.test-${version}.jar"
+                index="true">
+            <include name="build"/>
+            <manifest>
+                <attribute name="Build-By" value="${user-name}"/>
+            </manifest>
+            <fileset dir="${build-test-hibernate.dir}"
+                includes="**/*.class"  />
+            <fileset dir="${src-test-hibernate.dir}"
+                includes="META-INF/**/*"  />
+        </jar>
+    </target>
+
+    <target name="build-test" depends="build-test-hibernate" />
 
     <target name="build-gwt" depends="build-common" >
       <jar destfile="${dist.dir}/jungle.persistence.ritree-gwt-${version}.jar"
@@ -140,7 +181,26 @@
                classpathref="phpjao.lib.path"/>
     </target>
 
+   <target name="test" depends="test-pgsql-hibernate" />
 
+   <target name="test-pgsql-hibernate" depends="build-test-hibernate" >
+     <junit printsummary="yes" haltonfailure="yes" showoutput="yes"
+            dir="${basedir}" >
+       <classpath>
+         <path refid="core.classpath"/>
+         <pathelement location="${dist.dir}/jungle.persistence.ritree-${version}.jar" />
+         <pathelement location="${dist.dir}/jungle.persistence.ritree.hibernate-${version}.jar" />
+         <pathelement location="${dist.dir}/jungle.persistence.ritree.hibernate.test-${version}.jar" />
+       </classpath>
+       <formatter type="plain"/>
+       <batchtest>
+         <fileset dir="src/test/hibernate-plugin">
+           <include name="**/*Test.java" />
+           <exclude name="**/AllTests.java" />
+         </fileset>
+       </batchtest>
+     </junit>
+   </target>
 
    <target name="publish" depends="resolve-ivy,build">
      <ivy:publish resolver="datacenter.gradsoft.ua" 
