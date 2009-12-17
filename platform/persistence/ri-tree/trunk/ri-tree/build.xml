@@ -102,7 +102,7 @@
                 <pathelement location="${dist.dir}/jungle.persistence.ritree-${version}.jar" />
             </classpath>
         </javac>
-        <jar destfile="${dist.dir}/jungle.persistence.ritree.hibernate-${version}.jar"
+        <jar destfile="${dist.dir}/jungle.persistence.ritree-hibernate-${version}.jar"
                 basedir="${build-server-hibernate.dir}" 
                 includes="**/*.class,**/*.dtd,META-INF/**/*" 
                 index="true">
@@ -124,10 +124,10 @@
             <classpath>
                 <path refid="core.classpath"/>
                 <pathelement location="${dist.dir}/jungle.persistence.ritree-${version}.jar" />
-                <pathelement location="${dist.dir}/jungle.persistence.ritree-${version}.jar" />
+                <pathelement location="${dist.dir}/jungle.persistence.ritree-hibernate-${version}.jar" />
             </classpath>
         </javac>
-        <jar destfile="${dist.dir}/jungle.persistence.ritree.hibernate.test-${version}.jar"
+        <jar destfile="${dist.dir}/jungle.persistence.ritree-hibernate.test-${version}.jar"
                 index="true">
             <include name="build"/>
             <manifest>
@@ -189,8 +189,8 @@
        <classpath>
          <path refid="core.classpath"/>
          <pathelement location="${dist.dir}/jungle.persistence.ritree-${version}.jar" />
-         <pathelement location="${dist.dir}/jungle.persistence.ritree.hibernate-${version}.jar" />
-         <pathelement location="${dist.dir}/jungle.persistence.ritree.hibernate.test-${version}.jar" />
+         <pathelement location="${dist.dir}/jungle.persistence.ritree-hibernate-${version}.jar" />
+         <pathelement location="${dist.dir}/jungle.persistence.ritree-hibernate.test-${version}.jar" />
        </classpath>
        <formatter type="plain"/>
        <batchtest>
@@ -208,7 +208,7 @@
                   overwrite="true" 
                   replacedynamicrev="false"
                   >
-       <artifacts pattern="dist/[artifact]-[revision].[ext]" />
+       <artifacts pattern="${dist.dir}/[artifact]-[revision].[ext]" />
      </ivy:publish>
     </target>
 
@@ -217,7 +217,7 @@
                   overwrite="true" 
                   replacedynamicrev="false"
                   >
-       <artifacts pattern="dist/[artifact]-[revision].[ext]" />
+       <artifacts pattern="${dist.dir}/[artifact]-[revision].[ext]" />
      </ivy:publish>
     </target>
 
