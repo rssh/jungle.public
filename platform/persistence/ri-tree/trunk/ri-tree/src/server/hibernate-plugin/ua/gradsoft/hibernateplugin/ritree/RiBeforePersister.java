@@ -10,13 +10,15 @@ import org.hibernate.mapping.PersistentClass;
  *Persister for RiBefore
  * @author rssh
  */
-public class RiBeforePersister extends RiTreeFunPersister
+public class RiBeforePersister extends RiTreeFunPersister1
 {
 
    public RiBeforePersister(PersistentClass persistentClass,
                             EntityRegionAccessStrategy cacheAccessStrategy,
                             SessionFactoryImplementor factory,
                             Mapping mapping)
-   { super("ri_tree_before",persistentClass,cacheAccessStrategy,factory);  }
+   { super("ri_tree.ri_tree_before",persistentClass,cacheAccessStrategy,factory);
+
+   }
 
 }

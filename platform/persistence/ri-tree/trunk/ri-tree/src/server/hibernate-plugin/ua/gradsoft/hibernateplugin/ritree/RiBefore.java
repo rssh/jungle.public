@@ -5,6 +5,9 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.Formula;
+import org.hibernate.annotations.ParamDef;
 import ua.gradsoft.jungle.persistence.ritree.RiInterval;
 
 /**
@@ -25,15 +28,20 @@ import ua.gradsoft.jungle.persistence.ritree.RiInterval;
 @org.hibernate.annotations.Persister(impl=RiBeforePersister.class)
 // point to already existend table.
 @javax.persistence.Table(schema="ri_tree", name="ri_time_intervals")
-public class RiBefore implements Serializable
+@FilterDef(name="ri",
+   parameters={@ParamDef(name="bottom", type="long"),
+               @ParamDef(name="top", type="long")
+})
+public class RiBefore implements Serializable, RiFakeEntity
 {
+
 
    @EmbeddedId
     @AttributeOverrides({
         @AttributeOverride(name="begin", column=@Column(name="lower")),
         @AttributeOverride(name="end", column=@Column(name="upper"))
     })
-    RiInterval getInterval()
+    public RiInterval getInterval()
     { return interval_; }
 
     public void setInterval(RiInterval pk)
@@ -41,7 +49,12 @@ public class RiBefore implements Serializable
       interval_=pk;
     }
 
-    private RiInterval interval_;
 
+    public RiBefore createEmpty()
+    {
+      return new RiBefore();  
+    }
+
+    private RiInterval interval_;
 
 }

@@ -2,8 +2,10 @@
 package ua.gradsoft.hibernateplugin.ritree;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import org.hibernate.Session;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,9 +28,34 @@ public class PgSqlBaseBeforeTest {
     @Test
     public void testRiTreeBefore1() throws Exception
     {
-        initDataSet1();
+        initDataSet(1);
         MySeries ms = FrameWorkInitializer.getEntityManager().find(MySeries.class, 1);
         Assert.assertNotNull(ms);
+    }
+
+    @Test
+    public void testRiTreeBefore2() throws Exception
+    {
+        initDataSet(1);
+        EntityManager em = FrameWorkInitializer.getEntityManager();
+        Session session = (Session)em.getDelegate();
+        session.enableFilter("ri");
+        SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        session.getEnabledFilter("ri").setParameter("bottom", f.parse("1999-01-01 00:00:00").getTime()/1000);
+        session.getEnabledFilter("ri").setParameter("top", f.parse("1999-01-01 00:00:00").getTime()/1000);
+        
+        String ejbql = "select m from MySeries m, RiBefore b "+
+                       " where b.interval=m.interval ";
+                       //" and b.bottom=? and b.top=?";
+       // String ejbql = "select m from MySeries m, RiTreeInterval b where m.interval=b.pk";
+        Query q = em.createQuery(ejbql);
+        //q.setParameter(":Ri.bottom", f.parse("1999-01-01 00:00:00").getTime()/1000);
+        //q.setParameter(":Ri.top", f.parse("1999-01-01 00:00:00").getTime()/1000);
+        //q.setParameter(1, f.parse("1999-01-01 00:00:00").getTime()/1000);
+        //q.setParameter(2, f.parse("1999-01-01 00:00:00").getTime()/1000);
+        List l = q.getResultList();
+        Assert.assertNotNull(l);
+        Assert.assertEquals("first point must not be in before",0, l.size());
     }
 
 
@@ -40,11 +67,15 @@ public class PgSqlBaseBeforeTest {
             }
             switch(number) {
                 case 1: initDataSet1();
+                        currentDataSet=1;
+                        break;
                 default:
                     throw new RuntimeException("Invalid dataset number: "+number);
             }
         }
     }
+
+
 
     /**
      * DataSet wich contains from one point.
@@ -62,7 +93,7 @@ public class PgSqlBaseBeforeTest {
       s1.setDescription("first point");
       s1.setInterval(ri);
       s1.setValue(0.01);      
-      em.persist(s1);
+      em.merge(s1);
     }
 
 

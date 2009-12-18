@@ -2,13 +2,18 @@
 package ua.gradsoft.hibernateplugin.ritree;
 
 import java.io.Serializable;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.Map;
 import org.hibernate.AssertionFailure;
 import org.hibernate.EntityMode;
+import org.hibernate.FetchMode;
 import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
 import org.hibernate.MappingException;
+import org.hibernate.QueryException;
 import org.hibernate.cache.access.EntityRegionAccessStrategy;
 import org.hibernate.cache.entry.CacheEntryStructure;
 import org.hibernate.engine.CascadeStyle;
@@ -16,23 +21,29 @@ import org.hibernate.engine.SessionFactoryImplementor;
 import org.hibernate.engine.SessionImplementor;
 import org.hibernate.engine.ValueInclusion;
 import org.hibernate.id.IdentifierGenerator;
+import org.hibernate.mapping.Column;
 import org.hibernate.mapping.PersistentClass;
 import org.hibernate.metadata.ClassMetadata;
-import org.hibernate.persister.entity.BasicEntityPropertyMapping;
 import org.hibernate.persister.entity.EntityPersister;
 import org.hibernate.persister.entity.Joinable;
+import org.hibernate.persister.entity.Loadable;
 import org.hibernate.persister.entity.OuterJoinLoadable;
+import org.hibernate.persister.entity.Queryable;
+import org.hibernate.sql.Alias;
+import org.hibernate.sql.SelectFragment;
 import org.hibernate.tuple.entity.EntityMetamodel;
 import org.hibernate.tuple.entity.EntityTuplizer;
+import org.hibernate.type.EntityType;
 import org.hibernate.type.Type;
 import org.hibernate.type.VersionType;
+import org.hibernate.util.StringHelper;
 
 /**
  *
  * @author rssh
  */
-public class RiTreeFunPersister1 implements EntityPersister
-                                 // OuterJoinLoadable
+public class RiTreeFunPersister1 implements EntityPersister,
+                                 OuterJoinLoadable, Queryable
 {
 
     RiTreeFunPersister1(String funName, PersistentClass persistentClass,
@@ -42,16 +53,28 @@ public class RiTreeFunPersister1 implements EntityPersister
         funName_ = funName;
         Class userClass = persistentClass.getMappedClass();
         entityMetamodel_ = new EntityMetamodel(persistentClass, factory);
-        classMetadata_ = new RiTreeIntervalClassMetadata(userClass.getSimpleName(), userClass);
+        persistentClass_ = persistentClass;
+        
+        //NLP here
+        //classMetadata_ = factory.getClassMetadata(RiTreeInterval.class);
+        classMetadata_ = new RiTreeIntervalClassMetadata(userClass.getSimpleName(), userClass, entityMetamodel_);
+
         factory_ = factory;
         cacheAccessStrategy_ = cacheAccessStrategy;
         //propertyMapping_ = new BasicEntityPropertyMapping( this );
-        propertyMapping_ = null;
+        //propertyMapping_ = null;
         keyColumnNames_ = KEY_COLUMN_NAMES;
+        System.err.println("userClass is "+userClass.getName());
+        //fakeTableName_=funName_+"(:"+userClass.getSimpleName()+"Bottom"+","
+        //                        +":"+userClass.getSimpleName()+"Top"+")";
+        fakeTableName_=funName_+"(:ri.bottom,:ri.top)";
+        System.err.println("fakeTableName_="+fakeTableName_);
+        System.err.println("entityName="+getEntityName());
+
     }
 
-    public void afterInitialize(Object arg0, boolean arg1, SessionImplementor arg2) {
-        /* do nothing */
+    public void afterInitialize(Object entity, boolean lazyUnfetched, SessionImplementor session) {
+        getTuplizer(session.getEntityMode()).afterInitialize(entity, lazyUnfetched, session);
     }
 
     public void afterReassociate(Object arg0, SessionImplementor arg1) {
@@ -90,7 +113,7 @@ public class RiTreeFunPersister1 implements EntityPersister
     }
 
     public EntityRegionAccessStrategy getCacheAccessStrategy() {
-        return null;
+        return cacheAccessStrategy_;
     }
 
     public CacheEntryStructure getCacheEntryStructure() {
@@ -136,6 +159,7 @@ public class RiTreeFunPersister1 implements EntityPersister
     }
 
     public String getIdentifierPropertyName() {
+       //System.err.println("getIdentifierProperyName");
        return entityMetamodel_.getIdentifierProperty().getName();
     }
 
@@ -144,6 +168,7 @@ public class RiTreeFunPersister1 implements EntityPersister
     }
 
     public Class getMappedClass(EntityMode entityMode) {
+        //System.err.println("getMappedClass()");
         EntityTuplizer tup = entityMetamodel_.getTuplizerOrNull(entityMode);
         return (tup==null ? null : tup.getMappedClass());
     }
@@ -185,12 +210,15 @@ public class RiTreeFunPersister1 implements EntityPersister
     }
 
     public Serializable[] getPropertySpaces() {
-        String[] retval = {"ritree.ritree"};
+        System.err.println("getPropertySpaces");
+        //String[] retval = {"ritree.ritree"};
+        String[] retval = {};
         return retval;
     }
 
     public Type getPropertyType(String name) throws MappingException {
-        return propertyMapping_.toType(name);
+        int index = entityMetamodel_.getPropertyIndex(name);
+        return entityMetamodel_.getProperties()[index].getType();
     }
 
     public Type[] getPropertyTypes() {
@@ -358,7 +386,7 @@ public class RiTreeFunPersister1 implements EntityPersister
     }
 
     public boolean isMutable() {
-        return true;
+        return false;
     }
 
     public boolean isSelectBeforeUpdateRequired() {
@@ -439,10 +467,21 @@ public class RiTreeFunPersister1 implements EntityPersister
 
     public String filterFragment(String alias, Map enabledFilters) throws MappingException {
         // we does not use filters.
+        System.err.println("filterFragment");
+        /*FilterHelper filterHelper = new FilterHelper( persistentClass_.getFilterMap(),
+                                                      factory_.getDialect(),
+                                                      factory_.getSqlFunctionRegistry() );
+
+        final StringBuffer sessionFilterFragment = new StringBuffer();
+        filterHelper.render( sessionFilterFragment, generateFilterConditionAlias( alias ), enabledFilters );
+
+        return sessionFilterFragment.toString();
+        */
         return "";
     }
 
     public String fromJoinFragment(String alias, boolean innerJoin, boolean includeSubclasses) {
+        System.err.println("fromJounFragment");
         // this is 'all otjer' joins.
         return "";
     }
@@ -456,7 +495,7 @@ public class RiTreeFunPersister1 implements EntityPersister
     }
 
     public String getTableName() {
-        return funName_+"(?,?)";
+        return fakeTableName_;
     }
 
     public boolean isCollection() {
@@ -470,17 +509,272 @@ public class RiTreeFunPersister1 implements EntityPersister
     public String selectFragment(Joinable rhs, String rhsAlias, String lhsAlias,
                                  String entitySuffix, String collectionSuffix,
                                  boolean includeCollectionColumns) {
-        return ""; //selectFragment(lhsAlias, entitySuffix);
+        return selectFragment(lhsAlias, entitySuffix);
     }
 
 
-    public String whereJoinFragment(String arg0, boolean arg1, boolean arg2) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public String whereJoinFragment(String alias, boolean innerJoin, boolean includeSubclasses) {
+        //it;s join by tables in where. Since we have only one table, our join fragment is empty.
+        return "";
     }
 
     // OuterJoinLoadable
 
+    public EntityType getEntityType() {
+        return entityMetamodel_.getEntityType();
+    }
 
+    public int countSubclassProperties() {
+        return 1;
+    }
+
+    public String fromTableFragment(String name) {
+        return fakeTableName_+" "+name;
+    }
+
+    public CascadeStyle getCascadeStyle(int arg0) {
+        return CascadeStyle.NONE;
+    }
+
+    public FetchMode getFetchMode(int arg0) {
+        return FetchMode.DEFAULT;
+    }
+
+    public String[] getPropertyColumnNames(String propertyPath) {
+        System.err.println("getPropertyColumnNames("+propertyPath+")");
+        String[] retval=null;
+        if (propertyPath.equals("interval")||
+            propertyPath.equals(EntityPersister.ENTITY_ID)) {
+            String[] sretval = { "lower", "upper" };
+            retval=sretval;
+        }else{
+            throw new HibernateException("Can't handle propertyPath "+propertyPath);
+        }
+        return retval;
+    }
+
+    public String getPropertyTableName(String propertyName) {
+        return getTableName();
+    }
+
+    public String[] getSubclassPropertyColumnNames(int index) {
+        switch(index) {
+            case 0:
+                return KEY_COLUMN_NAMES;
+            default:
+                throw new HibernateException("Invalid property index:"+index);
+        }
+    }
+
+    public String getSubclassPropertyName(int index) {
+        return classMetadata_.getPropertyNames()[index];
+    }
+
+    public String getSubclassPropertyTableName(int arg0) {
+        return fakeTableName_;
+    }
+
+    public Type getSubclassPropertyType(int index) {
+        return classMetadata_.getPropertyTypes()[index];
+    }
+
+    public boolean isDefinedOnSubclass(int arg0) {
+        return false;
+    }
+
+    public boolean isSubclassPropertyNullable(int index) {
+        return classMetadata_.getPropertyNullability()[index];
+    }
+
+    public String selectFragment(String alias, String suffix) {
+            String s1= new SelectFragment()
+                           .setSuffix(suffix)
+                           .addColumns(alias, KEY_COLUMN_NAMES, KEY_COLUMN_NAMES)
+                           .toFragmentString().substring(2);
+            return s1;
+    }
+
+    public String[] toColumns(String alias, int index) {
+        String[] columnNames = getSubclassPropertyColumnNames(index);
+        String[] retval = new String[columnNames.length];
+        for(int i=0; i<retval.length; ++i) {
+            retval[i]=StringHelper.qualify(alias, columnNames[i]);
+        }
+       return retval;
+    }
+
+    public String getDiscriminatorAlias(String suffix) {
+        return null;
+    }
+
+    public String getDiscriminatorColumnName() {
+        return null;
+    }
+
+    public Type getDiscriminatorType() {
+        return null;
+    }
+
+    public String[] getIdentifierAliases(String suffix) {
+        int nIdColumns = persistentClass_.getIdentifierProperty().getColumnSpan();
+        Iterator it = persistentClass_.getIdentifier().getColumnIterator();
+        String[] aliases = new String[nIdColumns];
+        while(it.hasNext()) {
+            Column cn = (Column)it.next();
+            cn.getAlias(factory_.getDialect(), persistentClass_.getRootTable());
+        }
+        return new Alias(suffix).toAliasStrings(aliases);
+    }
+
+    public String[] getIdentifierColumnNames() {
+        return KEY_COLUMN_NAMES;
+    }
+
+    public String[] getPropertyAliases(String suffix, int i) {
+        return new Alias(suffix).toUnquotedAliasStrings(getPropertyColumnNames(i));
+    }
+
+    public String[] getPropertyColumnNames(int arg0) {
+        return this.getSubclassPropertyColumnNames(arg0);
+    }
+
+    public String getSubclassForDiscriminatorValue(Object arg0) {
+        return null;
+    }
+
+    public boolean hasRowId() {
+        return false;
+    }
+
+    public boolean hasSubclasses() {
+        return false;
+    }
+
+    public Object[] hydrate(ResultSet rs, Serializable id, Object object,
+                            Loadable rootLoadable, String[][] suffixedPropertyColumns,
+                            boolean allProperties, SessionImplementor session) throws SQLException, HibernateException {
+        Type[] types = getPropertyTypes();
+        Object[] retval = new Object[types.length];
+        for(int i=0; i<types.length; ++i) {
+            String[] cols = suffixedPropertyColumns[i];
+            retval[i] = types[i].hydrate(rs, cols, session, object);
+        }
+        return retval;
+    }
+
+    public boolean isAbstract() {
+        return false;
+    }
+
+     // Querable
+
+
+    public String generateFilterConditionAlias(String rootAlias) {
+        return ""; // now we have not gloabl condition
+    }
+
+    public String[] getConstraintOrderedTableNameClosure() {
+        return TABLE_NAMES;
+    }
+
+    public String[][] getContraintOrderedTableKeyColumnClosure() {
+        String[][] retval = new String[1][];
+        retval[0] = KEY_COLUMN_NAMES;
+        return retval;
+    }
+
+    public String getDiscriminatorSQLValue() {
+        return null;
+    }
+
+    public String getMappedSuperclass() {
+        return null;
+    }
+
+    public Declarer getSubclassPropertyDeclarer(String arg0) {
+        return Declarer.CLASS;
+    }
+
+    public int getSubclassPropertyTableNumber(String propertyPath) {
+        return 0;
+    }
+
+    public String getSubclassTableName(int number) {
+        if (number==0) {
+            return null;
+        } else {
+            return null;
+        }
+
+    }
+
+    public String getTemporaryIdTableDDL() {
+        return persistentClass_.getTemporaryIdTableDDL();
+    }
+
+    public String getTemporaryIdTableName() {
+        return persistentClass_.getTemporaryIdTableName();
+    }
+
+    public String identifierSelectFragment(String alias, String suffix) {
+            String s1= new SelectFragment()
+                           .setSuffix(suffix)
+                           .addColumns(alias, KEY_COLUMN_NAMES, KEY_COLUMN_NAMES)
+                           .toFragmentString().substring(2);
+            return s1;
+    }
+
+    public boolean isExplicitPolymorphism() {
+        return false;
+    }
+
+    public boolean isMultiTable() {
+        return false;
+    }
+
+    public boolean isVersionPropertyInsertable() {
+        return false;
+    }
+
+    public String propertySelectFragment(String alias, String suffix, boolean arg2) {
+            return "";
+    }
+
+    public Type getType() {
+        return entityMetamodel_.getEntityType();
+    }
+
+    public String[] toColumns(String alias, String propertyName) throws QueryException {
+        String [] frs = toColumns(propertyName);
+        String [] retval = new String[frs.length];
+        for(int i=0; i<retval.length; ++i) {
+            retval[i]=StringHelper.qualify(alias, frs[i]);
+        }
+        return retval;
+    }
+
+    public String[] toColumns(String propertyName) throws QueryException, UnsupportedOperationException {
+        return getSubclassPropertyColumnNames(this.findPropertyIndex(propertyName));
+    }
+
+    public Type toType(String propertyName) throws QueryException {
+        int index = entityMetamodel_.getPropertyIndex(propertyName);
+        return entityMetamodel_.getProperties()[index].getType();
+    }
+
+   
+
+
+
+    protected int findPropertyIndex(String propertyName)
+    {
+      if (propertyName.equals("interval")
+         ||propertyName.equals(EntityPersister.ENTITY_ID)) {
+          return 0;
+      } else {
+          throw new HibernateException("RiEntity have no property "+propertyName);
+      }
+    }
 
 
     protected EntityTuplizer getTuplizer(EntityMode entityMode)
@@ -493,9 +787,13 @@ public class RiTreeFunPersister1 implements EntityPersister
     private final EntityMetamodel entityMetamodel_;
     private final SessionFactoryImplementor  factory_;
     private final EntityRegionAccessStrategy cacheAccessStrategy_;
-    private final BasicEntityPropertyMapping propertyMapping_;
+    private final PersistentClass  persistentClass_;
+   // private final BasicEntityPropertyMapping propertyMapping_;
     private final String[]  keyColumnNames_;
+    private final String    fakeTableName_;
 
     static final String[] KEY_COLUMN_NAMES =  { "lower", "upper" };
+
+    static final String[] TABLE_NAMES = { "ri_tree.ri_tree" };
 
 }

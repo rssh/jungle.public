@@ -18,9 +18,12 @@ public class HibernateRiTreeIntervals implements IRiIntervals
     }
 
     public void persist(EntityManager em, RiInterval ri) {
-        RiTreeInterval rti = new RiTreeInterval();
-        rti.setPk(ri);
-        em.persist(rti);
+        RiTreeInterval rti = em.find(RiTreeInterval.class, ri);
+        if (rti==null) {
+           rti = new RiTreeInterval();
+           rti.setPk(ri);
+           em.persist(rti);
+        }
     }
 
     public void remove(EntityManager em, RiInterval ri) {

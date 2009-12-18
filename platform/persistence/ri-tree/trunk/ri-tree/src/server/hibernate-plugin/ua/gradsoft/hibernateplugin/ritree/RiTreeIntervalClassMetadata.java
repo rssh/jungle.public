@@ -6,7 +6,8 @@ import org.hibernate.EntityMode;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.SessionImplementor;
 import org.hibernate.metadata.ClassMetadata;
-import org.hibernate.type.EntityType;
+import org.hibernate.persister.entity.EntityPersister;
+import org.hibernate.tuple.entity.EntityMetamodel;
 import org.hibernate.type.Type;
 
 /**
@@ -16,10 +17,11 @@ import org.hibernate.type.Type;
 public class RiTreeIntervalClassMetadata implements ClassMetadata
 {
 
-    RiTreeIntervalClassMetadata(String entityName, Class userClass)
+    RiTreeIntervalClassMetadata(String entityName, Class userClass, EntityMetamodel entityMetamodel)
     {
       entityName_ = entityName;
-      entityType_ = new RiTreeIntervalEntityType(userClass);
+      //entityType_ = new RiTreeIntervalEntityType(userClass);
+      entityMetamodel_ = entityMetamodel;
     }
 
     public String getEntityName() {
@@ -27,87 +29,97 @@ public class RiTreeIntervalClassMetadata implements ClassMetadata
     }
 
     public Serializable getIdentifier(Object entity, EntityMode entityMode) throws HibernateException {
-        return ((RiTreeInterval)entity).getPk();
+        return ((RiFakeEntity)entity).getInterval();
     }
 
     public String getIdentifierPropertyName() {
-        return "pk";
+        return "interval";
     }
 
     public Type getIdentifierType() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return entityMetamodel_.getIdentifierProperty().getType();
     }
 
     public Class getMappedClass(EntityMode arg0) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return entityMetamodel_.getEntityType().getReturnedClass();
     }
 
     public int[] getNaturalIdentifierProperties() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return NATURAL_IDENTIFIER_PROPERTIES;
     }
 
     public boolean[] getPropertyLaziness() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return PROPERTY_LAZINES;
     }
 
     public String[] getPropertyNames() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return PROPERTY_NAMES;
     }
 
     public boolean[] getPropertyNullability() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return PROPERTY_NULLABILITY;
     }
 
-    public Type getPropertyType(String arg0) throws HibernateException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Type getPropertyType(String name) throws HibernateException {
+        return entityMetamodel_.getPropertyTypes()[entityMetamodel_.getPropertyIndex(name)];
     }
 
     public Type[] getPropertyTypes() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return entityMetamodel_.getPropertyTypes();
     }
 
-    public Object getPropertyValue(Object arg0, String arg1, EntityMode arg2) throws HibernateException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Object getPropertyValue(Object object, String propertyName, EntityMode entityMode) throws HibernateException {
+        if (propertyName.equals("interval")||propertyName.equals(EntityPersister.ENTITY_ID)) {
+            return ((RiFakeEntity)object).getInterval();
+        }else{
+            throw new HibernateException("No such property "+propertyName+" for RiTreeInterval internal class");
+        }
     }
 
-    public Object[] getPropertyValues(Object arg0, EntityMode arg1) throws HibernateException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Object[] getPropertyValues(Object object, EntityMode arg1) throws HibernateException {
+        Object[] retval = new Object[3];
+        RiFakeEntity e = ((RiFakeEntity)object);
+        retval[0]=e.getInterval();
+        return retval;
     }
 
-    public Object[] getPropertyValuesToInsert(Object arg0, Map arg1, SessionImplementor arg2) throws HibernateException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Object[] getPropertyValuesToInsert(Object object, Map arg1, SessionImplementor arg2) throws HibernateException {
+        Object[] retval = new Object[3];
+        RiFakeEntity e = ((RiFakeEntity)object);
+        retval[0]=e.getInterval();
+        return retval;
     }
 
     public Object getVersion(Object arg0, EntityMode arg1) throws HibernateException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return null;
     }
 
     public int getVersionProperty() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return -1;
     }
 
     public boolean hasIdentifierProperty() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return true;
     }
 
     public boolean hasNaturalIdentifier() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return false;
     }
 
     public boolean hasProxy() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return false;
     }
 
     public boolean hasSubclasses() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return false;
     }
 
     public boolean implementsLifecycle(EntityMode arg0) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return false;
     }
 
     public boolean implementsValidatable(EntityMode arg0) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return false;
     }
 
     public Object instantiate(Serializable arg0, EntityMode arg1) throws HibernateException {
@@ -115,15 +127,15 @@ public class RiTreeIntervalClassMetadata implements ClassMetadata
     }
 
     public boolean isInherited() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return false;
     }
 
     public boolean isMutable() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return false;
     }
 
     public boolean isVersioned() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return false;
     }
 
     public void setIdentifier(Object arg0, Serializable arg1, EntityMode arg2) throws HibernateException {
@@ -139,6 +151,14 @@ public class RiTreeIntervalClassMetadata implements ClassMetadata
     }
 
     private String entityName_;
-    private Type entityType_;
+    private Type   entityType_;
+   // private Type   identifierType_;
+
+    private EntityMetamodel entityMetamodel_;
+    
+    private String[] PROPERTY_NAMES   =              { "interval"};
+    private boolean[] PROPERTY_LAZINES=              { false     };
+    private int[]    NATURAL_IDENTIFIER_PROPERTIES = { 0  };
+    private boolean[] PROPERTY_NULLABILITY =         { false     };
 
 }

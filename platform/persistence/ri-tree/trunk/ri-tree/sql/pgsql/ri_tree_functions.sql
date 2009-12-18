@@ -631,7 +631,7 @@ create or replace function ri_tree_before(
         returns setof ri_tree_interval_lw_type
 AS $$
 BEGIN
- return query select lower, upper from ri_tree.ri_time_intervals i
+ return query select i.lower, i.upper from ri_tree.ri_time_intervals i
     where i.node < lower and i.upper < lower;
 END;
 $$ LANGUAGE plpgsql;
