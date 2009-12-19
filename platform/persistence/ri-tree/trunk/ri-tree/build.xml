@@ -59,13 +59,16 @@
     <target name="clean-all" depends="clean">
         <delete>
           <fileset dir="lib" includes="**/*.jar" />
+          <fileset dir="dist" includes="**/*.jar,**/*.xml, **/*.sql" />
         </delete>
     </target>
     
     <target name="build" depends="build-common, 
                                   build-server-hibernate,
                                   generate-php,
-                                  build-gwt" >
+                                  build-gwt,
+                                  copy-sql,
+                                  copy-xml" >
     </target>
     
     <target name="build-common" depends="retrieve-libs,prepare" >
@@ -200,6 +203,24 @@
          </fileset>
        </batchtest>
      </junit>
+   </target>
+
+   <target name="copy-xml" >
+    <copy file="etc/persistence.xml.part"
+          tofile="${dist.dir}/jungle.persistence.ritree.persistence.xml-${version}.part"
+     />
+   </target>
+
+   <target name="copy-sql" >
+     <copy file="sql/pgsql/create_ritree.sql"
+          tofile="${dist.dir}/create_ritree_pgsql-${version}.sql"
+     />
+     <copy file="sql/pgsql/drop_ritree.sql"
+          tofile="${dist.dir}/drop_ritree_pgsql-${version}.sql"
+     />
+     <copy file="sql/pgsql/ri_tree_functions.sql"
+          tofile="${dist.dir}/ritree_functions_pgsql-${version}.sql"
+     />
    </target>
 
    <target name="publish" depends="resolve-ivy,build">

@@ -6,6 +6,7 @@
   <conf name="gwt-export" description="with gwt export" extends="default" />
   <conf name="php-export" description="with php export" extends="default" />
   <conf name="hibernate" description="with hibernate extension" extends="default" />
+  <conf name="pgsql" description="with pgsql scripts" extends="default" />
   <conf name="test-hibernate" 
         description="testing hibernate extension" 
         extends="default" />
@@ -16,6 +17,14 @@
   <artifact name="jungle.persistence.ritree" type="php" conf="php-export" />
   <artifact name="jungle.persistence.ritree-hibernate" 
                                              type="jar" conf="hibernate" />
+  <artifact name="jungle.persistence.ritree.persistence.xml" 
+                                             type="xml" conf="hibernate" />
+  <artifact name="create_ritree_pgsql.sql" 
+                                             type="sql" conf="pgsql" />
+  <artifact name="ritree_functions_pgsql.sql" 
+                                             type="sql" conf="pgsql" />
+  <artifact name="drop_ritree_pgsql.sql" 
+                                             type="sql" conf="pgsql" />
  </publications>
  <dependencies>
     <dependency org="org.apache.openejb" 
