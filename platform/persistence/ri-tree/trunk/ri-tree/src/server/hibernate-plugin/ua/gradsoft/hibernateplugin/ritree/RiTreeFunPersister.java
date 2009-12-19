@@ -5,7 +5,6 @@ import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.Map;
 import org.hibernate.AssertionFailure;
 import org.hibernate.EntityMode;
@@ -21,12 +20,13 @@ import org.hibernate.engine.SessionFactoryImplementor;
 import org.hibernate.engine.SessionImplementor;
 import org.hibernate.engine.ValueInclusion;
 import org.hibernate.id.IdentifierGenerator;
-import org.hibernate.mapping.Column;
+import org.hibernate.loader.entity.UniqueEntityLoader;
 import org.hibernate.mapping.PersistentClass;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.persister.entity.EntityPersister;
 import org.hibernate.persister.entity.Joinable;
 import org.hibernate.persister.entity.Loadable;
+import org.hibernate.persister.entity.NamedQueryLoader;
 import org.hibernate.persister.entity.OuterJoinLoadable;
 import org.hibernate.persister.entity.Queryable;
 import org.hibernate.sql.Alias;
@@ -42,11 +42,11 @@ import org.hibernate.util.StringHelper;
  *
  * @author rssh
  */
-public class RiTreeFunPersister1 implements EntityPersister,
+public class RiTreeFunPersister implements EntityPersister,
                                  OuterJoinLoadable, Queryable
 {
 
-    RiTreeFunPersister1(String funName, PersistentClass persistentClass,
+    RiTreeFunPersister(String funName, PersistentClass persistentClass,
                         EntityRegionAccessStrategy cacheAccessStrategy,
                         SessionFactoryImplementor factory)
     {
@@ -61,15 +61,9 @@ public class RiTreeFunPersister1 implements EntityPersister,
 
         factory_ = factory;
         cacheAccessStrategy_ = cacheAccessStrategy;
-        //propertyMapping_ = new BasicEntityPropertyMapping( this );
-        //propertyMapping_ = null;
         keyColumnNames_ = KEY_COLUMN_NAMES;
-        System.err.println("userClass is "+userClass.getName());
-        //fakeTableName_=funName_+"(:"+userClass.getSimpleName()+"Bottom"+","
-        //                        +":"+userClass.getSimpleName()+"Top"+")";
+      
         fakeTableName_=funName_+"(:ri.bottom,:ri.top)";
-        System.err.println("fakeTableName_="+fakeTableName_);
-        System.err.println("entityName="+getEntityName());
 
     }
 
@@ -159,7 +153,6 @@ public class RiTreeFunPersister1 implements EntityPersister,
     }
 
     public String getIdentifierPropertyName() {
-       //System.err.println("getIdentifierProperyName");
        return entityMetamodel_.getIdentifierProperty().getName();
     }
 
@@ -168,7 +161,6 @@ public class RiTreeFunPersister1 implements EntityPersister,
     }
 
     public Class getMappedClass(EntityMode entityMode) {
-        //System.err.println("getMappedClass()");
         EntityTuplizer tup = entityMetamodel_.getTuplizerOrNull(entityMode);
         return (tup==null ? null : tup.getMappedClass());
     }
@@ -210,8 +202,6 @@ public class RiTreeFunPersister1 implements EntityPersister,
     }
 
     public Serializable[] getPropertySpaces() {
-        System.err.println("getPropertySpaces");
-        //String[] retval = {"ritree.ritree"};
         String[] retval = {};
         return retval;
     }
@@ -410,11 +400,14 @@ public class RiTreeFunPersister1 implements EntityPersister,
     }
 
     public Object load(Serializable id, Object optionalObject, LockMode lockModel, SessionImplementor session) throws HibernateException {
-        throw new AssertionFailure("Objectd of type 'FunType' must not be directly loaded");
+        if (queryLoader_==null) {
+            queryLoader_ = new NamedQueryLoader(persistentClass_.getLoaderName(),this);
+        }
+        return queryLoader_.load(id, optionalObject, session);
     }
 
-    public void lock(Serializable arg0, Object arg1, Object arg2, LockMode arg3, SessionImplementor arg4) throws HibernateException {
-       throw new AssertionFailure("Objectd of type 'FunType' must not be directly loaded");
+    public void lock(Serializable id, Object version, Object object, LockMode lockMode, SessionImplementor session) throws HibernateException {
+       /* do nothing: we have no locks */
     }
 
     public void postInstantiate() throws MappingException {
@@ -437,12 +430,12 @@ public class RiTreeFunPersister1 implements EntityPersister,
         getTuplizer(entityMode).setIdentifier(entity, id);
     }
 
-    public void setPropertyValue(Object arg0, int arg1, Object arg2, EntityMode arg3) throws HibernateException {
-        throw new AssertionFailure("Object is immutable");
+    public void setPropertyValue(Object object, int i, Object value, EntityMode entityMode) throws HibernateException {
+        getTuplizer(entityMode).setPropertyValue(object, i, value);
     }
 
-    public void setPropertyValues(Object arg0, Object[] arg1, EntityMode arg2) throws HibernateException {
-        throw new AssertionFailure("Object is immutable");
+    public void setPropertyValues(Object object, Object[] values, EntityMode entityMode) throws HibernateException {
+        getTuplizer(entityMode).setPropertyValues(object, values);
     }
 
     public void update(Serializable arg0, Object[] arg1, int[] arg2, boolean arg3, Object[] arg4, Object arg5, Object arg6, Object arg7, SessionImplementor arg8) throws HibernateException {
@@ -466,22 +459,12 @@ public class RiTreeFunPersister1 implements EntityPersister,
     }
 
     public String filterFragment(String alias, Map enabledFilters) throws MappingException {
-        // we does not use filters.
-        System.err.println("filterFragment");
-        /*FilterHelper filterHelper = new FilterHelper( persistentClass_.getFilterMap(),
-                                                      factory_.getDialect(),
-                                                      factory_.getSqlFunctionRegistry() );
-
-        final StringBuffer sessionFilterFragment = new StringBuffer();
-        filterHelper.render( sessionFilterFragment, generateFilterConditionAlias( alias ), enabledFilters );
-
-        return sessionFilterFragment.toString();
-        */
+        // all what needed is in generated fakeTableName.
+        //so, filter itself will be empty
         return "";
     }
 
     public String fromJoinFragment(String alias, boolean innerJoin, boolean includeSubclasses) {
-        System.err.println("fromJounFragment");
         // this is 'all otjer' joins.
         return "";
     }
@@ -541,7 +524,6 @@ public class RiTreeFunPersister1 implements EntityPersister,
     }
 
     public String[] getPropertyColumnNames(String propertyPath) {
-        System.err.println("getPropertyColumnNames("+propertyPath+")");
         String[] retval=null;
         if (propertyPath.equals("interval")||
             propertyPath.equals(EntityPersister.ENTITY_ID)) {
@@ -615,15 +597,9 @@ public class RiTreeFunPersister1 implements EntityPersister,
         return null;
     }
 
-    public String[] getIdentifierAliases(String suffix) {
-        int nIdColumns = persistentClass_.getIdentifierProperty().getColumnSpan();
-        Iterator it = persistentClass_.getIdentifier().getColumnIterator();
-        String[] aliases = new String[nIdColumns];
-        while(it.hasNext()) {
-            Column cn = (Column)it.next();
-            cn.getAlias(factory_.getDialect(), persistentClass_.getRootTable());
-        }
-        return new Alias(suffix).toAliasStrings(aliases);
+    public String[] getIdentifierAliases(String suffix)
+    {
+        return new Alias(suffix).toUnquotedAliasStrings(KEY_COLUMN_NAMES);
     }
 
     public String[] getIdentifierColumnNames() {
@@ -786,6 +762,7 @@ public class RiTreeFunPersister1 implements EntityPersister,
     private final ClassMetadata classMetadata_;
     private final EntityMetamodel entityMetamodel_;
     private final SessionFactoryImplementor  factory_;
+    private  UniqueEntityLoader queryLoader_=null;
     private final EntityRegionAccessStrategy cacheAccessStrategy_;
     private final PersistentClass  persistentClass_;
    // private final BasicEntityPropertyMapping propertyMapping_;

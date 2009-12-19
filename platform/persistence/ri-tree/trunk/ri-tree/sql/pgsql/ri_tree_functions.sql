@@ -643,7 +643,7 @@ create or replace function ri_tree_before(
         returns setof ri_tree_interval_lw_type
 AS $$
 BEGIN
-  return query select * from ri_tree_before(
+  return query select * from ri_tree.ri_tree_before(
                      cast(extract(epoch from lower) as bigint),  
                      cast(extract(epoch from upper) as bigint)
                                            );

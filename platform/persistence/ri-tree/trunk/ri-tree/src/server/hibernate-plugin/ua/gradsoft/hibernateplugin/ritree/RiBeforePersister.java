@@ -10,7 +10,7 @@ import org.hibernate.mapping.PersistentClass;
  *Persister for RiBefore
  * @author rssh
  */
-public class RiBeforePersister extends RiTreeFunPersister1
+public class RiBeforePersister extends RiTreeFunPersister
 {
 
    public RiBeforePersister(PersistentClass persistentClass,

@@ -56,7 +56,36 @@ public class PgSqlBaseBeforeTest {
         List l = q.getResultList();
         Assert.assertNotNull(l);
         Assert.assertEquals("first point must not be in before",0, l.size());
+
+        session.getEnabledFilter("ri").setParameter("bottom", f.parse("2001-01-01 00:00:00").getTime()/1000);
+        session.getEnabledFilter("ri").setParameter("top", f.parse("2001-01-01 00:00:00").getTime()/1000);
+
+        q = em.createQuery(ejbql);
+        l = q.getResultList();
+        Assert.assertNotNull(l);
+        Assert.assertTrue("interva must be before 2001",l.size()!=0);
     }
+
+
+    @Test
+    public void testRiTreeBefore3() throws Exception
+    {
+        initDataSet(1);
+        EntityManager em = FrameWorkInitializer.getEntityManager();
+        Session session = (Session)em.getDelegate();
+        session.enableFilter("ri");
+        SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        session.getEnabledFilter("ri").setParameter("bottom", f.parse("2001-01-01 00:00:00").getTime()/1000);
+        session.getEnabledFilter("ri").setParameter("top", f.parse("2001-01-01 00:00:00").getTime()/1000);
+
+
+        String ejbql = "select b from RiBefore b ";
+        Query q = em.createQuery(ejbql);
+
+        List l = q.getResultList();
+        Assert.assertTrue("something must be selected",l.size()!=0);
+    }
+     
 
 
     void initDataSet(int number) throws Exception
@@ -83,17 +112,21 @@ public class PgSqlBaseBeforeTest {
      */
     private void initDataSet1() throws Exception
     {
-      EntityManager em = FrameWorkInitializer.getEntityManager();  
+      EntityManager em = FrameWorkInitializer.getEntityManager();
+      em.getTransaction().begin();
       SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
       RiInterval ri = new RiInterval(f.parse("1999-01-01 00:00:00"),
                                      f.parse("2000-01-01 00:00:00"));
+      System.err.println("sec1="+f.parse("1999-01-01 00:00:00").getTime()/1000);
       RiIntervals.persist(em, ri);
+      em.flush();
       MySeries s1 = new MySeries();
       s1.setId(1);
       s1.setDescription("first point");
       s1.setInterval(ri);
       s1.setValue(0.01);      
       em.merge(s1);
+      em.getTransaction().commit();
     }
 
 
