@@ -18,12 +18,12 @@
   <artifact name="jungle.persistence.ritree-hibernate" 
                                              type="jar" conf="hibernate" />
   <artifact name="jungle.persistence.ritree.persistence.xml" 
-                                             type="xml" conf="hibernate" />
-  <artifact name="create_ritree_pgsql.sql" 
+                                             type="part" conf="hibernate" />
+  <artifact name="create_ritree_pgsql" 
                                              type="sql" conf="pgsql" />
-  <artifact name="ritree_functions_pgsql.sql" 
+  <artifact name="ritree_functions_pgsql" 
                                              type="sql" conf="pgsql" />
-  <artifact name="drop_ritree_pgsql.sql" 
+  <artifact name="drop_ritree_pgsql" 
                                              type="sql" conf="pgsql" />
  </publications>
  <dependencies>
