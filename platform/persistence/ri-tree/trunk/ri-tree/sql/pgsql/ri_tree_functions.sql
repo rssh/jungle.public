@@ -285,41 +285,6 @@ BEGIN
 END;
 $$LANGUAGE plpgsql;
 
-create or replace function ri_tree_query_intervals(
-             lower TIMESTAMP WITH TIME ZONE, upper TIMESTAMP WITH TIME ZONE,
-             outTopLeft boolean, outTopRight boolean, outFork boolean,
-             outBottomLeft boolean, outInnerLeft boolean,
-             outInnerRight boolean, outBottomRight boolean,
-             outLower boolean, outUpper boolean)
-        returns setof ri_index_interval_type	
-AS $$
-BEGIN
- return query select * from ri_tree.ri_tree_query_intervals(
-           cast(extract(epoch from lower) as bigint),  
-           cast(extract(epoch from upper) as bigint),
-           outTopLeft, outTopRight, outFork,
-           outBottomLeft, outInnerLeft,
-           outInnerRight, outBottomRight,
-           outLower, outUpper);
-END;
-$$ LANGUAGE plpgsql;
-
-create or replace function ri_tree_query_top_left(
-                                              lower TIMESTAMP WITH TIME ZONE, 
-                                              upper TIMESTAMP WITH TIME ZONE
-                                                 )
-        returns setof ri_index_interval_type	
-AS $$
-BEGIN
- return query select * from ri_tree.ri_tree_query_intervals(
-           cast(extract(epoch from lower) as bigint),  
-           cast(extract(epoch from upper) as bigint),
-           true, false, false,
-           false, false,
-           false, false, false, false);
-END;
-$$ LANGUAGE plpgsql;
-
 create or replace function ri_tree_query_top_left(
                                                  lower bigint, 
                                                  upper bigint
@@ -336,21 +301,6 @@ END;
 $$ LANGUAGE plpgsql;
 
 create or replace function ri_tree_query_top_right(
-                                               lower TIMESTAMP WITH TIME ZONE, 
-                                               upper TIMESTAMP WITH TIME ZONE
-                                                 )
-        returns setof ri_index_interval_type	
-AS $$
-BEGIN
- return query select * from ri_tree.ri_tree_query_intervals(
-           cast(extract(epoch from lower) as bigint),  
-           cast(extract(epoch from upper) as bigint),
-           false, true, false,
-           false, false, false, false, false, false);
-END;
-$$ LANGUAGE plpgsql;
-
-create or replace function ri_tree_query_top_right(
                                                  lower bigint, 
                                                  upper bigint
                                                  )
@@ -364,20 +314,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-create or replace function ri_tree_query_bottom_left(
-                                               lower TIMESTAMP WITH TIME ZONE, 
-                                               upper TIMESTAMP WITH TIME ZONE
-                                                 )
-        returns setof ri_index_interval_type	
-AS $$
-BEGIN
- return query select * from ri_tree.ri_tree_query_intervals(
-           cast(extract(epoch from lower) as bigint),  
-           cast(extract(epoch from upper) as bigint),
-           false, false, false,
-           true, false, false, false, false, false);
-END;
-$$ LANGUAGE plpgsql;
 
 create or replace function ri_tree_query_bottom_left(
                                                  lower bigint, 
@@ -389,22 +325,6 @@ BEGIN
  return query select * from ri_tree.ri_tree_query_intervals(
            lower, upper,
            false, false, false,
-           true, false, false, false, false, false);
-END;
-$$ LANGUAGE plpgsql;
-
-
-create or replace function ri_tree_query_all_left(
-                                               lower TIMESTAMP WITH TIME ZONE, 
-                                               upper TIMESTAMP WITH TIME ZONE
-                                                 )
-        returns setof ri_index_interval_type	
-AS $$
-BEGIN
- return query select * from ri_tree.ri_tree_query_intervals(
-           cast(extract(epoch from lower) as bigint),  
-           cast(extract(epoch from upper) as bigint),
-           true, false, false,
            true, false, false, false, false, false);
 END;
 $$ LANGUAGE plpgsql;
@@ -425,35 +345,21 @@ END;
 $$ LANGUAGE plpgsql;
 
 create or replace function ri_tree_query_all_right(
-                                               lower TIMESTAMP WITH TIME ZONE, 
-                                               upper TIMESTAMP WITH TIME ZONE
+                                               lower bigint, 
+                                               upper bigint
                                                  )
         returns setof ri_index_interval_type	
 AS $$
 BEGIN
  return query select * from ri_tree.ri_tree_query_intervals(
-           cast(extract(epoch from lower) as bigint),  
-           cast(extract(epoch from upper) as bigint),
-           false, true, false,
-           false, false, false, true, false, false);
+           lower, upper,
+           /* top_left*/ false, /*top_rigth*/ true, /*fork*/ false,
+           /* botttom-left*/ false, /*inner-left*/ false, 
+           /* inner-ritht*/ false, /*bottom-right*/ true, 
+           /* lower */ false, /* upper*/ false);
 END;
 $$ LANGUAGE plpgsql;
 
-
-create or replace function ri_tree_query_top_right_fork(
-                                               lower TIMESTAMP WITH TIME ZONE, 
-                                               upper TIMESTAMP WITH TIME ZONE
-                                                 )
-        returns setof ri_index_interval_type	
-AS $$
-BEGIN
- return query select * from ri_tree.ri_tree_query_intervals(
-           cast(extract(epoch from lower) as bigint),  
-           cast(extract(epoch from upper) as bigint),
-           false, true, true,
-           false, false, false, false, false, false);
-END;
-$$ LANGUAGE plpgsql;
 
 create or replace function ri_tree_query_top_right_fork(
                                                  lower bigint, 
@@ -464,137 +370,66 @@ AS $$
 BEGIN
  return query select * from ri_tree.ri_tree_query_intervals(
            lower, upper, 
-           false, true, true,
-           false, false, false, false, false, false);
-END;
-$$ LANGUAGE plpgsql;
-
--- for meets.
-create or replace function ri_tree_query_top_left_bottom_left_lower(
-                                               lower TIMESTAMP WITH TIME ZONE, 
-                                               upper TIMESTAMP WITH TIME ZONE
-                                                 )
-        returns setof ri_index_interval_type	
-AS $$
-BEGIN
- return query select * from ri_tree.ri_tree_query_intervals(
-           cast(extract(epoch from lower) as bigint),  
-           cast(extract(epoch from upper) as bigint),
-           /* top_left*/ true, /*top_rigth*/ false, /*fork*/ false,
-           /* botttom-left*/ true, /*inner-left*/ false, 
-           /* inner-ritht*/ false, /*bottom-right*/ false, 
-           /* lower */ true, /* upper*/ false);
-END;
-$$ LANGUAGE plpgsql;
-
--- for meets.
-create or replace function ri_tree_query_top_left_bottom_left_lower(
-                                               lower TIMESTAMP WITH TIME ZONE, 
-                                               upper TIMESTAMP WITH TIME ZONE
-                                                 )
-        returns setof ri_index_interval_type	
-AS $$
-BEGIN
- return query select * from ri_tree.ri_tree_query_intervals(
-           lower, upper, 
-           /* top_left*/ true, /*top_rigth*/ false, /*fork*/ false,
-           /* botttom-left*/ true, /*inner-left*/ false, 
-           /* inner-ritht*/ false, /*bottom-right*/ false, 
-           /* lower */ true, /* upper*/ false);
-END;
-$$ LANGUAGE plpgsql;
-
-
-
--- for overlaps.
-create or replace function ri_tree_query_top_left_bottom_left(
-                                               lower TIMESTAMP WITH TIME ZONE, 
-                                               upper TIMESTAMP WITH TIME ZONE
-                                                 )
-        returns setof ri_index_interval_type	
-AS $$
-BEGIN
- return query select * from ri_tree.ri_tree_query_intervals(
-           cast(extract(epoch from lower) as bigint),  
-           cast(extract(epoch from upper) as bigint),
-           /* top_left*/ true, /*top_rigth*/ false, /*fork*/ false,
-           /* botttom-left*/ true, /*inner-left*/ false, 
-           /* inner-ritht*/ false, /*bottom-right*/ false, 
-           /* lower */ false, /* upper*/ false);
-END;
-$$ LANGUAGE plpgsql;
-
--- for overlaps
-create or replace function ri_tree_query_top_left_bottom_left(
-                                                 lower bigint, 
-                                                 upper bigint
-                                                 )
-        returns setof ri_index_interval_type	
-AS $$
-BEGIN
- return query select * from ri_tree.ri_tree_query_intervals(
-           lower, upper, 
-           /* top_left*/ true, /*top_rigth*/ false, /*fork*/ false,
-           /* botttom-left*/ true, /*inner-left*/ false, 
-           /* inner-ritht*/ false, /*bottom-right*/ false, 
-           /* lower */ false, /* upper*/ false);
-END;
-$$ LANGUAGE plpgsql;
-
-
--- for overlaps.
-create or replace function ri_tree_query_inner_left_lower_fork(
-                                               lower TIMESTAMP WITH TIME ZONE, 
-                                               upper TIMESTAMP WITH TIME ZONE
-                                                 )
-        returns setof ri_index_interval_type	
-AS $$
-BEGIN
- return query select * from ri_tree.ri_tree_query_intervals(
-           cast(extract(epoch from lower) as bigint),  
-           cast(extract(epoch from upper) as bigint),
-           /* top_left*/ false, /*top_rigth*/ false, /*fork*/ true,
-           /* botttom-left*/ false, /*inner-left*/ true, 
-           /* inner-ritht*/ false, /*bottom-right*/ false, 
-           /* lower */ true, /* upper*/ false);
-END;
-$$ LANGUAGE plpgsql;
-
--- for overlaps
-create or replace function ri_tree_query_inner_left_lower_fork(
-                                                 lower bigint, 
-                                                 upper bigint
-                                                 )
-        returns setof ri_index_interval_type	
-AS $$
-BEGIN
- return query select * from ri_tree.ri_tree_query_intervals(
-           lower, upper, 
-           /* top_left*/ false, /*top_rigth*/ false, /*fork*/ true,
-           /* botttom-left*/ false, /*inner-left*/ true, 
-           /* inner-ritht*/ false, /*bottom-right*/ false, 
-           /* lower */ true, /* upper*/ false);
-END;
-$$ LANGUAGE plpgsql;
-
-
--- for finishedBy
-create or replace function ri_tree_query_top_left_fork(
-                                               lower TIMESTAMP WITH TIME ZONE, 
-                                               upper TIMESTAMP WITH TIME ZONE
-                                                 )
-        returns setof ri_index_interval_type	
-AS $$
-BEGIN
- return query select * from ri_tree.ri_tree_query_intervals(
-           cast(extract(epoch from lower) as bigint),  
-           cast(extract(epoch from upper) as bigint),
-           /* top_left*/ true, /*top_rigth*/ false, /*fork*/ true,
+           /* top_left*/ false, /*top_rigth*/ true, /*fork*/ true,
            /* botttom-left*/ false, /*inner-left*/ false, 
            /* inner-ritht*/ false, /*bottom-right*/ false, 
            /* lower */ false, /* upper*/ false);
 END;
 $$ LANGUAGE plpgsql;
+
+-- for meets.
+create or replace function ri_tree_query_top_left_bottom_left_lower(
+                                               lower bigint, 
+                                               upper bigint
+                                                 )
+        returns setof ri_index_interval_type	
+AS $$
+BEGIN
+ return query select * from ri_tree.ri_tree_query_intervals(
+           lower, upper,  
+           /* top_left*/ true, /*top_rigth*/ false, /*fork*/ false,
+           /* botttom-left*/ true, /*inner-left*/ false, 
+           /* inner-ritht*/ false, /*bottom-right*/ false, 
+           /* lower */ true, /* upper*/ false);
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- for overlaps.
+create or replace function ri_tree_query_top_left_bottom_left(
+                                                 lower bigint, 
+                                                 upper bigint
+                                                 )
+        returns setof ri_index_interval_type	
+AS $$
+BEGIN
+ return query select * from ri_tree.ri_tree_query_intervals(
+           lower, upper, 
+           /* top_left*/ true, /*top_rigth*/ false, /*fork*/ false,
+           /* botttom-left*/ true, /*inner-left*/ false, 
+           /* inner-ritht*/ false, /*bottom-right*/ false, 
+           /* lower */ false, /* upper*/ false);
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- for overlaps
+create or replace function ri_tree_query_inner_left_lower_fork(
+                                                 lower bigint, 
+                                                 upper bigint
+                                                 )
+        returns setof ri_index_interval_type	
+AS $$
+BEGIN
+ return query select * from ri_tree.ri_tree_query_intervals(
+           lower, upper, 
+           /* top_left*/ false, /*top_rigth*/ false, /*fork*/ true,
+           /* botttom-left*/ false, /*inner-left*/ true, 
+           /* inner-ritht*/ false, /*bottom-right*/ false, 
+           /* lower */ true, /* upper*/ false);
+END;
+$$ LANGUAGE plpgsql;
+
 
 -- for finishedBy
 create or replace function ri_tree_query_top_left_fork(
@@ -613,6 +448,58 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- for starts
+create or replace function ri_tree_query_inner_left_lower_fork(
+                                               lower bigint, 
+                                               upper bigint
+                                                 )
+        returns setof ri_index_interval_type	
+AS $$
+BEGIN
+ return query select * from ri_tree.ri_tree_query_intervals(
+           lower, upper, 
+           /* top_left*/ false, /*top_rigth*/ false, /*fork*/ true,
+           /* botttom-left*/ false, /*inner-left*/ true, 
+           /* inner-right*/ false, /*bottom-right*/ false, 
+           /* lower */ true, /* upper*/ false);
+END;
+$$ LANGUAGE plpgsql;
+
+-- for during_eq
+create or replace function ri_tree_query_lower_fork(
+                                               lower bigint, 
+                                               upper bigint
+                                                 )
+        returns setof ri_index_interval_type	
+AS $$
+BEGIN
+ return query select * from ri_tree.ri_tree_query_intervals(
+           lower, upper, 
+           /* top_left*/ false, /*top_rigth*/ false, /*fork*/ true,
+           /* botttom-left*/ false, /*inner-left*/  false, 
+           /* inner-right*/ false, /*bottom-right*/ false, 
+           /* lower */ true, /* upper*/ false);
+END;
+$$ LANGUAGE plpgsql;
+
+-- for during_eq
+create or replace function ri_tree_query_inner_right_upper_fork(
+                                               lower bigint, 
+                                               upper bigint
+                                                 )
+        returns setof ri_index_interval_type	
+AS $$
+BEGIN
+ return query select * from ri_tree.ri_tree_query_intervals(
+           lower, upper, 
+           /* top_left*/ false, /*top_rigth*/ false, /*fork*/ true,
+           /* botttom-left*/ false, /*inner-left*/  false, 
+           /* inner-right*/ true, /*bottom-right*/ false, 
+           /* lower */ false, /* upper*/ true);
+END;
+$$ LANGUAGE plpgsql;
+
+
 
 --------
 -------- select queries
@@ -624,7 +511,7 @@ create type ri_tree_interval_lw_type as
  upper bigint
 );
 
-create or replace function ri_tree_before(
+create or replace function ri_time_intervals_before(
                                    lower bigint,
                                    upper bigint
                                          )
@@ -636,17 +523,29 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-create or replace function ri_tree_before(
+create or replace function ri_time_intervals_before(
                                     lower TIMESTAMP WITH TIME ZONE, 
                                     upper TIMESTAMP WITH TIME ZONE
                                          )
         returns setof ri_tree_interval_lw_type
 AS $$
 BEGIN
-  return query select * from ri_tree.ri_tree_before(
+  return query select * from ri_tree.ri_time_intervals_before(
                      cast(extract(epoch from lower) as bigint),  
                      cast(extract(epoch from upper) as bigint)
                                            );
+END;
+$$ LANGUAGE plpgsql;
+
+create or replace function ri_time_intervals_after(
+                                   lower bigint,
+                                   upper bigint
+                                         )
+        returns setof ri_tree_interval_lw_type
+AS $$
+BEGIN
+ return query select i.lower, i.upper from ri_tree.ri_time_intervals i
+    where i.node > upper and  i.lower > upper;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -722,3 +621,174 @@ BEGIN
   );
 END;
 $$ LANGUAGE plpgsql;
+
+create or replace function ri_time_intervals_during(
+                                    lower TIMESTAMP WITH TIME ZONE, 
+                                    upper TIMESTAMP WITH TIME ZONE
+                                         )
+        returns setof ri_tree_interval_lw_type
+AS $$
+BEGIN
+  return query select * from ri_tree.ri_time_intervals_during(
+                     cast(extract(epoch from lower) as bigint),  
+                     cast(extract(epoch from upper) as bigint)
+                                           );
+END;
+$$ LANGUAGE plpgsql;
+
+
+create or replace function ri_time_intervals_contains_eq(
+                                           lower bigint,
+                                           upper bigint
+                                         )
+        returns setof ri_tree_interval_lw_type
+AS $$
+BEGIN
+ return query (
+   select i.lower, i.upper from ri_tree.ri_time_intervals i,
+                            ri_tree.ri_tree_query_top_right_fork(lower,upper) q
+                       where
+                            i.node = q.node 
+                           and 
+                            i.lower <= lower
+                           and
+                            i.upper => upper
+     union all
+   select i.lower, i.upper from ri_tree.ri_time_intervals i,
+                            ri_tree.ri_tree_query_top_left(lower,upper) q
+                       where
+                            i.node = q.node 
+                           and 
+                            upper <= i.upper
+  );
+END;
+$$ LANGUAGE plpgsql;
+
+create or replace function ri_time_intervals_contains_eq(
+                                    lower TIMESTAMP WITH TIME ZONE, 
+                                    upper TIMESTAMP WITH TIME ZONE
+                                         )
+        returns setof ri_tree_interval_lw_type
+AS $$
+BEGIN
+  return query select * from ri_tree.ri_time_intervals_contains_eq(
+                     cast(extract(epoch from lower) as bigint),  
+                     cast(extract(epoch from upper) as bigint)
+                                           );
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+create or replace function ri_time_intervals_during_eq(
+                                           lower bigint,
+                                           upper bigint
+                                         )
+        returns setof ri_tree_interval_lw_type
+AS $$
+declare
+  fork  bigint;
+BEGIN
+ fork:=ri_tree.ri_time_fork_node(lower,upper);
+ return query (
+   select i.lower, i.upper from ri_tree.ri_time_intervals i
+                       where
+                            i.node <= fork
+                           and 
+                            i.lower >= lower
+                           and
+                            i.upper <= upper
+     union all
+   select i.lower, i.upper from ri_tree.ri_time_intervals i
+                       where
+                            i.node > fork 
+                           and 
+                            i.node < upper
+                           and
+                            i.upper <= upper
+  );
+END;
+$$ LANGUAGE plpgsql;
+
+
+create or replace function ri_time_intervals_meets(
+                                           lower bigint,
+                                           upper bigint
+                                         )
+        returns setof ri_tree_interval_lw_type
+AS $$
+declare
+  fork  bigint;
+BEGIN
+ fork:=ri_tree.ri_time_fork_node(lower,upper);
+ return query (
+   select i.lower, i.upper 
+            from ri_tree.ri_time_intervals i,
+                 ri_tree.ri_tree_query_top_left_bottom_left_lower q
+                       where
+                            i.node = q.node
+                           and 
+                            i.upper = lower
+  );
+END;
+$$ LANGUAGE plpgsql;
+
+
+create or replace function ri_time_intervals_intersect(
+                                           lower bigint,
+                                           upper bigint
+                                         )
+        returns setof ri_tree_interval_lw_type
+AS $$
+declare
+  fork  bigint;
+BEGIN
+ return query (
+   select i.lower, i.upper 
+            from ri_tree.ri_time_intervals i,
+                 ri_tree.ri_tree_query_all_left q
+             where
+                   i.node = q.node
+                  and
+                   i.upper >= lower
+    union all
+   select i.lower, i.upper 
+            from ri_tree.ri_time_intervals i,
+                 ri_tree.ri_tree_query_all_right q
+             where
+                   i.node = q.node
+                 and
+                   i.lower <= upper
+    union all
+   select i.lower, i.upper 
+            from ri_tree.ri_time_intervals i
+            where i.node between lower and upper
+ );
+END;
+$$ LANGUAGE plpgsql;
+
+
+create or replace function ri_time_intervals_equals(
+                                           lower bigint,
+                                           upper bigint
+                                         )
+        returns setof ri_tree_interval_lw_type
+AS $$
+declare
+  fork  bigint;
+BEGIN
+ fork:=ri_tree.ri_time_fork_node(lower,upper);
+ return query (
+   select i.lower, i.upper 
+            from ri_tree.ri_time_intervals i
+             where
+               i.node = fork
+             and 
+               i.lower = lower
+             and 
+               i.upper = upper
+  );
+END;
+$$ LANGUAGE plpgsql;
+
+

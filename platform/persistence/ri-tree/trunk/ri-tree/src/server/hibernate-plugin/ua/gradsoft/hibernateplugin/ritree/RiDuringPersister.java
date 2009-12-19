@@ -7,17 +7,18 @@ import org.hibernate.engine.SessionFactoryImplementor;
 import org.hibernate.mapping.PersistentClass;
 
 /**
- *Persister for RiBefore
+ *Persister for RiDuring
  * @author rssh
  */
-public class RiBeforePersister extends RiTreeFunPersister
+public class RiDuringPersister extends RiTreeFunPersister
 {
 
-   public RiBeforePersister(PersistentClass persistentClass,
+    public RiDuringPersister(PersistentClass persistentClass,
                             EntityRegionAccessStrategy cacheAccessStrategy,
                             SessionFactoryImplementor factory,
                             Mapping mapping)
-   { super("ri_tree.ri_time_intervals_before",persistentClass,cacheAccessStrategy,factory);
+   { super("ri_tree.ri_time_intervals_during",persistentClass,cacheAccessStrategy,factory);
    }
+
 
 }
