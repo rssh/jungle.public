@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="1.0">
+<persistence-unit name="testPU" transaction-type="RESOURCE_LOCAL">
+ <provider>org.hibernate.ejb.HibernatePersistence</provider>
+   <!--
+      RiTree: must be synchronized with etc/persistence.xml.part
+   -->
+   <class>ua.gradsoft.jungle.persistence.ritree.RiInterval</class>
+   <class>ua.gradsoft.hibernateplugin.ritree.RiTreeInterval</class>
+   <class>ua.gradsoft.hibernateplugin.ritree.RiBefore</class>
+   <class>ua.gradsoft.hibernateplugin.ritree.RiAfter</class>
+   <class>ua.gradsoft.hibernateplugin.ritree.RiContains</class>
+   <class>ua.gradsoft.hibernateplugin.ritree.RiContainsEq</class>
+   <class>ua.gradsoft.hibernateplugin.ritree.RiDuring</class>
+   <class>ua.gradsoft.hibernateplugin.ritree.RiDuringEq</class>
+   <class>ua.gradsoft.hibernateplugin.ritree.RiIntersect</class>
+   <!-- end ritree part -->
+   <!--
+      TestData part: entitiies for tests
+   -->
+   <class>ua.gradsoft.hibernateplugin.ritree.testdata.MySeries</class>
+   <!-- end testdata part -->
+   <properties>
+     <property name="hibernate.dialect"
+               value="org.hibernate.dialect.PostgreSQLDialect" />
+     <property name="hibernate.hbm2ddl.auto" value="validate"/>
+     <property name="hibernate.show_sql" value="true" />
+   </properties>
+</persistence-unit>
+</persistence>
+

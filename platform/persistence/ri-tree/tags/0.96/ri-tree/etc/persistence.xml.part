@@ -1,0 +1,10 @@
+<class>ua.gradsoft.jungle.persistence.ritree.RiInterval</class>
+<class>ua.gradsoft.hibernateplugin.ritree.RiTreeInterval</class>
+<class>ua.gradsoft.hibernateplugin.ritree.RiBefore</class>
+<class>ua.gradsoft.hibernateplugin.ritree.RiContains</class>
+<class>ua.gradsoft.hibernateplugin.ritree.RiContainsEq</class>
+<class>ua.gradsoft.hibernateplugin.ritree.RiDuring</class>
+<class>ua.gradsoft.hibernateplugin.ritree.RiDuringEq</class>
+<class>ua.gradsoft.hibernateplugin.ritree.RiIntersect</class>
+<class>ua.gradsoft.hibernateplugin.ritree.RiAfter</class>
+
