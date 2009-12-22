@@ -1,0 +1,62 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" module="jungle.persistence.ejbqlao"/>
+       
+    <configurations>
+      <conf name="std" description="standard build" />
+      <conf name="gwt-export" description="export CRUDFacade to gwt clients" />
+      <conf name="php-export" description="export CRUDFacade to php clients" />
+      <conf name="test" description="test version with junit test" 
+                        extends="std" />
+      <conf name="doc" description="with tool for building documentations" 
+                        extends="std" />
+      <conf name="build" description="with libraries, needed for compiling " 
+                        extends="std" />
+    </configurations>
+    <publications>
+      <artifact name="jungle.persistence.ejbqlao" type="jar" />
+      <artifact name="jungle.persistence.ejbqlao-src" 
+             type="tar.gz" ext="tar.gz" conf="build" />
+      <artifact name="jungle.persistence.ejbqlao-doc" 
+             type="tar.gz" ext="tar.gz" conf="doc" />
+      <artifact name="jungle.persistence.ejbqlao-gwt-export" type="jar"
+             conf="gwt-export" />
+      <artifact name="jungle.persistence.ejbqlao-php-export" type="php"
+             conf="php-export" />
+    </publications>
+    <dependencies>
+        <dependency org="org.apache" name="commons-logging" rev="[1.1.1,)" 
+         conf="*->default" transitive="false" />
+        <dependency org="org.junit" name="junit" rev="4.4" 
+         conf="test->default"/>
+        <dependency org="ua.gradsoft" name="odt2html" rev="1.1" 
+         conf="doc->default" >
+         <artifact name="odt2html" type="jar"
+           url="http://odt2html.gradsoft.ua/files/odt2html-1.1.jar"
+         />
+        </dependency>
+        <dependency org="org.apache.openejb" name="javaee-api" rev="[5.0-1,)" 
+                    conf="build->default" >
+          <artifact name="javaee-api" type="jar" />
+        </dependency>
+        <dependency org="ua.gradsoft" name="jungle.caching" 
+                    rev="[1.0.2,)"
+                    conf="*->default" >
+         <artifact name="jungle.caching" type="jar" />
+        </dependency>
+        <dependency org="ua.gradsoft" name="jungle.persistence.jpaex"
+                    conf="*->api" rev="[2.0.0,3.0.0)" >
+         <artifact name="jungle.persistence.jpaex-api" type="jar" />
+        </dependency>
+        <dependency org="ua.gradsoft" name="jungle.persistence.cluster_keys"
+                    conf="std->api" rev="[1.0.7,)" >
+         <artifact name="jungle.persistence.cluster_keys" type="jar" />
+        </dependency>
+        <dependency org="ua.gradsoft" name="jungle.tools.phpjao"
+                  conf="php-export->default" rev="[1.0-a2,)" >
+           <artifact name="jungle.tools.phpjao" type="jar" />
+        </dependency>
+    </dependencies>
+</ivy-module>
+
+
+
