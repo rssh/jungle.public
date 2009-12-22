@@ -10,6 +10,8 @@
   <conf name="test-hibernate" 
         description="testing hibernate extension" 
         extends="default" />
+  <conf name="src"  description="with source distributive" />
+  <conf name="docs"  description="with docs" />
  </configurations>
  <publications>
   <artifact name="jungle.persistence.ritree" type="jar" conf="default" />
@@ -25,6 +27,10 @@
                                              type="sql" conf="pgsql" />
   <artifact name="drop_ritree_pgsql" 
                                              type="sql" conf="pgsql" />
+  <artifact name="jungle.persistence.ritree-src" 
+                                             type="tar.gz" conf="src" />
+  <artifact name="jungle.persistence.ritree-docs" 
+                                             type="tar.gz" conf="docs" />
  </publications>
  <dependencies>
     <dependency org="org.apache.openejb" 

@@ -223,7 +223,7 @@
      />
    </target>
 
-   <target name="publish" depends="resolve-ivy,build">
+   <target name="publish" depends="distributives">
      <ivy:publish resolver="datacenter.gradsoft.ua" 
                   pubrevision="${version}" 
                   overwrite="true" 
@@ -233,7 +233,7 @@
      </ivy:publish>
     </target>
 
-   <target name="publish.local" depends="resolve-ivy,build">
+   <target name="publish.local" depends="distributives">
      <ivy:publish resolver="local.repo" pubrevision="${version}" 
                   overwrite="true" 
                   replacedynamicrev="false"
@@ -242,7 +242,64 @@
      </ivy:publish>
     </target>
 
+    <target name="javadoc" depends="retrieve-libs">
+      <javadoc destdir="docs/api" >
+      <packageset dir="src/common" />
+       <classpath>
+         <fileset dir="lib" includes="**/*.jar" />
+       </classpath>
+      </javadoc>
+    </target>
 
-    <target name="docs" depends="" />
+    <target name="docs" depends="javadoc" />
+
+ <target name="doc-distributive" depends="docs">
+   <mkdir dir="dist/jungle.persistence.ritree-docs-${version}" />
+   <copy todir="dist/jungle.persistence.ritree-docs-${version}" >
+    <fileset dir=".">
+     <include name="docs/**/*" />
+    </fileset>
+   </copy>
+   <tar basedir="dist" 
+        destfile="dist/jungle.persistence.ritree-docs-${version}.tar"
+        defaultexcludes="yes"
+        includes="jungle.persistence.ritree-docs-${version}/**/*" />
+   <gzip src="dist/jungle.persistence.ritree-docs-${version}.tar"
+         destfile="dist/jungle.persistence.ritree-docs-${version}.tar.gz"
+   />
+   <delete file="dist/jungle.persistence.ritree-docs-${version}.tar" />
+   <delete dir="dist/jungle.persistence.ritree-docs-${version}" />
+ </target>
+
+ <target name="source-distributive" depends="build,docs">
+   <mkdir dir="dist/jungle.persistence.ritree-src-${version}" />
+   <copy todir="dist/jungle.persistence.ritree-src-${version}" >
+     <fileset dir=".">
+      <include name="**/*.xml" />
+      <include name="**/*.java" />
+      <include name="**/*.properties" />
+      <include name="**/*.part" />
+      <include name="**/*.sql" />
+      <include name="src/*" />
+      <exclude name="lib/*" />
+      <include name="docs/**/*" />
+      <exclude name="dist/*" />
+      <exclude name="dist/**/*" />
+      <exclude name="nbproject/private/*" />
+      <exclude name="**/*.class" />
+     </fileset>
+   </copy>
+   <tar basedir="dist" 
+        destfile="dist/jungle.persistence.ritree-src-${version}.tar"
+        defaultexcludes="yes"
+        includes="jungle.persistence.ritree-src-${version}/**/*" />
+   <gzip src="dist/jungle.persistence.ritree-src-${version}.tar"
+         destfile="dist/jungle.persistence.ritree-src-${version}.tar.gz"
+   />
+   <delete file="dist/jungle.persistence.ritree-src-${version}.tar" />
+   <delete dir="dist/jungle.persistence.ritree-src-${version}" />
+ </target>
+
+ <target name="distributives" depends="source-distributive,doc-distributive" />
     
 </project>
