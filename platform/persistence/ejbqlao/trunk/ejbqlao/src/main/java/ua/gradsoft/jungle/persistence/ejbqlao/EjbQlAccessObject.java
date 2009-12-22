@@ -28,7 +28,6 @@ import ua.gradsoft.jungle.persistence.cluster_keys.ClusterKeys;
 import ua.gradsoft.jungle.persistence.cluster_keys.SequenceKey;
 import ua.gradsoft.jungle.persistence.jpaex.JdbcConnectionWrapper;
 import ua.gradsoft.jungle.persistence.jpaex.JpaEx;
-import ua.gradsoft.jungle.persistence.ejbqlao.NamedToPositionalParamsSqlTransformer;
 
 /**
  * Object, which erncapsulate remote entity manager.
@@ -409,9 +408,24 @@ public abstract class EjbQlAccessObject implements CRUDFacade
     } 
   }
   
-  private void applyNamedParameter(Query query, Map.Entry<String,?> param)
+  private void applyNamedParameter( Query query, Map.Entry<String,?> param)
   {
          String name = param.getKey();
+         if (getJpaEx().isFiltersSupported()) {
+             int dotIndex = name.indexOf('.');
+             if (dotIndex!=-1) {
+                 String filterName = name.substring(0, dotIndex);
+                 String paramName = name.substring(dotIndex+1);
+                 Object value = param.getValue();
+                 if (value instanceof List) {
+                     List<Object> list = (List<Object>)value;
+                     value = ObjectParser.parseListAsQueryParameter(list);
+                 }
+                 getJpaEx().setFilterParameter(getEntityManager(),
+                                               filterName, paramName, value);
+                 return;
+             }
+         }
          Object value = param.getValue();
          if (value instanceof Date) {
            query.setParameter(name, (Date)value, TemporalType.TIMESTAMP);
@@ -459,7 +473,7 @@ public abstract class EjbQlAccessObject implements CRUDFacade
     if (evaluator==null) {
         throw new IllegalArgumentException("Invalid option:"+key);
     }
-    evaluator.apply(query, option.getValue(), options);
+    evaluator.apply(this, query, option.getValue(), options);
   }
 
   private void applyOptions(Statement st, Map<String,?> options)
@@ -476,7 +490,7 @@ public abstract class EjbQlAccessObject implements CRUDFacade
       if (evaluator==null) {
           throw new IllegalArgumentException("Invalid option:"+option.getKey());
       }
-      evaluator.apply(st, option.getValue(), options);
+      evaluator.apply(this, st, option.getValue(), options);
   }
 
 
@@ -565,32 +579,52 @@ public abstract class EjbQlAccessObject implements CRUDFacade
     return retval;
   }
 
+  private void enableFilter(String filterName)
+  {
+    if (getJpaEx().isFiltersSupported()) {
+        getJpaEx().setFilterEnabled(getEntityManager(), filterName, true);
+    }else{
+        LOG.warn("JPA subsystem does not support filters, ignorign enableFilter");
+    }
+  }
+
+  private void disableFilter(String filterName)
+  {
+    if (getJpaEx().isFiltersSupported()) {
+        getJpaEx().setFilterEnabled(getEntityManager(), filterName, false);
+    }else{
+        LOG.warn("JPA subsystem does not support filters, ignorign disableFilter");
+    }
+  }
+
 
   public static interface OptionParser
   {
-      void apply(Query q, Object o, Map<String,?> opts);
+      void apply(EjbQlAccessObject ao, Query q, Object o, Map<String,?> opts);
 
-      void apply(Statement st, Object o, Map<String,?> opts);
+      void apply(EjbQlAccessObject ao, Statement st, Object o, Map<String,?> opts);
 
       public static class NothingOptionParser implements OptionParser
       {
-        public void apply(Query q, Object o, Map<String,?> opts) {}
-        public void apply(Statement st, Object o, Map<String,?> opts) {}
+        public void apply(EjbQlAccessObject ao, Query q, Object o, Map<String,?> opts) {}
+        public void apply(EjbQlAccessObject ao, Statement st, Object o, Map<String,?> opts) {}
       }
       
       public static final NothingOptionParser NOTHING = new NothingOptionParser();
   }
-  
+
+
+
 
   private static HashMap<String,OptionParser> initQueryOptions()
   {
       HashMap<String,OptionParser> a = new HashMap<String,OptionParser>();
       a.put("maxResults", new OptionParser()
       {
-         public void apply(Query q,Object o,Map<String,?> opts)  {
+         public void apply(EjbQlAccessObject ao, Query q,Object o,Map<String,?> opts)  {
              q.setMaxResults(ObjectParser.parseInt(o));             
          }
-         public void apply(Statement st, Object o, Map<String,?> opts){
+         public void apply(EjbQlAccessObject ao, Statement st, Object o, Map<String,?> opts){
              try {
                st.setMaxRows(ObjectParser.parseInt(o));
              }catch(SQLException ex){
@@ -601,10 +635,10 @@ public abstract class EjbQlAccessObject implements CRUDFacade
               );
       a.put("firstResult", new OptionParser()
       {
-         public void apply(Query q,Object o, Map<String,?> opts)  {
+         public void apply(EjbQlAccessObject ao, Query q,Object o, Map<String,?> opts)  {
              q.setFirstResult(ObjectParser.parseInt(o));                    
          }
-         public void apply(Statement st, Object o, Map<String,?> opts)
+         public void apply(EjbQlAccessObject ao, Statement st, Object o, Map<String,?> opts)
          {
             int io = ObjectParser.parseInt(o);
             if (io!=0) {
@@ -618,6 +652,78 @@ public abstract class EjbQlAccessObject implements CRUDFacade
       a.put("resultClass", OptionParser.NOTHING);
       a.put("resultSetMapping", OptionParser.NOTHING);
       a.put("nocache", OptionParser.NOTHING);
+      a.put("enable-filter", new OptionParser(){
+
+            public void apply(EjbQlAccessObject ao, Query q, Object o, Map<String, ?> opts) {
+                ao.enableFilter(o.toString());
+            }
+
+            public void apply(EjbQlAccessObject ao, Statement st, Object o, Map<String, ?> opts) {
+                ao.enableFilter(ao.toString());
+            }
+
+      });
+
+      a.put("enable-filters", new OptionParser(){
+
+            public void apply(EjbQlAccessObject ao, Query q, Object o, Map<String, ?> opts) {
+                enableFilters(ao ,o);
+            }
+
+            public void apply(EjbQlAccessObject ao, Statement st, Object o, Map<String, ?> opts) {
+                enableFilters(ao ,o);
+            }
+
+            private void enableFilters(EjbQlAccessObject ao, Object o){
+                if (ao.getJpaEx().isFiltersSupported()) {
+                    if (o instanceof List) {
+                        List l = (List)o;
+                        for(Object oo: l) {
+                           ao.enableFilter(oo.toString());
+                        }
+                    }else{
+                        LOG.warn("attempt to set filter with non-string type:"+o.toString());
+                    }
+                }
+            }
+
+      });
+
+
+      a.put("disable-filter", new OptionParser(){
+
+            public void apply(EjbQlAccessObject ao, Query q, Object o, Map<String, ?> opts) {
+                ao.disableFilter(o.toString());
+            }
+
+            public void apply(EjbQlAccessObject ao, Statement st, Object o, Map<String, ?> opts) {
+                ao.disableFilter(o.toString());
+            }
+
+
+      });
+
+      a.put("disable-filters", new OptionParser(){
+
+            public void apply(EjbQlAccessObject ao, Query q, Object o, Map<String, ?> opts) {
+                disableFilters(ao, (List<String>)o);
+            }
+
+            public void apply(EjbQlAccessObject ao, Statement st, Object o, Map<String, ?> opts) {
+                disableFilters(ao, (List<String>)o);
+            }
+
+            private void disableFilters(EjbQlAccessObject ao, List<String> l)
+            {
+               for(String s: l) {
+                   ao.disableFilter(s);
+               }
+            }
+
+
+      });
+
+
       return a;  
   }
 

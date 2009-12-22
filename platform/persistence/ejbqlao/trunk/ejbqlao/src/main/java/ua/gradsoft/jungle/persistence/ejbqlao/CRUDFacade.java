@@ -47,9 +47,12 @@ public interface CRUDFacade
     *  <li> firstResult </li> index of firstResult in query
     *  <li> native </li> use native sql
     *  <li> jdbcnative </li> use jdbc-native sql
-    *  <li> jdbcnative </li> use native sql via underlaying jdbc call.
     *  <li> nocache </li>  does not cache query.
     *  <li> resultSetMapping </li> use resultSetMapping
+    *  <li> enable-filter </li>  enable filter with name option value
+    *  <li> enable-filters </li> enable all filters with names from option value (which must be list)
+    *  <li> disable-filter </li> disable filter with name as option value.
+    *  <li> disable-filters </li> disable all filters with names from option value (which must be list)
     * </ul>
     *        
     * @return result of query evaluation.
@@ -64,7 +67,9 @@ public interface CRUDFacade
     * result is stored in queryCache
     * @param tClass class of return value.
     * @param ejbql  query to select,
-    * @param namedParameters  named parameters to query.
+    * @param namedParameters  named parameters to query.  If named parameters have form 'x.y' (i. e. with dot) and
+    * underlaying JPA implementation supports filters functionality, than this parameter is interpreted
+    * as parameter of filter 'x' (with name 'y') and appropriative filter is enabled in current session.
     * @param options querty options
     *
     * @return result of query evaluation.

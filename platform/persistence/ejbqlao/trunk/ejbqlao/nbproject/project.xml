@@ -63,7 +63,7 @@
         <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/1">
             <compilation-unit>
                 <package-root>src/main/java</package-root>
-                <classpath mode="compile">lib/commons-logging-1.1.1.jar:lib/javaee-api-5.jar:lib/jungle.persistence.cluster_keys-1.0.2.jar:lib/jungle.persistence.jpaex-api-1.1.0.jar:lib/jungle.persistence.jdbcex-api-1.0.jar:lib/jungle.caching-1.0.2.jar</classpath>
+                <classpath mode="compile">lib/commons-logging-1.1.1.jar:lib/jungle.caching-1.0.2.jar:lib/javaee-api-5.0-2.jar:lib/jungle.persistence.cluster_keys-1.0.7.jar:lib/jungle.persistence.jdbcex-api-1.0.3.jar:lib/jungle.persistence.jpaex-api-2.1.0.jar</classpath>
                 <source-level>1.5</source-level>
             </compilation-unit>
         </java-data>
