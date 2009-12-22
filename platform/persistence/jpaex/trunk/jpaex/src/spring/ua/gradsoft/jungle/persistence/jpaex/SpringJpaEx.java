@@ -31,9 +31,41 @@ public class SpringJpaEx extends JpaEx
      }
    }
 
+
+    /**
+     * @return false
+     */
+    @Override
+    public boolean isFiltersSupported() {
+        return false;
+    }
+
+    /**
+     * throws UnsupportedOperationException
+     */
+    @Override
+    public boolean isFilterEnabled(EntityManager entityManager, String filterName) {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+    /**
+     * throws UnsupportedOperationException
+     */
+    @Override
+    public void setFilterEnabled(EntityManager entityManager, String arg0, boolean arg1) {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+    @Override
+    public void setFilterParameter(EntityManager entityManager, String arg0, String arg1, Object arg2) {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+
+
    /**
     * JdbcEx instance must be configured in IOP as singleton
-    * @return
+    * @return jdbcex
     */
    public JdbcEx  getJdbcEx()
    {

@@ -54,12 +54,12 @@
                     transitive="false" conf="spring->default" >
           <artifact name="spring" type="jar" />
         </dependency>
-        <dependency org="org.hibernate" name="hibernate-core" rev="3.3.1.GA"
+        <dependency org="org.hibernate" name="hibernate-core" rev="3.3.2.GA"
                     transitive="false" conf="hibernate->default" >
           <artifact name="hibernate-core" type="jar" />
         </dependency>
         <dependency org="org.hibernate" name="hibernate-entitymanager" 
-                    rev="3.3.2.GA"  transitive="false" 
+                    rev="3.4.0.GA"  transitive="false" 
                     conf="hibernate->default" >
           <artifact name="hibernate-entitymanager" type="jar" />
         </dependency>

@@ -44,7 +44,9 @@ public class JtaWithKnownDataSourceJpaEx extends JpaEx
 
     public JdbcEx getJdbcEx()
     { return jdbcEx_; }
-    
+
+
+
     /**
      * JdbcEx is set during creation.
      * @param jdbcEx
@@ -53,6 +55,42 @@ public class JtaWithKnownDataSourceJpaEx extends JpaEx
     {
       jdbcEx_=jdbcEx;  
     }
+
+    /**
+     * @return false
+     */
+   @Override
+    public boolean isFiltersSupported() {
+        return false;
+    }
+
+    
+    /**
+     * throw UnsupportedOperationException
+     */
+    @Override
+    public boolean isFilterEnabled(EntityManager entityManager, String filterName) {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+    /**
+     * throw UnsupportedOperationException
+     */
+    @Override
+    public void setFilterEnabled(EntityManager entityManager, String filterName, boolean enabled) {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+   /**
+     * throw UnsupportedOperationException
+     */
+    @Override
+    public void setFilterParameter(EntityManager entityManager, String filterName, String paramName, Object param) {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+
+
 
     private DataSource ds_;
     private JdbcEx     jdbcEx_;

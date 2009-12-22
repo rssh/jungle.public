@@ -59,6 +59,7 @@ public abstract class JpaEx
     return new DefaultJdbcWorkExecutor(getJdbcConnectionWrapper(em,false));
   }
 
+
   /**
    * get Jdbc dialect, if one is available, otherwise return null.
    */
@@ -148,6 +149,42 @@ public abstract class JpaEx
     {
       return (T)JpaEntityCloner.unjpaObject(Object.class, bean, null);
     }
+
+
+  /**
+   * is functionality, equals to hibernate filters supported ?
+   * @return true if fuctionality is supported
+   */
+  public abstract boolean isFiltersSupported();
+
+
+  /**
+   * Check - if filter exists and enabled.
+   * @param entityManage - entityManager
+   * @param filterName - name of filter
+   * @return  if filter exists and enabled ?
+   */
+  public abstract boolean isFilterEnabled(EntityManager entityManager, String filterName);
+
+  /**
+   * enabled or disable filter.
+   * @param entityManage - entityManager
+   * @param filterName - name of filter
+   * @param enabled - enable or disable.
+   * @return  if filter exists and enabled ?
+   */
+  public abstract void setFilterEnabled(EntityManager entityManager, String filterName, boolean enabled);
+
+  /**
+   * set filter parameter to name 'name'. If filter was not enabled - enable one.
+   * @param entityManage - entityManager
+   * @param filterName - name of filter.
+   * @param paramName - name of parameter.
+   * @param param - value of parameter.
+   */
+  public abstract void setFilterParameter(EntityManager entityManager, String filterName, String paramName, Object param);
+
+
 
 
   /**
