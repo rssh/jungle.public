@@ -1,0 +1,70 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" module="jungle.persistence.jpaex"/>
+       
+    <configurations>
+      <conf name="api" description="api" />
+      <conf name="docs" description="javadoc archive" />
+      <conf name="src" description="source archive" />
+      <conf name="spring" description="spring-based implementation" 
+                        extends="api" />
+      <conf name="hibernate" description="hibernate implementation" 
+                        extends="api" />
+      <conf name="jtads" description="jta with known datasource" 
+                        extends="api" />
+      <conf name="build" description="with build dependnecy" 
+                        extends="api" />
+      <conf name="test" description="with test dependnecy" 
+                        extends="build" />
+    </configurations>
+    <publications>
+      <artifact name="jungle.persistence.jpaex-api" type="jar" conf="build" />
+      <artifact name="jungle.persistence.jpaex-src" type="tar.gz" 
+                ext="tar.gz" conf="src" />
+      <artifact name="jungle.persistence.jpaex-docs" type="tar.gz" 
+                ext="tar.gz" conf="docs" />
+      <artifact name="jungle.persistence.jpaex-spring" type="jar" 
+                conf="spring" />
+      <artifact name="jungle.persistence.jpaex-hibernate" type="jar" 
+                conf="hibernate" />
+      <artifact name="jungle.persistence.jpaex-jtads" type="jar" 
+                conf="jtads" />
+    </publications>
+    <dependencies>
+        <dependency org="org.apache.openejb" 
+               name="javaee-api"
+               rev="[5.0-1,)" 
+               conf="build->default"
+               transitive="false"
+               >
+          <artifact name="javaee-api" type="jar" />
+        </dependency>
+        <dependency org="org.apache" name="commons-logging" rev="[1.1.1,)" 
+                    transitive="false" conf="hibernate,jtads->default" >
+          <artifact name="commons-logging" type="jar" />
+        </dependency>
+        <dependency org="ua.gradsoft" name="jungle.persistence.jdbcex" 
+                    rev="[1.0.1,)" conf="api->api" > 
+          <artifact name="jungle.persistence.jdbcex-api" type="jar" />
+        </dependency>
+        <dependency org="org.junit" name="junit" rev="[4.4,)" 
+                    conf="test->default" >
+          <artifact name="junit" type="jar" />
+        </dependency>
+        <dependency org="org.springframework" name="spring" rev="2.5.6"
+                    transitive="false" conf="spring->default" >
+          <artifact name="spring" type="jar" />
+        </dependency>
+        <dependency org="org.hibernate" name="hibernate-core" rev="3.3.2.GA"
+                    transitive="false" conf="hibernate->default" >
+          <artifact name="hibernate-core" type="jar" />
+        </dependency>
+        <dependency org="org.hibernate" name="hibernate-entitymanager" 
+                    rev="3.4.0.GA"  transitive="false" 
+                    conf="hibernate->default" >
+          <artifact name="hibernate-entitymanager" type="jar" />
+        </dependency>
+    </dependencies>
+</ivy-module>
+
+
+

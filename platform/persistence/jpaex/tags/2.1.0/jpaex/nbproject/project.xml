@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://www.netbeans.org/ns/project/1">
+    <type>org.netbeans.modules.ant.freeform</type>
+    <configuration>
+        <general-data xmlns="http://www.netbeans.org/ns/freeform-project/1">
+            <name>jungle.persistence.jpaex</name>
+        </general-data>
+        <general-data xmlns="http://www.netbeans.org/ns/freeform-project/2">
+            <!-- Do not use Project Properties customizer when editing this file manually. -->
+            <name>jungle.persistence.jpaex</name>
+            <properties/>
+            <folders>
+                <source-folder>
+                    <label>jungle.persistence.jpaex</label>
+                    <location>.</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>src/api</label>
+                    <type>java</type>
+                    <location>src/api</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>src/hibernate</label>
+                    <type>java</type>
+                    <location>src/hibernate</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>src/spring</label>
+                    <type>java</type>
+                    <location>src/spring</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>src/jtads</label>
+                    <type>java</type>
+                    <location>src/jtads</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>src/test/generic</label>
+                    <type>java</type>
+                    <location>src/test/generic</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+            </folders>
+            <ide-actions>
+                <action name="build">
+                    <target>build</target>
+                </action>
+                <action name="clean">
+                    <target>clean</target>
+                </action>
+                <action name="javadoc">
+                    <target>docs</target>
+                </action>
+                <action name="test">
+                    <target>test</target>
+                </action>
+                <action name="rebuild">
+                    <target>clean</target>
+                    <target>build</target>
+                </action>
+            </ide-actions>
+            <export>
+                <type>folder</type>
+                <location>src/api</location>
+                <build-target>build</build-target>
+            </export>
+            <export>
+                <type>folder</type>
+                <location>src/hibernate</location>
+                <build-target>build</build-target>
+            </export>
+            <export>
+                <type>folder</type>
+                <location>src/spring</location>
+                <build-target>build</build-target>
+            </export>
+            <export>
+                <type>folder</type>
+                <location>src/jtads</location>
+                <build-target>build</build-target>
+            </export>
+            <view>
+                <items>
+                    <source-folder style="packages">
+                        <label>src/api</label>
+                        <location>src/api</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>src/hibernate</label>
+                        <location>src/hibernate</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>src/spring</label>
+                        <location>src/spring</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>src/jtads</label>
+                        <location>src/jtads</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>src/test/generic</label>
+                        <location>src/test/generic</location>
+                    </source-folder>
+                    <source-file>
+                        <location>build.xml</location>
+                    </source-file>
+                </items>
+                <context-menu>
+                    <ide-action name="build"/>
+                    <ide-action name="rebuild"/>
+                    <ide-action name="clean"/>
+                    <ide-action name="javadoc"/>
+                    <ide-action name="test"/>
+                </context-menu>
+            </view>
+            <subprojects/>
+        </general-data>
+        <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/2">
+            <compilation-unit>
+                <package-root>src/api</package-root>
+                <classpath mode="compile">lib/javaee-api-5.0-2.jar:lib/jungle.persistence.jdbcex-api-1.0.3.jar</classpath>
+                <built-to>src/api</built-to>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>src/hibernate</package-root>
+                <classpath mode="compile">lib/hibernate-entitymanager-3.3.2.GA.jar:lib/hibernate-core-3.3.1.GA.jar:src/api:lib/commons-logging-1.1.1.jar:lib/javaee-api-5.0-2.jar:lib/jungle.persistence.jdbcex-api-1.0.3.jar</classpath>
+                <built-to>src/hibernate</built-to>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>src/spring</package-root>
+                <classpath mode="compile">lib/spring-2.5.6.jar:lib/javaee-api-5.0-2.jar:target/jungle.persistence.jpaex-api-2.0.0.jar:lib/jungle.persistence.jdbcex-api-1.0.3.jar</classpath>
+                <built-to>src/spring</built-to>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>src/jtads</package-root>
+                <classpath mode="compile">lib/commons-logging-1.1.1.jar:src/api:lib/jungle.persistence.jdbcex-api-1.0.3.jar:lib/javaee-api-5.0-2.jar</classpath>
+                <built-to>src/jtads</built-to>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>src/test/generic</package-root>
+                <unit-tests/>
+                <classpath mode="compile">src/api:lib/junit-4.4.jar:lib/javaee-api-5.0-2.jar:target/jungle.persistence.jpaex-api-1.2.4.jar</classpath>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+        </java-data>
+        <preferences xmlns="http://www.netbeans.org/ns/auxiliary-configuration-preferences/1">
+            <module name="org-netbeans-modules-editor-indent">
+                <node name="CodeStyle">
+                    <property name="usedProfile" value="default"/>
+                    <node name="project">
+                        <property name="tab-size" value="8"/>
+                        <property name="text-limit-width" value="80"/>
+                    </node>
+                </node>
+                <node name="text">
+                    <node name="x-java">
+                        <node name="CodeStyle">
+                            <node name="project"/>
+                        </node>
+                    </node>
+                </node>
+            </module>
+        </preferences>
+    </configuration>
+</project>
