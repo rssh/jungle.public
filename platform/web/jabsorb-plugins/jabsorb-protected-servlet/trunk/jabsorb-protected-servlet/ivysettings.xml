@@ -16,7 +16,20 @@
          classname="org.apache.ivy.plugins.resolver.build.BuildResolver" />
 
 <namespaces>
-   <namespace name="maven2" />
+   <namespace name="maven2" >
+       <rule>  <!-- imported apache maven1 projects -->
+        <fromsystem>
+         <src org="org.apache" module="commons-.+"/>
+         <src org="org.apache" module="log4j"/>
+         <dest org="$m0" module="$m0"/>
+        </fromsystem>
+        <tosystem>
+         <src org="commons-.+" module="commons-.+" />
+         <src org="log4j" module="log4j" />
+         <dest org="org.apache" module="$m0"/>
+        </tosystem>
+       </rule>
+   </namespace>
    <namespace name="gradsoft" />
 </namespaces>
 
