@@ -1,0 +1,25 @@
+<web-app>
+
+ <servlet>
+   <servlet-name>JsonRpcServlet</servlet-name>
+   <servlet-class>org.jabsorb.JSONRPCServlet</servlet-class>
+   <!-- <servlet-class>ua.gradsoft.ifs.rpc.JsonAcceptor</servlet-class> -->
+   <init-param>
+      <param-name>gzip_threshold</param-name>
+      <param-value>200</param-value>
+   </init-param>
+  </servlet>
+
+  <servlet-mapping>
+      <servlet-name>JsonRpcServlet</servlet-name>
+      <url-pattern>/JSON-RPC</url-pattern>
+  </servlet-mapping>
+
+  <listener>
+    <listener-class>
+     org.springframework.web.context.ContextLoaderListener
+    </listener-class>
+  </listener>
+
+ 
+</web-app>
