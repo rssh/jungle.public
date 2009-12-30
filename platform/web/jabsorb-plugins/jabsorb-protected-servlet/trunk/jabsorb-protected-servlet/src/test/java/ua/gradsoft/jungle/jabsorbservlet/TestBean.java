@@ -1,5 +1,7 @@
 package ua.gradsoft.jungle.jabsorbservlet;
 
+import ua.gradsoft.jungle.auth.server.Permission;
+
 
 /**
  * test bean for access to it throught access control.
@@ -7,15 +9,15 @@ package ua.gradsoft.jungle.jabsorbservlet;
 public class TestBean
 {
 
-  @Permission("permission1")
+  @Permission(name="permission1")
   int getP1()
    { return 10; }
 
-  @Permission("permission2")
+  @Permission(name="permission2")
   int getP2()
    { return 20; }
 
-  @Permission("*")
+  @Permission(name="*")
   int getP3()
    { return 30; }
 

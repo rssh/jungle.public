@@ -21,6 +21,31 @@
    <bean id="DummyAuthApiProvider"
              class="ua.gradsoft.jungle.auth.dummy.DummyAuthServerApiProvider"
                   >
+     <property name="users">
+      <list>
+        <bean class="ua.gradsoft.jungle.auth.dummy.DummyUserServerContext">
+          <property name="id" value="anonimous" />
+          <property name="inversePermissions" value="false" />
+          <property name="permissions">
+            <list>
+              <value>p1</value>
+            </list>
+          </property>
+        </bean>
+        <bean class="ua.gradsoft.jungle.auth.dummy.DummyUserServerContext">
+          <property name="id" value="a1" />
+          <property name="password" value="a1" />
+          <property name="permissions">
+           <list>
+            <value>p1</value>
+            <value>p2</value>
+            <value>p3</value>
+            <value>p4</value>
+           </list>
+          </property>
+        </bean>
+      </list>
+     </property>
    </bean>
 
 
@@ -29,7 +54,7 @@
     <property name="registeredObjects">
      <map>
       <entry key="testBean" 
-             value-ref="testBean" />
+             value-ref="TestBean" />
       <entry key="DummyAuthApiProvider"
              value-ref="DummyAuthApiProvider" />
      </map>

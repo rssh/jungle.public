@@ -4,6 +4,8 @@
       <conf name="default" description="standard build" />
       <conf name="src" description="standard build with sources" />
       <conf name="build" description="with libraries, required for build" />
+      <conf name="test" description="with test infrastructure" 
+                        extends="default" />
     </configurations>
     <publications>
       <artifact name="jungle.jsonservlet" type="jar" />
@@ -14,17 +16,66 @@
                     transitive="false" >
         </dependency>
         <dependency org="ua.gradsoft" name="jungle.auth-api" 
-                    rev="[0.9.4,)" conf="default->api" >
+                    rev="[0.9.4,)" conf="default->api;test->test" >
            <artifact name="jungle.auth.api" type="jar" />
+           <artifact name="jungle.auth.api-dummyimpl" type="jar" />
         </dependency>
+
         <dependency org="org.apache.openejb" name="javaee-api" rev="[5.0-1,)" 
                     conf="build->default" >
            <artifact name="javaee-api" type="jar" />
         </dependency>
        <dependency org="org.apache" name="commons-logging" rev="[1.1.1,)" 
                    conf="*->default" transitive="false" />
-    </dependencies>
+
+       <dependency org="org.eclipse.jetty" name="jetty-rewrite"
+                   conf="test->default"  rev="[7,)" >
+           <artifact name="jetty-rewrite" type="jar" />
+        </dependency>
+       <dependency org="org.eclipse.jetty" name="jetty-webapp"
+                   conf="test->default"  rev="[7,)" >
+           <artifact name="jetty-webapp" type="jar" />
+        </dependency>
+       <dependency org="org.eclipse.jetty" name="jetty-server"
+                   conf="test->default"  rev="[7,)" >
+           <artifact name="jetty-server" type="jar" />
+        </dependency>
+       <dependency org="org.eclipse.jetty" name="jetty-websocket"
+                   conf="test->default"  rev="[7,)" >
+           <artifact name="jetty-websocket" type="jar" />
+        </dependency>
+
+       <dependency org="xerces" name="xercesImpl"
+                   conf="test->default"  rev="[2.8,)" >
+           <artifact name="xercesImpl" type="jar" />
+        </dependency>
+
+      <dependency org="org.springframework" name="spring" rev="[2.5.6,)"
+                  conf="test->default" >
+          <artifact name="spring" type="jar" />
+      </dependency>
+
+     <dependency org="ua.gradsoft" name="spring.jabsorb.initializer" 
+                 rev="[1.1.0,)"
+                 conf="test->default" >
+          <artifact name="spring.jabsorb.initializer" type="jar" />
+     </dependency>
+
+     <!-- slf4j used by jabsorb -->
+     <dependency org="org.slf4j" name="slf4j-jdk14" rev="1.5.6" 
+                 conf="default->default" >
+        <artifact name="slf4j-jdk14" type="jar" />
+     </dependency>
+     <dependency org="org.slf4j" name="slf4j-jdk14" rev="1.5.6" 
+                 conf="default->default" >
+        <artifact name="slf4j-jdk14" type="jar" />
+     </dependency>
+
+     
+       
+  </dependencies>
 </ivy-module>
+       
 
 
 

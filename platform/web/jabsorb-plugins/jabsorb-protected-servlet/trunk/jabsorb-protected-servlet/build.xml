@@ -131,4 +131,33 @@
      </ivy:publish>
     </target>
 
+    <target name="build-test" depends="build">
+     <javac srcdir="src/test/java" includes="**/*.java" deprecation="on" 
+            debug="${debug}" >
+       <classpath  refid="std.build.path" />
+     </javac>
+     <jar basedir="src/test/java" includes="**/*.class" 
+          destfile="dist/jungle.jsonservlet-test-${version}.jar" 
+          index="true">
+         <include name="build"/>
+         <manifest>
+          <attribute name="Build-By" value="${user-name}"/>
+         </manifest>
+     </jar>
+    </target>
+ 
+    <target name="start.test.server" depends="build-test" >
+       <java classname="ua.gradsoft.jungle.jabsorbservlet.EmbeddedJetty">
+         <arg value="start" />
+         <classpath>
+            <path refid="std.build.path" />
+            <pathelement location="dist/jungle.jsonservlet-${version}.jar" />
+            <pathelement location="dist/jungle.jsonservlet-test-${version}.jar" 
+            />
+         </classpath>
+       </java>
+            
+
+    </target>
+
 </project>
