@@ -10,19 +10,22 @@ public class TestBean
 {
 
   @Permission(name="permission1")
-  int getP1()
+  public int getP1()
    { return 10; }
 
   @Permission(name="permission2")
-  int getP2()
+  public int getP2()
    { return 20; }
 
   @Permission(name="*")
-  int getP3()
+  public int getP3()
    { return 30; }
 
-  int getP4()
+  public int getP4()
    { return 40; }
+
+  public int getP5(int x)
+  { return x+5; }
 
 }
 
