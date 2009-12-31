@@ -240,7 +240,7 @@ class PHPJaoRemoteProxy
        return PHPJAO::callOperation($this->url,$this->objname,$method,$args);
      } catch (PHPJAOTransportException $ex) {
        error_log($ex->getMessage());
-       $lastEroror=$ex;
+       $lastError=$ex;
        ++$i;
        if ($i!=count($this->urls)) {
          $this->currIndex=($this->currIndex+1)%count($this->urls);
@@ -249,7 +249,7 @@ class PHPJaoRemoteProxy
        }
      }
    }
-   error_log("PHPJAO: fata: all url-s for remote cal of $objname failed");
+   error_log("PHPJAO: fata: all url-s for remote cal of $this->objname failed");
    throw $lastError;
  }
  
