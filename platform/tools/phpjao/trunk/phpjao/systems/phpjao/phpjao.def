@@ -174,14 +174,34 @@ domain(phpjao,
               ), 
 
 
-      JavaEntity(
-        EnumModel($modifiers,$name,$implements,
-                  $contstants,$methods,$model) 
-                 ) -> HtmlBlocks(
-                        HtmlBlock("\n<!-- enum "),
-                        HtmlBlock($name),
-                        HtmlBlock("-->\n")
-                      ),
+      #JavaEntity(
+      #  EnumModel($modifiers,$name,$implements,
+      #            $contstants,$methods,$model) 
+      #           ) -> HtmlBlocks(
+      #                  HtmlBlock("\n<!-- enum "),
+      #                  HtmlBlock($name),
+      #                  HtmlBlock("-->\n")
+      #                ),
+           
+      #JavaEntity(
+      #  EnumModel($modifiers,$name,$implements,
+      #            $contstants,$methods,$contexts) 
+      #           ) -> 
+      #        SPhpPage(SHtmlBlocks([]),[
+      #         ClassDeclaration(translateClassModifiers($modifiers),
+      #                          $name,
+      #                          translateImplementsList($implementsList),
+      #                          cons(
+      #                            translateEnumConstants($constants),
+      #                            JavaEntityMembers($methods,$context)
+      #                          )
+      #                         ),
+      #                         registerPHPJaoType(
+      #                            $context.getTypeModel().getErasedFullName(),
+      #                            $name
+      #                         ),
+      #                         EmbeddedHtml([],[])]),
+
            
 
       p($x) -> $x [println($x)],       
