@@ -78,6 +78,14 @@
          <artifact name="PHPJAO" type="php" />
      </dependency>
 
+     <dependency org="org.apache" name="commons-httpclient" 
+                 rev="[3.1,)" conf="test->default"  >
+         <artifact name="commons-httpclient" type="jar" />
+     </dependency>
+
+     <dependency org="org.junit" name="junit" rev="4.4" 
+              conf="test->default"/>
+
   </dependencies>
 </ivy-module>
        

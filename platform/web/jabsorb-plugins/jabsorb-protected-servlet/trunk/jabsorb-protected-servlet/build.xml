@@ -65,6 +65,11 @@
    <fileset dir="lib" includes="*.jar" />
  </path>
 
+ <path id="std.test.path">
+    <path refid="std.build.path" />
+    <pathelement location="dist/jungle.jsonservlet-${version}.jar" />
+    <pathelement location="dist/jungle.jsonservlet-test-${version}.jar" />
+ </path>
 
  <target name="build" depends="retrieve-libs">
   <javac srcdir="src/main/java" includes="**/*.java" deprecation="on" 
@@ -149,15 +154,24 @@
     <target name="start.test.server" depends="build-test" >
        <java classname="ua.gradsoft.jungle.jabsorbservlet.EmbeddedJetty">
          <arg value="start" />
-         <classpath>
-            <path refid="std.build.path" />
-            <pathelement location="dist/jungle.jsonservlet-${version}.jar" />
-            <pathelement location="dist/jungle.jsonservlet-test-${version}.jar" 
-            />
-         </classpath>
+         <classpath refid="std.test.path" />
        </java>
-            
-
     </target>
+
+   <target name="test" depends="build-test">
+     <junit printsummary="yes" haltonfailure="yes" showoutput="yes" 
+            fork="yes" dir="${basedir}">
+        <classpath refid="std.test.path" />
+        <sysproperty key="basedir" value="${basedir}"/>
+        <formatter type="plain"/>
+           <batchtest>
+            <fileset dir="src/test/java">
+                <include name="**/*Test.java"/>
+                <exclude name="**/AllTests.java"/>
+            </fileset>
+           </batchtest>
+      </junit>
+    </target>
+
 
 </project>

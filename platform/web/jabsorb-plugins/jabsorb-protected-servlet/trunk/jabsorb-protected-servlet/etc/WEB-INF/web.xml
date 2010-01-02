@@ -2,11 +2,18 @@
 
  <servlet>
    <servlet-name>JsonRpcServlet</servlet-name>
-   <servlet-class>org.jabsorb.JSONRPCServlet</servlet-class>
-   <!-- <servlet-class>ua.gradsoft.ifs.rpc.JsonAcceptor</servlet-class> -->
+   <servlet-class>ua.gradsoft.jungle.jabsorbservlet.JsonRpcWithAuthServlet</servlet-class>
    <init-param>
       <param-name>gzip_threshold</param-name>
       <param-value>200</param-value>
+   </init-param>
+   <init-param>
+      <param-name>authApiProvider</param-name>
+      <param-value>DummyAuthApiProvider</param-value>
+   </init-param>
+   <init-param>
+      <param-name>debugLevel</param-name>
+      <param-value>9</param-value>
    </init-param>
   </servlet>
 

@@ -25,7 +25,9 @@ public class AuthInvocationCallback implements InvocationCallback
    public void preInvoke(Object context, Object instance,
                          AccessibleObject accessibleObject,
                          Object[] arguments) throws Exception {
+       System.err.println("preinvoke call, context="+context.toString());
         if (context instanceof HttpServletRequest) {
+            System.err.println("in context");
             HttpServletRequest r = (HttpServletRequest)context;
             UserServerContext usc;
             if (authServerApiProvider_!=null) {
@@ -71,6 +73,11 @@ public class AuthInvocationCallback implements InvocationCallback
                   throw new AuthException("Attempt to call non-method:"+accessibleObject.toString());
                 }
 
+            }else{
+                if (debugLevel_ > 0) {
+                    Log log = LogFactory.getLog(AuthInvocationCallback.class);
+                    log.info("AuthInfoProvider is not set, allow any request");
+                }
             }
         }else{
             if (debugLevel_>0) {
@@ -104,6 +111,6 @@ public class AuthInvocationCallback implements InvocationCallback
    }
 
    private AuthServerApiProvider authServerApiProvider_;
-   private int                   debugLevel_;
+   private int                   debugLevel_=1;
 
 }
