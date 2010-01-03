@@ -58,24 +58,26 @@
  </target>
 
  <target name="unzip-src" depends="retrieve-src">
-  <unzip src="origin.sources/jabsorb-src-1.3.zip" 
+  <unzip src="origin.sources/jabsorb-src-1.3.1.zip" 
          dest="origin.sources" />
  </target>
 
  <target name="patch-src" depends="unzip-src">
+  <!--
   <patch patchfile="patches/patch.2" strip="0" />
   <patch patchfile="patches/patch.3" strip="0" />
   <patch patchfile="patches/patch.4" strip="0" />
   <copy file="src.new/org/jabsorb/serializer/ClassHintTranslator.java"
-        todir="origin.sources/jabsorb-1.3/src/new/org/jabsorb/serializer"
+        todir="origin.sources/jabsorb-1.3.1/src/new/org/jabsorb/serializer"
   />
   <copy file="src.new/org/jabsorb/serializer/ClassHintMapTranslator.java"
-        todir="origin.sources/jabsorb-1.3/src/new/org/jabsorb/serializer"
+        todir="origin.sources/jabsorb-1.3.1/src/new/org/jabsorb/serializer"
   />
+  -->
  </target>
 
  <target name="build" depends="patch-src">
-  <ant dir="origin.sources/jabsorb-1.3"  /> 
+  <ant dir="origin.sources/jabsorb-1.3.1"  /> 
  </target>
 
  <target name="clean">
@@ -95,11 +97,11 @@
  </target>
 
  <target name="distributives" depends="build">
-  <copy file="origin.sources/jabsorb-1.3/build/jabsorb-1.3.jar" 
+  <copy file="origin.sources/jabsorb-1.3.1/build/jabsorb-1.3.1.jar" 
        tofile="artifacts/jabsorb-${patch.version}.jar" />
-  <copy file="origin.sources/jabsorb-1.3/webapps/jsonrpc/jsonrpc.js" 
+  <copy file="origin.sources/jabsorb-1.3.1/webapps/jsonrpc/jsonrpc.js" 
       tofile="artifacts/jsonrpc-${patch.version}.js" />
-  <copy file="origin.sources/jabsorb-1.3/webapps/jsonrpc/jsonrpc-min.js" 
+  <copy file="origin.sources/jabsorb-1.3.1/webapps/jsonrpc/jsonrpc-min.js" 
       tofile="artifacts/jsonrpc-min-${patch.version}.js" />
  </target>
 

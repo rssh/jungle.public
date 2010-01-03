@@ -27,5 +27,4 @@ public class ClassHintMapTranslator implements ClassHintTranslator
     }
 
 
-
 }

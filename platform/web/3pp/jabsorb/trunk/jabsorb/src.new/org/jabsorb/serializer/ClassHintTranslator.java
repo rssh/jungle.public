@@ -10,7 +10,7 @@ package org.jabsorb.serializer;
  *   Or, from other side, we want pass from client callable references
  *   to interfaces, not implementation objects.
  **/
-public interface ClassHintTranslator
+public interface ClassHintTranslator 
 {
   /**
    * translate class name or return null if translation is not applicable.
