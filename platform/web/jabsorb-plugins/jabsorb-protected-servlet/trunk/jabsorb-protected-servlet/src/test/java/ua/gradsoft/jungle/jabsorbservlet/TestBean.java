@@ -1,5 +1,6 @@
 package ua.gradsoft.jungle.jabsorbservlet;
 
+import java.math.BigDecimal;
 import java.util.Map;
 import ua.gradsoft.jungle.auth.server.Permission;
 
@@ -10,15 +11,12 @@ import ua.gradsoft.jungle.auth.server.Permission;
 public class TestBean implements ITest
 {
 
-  @Permission(name="p1")
   public int getP1()
    { return 10; }
 
-  @Permission(name="p2")
   public int getP2()
    { return 20; }
 
-  @Permission(name="*")
   public int getP3()
    { return 30; }
 
@@ -32,6 +30,12 @@ public class TestBean implements ITest
   {
     return arg.size();
   }
+
+  public BigDecimal testBigDecimalRet()
+  {
+   return new BigDecimal("10000000000000000111111");
+  }
+
 
 }
 

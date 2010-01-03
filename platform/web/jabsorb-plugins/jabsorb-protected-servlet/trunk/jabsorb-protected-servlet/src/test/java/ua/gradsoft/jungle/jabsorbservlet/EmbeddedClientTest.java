@@ -1,12 +1,14 @@
 
 package ua.gradsoft.jungle.jabsorbservlet;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import org.jabsorb.client.Client;
 import org.jabsorb.client.ClientError;
 import org.jabsorb.client.HTTPSession;
 import org.jabsorb.client.TransportRegistry;
+import org.jabsorb.serializer.impl.BigDecimalSerializer;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -88,6 +90,19 @@ public class EmbeddedClientTest {
      x = test.testMapCall(params);
      Assert.assertEquals(x, 2);
     }
+
+    @Test
+    public void testBigDecimalRet() throws Exception
+    {
+     HTTPSession session = newHTTPSession("http://127.0.0.1:8080/JSON-RPC");
+     Client client = new Client(session);
+     client.getSerializer().registerSerializer(new BigDecimalSerializer());
+     ITest test = (ITest)client.openProxy("testBean", ITest.class);
+     BigDecimal x = null;
+     x = test.testBigDecimalRet();
+     Assert.assertEquals(x.toPlainString(), "10000000000000000111111");
+    }
+
 
 
     private HTTPSession newHTTPSession(String url)

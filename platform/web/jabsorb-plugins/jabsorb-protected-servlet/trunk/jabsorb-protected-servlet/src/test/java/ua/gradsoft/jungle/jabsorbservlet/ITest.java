@@ -1,6 +1,7 @@
 
 package ua.gradsoft.jungle.jabsorbservlet;
 
+import java.math.BigDecimal;
 import java.util.Map;
 import ua.gradsoft.jungle.auth.server.Permission;
 
@@ -25,5 +26,8 @@ public interface ITest {
 
   @Permission(name="p1")
   public int testMapCall(Map<String,String> arg);
+
+  @Permission(name="p1")
+  public BigDecimal testBigDecimalRet();
 
 }
