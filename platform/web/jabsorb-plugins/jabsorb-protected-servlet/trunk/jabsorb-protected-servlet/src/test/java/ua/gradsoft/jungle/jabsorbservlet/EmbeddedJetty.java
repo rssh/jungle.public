@@ -38,8 +38,25 @@ public class EmbeddedJetty {
        try {
          server_.start();
        }catch(Exception ex){
-           throw new RuntimeException("ex");
+           throw new RuntimeException(ex);
        }
+    }
+
+    public void startAndWait()
+    {
+        start();
+        int nAttempts = 0;
+        while(!server_.isRunning() && nAttempts < 10) {
+          try {
+            Thread.sleep(1000);
+          }catch(InterruptedException ex){
+              break;
+          }
+          ++nAttempts;
+        }
+        if (!server_.isRunning()) {
+            throw new RuntimeException("Server is not in runnign state during 10 sec.");
+        }
     }
 
     public void join()

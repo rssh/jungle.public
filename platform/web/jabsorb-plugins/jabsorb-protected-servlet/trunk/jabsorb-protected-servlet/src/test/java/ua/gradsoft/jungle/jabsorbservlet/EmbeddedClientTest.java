@@ -1,8 +1,10 @@
 
 package ua.gradsoft.jungle.jabsorbservlet;
 
+import org.jabsorb.client.Client;
 import org.jabsorb.client.HTTPSession;
 import org.jabsorb.client.TransportRegistry;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,18 +15,25 @@ import org.junit.Test;
 public class EmbeddedClientTest {
 
     @Before
-    void initEmbeddedServer()
+    public void initEmbeddedServer()
     {
       if (server_==null) {
         server_=new EmbeddedJetty();
-        server_.start();
+        server_.startAndWait();
       }
     }
 
     @Test
-    void testClient1Request()
+    public void testClient1Request() throws Exception
     {
-      //Client client = new Client()
+     Client client = new Client(newHTTPSession("http://127.0.0.1:8080/JSON-RPC"));
+     //try {
+       ITest test = (ITest)client.openProxy("testBean", ITest.class);
+       // p1 mus be allowed.
+       int x = test.getP1();
+     //}
+       System.err.print("received:"+x);
+       Assert.assertTrue(true);
     }
     
     private HTTPSession newHTTPSession(String url)

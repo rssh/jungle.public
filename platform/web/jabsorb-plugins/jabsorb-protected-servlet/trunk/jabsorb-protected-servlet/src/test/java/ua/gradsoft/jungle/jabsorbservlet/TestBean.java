@@ -6,14 +6,14 @@ import ua.gradsoft.jungle.auth.server.Permission;
 /**
  * test bean for access to it throught access control.
  **/ 
-public class TestBean
+public class TestBean implements ITest
 {
 
-  @Permission(name="permission1")
+  @Permission(name="p1")
   public int getP1()
    { return 10; }
 
-  @Permission(name="permission2")
+  @Permission(name="p2")
   public int getP2()
    { return 20; }
 

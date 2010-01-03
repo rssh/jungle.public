@@ -168,6 +168,7 @@
             <fileset dir="src/test/java">
                 <include name="**/*Test.java"/>
                 <exclude name="**/AllTests.java"/>
+                <exclude name="**/ITest.java"/>
             </fileset>
            </batchtest>
       </junit>
