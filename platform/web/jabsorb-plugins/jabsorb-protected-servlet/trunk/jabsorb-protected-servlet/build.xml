@@ -92,6 +92,14 @@
   </delete>
  </target>
 
+ <target name="clean-all" depends="clean">
+  <delete>
+    <fileset dir="lib" includes="**/*.jar,**/*.js" />
+    <fileset dir="dist" includes="**/*.jar,**/*.zip" />
+  </delete>
+ </target>
+
+
  <target name="source-distributive" depends="build">
   <mkdir dir="dist/jungle.jsonservlet-src-${version}" />
   <copy todir="dist/jungle.jsonservlet-src-${version}" >

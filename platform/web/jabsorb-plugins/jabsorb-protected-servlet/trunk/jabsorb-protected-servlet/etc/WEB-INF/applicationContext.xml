@@ -59,6 +59,13 @@
              value-ref="DummyAuthApiProvider" />
      </map>
     </property>
+    <property name="customSerializerClasses">
+      <list>
+       <value>org.jabsorb.serializer.impl.BigDecimalSerializer</value>
+      </list>
+    </property>
+    <property name="fixupCircRefs" value="false" />
+    <property name="fixupDuplicates" value="false" />
    </bean>
  
 

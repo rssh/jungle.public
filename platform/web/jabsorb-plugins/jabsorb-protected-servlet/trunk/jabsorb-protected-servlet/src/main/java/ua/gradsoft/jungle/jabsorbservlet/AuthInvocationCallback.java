@@ -3,6 +3,7 @@ package ua.gradsoft.jungle.jabsorbservlet;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Method;
+import java.util.Enumeration;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.jabsorb.callback.InvocationCallback;
@@ -34,7 +35,7 @@ public class AuthInvocationCallback implements InvocationCallback
             UserServerContext usc;
             if (authServerApiProvider_!=null) {
                 HttpSession hs = r.getSession(true);
-                Object o = hs.getAttribute("lastId");
+                Object o = hs.getAttribute("lastUserId");
                 if (o==null) {
                     // we have no attibure
                     usc=authServerApiProvider_.getAnonimousContext();

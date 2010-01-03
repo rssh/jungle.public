@@ -12,7 +12,8 @@
       <artifact name="jungle.jsonservlet-src" type="zip" conf="src" />
     </publications>
     <dependencies>
-        <dependency org="org.jabsorb" name="jabsorb" rev="${jabsorb.version}"
+        <dependency org="org.jabsorb" name="jabsorb" 
+                    rev="[${jabsorb.version},)"
                     transitive="false" >
         </dependency>
         <dependency org="ua.gradsoft" name="jungle.auth-api" 
@@ -83,6 +84,12 @@
 
      <dependency org="org.junit" name="junit" rev="4.4" 
               conf="test->default"/>
+
+     <dependency org="ua.gradsoft" name="jabsorb.bigdecimal.serializer" 
+                 rev="[1.1.0,)" conf="test->default" transitive="false" >
+         <artifact name="jabsorb.bigdecimal.serializer" type="jar" />
+     </dependency>
+
 
   </dependencies>
 </ivy-module>

@@ -1,8 +1,10 @@
 package ua.gradsoft.jungle.jabsorbservlet;
 
+import java.io.IOException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.jabsorb.JSONRPCBridge;
 import org.jabsorb.JSONRPCServlet;
 import org.slf4j.Logger;
@@ -48,27 +50,30 @@ public class JsonRpcWithAuthServlet extends JSONRPCServlet
       }
     }
 
-    /*
+    @Override
+    public void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        JSONRPCBridge bridge = findBridge(request);
+        AuthInvocationCallback authCallback = getAuthInvocationCallback();
+        AuthServerApiProvider apiProvider = getAuthServerApiProvider(bridge);
+        authCallback.setAuthServerApiProvider(apiProvider);
+        authCallback.setDebugLevel(debugLevel_);
+        super.service(request, response);
+ 
+        bridge.getCallbackController().unregisterCallback(authCallback, HttpServletRequest.class);
+    }
+
+
+
+    
     @Override
     protected JSONRPCBridge findBridge(HttpServletRequest request) {
         JSONRPCBridge origin = super.findBridge(request);
-        AuthInvocationCallback authCallback = getAuthInvocationCallback();
-        AuthServerApiProvider apiProvider = getAuthServerApiProvider(origin);
-        authCallback.setAuthServerApiProvider(apiProvider);
-        authCallback.setDebugLevel(debugLevel_);
-        origin.registerCallback(authCallback,HttpServletRequest.class);
-        origin.registerObject(authClientApiName_,
-                              new AuthClientApiHttpRequestScopeImpl(apiProvider,request)
-                              );
-        return origin;
-
-        //return new JsonRpcAuthProxyBridge(origin,
-        //                                  getAuthInvocationCallback(),
-        //                                  authClientApiName_, request,
-        //                                  debugLevel_);
+        return new JsonRpcAuthProxyBridge(origin,
+                                          getAuthInvocationCallback(),
+                                          authClientApiName_, request,
+                                          debugLevel_);
     }
-     *
-     */
+    
 
     private AuthInvocationCallback getAuthInvocationCallback()
     {

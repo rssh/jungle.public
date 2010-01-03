@@ -25,21 +25,33 @@ public class JsonRpcAuthProxyBridge extends JSONRPCBridge
                                   int debugLevel)
     {
       origin_=origin;
-      origin_.registerCallback(callback,HttpServletRequest.class);
-      origin_.registerObject(authClientApiName,
+      registerCallback(callback,HttpServletRequest.class);
+      registerObject(authClientApiName,
                      new AuthClientApiHttpRequestScopeImpl(callback.getAuthServerApiProvider(),
-                                                           request_)
+                                                           request)
                      );
       //authClientApiName_ = authClientApiName;
       //debugLevel_=debugLevel;
-      System.err.println("callback and object registered");
+      //System.err.println("callback and object registered");
     }
+
+    @Override
+    public Object lookupObject(Object key) {
+        Object retval = super.lookupObject(key);
+        if (retval==null) {
+            retval=origin_.lookupObject(key);
+        }
+        return retval;
+    }
+
+
+
 
 
     //private HttpRequest   request_;
     private JSONRPCBridge origin_;
     //private AuthServerApiProvider authApiProvider_;
-    private HttpServletRequest   request_;
+    //private HttpServletRequest   request_;
     //private int                  debugLevel_;
 
 }

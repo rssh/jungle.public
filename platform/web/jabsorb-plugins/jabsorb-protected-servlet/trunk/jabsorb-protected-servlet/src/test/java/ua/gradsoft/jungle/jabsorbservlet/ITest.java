@@ -23,7 +23,7 @@ public interface ITest {
 
   public int getP5(int x);
 
-  @Permission(name="*")
+  @Permission(name="p1")
   public int testMapCall(Map<String,String> arg);
 
 }
