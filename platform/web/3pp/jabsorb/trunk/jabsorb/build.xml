@@ -63,8 +63,8 @@
  </target>
 
  <target name="patch-src" depends="unzip-src">
-  <!--
   <patch patchfile="patches/patch.1" strip="0" />
+  <!--
    // this is from previous release as example.
   <copy file="src.new/org/jabsorb/serializer/ClassHintTranslator.java"
         todir="origin.sources/jabsorb-1.3.1/src/new/org/jabsorb/serializer"
