@@ -87,6 +87,13 @@
   </delete>
  </target>
 
+ <target name="clean-all" depends="clean">
+  <delete>
+    <fileset dir="lib" includes="**/*.jar,**/*.js" />
+    <fileset dir="dist" includes="**/*.jar,**/*.zip" />
+  </delete>
+ </target>
+
  <target name="source-distributive" depends="build">
   <mkdir dir="dist/jabsorb.class.serializer-src-${version}" />
   <copy todir="dist/jabsorb.class.serializer-src-${version}" >

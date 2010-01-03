@@ -49,7 +49,7 @@ public class ClassSerializer extends AbstractSerializer
     return _serializableClasses;
   }
   
-  public Object marshall(SerializerState state, Object p, Object o, Class classHint)
+  public Object marshall(SerializerState state, Object p, Object o)
       throws MarshallException
   {
     Class theClass;
