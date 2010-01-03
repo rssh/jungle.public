@@ -1,5 +1,6 @@
 package ua.gradsoft.jungle.jabsorbservlet;
 
+import java.util.Map;
 import ua.gradsoft.jungle.auth.server.Permission;
 
 
@@ -26,6 +27,11 @@ public class TestBean implements ITest
 
   public int getP5(int x)
   { return x+5; }
+
+  public int testMapCall(Map<String,String> arg)
+  {
+    return arg.size();
+  }
 
 }
 

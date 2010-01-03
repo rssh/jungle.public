@@ -3,10 +3,11 @@ package ua.gradsoft.jungle.jabsorbservlet;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jabsorb.JSONRPCBridge;
 import org.jabsorb.JSONRPCServlet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ua.gradsoft.jungle.auth.server.AuthClientApiHttpRequestScopeImpl;
 import ua.gradsoft.jungle.auth.server.AuthServerApiProvider;
 
  /**
@@ -36,13 +37,18 @@ public class JsonRpcWithAuthServlet extends JSONRPCServlet
           try {
               debugLevel_=Integer.parseInt(sDebugLevel);
           }catch(NumberFormatException ex){
-              Log log = LogFactory.getLog(JsonRpcWithAuthServlet.class);
-              log.error("value of debugLevel ("+sDebugLevel+") is not int, set to max");
+              Logger log = LoggerFactory.getLogger(JsonRpcWithAuthServlet.class);
+              log.error("value of debugLevel ({}) is not int, set to max",sDebugLevel);
               debugLevel_=9;
           }
       }
+      authClientApiName_ = config.getInitParameter("authApiName");
+      if (authClientApiName_==null) {
+          authClientApiName_="auth";
+      }
     }
 
+    /*
     @Override
     protected JSONRPCBridge findBridge(HttpServletRequest request) {
         JSONRPCBridge origin = super.findBridge(request);
@@ -50,9 +56,19 @@ public class JsonRpcWithAuthServlet extends JSONRPCServlet
         AuthServerApiProvider apiProvider = getAuthServerApiProvider(origin);
         authCallback.setAuthServerApiProvider(apiProvider);
         authCallback.setDebugLevel(debugLevel_);
-        return new JsonRpcAuthProxyBridge(origin,
-                                          getAuthInvocationCallback());
+        origin.registerCallback(authCallback,HttpServletRequest.class);
+        origin.registerObject(authClientApiName_,
+                              new AuthClientApiHttpRequestScopeImpl(apiProvider,request)
+                              );
+        return origin;
+
+        //return new JsonRpcAuthProxyBridge(origin,
+        //                                  getAuthInvocationCallback(),
+        //                                  authClientApiName_, request,
+        //                                  debugLevel_);
     }
+     *
+     */
 
     private AuthInvocationCallback getAuthInvocationCallback()
     {
@@ -68,14 +84,14 @@ public class JsonRpcWithAuthServlet extends JSONRPCServlet
        if (authServerApiProviderName_!=null) {   
          Object o = bridge.lookupObject(authServerApiProviderName_);
          if (o==null) {
-             Log log = LogFactory.getLog(JsonRpcWithAuthServlet.class);
-             log.error("authServerApiProvider ("+authServerApiProviderName_+") not found");
+             Logger log = LoggerFactory.getLogger(JsonRpcWithAuthServlet.class);
+             log.error("authServerApiProvider ({}) not found", authServerApiProviderName_);
              throw new RuntimeException("AuthServerApiProvider not found");
          }else{
              authServerApiProvider_=(AuthServerApiProvider)o;
          }
        }else{
-         Log log = LogFactory.getLog(JsonRpcWithAuthServlet.class);
+         Logger log = LoggerFactory.getLogger(JsonRpcWithAuthServlet.class);
          log.error("authServerApiProviderName is not set ");
          throw new RuntimeException("AuthServerApiProviderName is not set");       
        }
@@ -86,6 +102,7 @@ public class JsonRpcWithAuthServlet extends JSONRPCServlet
     private AuthInvocationCallback authInvocationCallback_ = null;
     private String                 authServerApiProviderName_ = null;
     private AuthServerApiProvider  authServerApiProvider_ = null;
+    private String                 authClientApiName_=null;
     private int                    debugLevel_=1;
 
 }

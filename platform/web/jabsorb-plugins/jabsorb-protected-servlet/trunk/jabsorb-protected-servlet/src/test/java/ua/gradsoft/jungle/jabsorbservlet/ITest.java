@@ -1,6 +1,7 @@
 
 package ua.gradsoft.jungle.jabsorbservlet;
 
+import java.util.Map;
 import ua.gradsoft.jungle.auth.server.Permission;
 
 /**
@@ -22,5 +23,7 @@ public interface ITest {
 
   public int getP5(int x);
 
+  @Permission(name="*")
+  public int testMapCall(Map<String,String> arg);
 
 }

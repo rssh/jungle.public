@@ -25,8 +25,6 @@
                     conf="build->default" >
            <artifact name="javaee-api" type="jar" />
         </dependency>
-       <dependency org="org.apache" name="commons-logging" rev="[1.1.1,)" 
-                   conf="*->default" transitive="false" />
 
        <dependency org="org.eclipse.jetty" name="jetty-rewrite"
                    conf="test->default"  rev="[7,)" >

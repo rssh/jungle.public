@@ -29,11 +29,14 @@ public class EmbeddedJetty {
        WebAppContext wac = new WebAppContext();
        wac.setContextPath("/");
        wac.setWar("etc");
+      // wac.setExtraClasspath("etc/WEB-INF/classes");
 
        //ContextHandlerCollectioon
 
        server_.setHandler(wac);
        server_.setStopAtShutdown(true);
+
+
 
        try {
          server_.start();

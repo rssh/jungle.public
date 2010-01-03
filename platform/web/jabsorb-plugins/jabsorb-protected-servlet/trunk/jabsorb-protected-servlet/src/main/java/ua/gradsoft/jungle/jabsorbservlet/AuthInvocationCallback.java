@@ -5,9 +5,9 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Method;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jabsorb.callback.InvocationCallback;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ua.gradsoft.jungle.auth.client.AuthException;
 import ua.gradsoft.jungle.auth.server.AuthClientApiHttpRequestScopeImpl;
 import ua.gradsoft.jungle.auth.server.AuthServerApiHelper;
@@ -25,9 +25,11 @@ public class AuthInvocationCallback implements InvocationCallback
    public void preInvoke(Object context, Object instance,
                          AccessibleObject accessibleObject,
                          Object[] arguments) throws Exception {
-       System.err.println("preinvoke call, context="+context.toString());
+        if (debugLevel_>5) {
+           Logger log = LoggerFactory.getLogger(AuthInvocationCallback.class);
+           log.debug("preinvoke call, context="+context.toString());
+        }
         if (context instanceof HttpServletRequest) {
-            System.err.println("in context");
             HttpServletRequest r = (HttpServletRequest)context;
             UserServerContext usc;
             if (authServerApiProvider_!=null) {
@@ -44,7 +46,7 @@ public class AuthInvocationCallback implements InvocationCallback
                         throw new AuthException("bad session attribute, access denyed");
                     }
                 }else{
-                    Log log = LogFactory.getLog(AuthInvocationCallback.class);
+                    Logger log = LoggerFactory.getLogger(AuthInvocationCallback.class);
                     log.error("bad session attribute, access denyed");
                     throw new AuthException("bad session attribute, access denyed");
                 }
@@ -57,7 +59,7 @@ public class AuthInvocationCallback implements InvocationCallback
                    }
                    if (!AuthServerApiHelper.checkMethodPermissions(method,arguments, usc)) {
                       if (debugLevel_ > 0) {
-                          Log log = LogFactory.getLog(AuthInvocationCallback.class);
+                          Logger log = LoggerFactory.getLogger(AuthInvocationCallback.class);
                           log.info("Access denied for method " + method.getDeclaringClass().getName()+"."+method.getName()+" to user "+usc.getId());
                       }
                       throw new AuthException("Access denied for method "+method.getDeclaringClass().getName()+"."+method.getName()+" to user "+usc.getId());
@@ -67,7 +69,7 @@ public class AuthInvocationCallback implements InvocationCallback
                     }
                 }else{
                   if (debugLevel_ > 0) {
-                      Log log = LogFactory.getLog(AuthInvocationCallback.class);
+                      Logger log = LoggerFactory.getLogger(AuthInvocationCallback.class);
                       log.info("Attempt to call non-method:"+accessibleObject.toString());
                   }
                   throw new AuthException("Attempt to call non-method:"+accessibleObject.toString());
@@ -75,13 +77,13 @@ public class AuthInvocationCallback implements InvocationCallback
 
             }else{
                 if (debugLevel_ > 0) {
-                    Log log = LogFactory.getLog(AuthInvocationCallback.class);
+                    Logger log = LoggerFactory.getLogger(AuthInvocationCallback.class);
                     log.info("AuthInfoProvider is not set, allow any request");
                 }
             }
         }else{
             if (debugLevel_>0) {
-               Log log = LogFactory.getLog(AuthInvocationCallback.class);
+               Logger log = LoggerFactory.getLogger(AuthInvocationCallback.class);
                log.info("Deny non-http request");
             }
             throw new AuthException("Deny non-http request");

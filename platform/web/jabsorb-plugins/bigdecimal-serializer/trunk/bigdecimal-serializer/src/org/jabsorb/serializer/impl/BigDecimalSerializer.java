@@ -79,6 +79,9 @@ public class BigDecimalSerializer extends AbstractSerializer
   public ObjectMatch tryUnmarshall(SerializerState state, Class clazz, Object o)
       throws UnmarshallException
   {
+    if (!(o instanceof JSONObject)) {
+      throw new UnmarshallException("not JSONObject ");
+    }
     JSONObject jso = (JSONObject) o;
     String java_class;
     try
@@ -104,19 +107,25 @@ public class BigDecimalSerializer extends AbstractSerializer
   public Object unmarshall(SerializerState state, Class clazz, Object o)
       throws UnmarshallException
   {
-    JSONObject jso = (JSONObject) o;
-    String strvalue=null;    
-    try {
-     strvalue  = jso.getString("strvalue");          
-    }catch(JSONException e){
-        throw new UnmarshallException("Could not get strvalur in BigDecimal serialiser");
-    }    
+    Object returnValue=null;
+    if (o instanceof JSONObject) {
+      JSONObject jso = (JSONObject) o;
+      String strvalue=null;    
+      try {
+        strvalue  = jso.getString("strvalue");          
+      }catch(JSONException e){
+          throw new UnmarshallException("Could not get strvalur in BigDecimal serialiser");
+      }    
     
-    BigDecimal returnValue = null;
-    try {
-      returnValue = new BigDecimal(strvalue);
-    }catch(NumberFormatException ex){
-      throw new UnmarshallException("can't parse numer format " + strvalue ,ex);
+      try {
+         returnValue = new BigDecimal(strvalue);
+      }catch(NumberFormatException ex){
+         throw new UnmarshallException("can't parse numer format " + strvalue ,ex);
+      }
+    } else if (o instanceof Integer) {
+      returnValue=o;
+    } else {
+      throw new UnmarshallException("Could not unparse non-json object "+o.toString());
     }
     state.setSerialized(o, returnValue);
     return returnValue;

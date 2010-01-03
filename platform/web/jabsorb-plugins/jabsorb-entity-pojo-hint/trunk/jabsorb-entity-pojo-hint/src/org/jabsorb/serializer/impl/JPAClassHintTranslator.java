@@ -5,7 +5,7 @@ import java.util.WeakHashMap;
 import org.jabsorb.serializer.ClassHintTranslator;
 
 /**
- * Substitute pojo-enhachend classes to real POJO-s.
+ * Substitute jpa-enhachend classes to real POJO-s before marshalling.
  */
 public class JPAClassHintTranslator implements ClassHintTranslator
 {
