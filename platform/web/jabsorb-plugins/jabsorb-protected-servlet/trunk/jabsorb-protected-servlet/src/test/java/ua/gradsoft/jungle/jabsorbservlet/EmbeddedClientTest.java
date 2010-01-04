@@ -78,6 +78,21 @@ public class EmbeddedClientTest {
     }
 
     @Test
+    public void testDenyMethodWithoutPermissionAttribute() throws Exception
+    {
+     HTTPSession session = newHTTPSession("http://127.0.0.1:8080/JSON-RPC");
+     Client client = new Client(session);    
+     ITest test = (ITest)client.openProxy("testBean", ITest.class);
+     int x=0;
+     try {
+        x=test.getP4(); 
+     }catch(ClientError ex){
+         // deny, foe now we does not set correct status values.
+     }
+     Assert.assertEquals(0, x);
+    }
+
+    @Test
     public void testHashMap1() throws Exception
     {
      HTTPSession session = newHTTPSession("http://127.0.0.1:8080/JSON-RPC");

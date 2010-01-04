@@ -5,11 +5,11 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import org.jabsorb.JSONRPCBridge;
 import org.jabsorb.JSONRPCServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ua.gradsoft.jungle.auth.server.AuthClientApiHttpRequestScopeImpl;
 import ua.gradsoft.jungle.auth.server.AuthServerApiProvider;
 
  /**
@@ -52,14 +52,26 @@ public class JsonRpcWithAuthServlet extends JSONRPCServlet
 
     @Override
     public void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        JSONRPCBridge bridge = findBridge(request);
-        AuthInvocationCallback authCallback = getAuthInvocationCallback();
-        AuthServerApiProvider apiProvider = getAuthServerApiProvider(bridge);
-        authCallback.setAuthServerApiProvider(apiProvider);
-        authCallback.setDebugLevel(debugLevel_);
+        //SONRPCBridge bridge = findBridge(request);
         super.service(request, response);
+        HttpSession hs = request.getSession(false);
+        if (hs!=null) {
+            Object o = hs.getAttribute("JSON_ACCEPT");
+            if (o!=null) {
+              if (debugLevel_>=7) {
+                Logger log = LoggerFactory.getLogger(JsonRpcWithAuthServlet.class);
+                log.info("JSON_ACCEPT is {}",o);
+              }
+              if (o instanceof Boolean) {
+                 Boolean b = (Boolean)o;
+                 if (!b) {
+                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                 }
+              }
+            }
+        }
  
-        bridge.getCallbackController().unregisterCallback(authCallback, HttpServletRequest.class);
+        //bridge.getCallbackController().unregisterCallback(authCallback, HttpServletRequest.class);
     }
 
 
@@ -68,8 +80,14 @@ public class JsonRpcWithAuthServlet extends JSONRPCServlet
     @Override
     protected JSONRPCBridge findBridge(HttpServletRequest request) {
         JSONRPCBridge origin = super.findBridge(request);
+        AuthInvocationCallback authCallback = getAuthInvocationCallback();
+        if (authCallback.getAuthServerApiProvider()==null) {
+          AuthServerApiProvider apiProvider = getAuthServerApiProvider(origin);
+          authCallback.setAuthServerApiProvider(apiProvider);
+          authCallback.setDebugLevel(debugLevel_);
+        }
         return new JsonRpcAuthProxyBridge(origin,
-                                          getAuthInvocationCallback(),
+                                          authCallback,
                                           authClientApiName_, request,
                                           debugLevel_);
     }

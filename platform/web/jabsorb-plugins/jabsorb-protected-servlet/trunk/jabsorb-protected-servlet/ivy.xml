@@ -17,7 +17,7 @@
                     transitive="false" >
         </dependency>
         <dependency org="ua.gradsoft" name="jungle.auth-api" 
-                    rev="[0.9.4,)" conf="default->api;test->test" >
+                    rev="[1.1.0,)" conf="default->api;test->test" >
            <artifact name="jungle.auth.api" type="jar" />
            <artifact name="jungle.auth.api-dummyimpl" type="jar" />
         </dependency>
@@ -72,7 +72,7 @@
 
      <!-- php for php tests -->
      <dependency org="ua.gradsoft" name="jungle.tools.phpjao" 
-                 rev="[1.0.0,)" 
+                 rev="[1.1.0,)" 
                  conf="test->default" transitive="false" >
          <artifact name="PHPJAO" type="php" />
      </dependency>

@@ -3,7 +3,6 @@ package ua.gradsoft.jungle.jabsorbservlet;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Method;
-import java.util.Enumeration;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.jabsorb.callback.InvocationCallback;
@@ -35,9 +34,12 @@ public class AuthInvocationCallback implements InvocationCallback
             UserServerContext usc;
             if (authServerApiProvider_!=null) {
                 HttpSession hs = r.getSession(true);
+                // we will set http return_code in reply, based on JSON_ACCESS.
+                //in normal case we set one to true after access check, otherwise
+                hs.setAttribute("JSON_ACCESS", false);
                 Object o = hs.getAttribute("lastUserId");
                 if (o==null) {
-                    // we have no attibure
+                    // we have no attribure
                     usc=authServerApiProvider_.getAnonimousContext();
                 }else if (o instanceof UserServerContext) {
                     usc = (UserServerContext)o;
@@ -66,6 +68,7 @@ public class AuthInvocationCallback implements InvocationCallback
                       throw new AuthException("Access denied for method "+method.getDeclaringClass().getName()+"."+method.getName()+" to user "+usc.getId());
                     }else{
                        // all ok
+                       hs.setAttribute("JSON_ACCESS", true);
                        return;
                     }
                 }else{
@@ -81,6 +84,8 @@ public class AuthInvocationCallback implements InvocationCallback
                     Logger log = LoggerFactory.getLogger(AuthInvocationCallback.class);
                     log.info("AuthInfoProvider is not set, allow any request");
                 }
+                HttpSession hs = r.getSession(true);
+                hs.setAttribute("JSON_ACCESS", true);
             }
         }else{
             if (debugLevel_>0) {
@@ -94,6 +99,10 @@ public class AuthInvocationCallback implements InvocationCallback
    public void postInvoke(Object o, Object o1, AccessibleObject ao, Object o2) throws Exception {
 
    }
+
+
+
+
 
    public AuthServerApiProvider getAuthServerApiProvider()
    {

@@ -59,6 +59,8 @@
 
  <target name="retrieve-libs" depends="init-ivy">
   <ivy:retrieve pattern="lib/[artifact]-[revision].[ext]" />
+  <ivy:artifactproperty name="[module].version" 
+                        value="[revision]" />
  </target>
 
  <path id="std.build.path">
@@ -97,6 +99,7 @@
     <fileset dir="lib" includes="**/*.jar,**/*.js" />
     <fileset dir="dist" includes="**/*.jar,**/*.zip" />
   </delete>
+  <delete file="src/test/php/PHPJAO.php" />
  </target>
 
 
@@ -182,5 +185,10 @@
       </junit>
     </target>
 
+   <target name="prepare-php-tests" depends="retrieve-libs">
+     <echo message="PHPJAO-${jungle.tools.phpjao.version}.php" />
+     <copy file="lib/PHPJAO-${jungle.tools.phpjao.version}.php" 
+           tofile="src/test/php/PHPJAO.php" />
+   </target>
 
 </project>
