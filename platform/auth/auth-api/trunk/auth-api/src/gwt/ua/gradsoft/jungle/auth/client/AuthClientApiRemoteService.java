@@ -19,6 +19,14 @@ public interface AuthClientApiRemoteService extends RemoteService, AuthClientApi
                                                    AuthException;
 
   /**
+   *@see AuthClientApi#getOrRestoreSessionTicket(java.lang.String, java.util.Map) 
+   */
+  public  String  getOrRestoreSessionTicket(String authType, Map<String,String> parameters)
+                                                  throws
+                                                   RedirectException,
+                                                   AuthException;
+
+  /**
    *@see AuthClientApi#getUserInfo(java.lang.String)
    **/
   public ClientUserInfo  getUserInfo(String sessionTicket)
