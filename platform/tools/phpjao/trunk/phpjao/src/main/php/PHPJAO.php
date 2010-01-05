@@ -2,6 +2,8 @@
 
 abstract class PHPJAOException extends Exception 
 {
+
+   //private $httpCode;
 };
 
 class PHPJAOTransportException extends PHPJAOException 
@@ -136,7 +138,21 @@ class PHPJAO
     return $retval;
   }
 
-  static function callOperation($url, $objname, $method, $arguments)
+  static function initCurlHandle($url)
+  {
+    $ch=curl_init($url);
+    curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+    curl_setopt($ch,CURLOPT_POST,true);
+    curl_setopt($ch,CURLOPT_COOKIEFILE,'/dev/null');
+    return $ch;
+  }
+
+  static function closeCurlHandle($ch)
+  {
+    curl_close($ch);
+  }
+
+  static function callOperation($ch, $objname, $method, $arguments)
   {
     $requestArguments = self::toJson($arguments,null);
     $requestMethod=null; 
@@ -150,15 +166,11 @@ class PHPJAO
         "params" => $requestArguments,
         "id" => ++ self::$requestsIdCount
                     );
-    $ch=curl_init($url);
-    curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-    curl_setopt($ch,CURLOPT_POST,true);
     curl_setopt($ch,CURLOPT_POSTFIELDS,json_encode($request));
     $encodedResult=curl_exec($ch);
     if (curl_errno($ch)) {
         throw new PHPJAOTransportException("curl_error:".curl_error($ch));
     }
-    curl_close($ch);
     $result=self::fromJson(json_decode($encodedResult,true));
     if (version_compare(PHP_VERSION,'5.3.0') == 1) {
       //will be enabled in PHP-5.3.0
@@ -205,29 +217,165 @@ class PHPJAO
     return $result;
   }
 
-  public static function createRemoteProxy($uri,$name=null)
+  public static function createRemoteProxy($cnOrUri,$name=null)
   {
-    return new PHPJaoRemoteProxy($uri,$name);
+    return new PHPJaoRemoteProxy($cnOrUri,$name);
   }
 
+  public static function createConnection($login,$password,$urls)
+  {
+    return new PHPJaoConnection($login,$password,$urls);
+  }
+
+  public static function createAnonimousConnection($urls)
+  {
+    return new PHPJaoConnection(null,null,$urls);
+  }
 
 }
 
+class PHPJaoConnection
+{
+ public function __construct($theLogin, $thePassword, $theUrls)
+ {
+   $this->login=$theLogin;
+   $this->password=$thePassword;
+   if (is_array($theUrls)) {
+     $this->urls=$theUrls;
+   } else {
+     $this->urls=array($theUrls);
+   }
+   $this->sessionTicket=null;
+   $this->currentIndex=rand()%count($this->urls);
+   $this->currentUrl=$this->urls[$this->currentIndex];
+   $this->curlHandle=null;
+ }
+
+ public function __destruct()
+ {
+   if (!is_null($this->curlHandle)) {
+      PHPJAO::closeCurlHandle($this->curlHandle);
+   }
+ }
+
+ public function isAnonimous()
+ {
+   return is_null($this->login);
+ } 
+
+ public function isLoggedIn()
+ {
+   return !is_null($this->sessionTicket);
+ }
+
+ public function getUrls()
+ { return $this->urls; }
+
+ /**
+  * get curl handle, open connection if needed.
+  **/
+ public function getCurlHandle()
+ {
+   if (is_null($this->curlHandle)) {
+     $this->open();
+   }
+   return $this->curlHandle;
+ }
+
+ public function getLogin()
+ { return $this->login; }
+
+ public function createProxy(String $name)
+ {
+   return new PHPJaoRemoteProxy($this,$name);
+ }
+
+ public function isOpen()
+ {
+   return !is_null($this->curlHandle);
+ }
+
+ public function open()
+ {
+  $this->curlHandle=PHPJAO::initCurlHandle($this->currentUrl);
+ }
+
+ public function close()
+ {
+  if ($this->isOpen()) {
+     PHPJAO::closeCurlHandle($this->curlHandle);
+     $this->curlHandle=null;
+     $this->sessionTicket=null;
+  }
+ }
+
+ public function loginIfNeeded()
+ {
+   if (!$this->isAnonimous() && !$this->isLoggedIn()) {
+       $this->login();
+   }
+ }
+
+ public function login()
+ {
+   if (is_null($this->curlHandle)) {
+     $this->curlHandle=PHPJAO::initCurlHandle($this->currentUrl);
+   }
+   $method='getOrRestoreSessionTicket';
+   $params=array(
+     'plain',
+     array( 
+       'javaClass' => 'java.util.TreeMap',
+       'map' => array(
+          'username' => $this->login,
+          'password' => $this->password    
+       )      
+     )
+   );
+   $this->sessionTicket = PHPJAO::callOperation($this->curlHandle,
+                                                    'auth',$method,$params);
+ }
+
+ public function logout()
+ {
+   if (!is_null($this->curlHandle)) {
+     PHPJAO::callOperation($this->curlHandle,'auth','logout',array());
+     $this->sessionTicket = null;
+   }
+ }
+
+ function switchNextUrl()
+ {
+   close();
+   $this->currentIndex=($this->currentIndex+1)%count($this->urls);
+   $this->currentUrl=$this->urls[$this->currentIndex];
+   error_log("PHPJAO:switched to $this->currentUrl");
+ }
+
+ private $login; 
+ private $password; 
+ private $urls;
+ private $sessionTicket;
+ private $curlHandle;
+ private $currentUrl;
+ private $currentIndex;
+}
 
 class PHPJaoRemoteProxy
 {
- public function __construct($theUrls, $theObjName)
+
+ public function __construct($cnOrUrls, $theObjName)
  { 
-   $this->objname=$theObjName;
-   if (is_array($theUrls)) {
-     $this->urls=$theUrls;
-     $this->currIndex=rand()%count($theUrls);
-     $this->url=$theUrls[$this->currIndex];
-   } else {
-     $this->urls=array($theUrls);
-     $this->currIndex=0;
-     $this->url=$theUrls;
+   if ($cnOrUrls instanceof PHPJaoConnection) {
+      $this->connection=$cnOrUrls;
+   }else if (is_array($cnOrUrls)) {
+      $this->connection=new PhpJaoConnection(null,null,$cnOrUrls);
+   }else if (is_string($cnOrUrls)) {
+      $this->connection=new PhpJaoConnection(null,null,$cnOrUrls);
+   }else{
+      throw new InvalidArgumentException("bad type of first argument");
    }
+   $this->objname=$theObjName;
  }
 
  public function  getUrl() { return $url; }
@@ -235,17 +383,18 @@ class PHPJaoRemoteProxy
  public function __call($method, $args)
  {
    $i=0;
-   while($i<count($this->urls)) {
+   $count=count($this->connection->getUrls());
+   while($i<$count) {
      try {
-       return PHPJAO::callOperation($this->url,$this->objname,$method,$args);
+       $this->connection->loginIfNeeded();
+       return PHPJAO::callOperation($this->connection->getCurlHandle(),
+                                    $this->objname,$method,$args);
      } catch (PHPJAOTransportException $ex) {
        error_log($ex->getMessage());
        $lastError=$ex;
        ++$i;
-       if ($i!=count($this->urls)) {
-         $this->currIndex=($this->currIndex+1)%count($this->urls);
-         $this->url=$this->urls[$this->currIndex];
-         error_log("PHPJAO:switched to $this->url");
+       if ($i!=$count) {
+         $this->connection->switchNextUrl();
        }
      }
    }
@@ -254,10 +403,8 @@ class PHPJaoRemoteProxy
  }
  
 
- private $url;
  private $objname;
- private $urls;
- private $currIndex;
+ private $connection;
 }
 
 class DateTimePHPJAOHelper
