@@ -44,6 +44,15 @@ public interface AuthClientApi
                                                    AuthException;
 
   /**
+   * get session ticket or restore one if we in session. Used for clients, which reuse
+   * persistent http connections.
+   */
+  public  String  getOrRestoreSessionTicket(String authType, Map<String,String> parameters)
+                                                  throws
+                                                   RedirectException,
+                                                   AuthException;
+
+  /**
    * get minimal client user info (is aviable).
    **/ 
   public ClientUserInfo  getUserInfo(String sessionTicket)

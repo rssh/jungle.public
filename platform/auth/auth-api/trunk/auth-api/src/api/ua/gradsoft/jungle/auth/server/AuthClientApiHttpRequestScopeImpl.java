@@ -2,7 +2,6 @@
 package ua.gradsoft.jungle.auth.server;
 
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
@@ -38,8 +37,27 @@ public class AuthClientApiHttpRequestScopeImpl implements AuthClientApi
         String sessionTicket = ur.getSessionTicket();
         session.setAttribute(sessionTicket, ur);
         session.setAttribute("lastUserId", ur.userId_);
+        session.setAttribute("lastUserTicket", sessionTicket);
         return ur.getSessionTicket();
     }
+
+    @Override
+    public  String  getOrRestoreSessionTicket(String authType, Map<String,String> parameters)
+                                                  throws
+                                                   RedirectException,
+                                                   AuthException
+    {
+      HttpSession session = request_.getSession(true);
+      Object o = session.getAttribute("lastUserTicket");
+      if (o!=null && o instanceof String) {
+        return (String)o;
+      } else {
+        return getSessionTicket(authType,parameters);
+      }    
+    }
+  
+
+
 
     @Permission(name="*")
     @Override
@@ -71,6 +89,7 @@ public class AuthClientApiHttpRequestScopeImpl implements AuthClientApi
     {
       HttpSession session = request_.getSession(false);
       session.removeAttribute("lastUserId");
+      session.removeAttribute("lastUserTicket");
     }
 
     
@@ -190,6 +209,15 @@ public class AuthClientApiHttpRequestScopeImpl implements AuthClientApi
     public void setHttpServletRequest(HttpServletRequest request)
     { request_ = request; }
 
+    @Resource
+    public int getDebugLevel()
+    { return debugLevel_; }
+    
+    public void setDebugLevel(int debugLevel)
+    {
+      debugLevel_=debugLevel;  
+    }
+
     public AuthClientApiHttpRequestScopeImpl(AuthServerApiProvider apiProvider,
                              HttpServletRequest request)
     {
@@ -256,6 +284,7 @@ public class AuthClientApiHttpRequestScopeImpl implements AuthClientApi
 
     private AuthServerApiProvider apiProvider_;
     private HttpServletRequest request_;
+    private int debugLevel_=0;
 
     private static Random random = new Random();
 }
