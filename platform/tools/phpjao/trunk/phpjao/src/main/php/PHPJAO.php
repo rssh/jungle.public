@@ -12,6 +12,18 @@ class PHPJAOTransportException extends PHPJAOException
 
 class PHPJAORemoteException extends PHPJAOException 
 {
+
+  public function __construct($message=null,$code=null,$remoteTrace=null)
+  {
+    parent::__construct($message,$code);
+    $this->remoteTrace = $remoteTrace;
+
+    public function getRemoteTrace()
+    { return $remoteTrace; }
+
+    private $remoteTrace;
+  }
+
 };
 
 
@@ -207,7 +219,8 @@ class PHPJAO
           $error = $result['error'];
           $message = $error['msg'];
           $code = $error['code'];
-          throw new PHPJAORemoteException($message, $code);
+          $trace = $result['trace'];
+          throw new PHPJAORemoteException($message, $code, $trace);
       }
       if (isset($result['result']))
       {
@@ -521,13 +534,25 @@ class JavaClass
 }
 PHPJAO::registerType('java.lang.Class','JavaClass');
 
-class ArrayList
+class JavaList
+{
+  public $list;
+  const javaClass = "java.util.List";
+}
+
+class JavaArrayList extends JavaList
 {
   public $list;
   const javaClass = "java.util.ArrayList";
 }
 
-class ArrayListPHPJAOHelper
+class JavaLinkedList extends JavaList
+{
+  public $list;
+  const javaClass = "java.util.ArrayList";
+}
+
+class ListPHPJAOHelper
 {
   public static function toJson($object)
   {
@@ -535,12 +560,18 @@ class ArrayListPHPJAOHelper
       $l = $object['list'];
       return PHPJAO::toJson($o);
     }else if (is_object($object)) {
-      if ($object instanceof ArrayList) {
+      if ($object instanceof JavaArrayList) {
         return array( 'javaClass' => 'java.util.ArrayList',
+                      'list' => array( toJson($object->list) ));
+      } else if ($object instanceof JavaLinkedList) {
+        return array( 'javaClass' => 'java.util.LinkedList',
+                      'list' => array( toJson($object->list) ));
+      } else if ($object instanceof JavaList) {
+        return array( 'javaClass' => 'java.util.List',
                       'list' => array( toJson($object->list) ));
       }else{
         $type = gettype($object);
-        throw new PHPJAOException("can't transform object $type to ArrayList");
+        throw new PHPJAOException("can't transform object $type to List");
       }
     }else if (is_null($object)) {
       return null;
@@ -561,7 +592,11 @@ class ArrayListPHPJAOHelper
   }
 
 }
-PHPJAO::registerType('java.util.ArrayList','ArrayList');
-PHPJAO::registerCustomType('ArrayList','ArrayListPHPJAOHelper');
+PHPJAO::registerType('java.util.List','JavaList');
+PHPJAO::registerType('java.util.ArrayList','JavaArrayList');
+PHPJAO::registerType('java.util.LinkedList','JavaLinkedList');
+PHPJAO::registerCustomType('JavaList','ListPHPJAOHelper');
+PHPJAO::registerCustomType('JavaArrayList','ListPHPJAOHelper');
+PHPJAO::registerCustomType('JavaLinkedList','ListPHPJAOHelper');
 
 ?>
