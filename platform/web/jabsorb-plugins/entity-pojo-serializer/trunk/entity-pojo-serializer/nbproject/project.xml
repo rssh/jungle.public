@@ -55,7 +55,7 @@
         <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/1">
             <compilation-unit>
                 <package-root>src</package-root>
-                <classpath mode="compile">lib/jabsorb-1.3.1p0.jar:lib/javaee-api-5.0-2.jar:lib/jungle.persistence.jpaex-api-2.1.0.jar</classpath>
+                <classpath mode="compile">lib/javaee-api-5.0-2.jar:lib/jungle.persistence.jpaex-api-2.1.0.jar:lib/jabsorb-1.3.1p1.jar</classpath>
                 <source-level>1.5</source-level>
             </compilation-unit>
         </java-data>

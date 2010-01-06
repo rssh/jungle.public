@@ -1,12 +1,15 @@
 package org.jabsorb.serializer.impl;
 
-import java.lang.annotation.Annotation;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.WeakHashMap;
+import org.jabsorb.JSONSerializer;
 import org.jabsorb.serializer.MarshallException;
 import org.jabsorb.serializer.ObjectMatch;
 import org.jabsorb.serializer.SerializerState;
 import org.jabsorb.serializer.UnmarshallException;
+import org.json.JSONException;
+import org.json.JSONObject;
 import ua.gradsoft.jungle.persistence.jpaex.JpaEntityProperty;
 import ua.gradsoft.jungle.persistence.jpaex.JpaHelper;
 
@@ -21,7 +24,9 @@ public class JPAEntitySerializer extends BeanSerializer
 
     @Override
     public boolean canSerialize(Class clazz, Class jsonClazz) {
-        return super.canSerialize(clazz, jsonClazz) && getHashedPojoClass(clazz)!=null;
+        return super.canSerialize(clazz, jsonClazz) 
+                && getHashedPojoClass(clazz)!=null
+                && !Number.class.isAssignableFrom(clazz);
     }
 
     @Override
@@ -29,24 +34,32 @@ public class JPAEntitySerializer extends BeanSerializer
         Class pojoClass = getHashedPojoClass(o.getClass());
         if (pojoClass==null) {
            return super.marshall(state, p, o);
-        }else if (pojoClass.equals(o.getClass())) {
-           return super.marshall(state, p, o);
-        }else{
-            // now copy all properties to pojoClass
-            Object pojoObject = null;
+        }else {
+          // Object pojoObject = makePlainPojo(pojoClass,o);
+          // return super.marshall(state, null, pojoObject);
+          List<JpaEntityProperty> props = JpaHelper.getAllJpaProperties(pojoClass, true);
+          JSONObject val = new JSONObject();
+          if (ser.getMarshallClassHints()) {
             try {
-             pojoObject = pojoClass.newInstance();
-            }catch(InstantiationException ex){
-                throw new MarshallException("Can't instantiate "+pojoClass.getName()+":"+ex.getMessage(),ex);
-            }catch(IllegalAccessException ex){
-                throw new MarshallException("Can't instantiate "+pojoClass.getName()+":"+ex.getMessage(),ex);
+              val.put("javaClass", pojoClass.getName());
+            }catch(JSONException ex){
+                throw new MarshallException("JSONException: "+ex.getMessage(),ex);
             }
-            List<JpaEntityProperty> props = JpaHelper.getAllJpaProperties(pojoClass, true);
-            for(JpaEntityProperty property: props) {
-                property.setValue(pojoObject, property.getValue(o));
-            }
-            return super.marshall(state, p, pojoObject);
-
+          }
+          for(JpaEntityProperty property: props) {
+             Object pv = property.getValue(o);
+             if (pv!=null || ser.getMarshallNullAttributes()) {
+                 Object json = ser.marshall(state, o, pv, property.getName());
+                 if (JSONSerializer.CIRC_REF_OR_DUPLICATE!=json) {
+                     try {
+                        val.put(property.getName(),json);
+                     } catch (JSONException ex) {
+                        throw new MarshallException("JSONException: "+ex.getMessage(),ex);
+                     }
+                 }
+             }
+          }
+          return val;
         }
     }
 
