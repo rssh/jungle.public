@@ -52,7 +52,7 @@
          <artifact name="jungle.persistence.cluster_keys" type="jar" />
         </dependency>
         <dependency org="ua.gradsoft" name="jungle.tools.phpjao"
-                  conf="php-export->default" rev="[1.0-a2,)" >
+                  conf="php-export->default" rev="[1.2.0,)" >
            <artifact name="jungle.tools.phpjao" type="jar" />
         </dependency>
     </dependencies>
