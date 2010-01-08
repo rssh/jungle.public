@@ -116,8 +116,8 @@ class PHPJAO
         $classDescription=self::findType($o['javaClass']);
       }
       if (!is_null($classDescription)) {
-        if (isset(self::$customJsonMapping[$classDescription->phpType])) {
-           $helper = self::$customJsonMapping[$classDescription->$phpType];
+        if (isset(self::$customJsonMapping[$classDescription->phpClass])) {
+           $helper = self::$customJsonMapping[$classDescription->phpClass];
            $retval=$helper->fromJson($o);
         }else{
            $retval = $classDescription->newInstance();
