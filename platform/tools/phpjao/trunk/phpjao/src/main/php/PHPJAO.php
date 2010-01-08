@@ -81,8 +81,12 @@ class PHPJAO
          $marshaller=self::$customJsonMapping[$phpClassName];
          return $marshaller->toJson($o);
        }else{
-         $classDescription = $o->getPHPJAOClassDescription();
-         $javaClass=$classDescription->javaClass;
+         if ($o instanceof PHPJAOPOJOBase) {
+           $classDescription = $o->getPHPJAOClassDescription();
+           $javaClass=$classDescription->javaClass;
+         } else {
+           $javaClass=$classHint;
+         }
        }
     }else{
        $javaClass=$classHint;
