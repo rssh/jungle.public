@@ -17,12 +17,12 @@ class PHPJAORemoteException extends PHPJAOException
   {
     parent::__construct($message,$code);
     $this->remoteTrace = $remoteTrace;
+  }
 
-    public function getRemoteTrace()
+  public function getRemoteTrace()
     { return $remoteTrace; }
 
     private $remoteTrace;
-  }
 
 };
 
@@ -43,12 +43,6 @@ class PHPJAO
   public static function registerCustomType($phpName,$phpHelperName)
   {
     self::$customJsonMapping[$phpName] = new ReflectionClass($phpHelperName);
-  }
-
-  private static function isPrimitivePhpType(String $typeName)
-  {
-    return $typeName=="string" || $typeName=="integer"
-         || $typeName=="boolean" || typeName=="float" ; 
   }
 
   static function isPrimitivePhpObject($o)
@@ -73,28 +67,25 @@ class PHPJAO
     }
   }
 
-  static function isJavaCollection(String $javaClassName) {
-     return $javaClassName=="java.util.Map" 
-          || $javaClassName=="java.util.HashMap" ;
-  }
-
-  static function toJson($o,$classHint=null) 
+  static function toJson(&$o,$classHint=null) 
   {
     $javaClass=null;
-    $reflectionClass=null;
-    if (self::isPrimitivePhpObject($o)) {
+    $classDescription = null;
+    if (is_null($o)) {
+       return null;
+    }else if (self::isPrimitivePhpObject($o)) {
        return $o;
     }else if (is_object($o)) {
-       $className = get_class($o);
-       if (isset(self::$customJsonMapping[$className])) {
-         $toJson=self::$customJsonMapping[$className]->getMethod('toJson');
-         return $toJson->invoke(null,$o);
+       $phpClassName = get_class($o);
+       if (isset(self::$customJsonMapping[$phpClassName])) {
+         $marshaller=self::$customJsonMapping[$phpClassName];
+         return $marshaller->toJson($o);
        }else{
-         $reflectionClass = new ReflectionClass(get_class($o));
-         $javaClass=$reflectionClass->getConstant('javaClass');
+         $classDescription = $o->getPHPJAOClassDescription();
+         $javaClass=$classDescription->javaClass;
        }
-    }else if (is_null($o)) {
-       return null;
+    }else{
+       $javaClass=$classHint;
     }
 
     $retval = array();
@@ -103,8 +94,8 @@ class PHPJAO
     }
     foreach($o as $key => $value) {
        $memberClassHint=null;
-       if (!is_null($reflectionClass)) {
-         $memberClassHint=$reflectionClass->getConstant("${key}_TYPE");
+       if (!is_null($classDescription)) {
+         $memberClassHint=$classDescription->typesOfFields[$key];
        }
        if (!is_null($value)) {
           $retval[$key]=self::toJson($value,$memberClassHint);
@@ -114,28 +105,26 @@ class PHPJAO
     return $retval;
   }
 
-  static function fromJson($o, $classHint=null)
+  static function fromJson(&$o, $classHint=null)
   {
     $retval = null;
-    if (self::isPrimitivePhpObject($o) || is_null($o)) {
+    if (is_null($o) || self::isPrimitivePhpObject($o)) {
       $retval = $o;
     }else{
-      $phpType = null;
+      $classDescription = null;
       if (isset($o['javaClass'])) {
-        $phpType=self::findType($o['javaClass']);
+        $classDescription=self::findType($o['javaClass']);
       }
-      if (!is_null($phpType)) {
-        if (isset(self::$customJsonMapping[$phpType])) {
-           $helperReflection = self::$customJsonMapping[$phpType];
-           $fromJson=$helperReflection->getMethod('fromJson');
-           $retval=$fromJson->invoke(null,$o);
+      if (!is_null($classDescription)) {
+        if (isset(self::$customJsonMapping[$classDescription->phpType])) {
+           $helper = self::$customJsonMapping[$classDescription->$phpType];
+           $retval=$helper->fromJson($o);
         }else{
-           $retval = new $phpType;
-           $reflectionClass = new ReflectionClass($phpType);
+           $retval = $classDescription->newInstance();
            foreach($o as $key => $value) {
               // skip special
               if ($key!="javaClass") {
-                 $memberType=$reflectionClass->getConstant("${key}_TYPE");
+                 $memberType=$classDescription->typesOfFields[$key];
                  $retval->$key=self::fromJson($value, $memberType);
               }
            }
@@ -217,9 +206,21 @@ class PHPJAO
       if (isset($result['error']))
       {
           $error = $result['error'];
-          $message = $error['msg'];
-          $code = $error['code'];
-          $trace = $result['trace'];
+          if (isset($error['msg'])) {
+             $message = $error['msg'];
+          } else {
+             $message = null;
+          }
+          if (isset($error['code'])) {
+             $code = $error['code'];
+          } else {
+             $code = 0;
+          }
+          if (isset($error['trace'])) {
+             $trace = $error['trace'];
+          }else{
+             $trace = null;
+          }
           throw new PHPJAORemoteException($message, $code, $trace);
       }
       if (isset($result['result']))
@@ -420,16 +421,53 @@ class PHPJaoRemoteProxy
  private $connection;
 }
 
-class DateTimePHPJAOHelper
+abstract class PHPJAOClassDescription
 {
-   public static function toJson($object)
+  public $javaClass;
+  public $phpClass;
+  public $typesOfFields;
+
+  public function __construct()
+  {  }
+  
+  public abstract function newInstance();
+}
+
+abstract class PHPJAOPOJOBase
+{
+ public abstract function getPHPJAOClassDescription();
+}
+
+interface PHPJAOCustomMarshaller
+{
+   public function toJson($object);
+   public function fromJson($array);
+}
+
+class DateTimePHPJAOClassDescription extends PHPJAOClassDescription
+{
+ public function __construct()
+ {
+   $this->javaClass='java.util.Date';
+   $this->phpClass='DateTime';
+   $this->typesOfFields=array('timestamp' => java.lang.long);
+ }
+ public function newInstance()
+ {
+   return new DateTime();
+ }
+}
+
+class DateTimePHPJAOHelper 
+{
+   public  function toJson($object)
    {
      return array('javaClass' => 'java.util.Date',
                   'time'=>$object->format('U')*1000
                  );
    }
 
-   public static function fromJson($array)
+   public function fromJson($array)
    {
        $unixtimestamp=$array['time']/1000;
        // dirty hack - wait for DateTime implementation in next PHP versions
@@ -441,12 +479,25 @@ class DateTimePHPJAOHelper
    }
 
 }
-PHPJAO::registerType('java.util.Date','DateTime');
-PHPJAO::registerCustomType('DateTime','DateTimePHPJAOHelper');
 
-class BigDecimal
+PHPJAO::registerType('java.util.Date', new DateTimePHPJAOClassDescription());
+PHPJAO::registerCustomType('DateTime', new DateTimePHPJAOHelper());
+
+class BigDecimalPHPJAOClassDescription extends PHPJAOClassDescription
 {
- public function __construct($theStrvalue)
+  public function __construct()
+  {
+   $this->javaClass = 'java.match.BigDecimal';
+   $this->phpClass = 'BigDecimal';
+   $this->typesOfFileds=array('strvalue'=>'java.lang.String');
+  }
+  public function newInstance()
+  {  return new BigDecimal(); }
+}
+
+class BigDecimal extends PHPJAOPOJOBase
+{
+ public function __construct($theStrvalue=null)
    { 
      $this->strvalue=$theStrvalue; 
    }
@@ -458,6 +509,13 @@ class BigDecimal
    { return $this->strvalue; }
 
  public $strvalue;
+
+ public function getPhpjaoClassDescription()
+ {
+  return phpjaoClassDescription;
+ }
+
+ static $phpjaoClassDescription;
 }
 
 /**
@@ -519,37 +577,108 @@ class BigDecimalPHPJAOHelper
   }
 
 }
-PHPJAO::registerType('java.math.BigDecimal','BigDecimal');
-PHPJAO::registerCustomType('BigDecimal','BigDecimalPHPJAOHelper');
+PHPJAO::registerType('java.math.BigDecimal',
+                            new BigDecimalPHPJAClassDescription());
+PHPJAO::registerCustomType('BigDecimal',new BigDecimalPHPJAOHelper());
 
-class JavaClass
+class JavaClassPHPJAOClassDescription extends PHPJAOClassDescription
+{
+  public function __construct()
+  {
+   $this->javaClass = 'java.lang.Class';
+   $this->phpClass = 'JavaClass';
+   $this->typesOfFileds=array('name'=>'java.lang.String');
+  }
+  public function newInstance()
+  {
+   return new JavaClass('JavaClass:unknown');
+  }
+}
+
+class JavaClass extends PHPJAOPOJOBase
 {
  public function __construct($theName)
   { $this->name=$theName; }
 
  public $name;
 
- const javaClass = "java.lang.Class";
- const name_TYPE = "java.lang.String";
+ public function getPhpjaoClassDescription()
+ {
+  return self::$phpjaoClassDescription;
+ }
+
+ static $phpjaoClassDescription;
 }
-PHPJAO::registerType('java.lang.Class','JavaClass');
+JavaClass::$phpjaoClassDescription=new JavaClassPHPJAOClassDescription;
+PHPJAO::registerType('java.lang.Class',javaClass::$phpjaoClassDescription);
+
+class JavaListPHPJAOClassDescription extends PHPJAOClassDescription
+{
+  public function __construct()
+  {
+   $this->javaClass = 'java.util.List';
+   $this->phpClass = 'JavaList';
+  }
+  public function newInstance()
+  {
+   return new JavaList();
+  }
+}
 
 class JavaList
 {
   public $list;
-  const javaClass = "java.util.List";
+
+  public function getPhpjaoClassDescription()
+  {
+    return self::$phpjaoClassDescription;
+  }
+  static $phpjaoClassDescription;
+}
+
+class JavaArrayListPHPJAOClassDescription extends PHPJAOClassDescription
+{
+  public function __construct()
+  {
+   $this->javaClass = 'java.util.ArrayList';
+   $this->phpClass = 'JavaArrayList';
+  }
+  public function newInstance()
+  {
+   return new JavaArrayList();
+  }
 }
 
 class JavaArrayList extends JavaList
 {
-  public $list;
-  const javaClass = "java.util.ArrayList";
+  public function getPhpjaoClassDescription()
+  {
+    return self::$phpjaoClassDescription;
+  }
+  static $phpjaoClassDescription;
 }
+
+class JavaLinkedListPHPJAOClassDescription extends PHPJAOClassDescription
+{
+  public function __construct()
+  {
+   $this->javaClass = 'java.util.LinkedList';
+   $this->phpClass = 'JavaLinkedList';
+  }
+  public function newInstance()
+  {
+   return new JavaLinkedList();
+  }
+}
+
 
 class JavaLinkedList extends JavaList
 {
-  public $list;
-  const javaClass = "java.util.ArrayList";
+  public function getPhpjaoClassDescription()
+  {
+    return self::$phpjaoClassDescription;
+  }
+  static $phpjaoClassDescription;
 }
 
 class ListPHPJAOHelper
@@ -591,12 +720,22 @@ class ListPHPJAOHelper
     }
   }
 
+  static $instance;
 }
-PHPJAO::registerType('java.util.List','JavaList');
-PHPJAO::registerType('java.util.ArrayList','JavaArrayList');
-PHPJAO::registerType('java.util.LinkedList','JavaLinkedList');
-PHPJAO::registerCustomType('JavaList','ListPHPJAOHelper');
-PHPJAO::registerCustomType('JavaArrayList','ListPHPJAOHelper');
-PHPJAO::registerCustomType('JavaLinkedList','ListPHPJAOHelper');
+JavaList::$phpjaoClassDescription=new JavaListPHPJAOClassDescription();
+PHPJAO::registerType('java.util.List',JavaList::$phpjaoClassDescription);
+JavaArrayList::$phpjaoClassDescription=
+                                 new JavaArrayListPHPJAOClassDescription();
+PHPJAO::registerType('java.util.ArrayList',
+                                 JavaArrayList::$phpjaoClassDescription);
+JavaLinkedList::$phpjaoClassDescription=
+                                 new JavaLinkedListPHPJAOClassDescription();
+PHPJAO::registerType('java.util.LinkedList','JavaLinkedList',
+                                 JavaLinkedList::$phpjaoClassDescription);
+ListPHPJAOHelper::$instance = new ListPHPJAOHelper();
+PHPJAO::registerCustomType('JavaList',ListPHPJAOHelper::$instance);
+PHPJAO::registerCustomType('JavaArrayList',ListPHPJAOHelper::$instance);
+PHPJAO::registerCustomType('JavaLinkedList',ListPHPJAOHelper::$instance);
+
 
 ?>

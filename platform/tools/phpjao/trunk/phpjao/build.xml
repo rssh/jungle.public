@@ -64,17 +64,12 @@
 
 
  <path id="std.build.path">
-   <pathelement location="lib/javaee-api-5.jar" />
-   <pathelement location="lib/TermWare-${termware.version}.jar" />
-   <pathelement location="lib/TermWarePhp-${termwarephp.version}.jar" />
-   <pathelement location="lib/TermWareJPP-${termwarejpp.version}.jar" />
-   <pathelement location="lib/JavaChecker-${javachecker.version}.jar" />
-   <pathelement location="lib/JavaChecker2Annotations-${javachecker.version}.jar" />
+   <fileset dir="lib" includes="**/*.jar" />
  </path>
 
  <path id="test.std.build.path">
    <path refid="std.build.path" />
-   <pathelement location="lib/junit-4.5.jar" />
+   <fileset dir="lib" includes="**/junit-*.jar" />
    <pathelement location="src/main/java"/>
    <pathelement location="src/test/java"/>
    <pathelement location="src/test/resources"/>

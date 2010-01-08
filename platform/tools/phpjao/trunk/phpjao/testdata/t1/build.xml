@@ -17,12 +17,8 @@
 
    <target name="declare-phpjao"  >
      <path id="phpjao.lib.path">
-    <pathelement location="../../target/jungle.tools.phpjao-1.0.jar" />
-    <pathelement location="../../lib/TermWare-${termware.version}.jar" />
-    <pathelement location="../../lib/TermWarePhp-${termwarephp.version}.jar" />
-    <pathelement location="../../lib/JavaChecker-${javachecker.version}.jar" />
-    <pathelement location="../../lib/JavaChecker2Annotations-${javachecker.version}.jar" />
-    <pathelement location="../../lib/TermWareJPP-${termwarejpp.version}.jar" />
+     <pathelement location="../../target/jungle.tools.phpjao-1.1.1.jar" />
+     <fileset dir="../../lib" includes="**/*.jar" />
    </path>
    <taskdef resource="ua/gradsoft/phpjao/antlib.xml" 
             uri="antlib:ua.gradsoft.phpjao" 

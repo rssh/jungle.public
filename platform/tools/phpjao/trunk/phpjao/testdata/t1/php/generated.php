@@ -1,13 +1,32 @@
 <?php require_once('PHPJAO.php');
 ?>
-<?php class E1{
-const javaClass = 'ua.gradsoft.t1.E1';
-  public $name;
- 
- const name_TYPE = 'java.lang.String';
-  public $value;
- 
- const value_TYPE = 'java.lang.String';
+<?php class E1PHPJAOClassDescription extends PHPJAOClassDescription{
+public function __construct(){
+  $this->javaClass = 'ua.gradsoft.t1.E1';
+  
+  $this->typesOfFields = array('name' => 'java.lang.String', 'value' => 'java.lang.String');
+  
   }
-PHPJAO::registerType('ua.gradsoft.t1.E1', 'E1');
+ 
+ public function newInstance(){
+  return new E1() ;
+  
+  }
+ 
+ }
+class E1 extends PHPJAOBase{
+static $phpjaoClassDescription;
+ 
+ public function getPHPJAOClassDescription(){
+  return self::$phpjaoClassDescription ;
+  
+  }
+ 
+ public $name;
+ 
+ public $value;
+ 
+ }
+E1::$phpjaoClassDescription = new E1PHPJAOClassDescription();
+PHPJAO::registerType('ua.gradsoft.t1.E1', E1::$phpjaoClassDescription);
 ?>

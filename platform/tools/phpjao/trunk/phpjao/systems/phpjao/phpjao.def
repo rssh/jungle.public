@@ -14,26 +14,39 @@ domain(phpjao,
                              $name, $typeParameters,
                              $extendsList,$implementsList,
                              $body,$context) 
-                 ) -> HtmlBlocks(
+                 ) -> Invisible(HtmlBlocks(
                         HtmlBlock("<!-- interface "),
                         HtmlBlock($name),
                         HtmlBlock("-->")
-                      ),
+                      )),
 
      JavaEntity(
        ClassOrInterfaceModel($modifiers,class,$name,$typeParameters,
                              $extendsList,$implementsList,$body,$context) 
              ) -> 
+              let (
+                $classDescriptionName <- concatToIdentifier($name,
+                                                "PHPJAOClassDescription")
+              )
               SPhpPage(SHtmlBlocks([]),[
+               ClassDeclaration([],
+                    $classDescriptionName,
+                    generateClassDescriptionParent($context),
+                    [],
+                    ClassDescriptionMembers($name,$body,$context)
+               ),
                ClassDeclaration(translateClassModifiers($modifiers),
                                 $name,
                                 translateExtendsList($extendsList),
                                 translateImplementsList($implementsList),
                                 JavaEntityMembers($body,$context)
                                ),
+                               assignClassDescription($name,
+                                        $classDescriptionName),
                                registerPHPJaoType(
                                   $context.getTypeModel().getErasedFullName(),
-                                  $name
+                                  $name,
+                                  $classDescriptionName
                                ),
                                EmbeddedHtml([],[])]),
 
@@ -48,10 +61,8 @@ domain(phpjao,
 
        translateModifier($x) -> $x,
 
-       translateExtendsList([]) -> [],
+       translateExtendsList([]) -> Identifier("PHPJAOPOJOBase"),
 
-      # translateExtendsList([$x:$y]) -> cons(translateClassName($x),
-      #                                       translateExtendsList($y)),
       # extendsList can constains only one argument
        translateExtendsList([$x:$y]) -> translateClassName($x),
 
@@ -68,9 +79,11 @@ domain(phpjao,
        erasedInPhp($x) -> true,
 
        JavaEntityMembers(ClassOrInterfaceBody($x),$ctx) -> 
-                 SClassMembers(cons(
-                   generateClassHint($ctx.getTypeModel().getErasedFullName()), 
-                   JavaEntityMembers($x))
+                 SClassMembers(
+                   append(
+                     generateDescriptionAcceptor(),
+                     JavaEntityMembers($x)
+                   )
                  ),
                                                          
        JavaEntityMembers([]) -> [],
@@ -111,19 +124,13 @@ domain(phpjao,
         MethodModel($modifiers,$typeParameters,TypeRef($typeName,$resultType),
                     $name,$formalParameters,$throws,
                     $block,$context)) 
-            ->  insertMembers(
+            ->  
                    MemberVariablesDeclaration(
                    attributes([public]), 
                    [VariableDecl(nameFromGetter($name))], 
                                           EndOfStatement()
                    ),
-                   MemberConstantDeclaration(
-                     [], concatToIdentifier(nameFromGetter($name),"_TYPE"),
-                     SingleStringLiteral($resultType.getErasedFullName()),
-                     EndOfStatement()
-                   )),
 
-      cons(insertMembers($x,$y),$z) -> cons($x,cons($y,$z)),
       
       isPrimitiveConstantMember(
           MemberVariableModel($modifiers,TypeRef($t,$mt), 
@@ -156,23 +163,170 @@ domain(phpjao,
       nameFromGetter(Identifier($s)) -> Identifier($n)
                                          [ getNameFromGetterString($s,$n) ],
 
-      generateClassHint($name) -> MemberConstantDeclaration([],
-                                          Identifier("javaClass"),
-                                          SingleStringLiteral($name),
-                                          EndOfStatement()),
-
       concatToIdentifier(Identifier($x),$y) -> Identifier(concat($x,$y)),
 
-      registerPHPJaoType($fullname,Identifier($phpName)) ->
+      assignClassDescription($name,$descrName) ->
+        ExpressionStatement(
+          AssignmentExpression(
+           ScopeResolution($name,Variable(1,"phpjaoClassDescription")),
+           AssignmentOperator("="),
+           AllocationExpression($descrName,SArgumentExpressionList([]))
+          ),
+          EndOfStatement()
+        ),
+
+      registerPHPJaoType($fullname,$name,$descrName) ->
               ExpressionStatement(
                 ScopeResolution(Identifier("PHPJAO"),
                    MethodCall(Identifier("registerType"),
-                     SArgumentExpressionList([SingleStringLiteral($fullname),
-                                              SingleStringLiteral($phpName)]))
+                     SArgumentExpressionList([
+                       SingleStringLiteral($fullname),
+                       ScopeResolution($name,Variable(1,"phpjaoClassDescription"))
+                     ]))
                 ),
                 EndOfStatement()
               ), 
 
+
+       ClassDescriptionMembers($name,ClassOrInterfaceBody($x),$ctx) -> 
+                 SClassMembers([
+                   generateClassDescriptionConstructor($ctx,$x), 
+                   generateClassDescriptionInstanceConstructor($name)
+                 ]),
+                                                         
+       JavaEntityMembers([]) -> [],
+       JavaEntityMembers([$x:$y]) 
+          [isPropertyEntityMember($x)] -> cons(translateEntityMember($x),
+                                               JavaEntityMembers($y))
+         |
+          [isPrimitiveConstantMember($x)] 
+                                  -> 
+                                     cons(translatePrimitiveConstant($x),
+                                          JavaEntityMembers($y))
+                                 !->
+                                          JavaEntityMembers($y),
+
+      generateClassDescriptionConstructor($ctx,$members) -> MemberDeclaration(
+        MemberFunctionDeclaration(
+          SMemberFunctionAttributes([public]),[],
+          Identifier("__construct"),[],
+          SCompoundStatement([
+            ExpressionStatement(
+             ScopeResolution(
+              Identifier("parent"),
+              MethodCall(Identifier("__construct"),SArgumentExpressionList([]))
+             ), 
+             EndOfStatement()
+            ),
+            ExpressionStatement(
+             AssignmentExpression(
+              MemberSelector(Variable(1,"this"),Identifier("javaClass")),
+              AssignmentOperator("="),
+              SingleStringLiteral($ctx.getTypeModel().getErasedFullName())
+             ),
+             EndOfStatement()
+            ),
+            ExpressionStatement(
+             AssignmentExpression(
+              MemberSelector(Variable(1,"this"),Identifier("phpClass")),
+              AssignmentOperator("="),
+              SingleStringLiteral($ctx.getTypeModel().getErasedName())
+             ),
+             EndOfStatement()
+            ),
+            ExpressionStatement(
+             AssignmentExpression(
+              MemberSelector(Variable(1,"this"),Identifier("typesOfFields")),
+              AssignmentOperator("="),
+              generateFieldDescriptionArray($ctx,$members)
+             ),
+             EndOfStatement()
+            )
+          ])
+        )
+      ),
+
+      generateFieldDescriptionArray($ctx,$members) 
+          [$ctx.getTypeModel().getSuperClass().getErasedFullName()
+                                                    !="java.lang.Object"] 
+              ->  AdditiveExpression(
+                   MemberSelector(Variable(1,"this"),
+                    Identifier("typesOfFields")         
+                   ),
+                   "+",
+                   SArray(generateFieldDescriptionPairs($members))
+                  )
+             !->
+                   SArray(generateFieldDescriptionPairs($members)),
+
+
+      append(cons($x,$y),$z) -> cons($x,append($y,$z)),
+ 
+      generateFieldDescriptionPairs([]) -> [],
+      generateFieldDescriptionPairs([$x:$y])  
+          [isPropertyEntityMember($x)] -> cons(
+                          generateFieldDescriptionPair($x),
+                          generateFieldDescriptionPairs($y)
+                                               )
+                                 !->
+                          generateFieldDescriptionPairs($y),
+      
+      generateFieldDescriptionPair(  
+        MethodModel($modifiers,$typeParameters,TypeRef($typeName,$resultType),
+                    $name,$formalParameters,$throws,
+                    $block,$context)) 
+            -> ArrayKeyValuePair(
+                  SingleStringLiteral(unIdentifier(nameFromGetter($name))), 
+                  SingleStringLiteral($resultType.getErasedFullName())
+               ),
+  
+      unIdentifier(Identifier($x)) -> $x,
+
+      generateClassDescriptionInstanceConstructor($name)->
+         MemberDeclaration(
+          MemberFunctionDeclaration(
+            SMemberFunctionAttributes([public]),NIL,
+            Identifier("newInstance"),NIL,
+            SCompoundStatement([
+              ReturnStatement(AllocationExpression($name,
+                                    SArgumentExpressionList([])),
+              EndOfStatement()
+            )
+            ])
+          )
+         ),
+      
+      generateDescriptionAcceptor()-> cons(
+        MemberDeclaration(MemberVariablesDeclaration(
+          SMemberVariableAttributes([static]),
+          [VariableDecl(Identifier("phpjaoClassDescription"))],
+          EndOfStatement()
+        )),
+        MemberDeclaration(MemberFunctionDeclaration(
+          SMemberFunctionAttributes([public]),[],
+          Identifier("getPHPJAOClassDescription"),[],
+          SCompoundStatement([
+              ReturnStatement(
+               ScopeResolution(Identifier("self"),
+                               Variable(1,"phpjaoClassDescription"))
+               ,
+               EndOfStatement())
+          ])
+        ))
+      ),
+
+      generateClassDescriptionParent($ctx) 
+          [$ctx.getTypeModel().getSuperClass().getErasedFullName()
+                                                    !="java.lang.Object"] 
+              ->
+                 concatToIdentifier(
+                     Identifier(
+                      $ctx.getTypeModel().getSuperClass().getErasedName()
+                     ),
+                     "PHPJAOClassDescription"
+                 )
+             !->
+                    Identifier("PHPJAOClassDescription"),
 
       #JavaEntity(
       #  EnumModel($modifiers,$name,$implements,
