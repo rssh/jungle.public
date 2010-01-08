@@ -578,7 +578,7 @@ class BigDecimalPHPJAOHelper
 
 }
 PHPJAO::registerType('java.math.BigDecimal',
-                            new BigDecimalPHPJAClassDescription());
+                            new BigDecimalPHPJAOClassDescription());
 PHPJAO::registerCustomType('BigDecimal',new BigDecimalPHPJAOHelper());
 
 class JavaClassPHPJAOClassDescription extends PHPJAOClassDescription
