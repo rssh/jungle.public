@@ -127,8 +127,8 @@ class PHPJAO
            $retval = $classDescription->newInstance();
            foreach($o as $key => $value) {
               // skip special
-              if ($key!="javaClass") {
-                 $memberType=$classDescription->typesOfFields[$key];
+              if ($key!='javaClass') {
+                 $memberType=@$classDescription->typesOfFields[$key];
                  $retval->$key=self::fromJson($value, $memberType);
               }
            }
