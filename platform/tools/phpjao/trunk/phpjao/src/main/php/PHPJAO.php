@@ -42,7 +42,7 @@ class PHPJAO
 
   public static function registerCustomType($phpName,$phpHelperName)
   {
-    self::$customJsonMapping[$phpName] = new ReflectionClass($phpHelperName);
+    self::$customJsonMapping[$phpName] = $phpHelperName;
   }
 
   static function isPrimitivePhpObject($o)
