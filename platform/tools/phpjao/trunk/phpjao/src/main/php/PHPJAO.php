@@ -38,7 +38,7 @@ class PHPJAO
   { self::$mapped[$javaName]=$phpName; }
 
   public static function findType($javaName)
-  { return self::$mapped[$javaName]; }
+  { return @self::$mapped[$javaName]; }
 
   public static function registerCustomType($phpName,$phpHelperName)
   {
