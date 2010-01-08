@@ -450,7 +450,7 @@ class DateTimePHPJAOClassDescription extends PHPJAOClassDescription
  {
    $this->javaClass='java.util.Date';
    $this->phpClass='DateTime';
-   $this->typesOfFields=array('timestamp' => java.lang.long);
+   $this->typesOfFields=array('timestamp' => 'java.lang.long');
  }
  public function newInstance()
  {
