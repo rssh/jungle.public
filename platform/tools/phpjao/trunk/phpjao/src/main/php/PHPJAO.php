@@ -734,7 +734,7 @@ PHPJAO::registerType('java.util.ArrayList',
                                  JavaArrayList::$phpjaoClassDescription);
 JavaLinkedList::$phpjaoClassDescription=
                                  new JavaLinkedListPHPJAOClassDescription();
-PHPJAO::registerType('java.util.LinkedList','JavaLinkedList',
+PHPJAO::registerType('java.util.LinkedList',
                                  JavaLinkedList::$phpjaoClassDescription);
 ListPHPJAOHelper::$instance = new ListPHPJAOHelper();
 PHPJAO::registerCustomType('JavaList',ListPHPJAOHelper::$instance);
