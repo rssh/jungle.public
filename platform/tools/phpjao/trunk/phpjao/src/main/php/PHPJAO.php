@@ -20,7 +20,7 @@ class PHPJAORemoteException extends PHPJAOException
   }
 
   public function getRemoteTrace()
-    { return this->$remoteTrace; }
+    { return $this->remoteTrace; }
 
     private $remoteTrace;
 
