@@ -20,7 +20,7 @@ class PHPJAORemoteException extends PHPJAOException
   }
 
   public function getRemoteTrace()
-    { return $remoteTrace; }
+    { return this->$remoteTrace; }
 
     private $remoteTrace;
 
@@ -99,7 +99,7 @@ class PHPJAO
     foreach($o as $key => $value) {
        $memberClassHint=null;
        if (!is_null($classDescription)) {
-         $memberClassHint=$classDescription->typesOfFields[$key];
+         $memberClassHint=@$classDescription->typesOfFields[$key];
        }
        if (!is_null($value)) {
           $retval[$key]=self::toJson($value,$memberClassHint);
