@@ -364,7 +364,7 @@ class PHPJaoConnection
 
  function switchNextUrl()
  {
-   close();
+   $this->close();
    $this->currentIndex=($this->currentIndex+1)%count($this->urls);
    $this->currentUrl=$this->urls[$this->currentIndex];
    error_log("PHPJAO:switched to $this->currentUrl");
