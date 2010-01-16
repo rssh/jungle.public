@@ -646,13 +646,13 @@ AS $$
 BEGIN
  return query (
    select i.lower, i.upper from ri_tree.ri_time_intervals i,
-                            ri_tree.ri_tree_query_top_right_fork(lower,upper) q
+                          ri_tree.ri_tree_query_top_right_fork(lower,upper) q
                        where
                             i.node = q.node 
                            and 
                             i.lower <= lower
                            and
-                            i.upper => upper
+                            i.upper >= upper
      union all
    select i.lower, i.upper from ri_tree.ri_time_intervals i,
                             ri_tree.ri_tree_query_top_left(lower,upper) q
