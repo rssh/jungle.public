@@ -138,6 +138,8 @@ public abstract class EjbQlAccessObject implements CRUDFacade
             cnw.releaseConnection(cn);
         }
      }else{
+        // filters must be enabled before creation of query.
+        enableFilters(namedParameters, options);
         Query q = createQuery(ejbql, options);
         applyNamedParameters(q,namedParameters);
         applyOptions(q,options);
@@ -414,15 +416,7 @@ public abstract class EjbQlAccessObject implements CRUDFacade
          if (getJpaEx().isFiltersSupported()) {
              int dotIndex = name.indexOf('.');
              if (dotIndex!=-1) {
-                 String filterName = name.substring(0, dotIndex);
-                 String paramName = name.substring(dotIndex+1);
-                 Object value = param.getValue();
-                 if (value instanceof List) {
-                     List<Object> list = (List<Object>)value;
-                     value = ObjectParser.parseListAsQueryParameter(list);
-                 }
-                 getJpaEx().setFilterParameter(getEntityManager(),
-                                               filterName, paramName, value);
+                 // do nothing - parameter was set in enableFilters
                  return;
              }
          }
@@ -578,6 +572,37 @@ public abstract class EjbQlAccessObject implements CRUDFacade
     }
     return retval;
   }
+
+  private void enableFilters(Map<String,Object> namedParameters, Map<String,Object> options) {
+
+      for(Map.Entry<String,Object> e : namedParameters.entrySet() ) {
+         String name = e.getKey();
+         int idx = name.indexOf('.');
+         if (idx!=-1) {
+             String filterName = e.getKey().substring(0, idx);
+             String paramName = name.substring(idx+1);
+             Object value = e.getValue();
+             if (value instanceof List) {
+                 List<Object> list = (List<Object>)value;
+                 value = ObjectParser.parseListAsQueryParameter(list);
+             }
+             getJpaEx().setFilterParameter(getEntityManager(),
+                                               filterName, paramName, value);
+             //we doesw not remove, becouse afraid that map implementation
+             // can be read-only (instead skip params with '.' in applyNamedParameters)
+             //namedParameters.remove(name);
+         }
+     } 
+     Object oFilterName = options.get("enable-filter");
+     if (oFilterName!=null) {
+         enableFilter(oFilterName.toString());
+     }
+     oFilterName = options.get("disable-filter");
+     if (oFilterName!=null) {
+         disableFilter(oFilterName.toString());
+     }
+  }
+
 
   private void enableFilter(String filterName)
   {
