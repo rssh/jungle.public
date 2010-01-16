@@ -163,6 +163,34 @@ public class PgSqlBaseBeforeTest {
 
     }
 
+    @Test
+    public void testRiTreeDuringEq2() throws Exception
+    {
+        initDataSet(1);
+        EntityManager em = FrameWorkInitializer.getEntityManager();
+        Session session = (Session)em.getDelegate();
+        session.enableFilter("ri");
+        SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        session.getEnabledFilter("ri").setParameter("bottom", f.parse("1999-02-01 00:00:00").getTime()/1000);
+        session.getEnabledFilter("ri").setParameter("top", f.parse("1999-10-01 00:00:00").getTime()/1000);
+
+        String ejbql = "select m from MySeries m, RiDuringEq c "+
+                       " where c.interval.begin=m.interval.begin "+
+                            " and c.interval.end = m.interval.end ";
+
+        Query q = em.createQuery(ejbql);
+
+        List l = q.getResultList();
+        Assert.assertTrue("nothing must be selected",l.size()==0);
+
+        session.getEnabledFilter("ri").setParameter("bottom", f.parse("1999-01-01 00:00:00").getTime()/1000);
+        session.getEnabledFilter("ri").setParameter("top", f.parse("2000-01-01 00:00:00").getTime()/1000);
+
+        q = em.createQuery(ejbql);
+        l = q.getResultList();
+        Assert.assertTrue("something must be selected",l.size()!=0);
+
+    }
 
 
     void initDataSet(int number) throws Exception

@@ -31,6 +31,7 @@ import org.hibernate.persister.entity.OuterJoinLoadable;
 import org.hibernate.persister.entity.Queryable;
 import org.hibernate.sql.Alias;
 import org.hibernate.sql.SelectFragment;
+import org.hibernate.tuple.StandardProperty;
 import org.hibernate.tuple.entity.EntityMetamodel;
 import org.hibernate.tuple.entity.EntityTuplizer;
 import org.hibernate.type.EntityType;
@@ -54,14 +55,16 @@ public class RiTreeFunPersister implements EntityPersister,
         Class userClass = persistentClass.getMappedClass();
         entityMetamodel_ = new EntityMetamodel(persistentClass, factory);
         persistentClass_ = persistentClass;
-        
-        //NLP here
-        //classMetadata_ = factory.getClassMetadata(RiTreeInterval.class);
-        classMetadata_ = new RiTreeIntervalClassMetadata(userClass.getSimpleName(), userClass, entityMetamodel_);
 
         factory_ = factory;
         cacheAccessStrategy_ = cacheAccessStrategy;
-        keyColumnNames_ = KEY_COLUMN_NAMES;
+
+        //NLP here
+        //classMetadata_ = factory.getClassMetadata(RiTreeInterval.class);
+        classMetadata_ = new RiTreeIntervalClassMetadata(userClass.getSimpleName(), userClass, entityMetamodel_);
+        //classMetadata_ = null;
+
+        //keyColumnNames_ = KEY_COLUMN_NAMES;
       
         fakeTableName_=funName_+"(:ri.bottom,:ri.top)";
 
@@ -212,6 +215,7 @@ public class RiTreeFunPersister implements EntityPersister,
     }
 
     public Type[] getPropertyTypes() {
+
         return entityMetamodel_.getPropertyTypes();
     }
 
@@ -470,7 +474,7 @@ public class RiTreeFunPersister implements EntityPersister,
     }
 
     public String[] getKeyColumnNames() {
-        return keyColumnNames_;
+        return KEY_COLUMN_NAMES;
     }
 
     public String getName() {
@@ -508,7 +512,7 @@ public class RiTreeFunPersister implements EntityPersister,
     }
 
     public int countSubclassProperties() {
-        return 1;
+        return 0;
     }
 
     public String fromTableFragment(String name) {
@@ -527,8 +531,13 @@ public class RiTreeFunPersister implements EntityPersister,
         String[] retval=null;
         if (propertyPath.equals("interval")||
             propertyPath.equals(EntityPersister.ENTITY_ID)) {
-            String[] sretval = { "lower", "upper" };
-            retval=sretval;
+            retval=KEY_COLUMN_NAMES;
+        }else if (propertyPath.equals("interval.begin")
+            ||propertyPath.equals("id.begin")) {
+            retval=INTERVAL_BEGIN_COLUMN_NAMES;
+        }else if (propertyPath.equals("interval.end")
+                ||propertyPath.equals("id.end")) {
+            retval=INTERVAL_END_COLUMN_NAMES;
         }else{
             throw new HibernateException("Can't handle propertyPath "+propertyPath);
         }
@@ -539,17 +548,23 @@ public class RiTreeFunPersister implements EntityPersister,
         return getTableName();
     }
 
+
     public String[] getSubclassPropertyColumnNames(int index) {
         switch(index) {
             case 0:
                 return KEY_COLUMN_NAMES;
+            case 1:
+                return INTERVAL_BEGIN_COLUMN_NAMES;
+            case 2:
+                return INTERVAL_END_COLUMN_NAMES;
             default:
                 throw new HibernateException("Invalid property index:"+index);
         }
     }
 
     public String getSubclassPropertyName(int index) {
-        return classMetadata_.getPropertyNames()[index];
+        return getClassMetadata().getPropertyNames()[index];
+        //return classMetadata_.getPropertyNames()[index];
     }
 
     public String getSubclassPropertyTableName(int arg0) {
@@ -730,28 +745,14 @@ public class RiTreeFunPersister implements EntityPersister,
     }
 
     public String[] toColumns(String propertyName) throws QueryException, UnsupportedOperationException {
-        return getSubclassPropertyColumnNames(this.findPropertyIndex(propertyName));
+        return this.getPropertyColumnNames(propertyName);
     }
 
     public Type toType(String propertyName) throws QueryException {
-        int index = entityMetamodel_.getPropertyIndex(propertyName);
-        return entityMetamodel_.getProperties()[index].getType();
+        return classMetadata_.getPropertyType(propertyName);
     }
 
-   
-
-
-
-    protected int findPropertyIndex(String propertyName)
-    {
-      if (propertyName.equals("interval")
-         ||propertyName.equals(EntityPersister.ENTITY_ID)) {
-          return 0;
-      } else {
-          throw new HibernateException("RiEntity have no property "+propertyName);
-      }
-    }
-
+  
 
     protected EntityTuplizer getTuplizer(EntityMode entityMode)
     {
@@ -766,10 +767,12 @@ public class RiTreeFunPersister implements EntityPersister,
     private final EntityRegionAccessStrategy cacheAccessStrategy_;
     private final PersistentClass  persistentClass_;
    // private final BasicEntityPropertyMapping propertyMapping_;
-    private final String[]  keyColumnNames_;
+   // private final String[]  keyColumnNames_;
     private final String    fakeTableName_;
 
     static final String[] KEY_COLUMN_NAMES =  { "lower", "upper" };
+    static final String[] INTERVAL_BEGIN_COLUMN_NAMES =  { "lower" };
+    static final String[] INTERVAL_END_COLUMN_NAMES =  { "upper" };
 
     static final String[] TABLE_NAMES = { "ri_tree.ri_tree" };
 

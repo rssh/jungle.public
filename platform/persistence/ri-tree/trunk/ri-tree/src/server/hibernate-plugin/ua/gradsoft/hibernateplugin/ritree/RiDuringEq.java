@@ -3,12 +3,11 @@ package ua.gradsoft.hibernateplugin.ritree;
 import java.io.Serializable;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
-import ua.gradsoft.hibernateplugin.ritree.RiDuringEqPersister;
-import ua.gradsoft.hibernateplugin.ritree.RiFakeEntity;
 import ua.gradsoft.jungle.persistence.ritree.RiInterval;
 
 
@@ -33,7 +32,7 @@ import ua.gradsoft.jungle.persistence.ritree.RiInterval;
 public class RiDuringEq implements Serializable, RiFakeEntity
 {
 
- @EmbeddedId
+    @EmbeddedId
     @AttributeOverrides({
         @AttributeOverride(name="begin", column=@Column(name="lower")),
         @AttributeOverride(name="end", column=@Column(name="upper"))
@@ -46,11 +45,22 @@ public class RiDuringEq implements Serializable, RiFakeEntity
       interval_=pk;
     }
 
+    /*
+    @Basic
+    public String getS() { return "S"; }
+    
+    public void setS(String s)
+    { }
+
+     *
+     */
+
 
     public RiDuringEq createEmpty()
     {
       return new RiDuringEq();
     }
+
 
     private RiInterval interval_;
 

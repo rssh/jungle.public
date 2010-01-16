@@ -8,6 +8,7 @@ import org.hibernate.engine.SessionImplementor;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.persister.entity.EntityPersister;
 import org.hibernate.tuple.entity.EntityMetamodel;
+import org.hibernate.type.LongType;
 import org.hibernate.type.Type;
 
 /**
@@ -61,16 +62,31 @@ public class RiTreeIntervalClassMetadata implements ClassMetadata
     }
 
     public Type getPropertyType(String name) throws HibernateException {
-        return entityMetamodel_.getPropertyTypes()[entityMetamodel_.getPropertyIndex(name)];
+        if (isId(name)) {
+            return entityMetamodel_.getIdentifierProperty().getType();
+        }else if (name.equals("interval.begin")||name.equals("interval.end")||
+                  name.equals("id.begin")||name.equals("id.end")) {
+            return LONG_TYPE;
+        }else{
+            return entityMetamodel_.getPropertyTypes()[entityMetamodel_.getPropertyIndex(name)];
+        }
     }
 
     public Type[] getPropertyTypes() {
-        return entityMetamodel_.getPropertyTypes();
+        Type[] retval = new Type[3];
+        retval[0]=entityMetamodel_.getIdentifierProperty().getType();
+        retval[1]=LONG_TYPE;
+        retval[2]=LONG_TYPE;
+        return retval;
     }
 
     public Object getPropertyValue(Object object, String propertyName, EntityMode entityMode) throws HibernateException {
         if (propertyName.equals("interval")||propertyName.equals(EntityPersister.ENTITY_ID)) {
             return ((RiFakeEntity)object).getInterval();
+        }else if (propertyName.equals("interval.begin")||propertyName.equals("id.begin")) {
+            return ((RiFakeEntity)object).getInterval().getBegin();
+        }else if (propertyName.equals("interval.end")||propertyName.equals("id.end")) {
+            return ((RiFakeEntity)object).getInterval().getEnd();
         }else{
             throw new HibernateException("No such property "+propertyName+" for RiTreeInterval internal class");
         }
@@ -150,15 +166,22 @@ public class RiTreeIntervalClassMetadata implements ClassMetadata
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    private boolean isId(String propertyName)
+    {
+      return propertyName.equals("interval")||propertyName.equals(EntityPersister.ENTITY_ID);  
+    }
+
     private String entityName_;
-    private Type   entityType_;
+   // private Type   entityType_;
    // private Type   identifierType_;
 
     private EntityMetamodel entityMetamodel_;
     
-    private String[] PROPERTY_NAMES   =              { "interval"};
-    private boolean[] PROPERTY_LAZINES=              { false     };
-    private int[]    NATURAL_IDENTIFIER_PROPERTIES = { 0  };
-    private boolean[] PROPERTY_NULLABILITY =         { false     };
+    private static final String[] PROPERTY_NAMES   =              { "interval", "interval.begin", "interval.end" };
+    private static final boolean[] PROPERTY_LAZINES=              { false     ,  false, false };
+    private static final int[]    NATURAL_IDENTIFIER_PROPERTIES = { 0  ,  0, 0 };
+    private static final boolean[] PROPERTY_NULLABILITY =         { false, false, false };
+
+    private static final Type LONG_TYPE = new LongType();
 
 }

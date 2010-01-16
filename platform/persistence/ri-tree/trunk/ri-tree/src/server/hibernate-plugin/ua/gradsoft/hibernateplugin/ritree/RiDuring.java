@@ -4,6 +4,7 @@ package ua.gradsoft.hibernateplugin.ritree;
 import java.io.Serializable;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import org.hibernate.annotations.FilterDef;
@@ -30,6 +31,7 @@ public class RiDuring implements Serializable, RiFakeEntity
         @AttributeOverride(name="begin", column=@Column(name="lower")),
         @AttributeOverride(name="end", column=@Column(name="upper"))
     })
+    @Basic
     public RiInterval getInterval()
     { return interval_; }
 

@@ -1,6 +1,7 @@
 
 package ua.gradsoft.hibernateplugin.ritree;
 
+import java.io.Serializable;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -21,7 +22,8 @@ import ua.gradsoft.jungle.persistence.ritree.RiInterval;
    parameters={@ParamDef(name="bottom", type="long"),
                @ParamDef(name="top", type="long")
 })
-public class RiContainsStartedBy {
+public class RiContainsStartedBy implements Serializable, RiFakeEntity
+{
 
    @EmbeddedId
     @AttributeOverrides({
