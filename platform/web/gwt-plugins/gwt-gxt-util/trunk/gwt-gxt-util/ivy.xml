@@ -19,18 +19,20 @@
   </publications>
 
   <dependencies>
+   <!--
     <dependency org="com.googlecode" name="gwt-math"
                 rev="[2.0.3p2,)" 
                 conf="default->default" transitive="false" >
       <artifact name="gwt-math" type="jar" />
     </dependency>
+   -->
     <dependency org="com.google.gwt" name="gwt.repackaged" 
-                rev="[1.7.0,)" 
+                rev="[2.0.3,)" 
                 conf="default->server" transitive="false" >
       <artifact name="gwt-user" type="jar" />
     </dependency>
     <dependency org="com.extjs" name="gxt.repackaged" 
-                rev="[2.0,)" conf="default" >
+                rev="[2.1.1,)" conf="default" >
       <artifact name="gxt" type="jar" />
       <artifact name="gxt.resources" type="zip" />
     </dependency>
