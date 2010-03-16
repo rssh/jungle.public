@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<project name="com.google.gwt.repackaged" default="repackage" basedir="."
+  xmlns:ivy="antlib:fr.jayasoft.ivy.ant"
+ >
+
+
+  <property file="build.properties" />
+  
+  <property name="base.dir" value="." />
+  
+  <property name="origin.dir" value="${base.dir}/origin" />
+  
+  <property name="dist.dir" value="${base.dir}/dist" />
+
+  
+  <import file="build-ivy.xml" />
+
+  
+
+  <condition property="origin.loaded">
+
+    <or>
+     <and>
+
+       <available file="${origin.dir}/gwt-linux-${origin.version}/gwt-servlet.jar" />
+ 
+       <available file="${origin.dir}/gwt-linux-${origin.version}/gwt-user.jar" />
+           
+       <available file="${origin.dir}/gwt-linux-${origin.version}/gwt-dev-linux.jar" />
+  
+     </and>
+     <and>
+       <available file="${origin.dir}/gwt-windows-${origin.version}/gwt-servlet.jar" />
+ 
+       <available file="${origin.dir}/gwt-windows-${origin.version}/gwt-user.jar" />
+           
+       <available file="${origin.dir}/gwt-windows-${origin.version}/gwt-dev-windows.jar" />
+      
+     </and>
+    </or>
+
+
+
+  </condition>
+
+ 
+
+  <target name="untar-linux" depends="retrieve-origin, check-platform" 
+           if="isLinux" unless="origin.loaded" 
+          
+           description="untar origin files on linux">
+ 
+   <!-- works fast enough -->
+   <untar src="${origin.dir}/gwt-linux-${origin.version}.tar.bz2"
+ 
+          compression="bzip2"  dest="origin" overwrite="true">
+     
+    <patternset>
+          
+      <include name="*/*.jar"/>
+      
+    </patternset>
+    
+   </untar>
+    
+   <!-- also works, but is too slow
+    
+   <copy todir="origin">
+      
+    <tarfileset includes="*/*.jar">
+        
+      <bzip2resource>
+            
+        <file file="gwt-linux-${origin.version}.tar.bz2"/>
+        
+      </bzip2resource>
+      
+    </tarfileset>
+    
+   </copy>
+    
+   -->
+  
+  </target>
+
+ 
+         
+
+  <target name="untar-windows" depends="retrieve-origin, check-platform" 
+           if="isWindows" unless="origin.loaded" 
+          
+           description="untar origin files on linux">
+ 
+   <!-- works fast enough -->
+   <unzip src="${origin.dir}/gwt-windows-${origin.version}.zip"
+ dest="origin" overwrite="true">
+     
+    <patternset>
+          
+      <include name="*/*.jar"/>
+      
+    </patternset>
+    
+   </unzip>
+    
+  </target>
+
+ 
+         
+
+  <target name="untar" depends="untar-linux,untar-windows" />
+
+  <target name="patch" depends="untar" 
+              description="apply patches">
+   <!--
+    We have not patches (yet ?)
+    <patch patchfile="patches/patch.1" strip="0" /> 
+   -->
+  </target>
+
+
+  <target name="package-linux" depends="patch,check-platform" if="isLinux">
+    <copy file="${origin.dir}/gwt-linux-${origin.version}/gwt-servlet.jar" 
+          tofile="${dist.dir}/gwt-servlet-${version}.jar" />
+    <copy file="${origin.dir}/gwt-linux-${origin.version}/gwt-user.jar" 
+          tofile="${dist.dir}/gwt-user-${version}.jar" />
+    <copy file="${origin.dir}/gwt-linux-${origin.version}/gwt-dev-linux.jar" 
+          tofile="${dist.dir}/gwt-dev-linux-${version}.jar" />
+  </target>
+
+
+  <target name="package-windows" depends="patch,check-platform" if="isWindows">
+    
+    <copy file="${origin.dir}/gwt-windows-${origin.version}/gwt-servlet.jar" 
+          tofile="${dist.dir}/gwt-servlet-${version}.jar" />
+    <copy file="${origin.dir}/gwt-windows-${origin.version}/gwt-user.jar" 
+          tofile="${dist.dir}/gwt-user-${version}.jar" />
+    <copy file="${origin.dir}/gwt-windows-${origin.version}/gwt-dev-windows.jar" 
+          
+          tofile="${dist.dir}/gwt-dev-windows-${version}.jar" />
+  
+  </target>
+
+  
+
+  <target name="package" depends="package-linux,package-windows" />
+  
+
+  <target name="repackage" depends="package" />
+
+  
+
+  <target name="clean">
+    
+    <delete dir="${origin.gwt.dir}" />
+  
+  </target>
+
+   
+
+  <target name="clean-all" depends="clean">
+      
+    <delete file="${origin.filename}.tar.bz2" failonerror="false" />
+ 
+    <delete file="${origin.filename}.zip"  failonerror="false" />
+           
+    <delete>
+
+      <fileset dir="${dist.dir}" includes="*.jar" />
+
+      <fileset dir="${dist.dir}" includes="*.xml" />
+
+    </delete>
+   
+  </target>
+  
+  
+   
+
+  <target name="publish" depends="repackage">
+
+    <ivy:publish resolver="datacenter.gradsoft.ua" 
+                 pubrevision="${version}" 
+ overwrite="true" 
+                 conf="client,server,dev-${platform}" >
+
+      <artifacts pattern="${dist.dir}/[artifact]-[revision].[ext]" />
+     
+    </ivy:publish>
+    
+  </target>
+
+   
+
+  <target name="publish.local" depends="repackage">
+     
+    <ivy:publish resolver="jungle.repo" pubrevision="${version}" 
+ 
+                 overwrite="true" 
+                 conf="client,server,dev-${platform}"
+                 >
+       
+      <artifacts pattern="${dist.dir}/[artifact]-[revision].[ext]" />
+     
+    </ivy:publish>
+
+  </target>
+
+
+
+
+</project>

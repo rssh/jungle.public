@@ -1,0 +1,36 @@
+<ivy-module version="1.4">
+ <!-- repakaged jars for JWT -->
+ <info organisation="com.google.gwt" module="gwt.repackaged" />
+ <configurations>
+  <conf name="client" description="repackaged client libraries" />
+  <conf name="server" description="repackaged server libraries" />
+  <conf name="dev-linux" description="linux development environment" />
+  <conf name="dev-windows" description="windows development environment" />
+  <conf name="origin-linux" description="origin artifacts for linux" />
+  <conf name="origin-windows" description="origin artifacts for windows" />
+ </configurations>
+ <publications>
+   <artifact name="gwt-user" type="jar" conf="client" />
+   <artifact name="gwt-servlet" type="jar" conf="server" />
+   <artifact name="gwt-dev-linux" type="jar" conf="dev-linux" />
+   <artifact name="gwt-dev-windows" type="jar" conf="dev-windows" />
+ </publications>
+ <dependencies>
+    <dependency org="com.google.gwt" 
+               name="gwt-linux.origin"
+               rev="${origin.version}" 
+               conf="origin-linux->*"
+               >
+       <artifact name="gwt-linux" type="tar.bz2" 
+         url="http://google-web-toolkit.googlecode.com/files/gwt-linux-${origin.version}.tar.bz2" />
+    </dependency>
+    <dependency org="com.google.gwt" 
+               name="gwt-windows.origin"
+               rev="${origin.version}" 
+               conf="origin-windows->*"
+               >
+       <artifact name="gwt-windows" type="zip" 
+         url="http://google-web-toolkit.googlecode.com/files/gwt-windows-${origin.version}.zip" />
+    </dependency>
+ </dependencies>
+</ivy-module>
