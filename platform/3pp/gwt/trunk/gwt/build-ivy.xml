@@ -77,57 +77,13 @@
             classpathref="ivy.lib.path"/>
  </target>
 
- <target name="resolve-ivy-windows" depends="declare-ivy,check-platform"
-         if="isWindows" >
+ <target name="resolve-ivy" depends="declare-ivy" >
    <ivy:configure file="ivysettings.xml" />
-   <ivy:resolve conf="origin-windows" />
+   <ivy:resolve conf="origin" />
  </target>
 
- <target name="resolve-ivy-linux" 
-         depends="declare-ivy,check-platform"
-         if="isLinux" >
-   <ivy:configure file="ivysettings.xml" />
-   <ivy:resolve conf="origin-linux" />
+ <target name="retrieve-origin" depends="resolve-ivy" >
+   <ivy:retrieve  pattern="origin/[artifact]-[revision].[ext]" conf="origin" />
  </target>
-
- <target name="resolve-ivy" depends="resolve-ivy-linux, resolve-ivy-windows" />
-
- <target name="retrieve-origin-linux" depends="resolve-ivy,check-platform" if="isLinux">
-   <echo message="isLinux: ${isLinux}" />
-   <ivy:retrieve  pattern="origin/[artifact]-[revision].[ext]" conf="origin-linux" />
- </target>
-
- <target name="retrieve-origin-windows" depends="resolve-ivy,check-platform" if="isWindows">
-   <echo message="isWindows: ${isWindows}" />
-   <ivy:retrieve  pattern="origin/[artifact]-[revision].[ext]" conf="origin-windows" />
- </target>
-
- <target name="retrieve-origin" depends="retrieve-origin-linux, 
-                                         retrieve-origin-windows" >
-   <ivy:retrieve  pattern="origin/[artifact]-[revision].[ext]" />
- </target>
-
- <target name="check-platform-flag">
-   <condition property="isLinux">
-    <os name="linux" />
-   </condition>
-   <condition property="isWindows">
-    <os family="windows" />
-   </condition>
- </target>
-
- <target name="check-platform-linux" depends="check-platform-flag" 
-         if="isLinux" >
-  <property name="platform" value="linux" /> 
- </target>
-
- <target name="check-platform-windows" depends="check-platform-flag" 
-         if="isWindows" >
-  <property name="platform" value="windows" /> 
- </target>
-
- <target name="check-platform" 
-        depends="check-platform-linux,check-platform-windows" />
-
 
 </project>
