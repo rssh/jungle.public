@@ -98,7 +98,7 @@
                 </chain>
         </resolvers>
         <modules>
-          <module organisation="ua.gradsoft" name="jungle.configuration-ui-gwt" 
+          <module organisation="com.extjs" name="gxt.repackaged" 
                   resolver="jungle.repo" />
         </modules>
 </ivysettings>

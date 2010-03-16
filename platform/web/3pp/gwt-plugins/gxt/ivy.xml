@@ -11,11 +11,11 @@
  <dependencies>
     <dependency org="com.extjs" 
                name="gxt.origin"
-               rev="2.0.1" 
+               rev="2.1.1" 
                conf="origin->*"
                >
        <artifact name="gxt" type="zip" 
-             url="http://extjs.com/products/gxt/download.php?dl=extgwt201" />
+             url="http://www.extjs.com/deploy/gxt-2.1.1-gwt2.zip" />
     </dependency>
  </dependencies>
 </ivy-module>
