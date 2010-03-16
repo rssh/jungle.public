@@ -376,7 +376,13 @@ public class GWTServlet extends RemoteServiceServlet
                 if (o instanceof UserServerContext) {
                     userContext = (UserServerContext)o;
                 } else if (o instanceof String) {
-                    userContext = authApiProvider_.findContextById((String)o);
+                    try {
+                       userContext = authApiProvider_.findContextById((String)o);
+                    }catch(Exception ex){
+                       LOG.error("Internal error: can't process session id ('+"+(String)o+"')",ex);
+                       session.setAttribute("lastUserId", null);
+                       throw new RuntimeException("Can't deteminate user",ex);
+                    }
                 } else {
                     LOG.error("Internal error: can't determinate user");
                     throw new RuntimeException("Internal error: can't deteminate user");
