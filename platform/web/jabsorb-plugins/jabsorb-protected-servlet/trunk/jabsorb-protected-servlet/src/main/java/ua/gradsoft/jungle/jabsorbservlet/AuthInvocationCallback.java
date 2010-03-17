@@ -3,6 +3,7 @@ package ua.gradsoft.jungle.jabsorbservlet;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Method;
+import java.util.Enumeration;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.jabsorb.callback.InvocationCallback;

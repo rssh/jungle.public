@@ -96,7 +96,7 @@
 
  <target name="clean-all" depends="clean">
   <delete>
-    <fileset dir="lib" includes="**/*.jar,**/*.js" />
+    <fileset dir="lib" includes="**/*.jar,**/*.js,**/*.zip,**/*.php" />
     <fileset dir="dist" includes="**/*.jar,**/*.zip" />
   </delete>
   <delete file="src/test/php/PHPJAO.php" />
@@ -109,6 +109,7 @@
    <fileset dir=".">
     <include name="**/*.xml" />
     <include name="**/*.java" />
+    <include name="**/*.php" />
     <include name="**/*.properties" />
     <include name="src/*" />
     <include name="lib/*" />
