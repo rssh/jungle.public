@@ -28,6 +28,10 @@ public class TestAuthRemoteServiceImpl extends RemoteServiceServlet
         return "xxx";
     }
 
+    public String getOrRestoreSessionTicket(String authType, Map<String, String> parameters) throws RedirectException, AuthException {
+        return getSessionTicket(authType,parameters);
+    }
+
     public ClientUserInfo getUserInfo(String sessionTicket) throws InvalidSessionTicketException, AuthException {
         initFakeUser();
         return fakeUser_;

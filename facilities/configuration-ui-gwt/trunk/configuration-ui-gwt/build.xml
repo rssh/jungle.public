@@ -97,7 +97,7 @@
         <pathelement location="test-client" />
         <pathelement location="bin" />
         <path refid="project.class.path" />
-        <fileset dir="${gwt.home}" includes="gwt-dev-*.jar" />
+        <fileset dir="${gwt.home}" includes="gwt-dev.jar" />
       </classpath>
       <jvmarg value="-Xmx512M" />
       <jvmarg value="-Xss8M" />

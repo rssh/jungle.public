@@ -29,7 +29,7 @@
        <artifact name="gwt-math-server" type="jar" />
     </dependency>
     <dependency org="com.extjs" name="gxt.repackaged" 
-                rev="[2.0,)" conf="default" >
+                rev="[2.1.1,)" conf="default" >
       <artifact name="gxt" type="jar" />
       <artifact name="gxt.resources" type="zip" />
     </dependency>
@@ -42,7 +42,7 @@
   -->
     <dependency org="org.apache.openejb" 
                name="javaee-api"
-               rev="5.0-1" 
+               rev="[5.0-1,)" 
                conf="compile"
                >
        <artifact name="javaee-api" type="jar" />
