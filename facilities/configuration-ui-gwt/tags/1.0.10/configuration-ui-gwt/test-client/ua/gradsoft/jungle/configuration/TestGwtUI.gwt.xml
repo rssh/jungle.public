@@ -1,0 +1,15 @@
+<module>
+
+      <inherits  name='ua.gradsoft.jungle.configuration.GwtUI'/>
+      
+      <!-- Specify the app entry point class.                         -->
+      <entry-point class='ua.gradsoft.jungle.configuration.client.GwtUI'/>
+    
+      <!-- test servlet for testing -->
+      <servlet path="/TestConfiguration"
+        class="ua.gradsoft.jungle.configuration.server.TestConfigurationRemoteServiceImpl" />
+
+      <servlet path="/auth"
+        class="ua.gradsoft.jungle.configuration.server.TestAuthRemoteServiceImpl" />
+	
+</module>

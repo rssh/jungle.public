@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://www.netbeans.org/ns/project/1">
+    <type>org.netbeans.modules.ant.freeform</type>
+    <configuration>
+        <general-data xmlns="http://www.netbeans.org/ns/freeform-project/1">
+            <!-- Do not use Project Properties customizer when editing this file manually. -->
+            <name>jungle.configuration-ui-gwt</name>
+            <properties/>
+            <folders>
+                <source-folder>
+                    <label>public</label>
+                    <type>doc_root</type>
+                    <location>src/ua/gradsoft/jungle/configuration/public</location>
+                </source-folder>
+                <source-folder>
+                    <label>conf</label>
+                    <type>web_inf</type>
+                    <location>tomcat/conf</location>
+                </source-folder>
+                <source-folder>
+                    <label>src</label>
+                    <type>java</type>
+                    <location>src</location>
+                </source-folder>
+                <source-folder>
+                    <label>test-client</label>
+                    <type>java</type>
+                    <location>test-client</location>
+                </source-folder>
+                <source-folder>
+                    <label>test-server</label>
+                    <type>java</type>
+                    <location>test-server</location>
+                </source-folder>
+            </folders>
+            <ide-actions>
+                <action name="build">
+                    <target>compile</target>
+                </action>
+                <action name="clean">
+                    <target>clean</target>
+                </action>
+                <action name="rebuild">
+                    <target>clean</target>
+                    <target>compile</target>
+                </action>
+            </ide-actions>
+            <export>
+                <type>jar</type>
+                <location>jungle.configuration-ui-gwt.jar</location>
+                <build-target>compile</build-target>
+            </export>
+            <view>
+                <items>
+                    <source-folder style="tree">
+                        <label>Web Pages</label>
+                        <location>src/ua/gradsoft/jungle/configuration/public</location>
+                    </source-folder>
+                    <source-folder style="tree">
+                        <label>WEB-INF Content</label>
+                        <location>tomcat/conf</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>src</label>
+                        <location>src</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>test-client</label>
+                        <location>test-client</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>test-server</label>
+                        <location>test-server</location>
+                    </source-folder>
+                    <source-file>
+                        <location>build.xml</location>
+                    </source-file>
+                </items>
+                <context-menu>
+                    <ide-action name="build"/>
+                    <ide-action name="rebuild"/>
+                    <ide-action name="clean"/>
+                </context-menu>
+            </view>
+            <subprojects/>
+        </general-data>
+        <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/2">
+            <compilation-unit>
+                <package-root>src</package-root>
+                <classpath mode="compile">lib/jungle.auth.api.gwt-1.1.0.jar:lib/jungle.gwt.util-1.4.0.jar:/opt/gwt-linux-1.7.0/gwt-user.jar:lib/jungle.configuration.gwt-1.1.2.jar:lib/gxt-2.0.1.jar</classpath>
+                <built-to>jungle.configuration-ui-gwt.jar</built-to>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>test-client</package-root>
+                <unit-tests/>
+                <classpath mode="compile">src:lib/gxt-1.2.3.jar:lib/jungle.auth.api.gwt-0.9.4.jar:lib/jungle.configuration.gwt-1.1.0.jar:lib/jungle.gwt.util-1.0.1.jar:/opt/gwt-linux-1.6.4/gwt-user.jar</classpath>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>test-server</package-root>
+                <unit-tests/>
+                <classpath mode="compile">src:lib/gwt-math-server-2.0.3p1.jar:lib/javaee-api-5.0-1.jar:/opt/gwt-linux-1.6.4/gwt-servlet.jar:lib/jungle.auth.api.gwt-0.9.4.jar:/opt/gwt-linux-1.6.4/gwt-user.jar</classpath>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+        </java-data>
+        <preferences xmlns="http://www.netbeans.org/ns/auxiliary-configuration-preferences/1">
+            <module name="org-netbeans-modules-editor-indent">
+                <node name="CodeStyle">
+                    <property name="usedProfile" value="default"/>
+                    <node name="project">
+                        <property name="tab-size" value="8"/>
+                        <property name="text-limit-width" value="80"/>
+                    </node>
+                </node>
+                <node name="text">
+                    <node name="x-java">
+                        <node name="CodeStyle">
+                            <node name="project"/>
+                        </node>
+                    </node>
+                </node>
+            </module>
+        </preferences>
+        <web-data xmlns="http://www.netbeans.org/ns/freeform-project-web/2">
+            <web-module>
+                <doc-root>src/ua/gradsoft/jungle/configuration/public</doc-root>
+                <classpath/>
+                <context-path>/jungle.configuration</context-path>
+                <j2ee-spec-level>1.5</j2ee-spec-level>
+                <web-inf>tomcat/conf</web-inf>
+            </web-module>
+        </web-data>
+    </configuration>
+</project>
