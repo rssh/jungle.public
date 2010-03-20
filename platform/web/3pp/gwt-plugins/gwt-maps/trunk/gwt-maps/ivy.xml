@@ -11,6 +11,7 @@
    <dependency org="com.googlecode" 
                name="gwt-google-apis"
                rev="${origin.version}" 
+               conf="origin->*"
                >
     <artifact name="gwt-maps" type="zip" 
       url="http://gwt-google-apis.googlecode.com/files/gwt-maps-${origin.version}.zip" />
