@@ -20,7 +20,6 @@
   </target>
 
   <target name="clean">
-    <!-- Delete the bin directory tree -->
     <delete file="origin/gxt-${origin.version}.zip" />
     <delete file="dist/gxt-${version}.jar" />
     <delete file="dist/gxt.resources-${version}.zip" />
