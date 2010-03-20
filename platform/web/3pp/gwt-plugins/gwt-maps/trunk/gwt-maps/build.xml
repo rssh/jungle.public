@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="com.googlecode.gwt-maps.republish" basedir="."
+  default="repackage"
+  xmlns:ivy="antlib:fr.jayasoft.ivy.ant"
+ >
+
+  <property file="build.properties" />
+
+  <import file="build-ivy.xml" />
+
+   <target name="repackage" depends = "retrieve-origin"
+            description="repackage" >
+      <unzip src="origin/gwt-maps-${origin.version}.zip"
+             dest="origin" />
+      <copy file="origin/gwt-maps-${origin.version}/gwt-maps.jar"
+            tofile="dist/gwt-maps-${version}.jar" />
+      <delete dir="origin/gwt-maps-${origin.version}" />
+   </target>
+
+   <target name="publish" depends = "repackage" >
+     <ivy:publish resolver="datacenter.gradsoft.ua" 
+                  pubrevision="${version}"
+                  overwrite="true"
+                  >
+       <artifacts pattern="dist/[artifact]-[revision].[ext]" />
+     </ivy:publish>
+   </target>
+
+   <target name="publish.local" depends = "repackage" >
+     <ivy:publish resolver="jungle.repo" 
+                  pubrevision="${version}"
+                  overwrite="true"
+                  >
+       <artifacts pattern="dist/[artifact]-[revision].[ext]" />
+     </ivy:publish>
+   </target>
+
+   <target name="clean">
+     <delete file="origin/gwt-maps-${origin.version}.zip" />
+     <delete file="dist/gwt-maps-${version}.jar" />
+     <delete file="dist/ivy-${version}.xml" />
+   </target>
+
+</project>

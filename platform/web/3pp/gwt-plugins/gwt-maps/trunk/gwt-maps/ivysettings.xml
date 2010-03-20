@@ -1,0 +1,113 @@
+<ivysettings>
+        <settings defaultResolver="global.chain" checkUpToDate="false" />
+
+<!-- you can override this property to use mirrors 
+	  http://mirrors.dotsrc.org/maven2
+	  http://ftp.ggi-project.org/pub/packages/maven2
+	  http://mirrors.sunsite.dk/maven2
+	  http://public.planetmirror.com/pub/maven2
+	  http://ibiblio.lsu.edu/main/pub/packages/maven2
+	  http://www.ibiblio.net/pub/packages/maven2
+-->
+<property name="ibiblio-maven2-root" value="http://repo1.maven.org/maven2/" override="false" />
+
+ <classpath file="${ivy.lib.dir}/ivy.build.plugin.jar" />
+ <typedef name="build" classname="org.apache.ivy.plugins.resolver.build.BuildResolver" />
+
+
+<namespaces>
+   <namespace name="maven2">
+        <rule>
+       	 <fromsystem>
+             <src org="org.apache" module="velocity"/>
+             <dest org="org.apache.velocity" module="$m0"/>
+         </fromsystem>
+         <tosystem>
+             <src org="org.apache.velocity" module="velocity" />
+             <dest org="org.apache" module="$m0"/>
+         </tosystem>
+        </rule>
+        <rule>	<!-- imported apache maven1 projects -->
+       	<fromsystem>
+             	<src org="org.apache" module="commons-.+"/>
+             	<src org="org.apache" module="log4j"/>
+                <dest org="$m0" module="$m0"/>
+         </fromsystem>
+         <tosystem>
+             <src org="commons-.+" module="commons-.+" />
+             <src org="log4j" module="log4j" />
+             <dest org="org.apache" module="$m0"/>
+          </tosystem>
+          </rule>
+          <rule> <!-- junit -->
+             <fromsystem>
+	       	<src org="org.junit" module=".+" />
+                <dest org="$m0" module="$m0" />
+              </fromsystem>
+              <tosystem>
+    	     	<src org="junit" module="junit" />
+                <dest org="org.junit" module="$m0" />
+              </tosystem>
+           </rule>
+           <rule> <!-- hsql -->
+             <fromsystem>
+	       	<src org="org.hsqldb" module=".+" />
+                <dest org="$m0" module="$m0" />
+              </fromsystem>
+              <tosystem>
+    	     	<src org="hsqldb" module="hsqldb" />
+                <dest org="org.hsqldb" module="$m0" />
+              </tosystem>
+           </rule>
+    	</namespace>
+    	<namespace name="java.net" />
+    	<namespace name="gradsoft" />
+    	<namespace name="googlecode" />
+	</namespaces>
+
+        <resolvers>
+           <ibiblio name="ibiblio" root="${ibiblio-maven2-root}" 
+                    m2compatible="true" namespace="maven2" />
+           <ibiblio name="java.net" root="http://download.java.net/maven/1/"
+                    namespace="java.net" 
+                   pattern="[organization]/jars/[module]-[revision].[ext]" />
+           <filesystem name="jungle.repo">
+            <ivy pattern="${ivy.build.resolver.dir}/[organisation]/[module]/ivys/ivy-[revision].xml"/>
+               <artifact pattern="${ivy.build.resolver.dir}/[organisation]/[module]/[type]s/[artifact]-[revision].[ext]"/>
+           </filesystem>
+
+           <url name="read.datacenter.gradsoft.ua" namespace="gradsoft">
+             <ivy pattern="http://datacenter.gradsoft.ua/public.repository/[organization]/[module]/ivys/ivy-[revision].xml" />
+             <artifact pattern="http://datacenter.gradsoft.ua/public.repository/[organization]/[module]/[type]s/[artifact]-[revision].[ext]" />
+           </url>
+
+           <ssh name="datacenter.gradsoft.ua" namespace="gradsoft"
+                publishPermissions="0664" >
+            <ivy pattern="ssh://datacenter.gradsoft.ua/repo/[organization]/[module]/ivys/ivy-[revision].xml" />
+            <artifact pattern="ssh://datacenter.gradsoft.ua/repo/[organization]/[module]/[type]s/[artifact]-[revision].[ext]" />
+           </ssh>
+
+           <url name="gwt-google-apis.googlecode.com" namespace="googlecode">
+             <artifact pattern="http://gwt-google-apis.googlecode.com/files/[artifact]-[revision].[ext]" />
+           </url>
+           <filesystem name="here.ivy">
+             <ivy pattern="${basedir}/files/ivy-[module]-[revision].xml"/>
+           </filesystem>
+
+           <chain name="external.chain" returnFirst="true" >
+                  <resolver ref="ibiblio" /> 
+                  <resolver ref="java.net" /> 
+                  <resolver ref="gwt-google-apis.googlecode.com" />
+            </chain>
+                <chain name="global.chain" returnFirst="true">
+                  <resolver ref="jungle.repo" />
+                  <resolver ref="read.datacenter.gradsoft.ua" /> 
+                  <resolver ref="external.chain" />
+                </chain>
+        </resolvers>
+        <modules>
+          <module organisation="ua.gradsoft" name="gwt-log-publish" 
+                  resolver="jungle.repo" />
+        </modules>
+</ivysettings>
+
