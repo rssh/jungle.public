@@ -12,14 +12,14 @@
  <dependencies>
     <dependency org="net.sf.beanlib" 
                name="beanlib.origin"
-               rev="5.0.1beta" 
+               rev="5.0.2beta" 
                conf="origin->*"
                >
        <artifact name="beanlib" type="tar.gz" 
-         url="http://prdownloads.sourceforge.net/beanlib/beanlib-5.0.1beta.tar.gz?download" />
+         url="http://prdownloads.sourceforge.net/beanlib/beanlib-5.0.2beta.tar.gz?download" />
     </dependency>
     <dependency org="org.apache" name="log4j" rev="[1.2.11,)"
-                conf="default->default" >
+                conf="default->default" transitive="false" >
        <artifact name="log4j" type="jar" />
     </dependency>
  </dependencies>
