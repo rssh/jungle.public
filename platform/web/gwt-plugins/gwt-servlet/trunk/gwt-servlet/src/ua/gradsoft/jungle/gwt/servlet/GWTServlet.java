@@ -494,23 +494,40 @@ public class GWTServlet extends RemoteServiceServlet
     }
     if (responsePayload==null) {
       try {
+        if (debugLevel_ > 9) {
+            LOG.debug("before replication");
+        }
         if (resultReplicator_!=null) {
           retval = resultReplicator_.replicateBean(retval);
         }else if(resultHibernateBeanReplicator_!=null){
           retval = resultHibernateBeanReplicator_.deepCopy(retval);
         }
+        if (debugLevel_ > 9) {
+            LOG.debug("after replication");
+        }
+
 
         responsePayload = RPC.encodeResponseForSuccess(rpcRequest.getMethod(),
                                                        retval,
                                                        rpcRequest.getSerializationPolicy());
+
+        if (debugLevel_ > 9) {
+            LOG.debug("responce encoded for success");
+        }
+
+
       }catch(IllegalArgumentException ex){ 
         LOG.error("error during ecoding server response",ex);
         responsePayload = RPC.encodeResponseForFailure(rpcRequest.getMethod(), ex);
       }catch(Exception ex){      
         LOG.error("error during ecoding server response",ex);
         responsePayload = RPC.encodeResponseForFailure(rpcRequest.getMethod(), ex);
+      }catch(Throwable ex){
+        LOG.error("throwable: error during ecoding server response",ex);
+        responsePayload = RPC.encodeResponseForFailure(rpcRequest.getMethod(), ex);
       }
     }
+
     return responsePayload;
   }
 
