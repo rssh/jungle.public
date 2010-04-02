@@ -1,4 +1,4 @@
-
+    
 package ua.gradsoft.jungle.persistence.cluster_keys;
 
 import java.lang.annotation.Documented;

@@ -42,9 +42,9 @@ begin
 end $$ LANGUAGE plpgsql; 
 /
 
-
-insert into my_cluster_node_info(node_id, org_id) 
-    values(clusterization.host_number(inet_server_addr()),1);
+insert into my_cluster_node_info(node_id, org_id)
+    values(clusterization.host_number(
+            coalesce(inet_server_addr(),'127.0.0.1')),1);
 /
 
 create table  db_cluster_neightboards
