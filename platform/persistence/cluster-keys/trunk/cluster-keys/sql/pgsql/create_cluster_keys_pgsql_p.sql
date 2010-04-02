@@ -40,6 +40,10 @@ begin
 end $$ LANGUAGE plpgsql; 
 
 
+--
+-- note, that if you want setup node, other than localhost,
+-- then use psql fro remote connection.
+-- TODO: whrite warnign
 insert into my_cluster_node_info(node_id, org_id) 
     values(clusterization.host_number(
             coalesce(inet_server_addr(),'127.0.0.1')),1);
