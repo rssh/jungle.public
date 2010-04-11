@@ -242,14 +242,6 @@ public class GwtApplication {
       return retval;
     }
 
-    /**
-     *Now resolution is just a set of constants.
-     * @return get current resolution.
-     */
-    public Resolution  getCurrentResolution()
-    {
-      return GwtUtils.getCurrentResolution();  
-    }
 
     private void windowToFrontOnDesktop(Window w)
     {

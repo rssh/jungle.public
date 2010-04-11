@@ -5,11 +5,14 @@ import com.extjs.gxt.ui.client.data.BeanModel;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.TabPanelEvent;
+import com.extjs.gxt.ui.client.widget.BoxComponent;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.core.client.GWT;
 import ua.gradsoft.jungle.gwt.util.client.ValidationException;
 
 /**
@@ -23,10 +26,32 @@ public abstract class BaseBeanModelDetailTabs extends LayoutContainer
     public BaseBeanModelDetailTabs(SelectionListWithDetailBaseWidget owner)
     {
       owner_=owner;  
-      TabPanel folder = new TabPanel();
-      folder.setAutoHeight(true);
-      folder_=folder;       
-      
+      TabPanel folder = new TabPanel() {
+
+            @Override
+            protected void onResize(int width, int height) {
+                //GWT.log("BaseBeanModelDetailTabs.resize");
+                super.onResize(width, height);
+                //int dx = this.getTabWidth()
+                for(Component item: getItems()) {
+                    //GWT.log("item inside:"+item.getClass().getName());
+                    if (item instanceof BoxComponent && item.isRendered()) {
+                        //GWT.log("is box component anmd rendered");
+                        BoxComponent bcn = (BoxComponent)item;
+                        bcn.setSize(this.getWidth(true), this.getHeight(true));
+                    }
+                }
+            }
+
+
+
+
+      };
+
+    
+      folder_=folder;
+      folder_.setResizeTabs(true);
+
     
       folder_.addListener(Events.BeforeSelect, new Listener<TabPanelEvent>()
       {
@@ -86,7 +111,25 @@ public abstract class BaseBeanModelDetailTabs extends LayoutContainer
 
     protected void addItem(String name,Component cn)
     {
-      TabItem item = new TabItem();
+      TabItem item = new TabItem() {
+
+            @Override
+            protected void onResize(int width, int height) {
+                GWT.log("TabItem.onResize");
+                super.onResize(width, height);
+                for(Component cn: getItems()) {
+                    if (cn.isRendered() && cn instanceof BoxComponent) {
+                        BoxComponent bcn = (BoxComponent)cn;
+                        GWT.log("is rendered and box compinent, class="+bcn.getClass().getName());
+                        bcn.setSize(getWidth(true), getHeight(true));
+                    }
+                }
+            }
+
+
+      };
+
+
       item.setText(name);
       item.add(cn);
       if (cn instanceof BeanModelSelectionEventListener) {
@@ -107,6 +150,15 @@ public abstract class BaseBeanModelDetailTabs extends LayoutContainer
             l.handleBeanModelSelectionEvent(event, bm);
       }
     }
+
+    @Override
+    protected void onResize(int width, int height) {
+        super.onResize(width, height);
+        int dx = this.getWidth(false) - this.getWidth(true);
+        int dy = this.getHeight(false) - this.getHeight(true);
+        folder_.setSize(width-dx, height-dy);
+    }
+    
 
     protected SelectionListWithDetailBaseWidget owner_;
     protected TabPanel folder_;
