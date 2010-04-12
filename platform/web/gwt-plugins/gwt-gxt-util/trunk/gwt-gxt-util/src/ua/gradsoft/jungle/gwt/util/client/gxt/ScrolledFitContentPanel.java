@@ -8,6 +8,7 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.google.gwt.core.client.GWT;
 import ua.gradsoft.jungle.gwt.util.client.ValidationException;
 
 
@@ -21,6 +22,13 @@ public class ScrolledFitContentPanel extends ContentPanel
                                              DetailsTabsEventListener
 {
 
+
+    public ScrolledFitContentPanel(BoxComponent internal)
+    {
+      this(internal,-1,false);
+    }
+
+
     public ScrolledFitContentPanel(BoxComponent internal, int height, boolean doLayoutOnEvents)
     {
         setLayout(new FlowLayout());
@@ -32,15 +40,20 @@ public class ScrolledFitContentPanel extends ContentPanel
         //RowData rld = new RowData();
         //rld.setWidth(1);
         //rld.setHeight(-1);
-        setHeight(height);
+        if (height > 0) {
+          setHeight(height);
+        }
         add(internal);
         doLayoutOnEvents_=doLayoutOnEvents;
     }
 
 
     public void handleBeanModelSelectionEvent(int event, BeanModel bm) throws ValidationException {
-        if (internal_ instanceof BeanModelDetailWidget) {
-            ((BeanModelDetailWidget)internal_).handleBeanModelSelectionEvent(event, bm);
+       // GWT.log("ScrolledFitContentPanel.habldeBeanModelSelectionEvent");
+       // GWT.log("internal.class is "+internal_.getClass());
+        if (internal_ instanceof BeanModelSelectionEventListener) {
+           // GWT.log("passed to internal");
+            ((BeanModelSelectionEventListener)internal_).handleBeanModelSelectionEvent(event, bm);
             doLayoutOnEvent();
         }
     }
