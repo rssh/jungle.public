@@ -10,7 +10,7 @@
       <artifact name="jabsorb.bigdecimal.serializer-src" type="zip" conf="src" />
     </publications>
     <dependencies>
-        <dependency org="org.jabsorb" name="jabsorb" rev="${jabsorb.version}"
+        <dependency org="org.jabsorb" name="jabsorb" rev="[${jabsorb.version},)"
                     transitive="false" >
         </dependency>
     </dependencies>
