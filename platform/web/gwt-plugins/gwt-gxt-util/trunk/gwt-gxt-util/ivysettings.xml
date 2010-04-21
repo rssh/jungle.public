@@ -79,27 +79,27 @@
              <resolver ref="jungle.repo" />
              <dependencyBuild
                organization="ua.gradsoft" name="jungle.persistence.ejbqlao"
-               buildDirectory="${platform.public.home}/persistence/ejbqlao"
+               buildDirectory="${platform.public.home}/persistence/ejbqlao/trunk/ejbqlao"
                publishTarget="publish.local"
              />
              <dependencyBuild
                organization="ua.gradsoft" name="jungle.persistence.cluster_keys"
-               buildDirectory="${platform.public.home}/persistence/cluster_keys"
+               buildDirectory="${platform.public.home}/persistence/cluster_keys/trunk/cluster_keys"
                publishTarget="publish.local"
              />
              <dependencyBuild
                organization="ua.gradsoft" name="jungle.gwt.gwtservlet"
-               buildDirectory="${platform.public.home}/web/gwt-plugins/gwt-servlet"
+               buildDirectory="${platform.public.home}/web/gwt-plugins/gwt-servlet/trunk/gwt-servlet"
                publishTarget="publish.local"
              />
              <dependencyBuild
                organization="ua.gradsoft" name="gxt.repackaged"
-               buildDirectory="${platform.public.home}/web/3pp/gwt-plugins/gxt"
+               buildDirectory="${platform.public.home}/web/3pp/gwt-plugins/gxt/trunk/gxt"
                publishTarget="publish.local"
              />
              <dependencyBuild
                organization="com.google.gwt" name="gwt.repackaged"
-               buildDirectory="${platform.public.home}/3pp/gwt"
+               buildDirectory="${platform.public.home}/3pp/gwt/trunk/gwt"
                publishTarget="publish.local"
              />
              <dependencyBuild
@@ -109,7 +109,7 @@
              />
              <dependencyBuild
                organization="com.extjs" name="gxt.repackaged"
-               buildDirectory="${platform.public.home}/web/3pp/gwt-plugins/gxt"
+               buildDirectory="${platform.public.home}/web/3pp/gwt-plugins/gxt/trunk/gxt"
                publishTarget="publish.local"
              />
            </build>
