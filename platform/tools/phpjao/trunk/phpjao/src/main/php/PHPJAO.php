@@ -146,9 +146,10 @@ class PHPJAO
   static function initCurlHandle($url)
   {
     $ch=curl_init($url);
-    curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-    curl_setopt($ch,CURLOPT_POST,true);
-    curl_setopt($ch,CURLOPT_COOKIEFILE,'/dev/null');
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, Zend_Registry::get('config')->curl_connection_timeout);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_COOKIEFILE, '/dev/null');
     return $ch;
   }
 
@@ -174,7 +175,7 @@ class PHPJAO
     curl_setopt($ch,CURLOPT_POSTFIELDS,json_encode($request));
     $encodedResult=curl_exec($ch);
     if (curl_errno($ch)) {
-        throw new PHPJAOTransportException("curl_error:".curl_error($ch));
+        throw new PHPJAOTransportException("curl_error_number:" . curl_errno($ch) . " curl_error:".curl_error($ch));
     }
     $result=self::fromJson(json_decode($encodedResult,true));
     if (version_compare(PHP_VERSION,'5.3.0') == 1) {
