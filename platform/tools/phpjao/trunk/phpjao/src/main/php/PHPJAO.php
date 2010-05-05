@@ -146,7 +146,8 @@ class PHPJAO
   static function initCurlHandle($url)
   {
     $ch=curl_init($url);
-    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, Zend_Registry::get('config')->curl_connection_timeout);
+    //TODO: pass without depndency from Zend framework
+    //curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, Zend_Registry::get('config')->curl_connection_timeout);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_COOKIEFILE, '/dev/null');
