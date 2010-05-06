@@ -116,9 +116,9 @@ domain(phpjao,
       notTransient([$x:$y]) -> notTransient($x) && notTransient($y),
       notTransient([]) -> true,
       notTransient(AnnotationInstanceModel($v,$ai)) 
-         [ $ai.getAnnotationModel().getName().equals(
-                          "javax.persistence.Transient") ] -> false
-                                                          !-> true,
+         [ $ai.getAnnotationModel().getFullName() ==
+                             "javax.persistence.Transient" ] -> false 
+                                                            !-> true ,
 
       translateEntityMember(
         MethodModel($modifiers,$typeParameters,TypeRef($typeName,$resultType),
@@ -267,7 +267,7 @@ domain(phpjao,
           [isPropertyEntityMember($x)] -> cons(
                           generateFieldDescriptionPair($x),
                           generateFieldDescriptionPairs($y)
-                                               )
+                                               ) 
                                  !->
                           generateFieldDescriptionPairs($y),
       
