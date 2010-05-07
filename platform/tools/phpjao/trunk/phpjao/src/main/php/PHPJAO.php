@@ -33,6 +33,7 @@ class PHPJAO
   private static $mapped = array();
   private static $customJsonMapping = array();
   private static $requestsIdCount = 0;
+  private static $connectionTimeout = 0;
 
   public static function registerType($javaName, $phpName)
   { self::$mapped[$javaName]=$phpName; }
@@ -43,6 +44,10 @@ class PHPJAO
   public static function registerCustomType($phpName,$phpHelperName)
   {
     self::$customJsonMapping[$phpName] = $phpHelperName;
+  }
+
+  public static function setConnectionTimeout($connectionTimeout){
+      self::$connectionTimeout = $connectionTimeout;
   }
 
   static function isPrimitivePhpObject($o)
@@ -146,8 +151,8 @@ class PHPJAO
   static function initCurlHandle($url)
   {
     $ch=curl_init($url);
-    //TODO: pass without depndency from Zend framework
-    //curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, Zend_Registry::get('config')->curl_connection_timeout);
+    if (self::$connectionTimeout != 0)
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, self::$connectionTimeout);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_COOKIEFILE, '/dev/null');
