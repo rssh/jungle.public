@@ -96,6 +96,14 @@
        <artifact name="jungle.persistence.jpaex-hibernate" type="jar" />
     </dependency>
 
+    <dependency org="ua.gradsoft" name="jungle.auth-api"
+               conf="*->api"
+               rev="[1.1.0,)" >
+      <artifact name="jungle.auth.api" type="jar" />
+    </dependency>
+
+
+
     <dependency org="org.junit" name="junit" rev="[4.4,)"
                  conf="test->default" >
        <artifact name="junit" type="jar" />

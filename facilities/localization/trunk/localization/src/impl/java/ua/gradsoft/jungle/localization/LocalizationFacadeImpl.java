@@ -239,6 +239,7 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
                     boolean isFirst = true;
                     int nAdded = 0;
                     Map<Object, Integer> indexesByIds = new HashMap<Object, Integer>();
+                    Set<Integer> untranslatedIds = new HashSet<Integer>();
                     Iterator it1 = ids.iterator();
                     for (int i = 0; i < ids.size(); ++i) {
                         //Object id = ids.get(i);
@@ -249,6 +250,7 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
                                 sqlBuilder.append(", ");
                             }
                             sqlBuilder.append("?");
+                            untranslatedIds.add(i);
                             isFirst = false;
                             ++nAdded;
                         }
@@ -261,8 +263,9 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
                         for (int i = 0, j = 0; i < ids.size(); ++i) {
                             //Object id = ids.get(i);
                             Object id = it1.next();
-                            List<String> row = getCachedTranslation(id, e.entityClass, language, fields);
-                            if (row == null) {
+                            //List<String> row = getCachedTranslation(id, e.entityClass, language, fields);
+                            //if (row == null) {
+                            if (untranslatedIds.contains(i)) {
                                 st.setObject(++j, id);
                                 indexesByIds.put(id, i);
                             }
