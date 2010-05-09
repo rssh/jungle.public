@@ -70,6 +70,8 @@
            <ibiblio name="java.net" root="http://download.java.net/maven/1/"
                     namespace="java.net" 
                    pattern="[organization]/jars/[module]-[revision].[ext]" />
+           <ibiblio name="jboss" root="http://repository.jboss.org/maven2/" 
+                    m2compatible="true" namespace="maven2" />
            <filesystem name="local.jungle.repo">
             <ivy pattern="${ivy.build.resolver.dir}/[organisation]/[module]/ivys/ivy-[revision].xml"/>
                <artifact pattern="${ivy.build.resolver.dir}/[organisation]/[module]/[type]s/[artifact]-[revision].[ext]"/>
@@ -94,6 +96,7 @@
            </ssh>
            <chain name="external.chain" returnFirst="true" >
                   <resolver ref="ibiblio" /> 
+                  <resolver ref="jboss" /> 
                   <resolver ref="java.net" /> 
             </chain>
                 <chain name="global.chain" returnFirst="true">

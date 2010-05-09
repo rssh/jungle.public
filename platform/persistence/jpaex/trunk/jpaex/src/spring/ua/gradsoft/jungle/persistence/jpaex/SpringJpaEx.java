@@ -15,8 +15,6 @@ public class SpringJpaEx extends JpaEx
         return getJpaDialect().toString();
     }
 
-
-
     @Override
     public boolean isJdbcConnectionWrapperSupported(EntityManager em) {
         return true;

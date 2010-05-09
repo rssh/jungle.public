@@ -50,16 +50,27 @@
                     conf="test->default" >
           <artifact name="junit" type="jar" />
         </dependency>
-        <dependency org="org.springframework" name="spring" rev="2.5.6"
+        <dependency org="org.springframework" name="spring-jdbc" 
+                    rev="[3.0.2.RELEASE,)"
                     transitive="false" conf="spring->default" >
-          <artifact name="spring" type="jar" />
+          <artifact name="spring-jdbc" type="jar" />
         </dependency>
-        <dependency org="org.hibernate" name="hibernate-core" rev="3.3.2.GA"
+        <dependency org="org.springframework" name="spring-orm" 
+                    rev="[3.0.2.RELEASE,)"
+                    transitive="true" conf="spring->default" >
+          <artifact name="spring-orm" type="jar" />
+        </dependency>
+        <dependency org="org.springframework" name="spring-oxm" 
+                    rev="[3.0.2.RELEASE,)"
+                    transitive="false" conf="spring->default" >
+          <artifact name="spring-oxm" type="jar" />
+        </dependency>
+        <dependency org="org.hibernate" name="hibernate-core" rev="3.5.1-Final"
                     transitive="false" conf="hibernate->default" >
           <artifact name="hibernate-core" type="jar" />
         </dependency>
         <dependency org="org.hibernate" name="hibernate-entitymanager" 
-                    rev="3.4.0.GA"  transitive="false" 
+                    rev="3.5.1-Final"  transitive="false" 
                     conf="hibernate->default" >
           <artifact name="hibernate-entitymanager" type="jar" />
         </dependency>
