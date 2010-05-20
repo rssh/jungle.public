@@ -2,6 +2,7 @@
 package ua.gradsoft.jungle.auth.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,6 +23,15 @@ public interface AuthClientApiRemoteServiceAsync  {
   void  checkUserPermission(String sessionTicket, String permission,
                         Map<String,String> parameters,
                         AsyncCallback<Boolean> callback);
+
+   /**
+   *@see AuthClientApi#checkUserPermissions(java.lang.String, java.util.List, java.util.Map)
+   */
+  void  checkUserPermissions(String sessionTicket, List<String> permissions,
+                              AsyncCallback<Map<String,Boolean>> callback)
+                                      throws InvalidSessionTicketException,
+                                             AuthException;
+
 
   void  logout(AsyncCallback<Void> callback);
 

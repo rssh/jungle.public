@@ -102,7 +102,7 @@
             </compilation-unit>
             <compilation-unit>
                 <package-root>src/gwt</package-root>
-                <classpath mode="compile">build/api:/opt/gwt-linux-1.6.4/gwt-user.jar</classpath>
+                <classpath mode="compile">build/api:lib/gwt-user-2.0.3.jar</classpath>
                 <source-level>1.5</source-level>
             </compilation-unit>
         </java-data>
