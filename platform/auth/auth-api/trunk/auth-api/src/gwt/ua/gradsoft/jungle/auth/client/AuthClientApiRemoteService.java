@@ -2,6 +2,7 @@
 package ua.gradsoft.jungle.auth.client;
 
 import com.google.gwt.user.client.rpc.RemoteService;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -39,6 +40,15 @@ public interface AuthClientApiRemoteService extends RemoteService, AuthClientApi
    */
   public boolean checkUserPermission(String sessionTicket, String permission,
                                      Map<String,String> params)
+                                      throws InvalidSessionTicketException,
+                                             AuthException;
+
+
+   /**
+   *@see AuthClientApi#checkUserPermissions(java.lang.String, java.util.List, java.util.Map)
+   */
+  public Map<String,Boolean> checkUserPermissions(String sessionTicket,
+                                                   List<String> permissions)
                                       throws InvalidSessionTicketException,
                                              AuthException;
 

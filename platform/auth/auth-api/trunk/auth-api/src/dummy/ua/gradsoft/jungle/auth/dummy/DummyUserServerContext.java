@@ -2,6 +2,7 @@
 package ua.gradsoft.jungle.auth.dummy;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -111,6 +112,14 @@ public class DummyUserServerContext implements UserServerContext
         return retval;
     }
 
+    public Map<String,Boolean> checkPermissions(List<String> permissionNames)
+    {
+       Map<String,Boolean> retval = new HashMap<String,Boolean>();
+       for(String pn:permissionNames) {
+           retval.put(pn, permissions_.contains(pn));
+       }
+       return retval;
+    }
 
     boolean checkPassword(String password)
     {

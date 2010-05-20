@@ -1,5 +1,6 @@
 package ua.gradsoft.jungle.auth.client;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -73,6 +74,21 @@ public interface AuthClientApi
                                      Map<String,String> params)
                                       throws InvalidSessionTicketException,
                                              AuthException;
+
+  /**
+   * Check for list of user permissions. 
+   * @param sessionTicker - session ticket, received by <code> getSessionTicket </code>
+   * @param permissions - permissions to check
+   * @return Map from permission, and preliminary check result. Note, that
+   *  success for permission in checkUserPermissions, does not mean success in
+   *  checkUserPermission, becouse last methods can do additiona checks, depended 
+   *  from params.
+   */
+  public Map<String,Boolean> checkUserPermissions(String sessionTicker, List<String> permissions)
+                                      throws InvalidSessionTicketException,
+                                             AuthException;
+
+
 
 
   /**

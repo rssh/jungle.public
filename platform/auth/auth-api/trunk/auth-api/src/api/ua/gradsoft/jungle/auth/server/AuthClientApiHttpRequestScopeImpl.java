@@ -4,6 +4,7 @@ package ua.gradsoft.jungle.auth.server;
 import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
@@ -81,6 +82,19 @@ public class AuthClientApiHttpRequestScopeImpl implements AuthClientApi
         UserServerContext ctx = apiProvider_.findContextById(ur.getUserId());
         return ctx.checkPermission(permission, params);
     }
+
+    @Override
+    @Permission(name="*")
+    public Map<String,Boolean> checkUserPermissions(String sessionTicket,
+                                                    List<String> permissions)
+                                            throws InvalidSessionTicketException,
+                                                   AuthException
+    {      
+        UserRecord ur = getUserRecord(sessionTicket);
+        UserServerContext ctx = apiProvider_.findContextById(ur.getUserId());
+        return ctx.checkPermissions(permissions);
+    }
+
 
 
     @Override

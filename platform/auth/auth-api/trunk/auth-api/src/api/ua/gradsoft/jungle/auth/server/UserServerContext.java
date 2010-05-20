@@ -1,6 +1,7 @@
 package ua.gradsoft.jungle.auth.server;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,5 +28,13 @@ public interface UserServerContext extends Serializable
    **/
   public boolean checkPermission(String permissingName, 
                                  Map<String,String> permissionArguments);
+
+  /**
+   * preliminary check list of permissions
+   **/
+  public Map<String,Boolean> checkPermissions(List<String> permissingNames);
+
+
+
 
 }

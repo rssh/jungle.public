@@ -19,7 +19,7 @@
     <dependency org="org.apache.openejb" 
                name="javaee-api"
                rev="[5.0-1,)" 
-               conf="compile"
+               conf="compile->default"
                >
        <artifact name="javaee-api" type="jar" />
     </dependency>
