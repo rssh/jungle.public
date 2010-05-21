@@ -43,7 +43,7 @@ public class PagingLoadCallbackAdapters<T>  {
     {
 
         public void onFailure(Throwable caught) {
-            System.err.println("failure on list query");
+            //System.err.println("failure on list query");
             caught.printStackTrace();
             baseCallback_.onFailure(caught);
         }

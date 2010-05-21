@@ -115,12 +115,12 @@ public abstract class BaseBeanModelDetailTabs extends LayoutContainer
 
             @Override
             protected void onResize(int width, int height) {
-                GWT.log("TabItem.onResize");
+                //GWT.log("TabItem.onResize");
                 super.onResize(width, height);
                 for(Component cn: getItems()) {
                     if (cn.isRendered() && cn instanceof BoxComponent) {
                         BoxComponent bcn = (BoxComponent)cn;
-                        GWT.log("is rendered and box compinent, class="+bcn.getClass().getName());
+                        //GWT.log("is rendered and box compinent, class="+bcn.getClass().getName());
                         bcn.setSize(getWidth(true), getHeight(true));
                     }
                 }
