@@ -12,6 +12,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.LoadListener;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.core.client.GWT;
+import ua.gradsoft.jungle.gwt.util.client.NullSafeUtils;
 
 /**
  *
@@ -24,20 +25,25 @@ public abstract class FilterToolField<T,S> extends TextField<String> {
     {
       loader_=loader;
       proxy_=proxy;
-      //setFireChangeEventOnSetValue(true);
-      //addListener(Events.Change, new Listener<BaseEvent>(){
-      //
-      //      public void handleEvent(BaseEvent be) {
-      //          onChange();
-      //      }
-      //
-      //});
+      setFireChangeEventOnSetValue(true);
+      addListener(Events.Change, new Listener<BaseEvent>(){
+      
+            public void handleEvent(BaseEvent be) {
+                
+                onChange();
+           }
+      
+      });
       addKeyListener(new KeyListener(){
 
+
             @Override
-            public void componentKeyPress(ComponentEvent event) {
+            public void componentKeyUp(ComponentEvent event) {
+                GWT.log("keyUp, value is:"+getValue());
                 onChange();
             }
+
+            
 
       });
       loader_.addLoadListener(new LoadListener(){
@@ -81,9 +87,12 @@ public abstract class FilterToolField<T,S> extends TextField<String> {
     protected void onChange()
     {
       if (waitForLoad_) {
-          existsNextRequest_=true;
+          if (NullSafeUtils.areDifferent(getValue(), valueOfCurrentWait_)) {
+             existsNextRequest_=true;
+          }
       }else{
           waitForLoad_=true;
+          valueOfCurrentWait_=getValue();
           S selector=null;
           if (reuseSelector_) {
             selector = proxy_.getSelector();
@@ -136,6 +145,7 @@ public abstract class FilterToolField<T,S> extends TextField<String> {
     }
 
     private boolean waitForLoad_;
+    private String  valueOfCurrentWait_;
     private boolean existsNextRequest_;
     private boolean reuseSelector_;
     private ListLoader loader_;
