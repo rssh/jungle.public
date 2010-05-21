@@ -3,12 +3,15 @@ package ua.gradsoft.jungle.gwt.util.client.gxt;
 
 import com.extjs.gxt.ui.client.data.ListLoader;
 import com.extjs.gxt.ui.client.data.LoadEvent;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoader;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.KeyListener;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.LoadListener;
 import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.google.gwt.core.client.GWT;
 
 /**
  *
@@ -45,6 +48,23 @@ public abstract class FilterToolField<T,S> extends TextField<String> {
             }
 
       });
+
+      Listener<BaseEvent> changeListener = new Listener<BaseEvent>(){
+
+            public void handleEvent(BaseEvent be) {
+                GWT.log("handleEvent:"+be.toString());
+                onChange();
+            }
+
+      };
+
+      this.addListener(Events.Clear, changeListener);
+
+      this.addListener(Events.OnPaste, changeListener);
+
+      //this.addListener(Events.SpecialKey, changeListener);
+
+
     }
 
     public boolean getReuseSelector()
