@@ -76,7 +76,7 @@
     </dependency>
 
     <dependency org="org.hsqldb" name="hsqldb" 
-                 rev="[1.8.0.10,)" conf="test->default" >
+                 rev="1.8.0.10" conf="test->default" >
        <artifact name="hsqldb" type="jar" />
     </dependency>
 
