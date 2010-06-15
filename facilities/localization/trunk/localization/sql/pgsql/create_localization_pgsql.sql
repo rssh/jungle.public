@@ -1,6 +1,6 @@
-#
-# slony ranges: 58
-#
+--#
+--# slony ranges: 58
+--#
 
 create table languages
 (
