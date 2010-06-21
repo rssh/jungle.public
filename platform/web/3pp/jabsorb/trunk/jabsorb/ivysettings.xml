@@ -76,7 +76,8 @@
                     <ivy pattern="${ivy.build.resolver.dir}/[organisation]/[module]/ivys/ivy-[revision].xml"/>
                     <artifact pattern="${ivy.build.resolver.dir}/[organisation]/[module]/[type]s/[artifact]-[revision].[ext]"/>
             </filesystem>
-           <ssh name="datacenter.gradsoft.ua" namespace="gradsoft">
+           <ssh name="datacenter.gradsoft.ua" namespace="gradsoft"
+                publishPermissions="0664" >
             <ivy pattern="ssh://datacenter.gradsoft.ua/repo/[organization]/[module]/ivys/ivy-[revision].xml" />
             <artifact pattern="ssh://datacenter.gradsoft.ua/repo/[organization]/[module]/[type]s/[artifact]-[revision].[ext]" />
            </ssh>
