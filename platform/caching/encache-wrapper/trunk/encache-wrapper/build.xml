@@ -225,7 +225,7 @@
           depends="build,source-distributive,doc-distributive" />
 
    <target name="publish" depends="distributives">
-     <ivy:publish resolver="datacenter.gradsoft.ua" pubrevision="${version}" 
+     <ivy:publish resolver="write.datacenter.gradsoft.ua" pubrevision="${version}" 
                   overwrite="true" 
                   replacedynamicrev="false"
                   >
