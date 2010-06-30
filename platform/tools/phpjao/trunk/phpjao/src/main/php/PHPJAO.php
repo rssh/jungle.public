@@ -72,7 +72,7 @@ class PHPJAO
     }
   }
 
-  static function toJson(&$o,$classHint=null) 
+  static function toJson(&$o,$classHint=null)
   {
     $javaClass=null;
     $classDescription = null;
