@@ -70,6 +70,22 @@ public interface CRUDFacade
     * @param namedParameters  named parameters to query.  If named parameters have form 'x.y' (i. e. with dot) and
     * underlaying JPA implementation supports filters functionality, than this parameter is interpreted
     * as parameter of filter 'x' (with name 'y') and appropriative filter is enabled in current session.
+    * Also exists special forms, when parameter is represented as list or array such as
+    * <ul>
+    *  <li>
+    *    ["DATE", value] -- pass value as Date
+    *  </li>
+    *  <li>
+    *    ["TIME", value] -- pass value as Time
+    *  </li>
+    *  <li>
+    *    ["TIMESTAMP", value] -- pass value as Timestamp
+    *  </li>
+    *  <li>
+    *    ["HIBERNATE-TYPE", type, value] -- pass value with help of hibernate-specific
+    *   query setParemeter(String,Object,org.hibernate.type.Type)
+    *  </li>
+    * </ul>
     * @param options querty options
     *
     * @return result of query evaluation.

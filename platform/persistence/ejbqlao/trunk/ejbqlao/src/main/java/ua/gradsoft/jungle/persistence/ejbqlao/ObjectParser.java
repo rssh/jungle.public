@@ -1,8 +1,9 @@
 
 package ua.gradsoft.jungle.persistence.ejbqlao;
 
-import ua.gradsoft.jungle.persistence.ejbqlao.ObjectParseException;
+import java.lang.reflect.Field;
 import java.util.List;
+import ua.gradsoft.jungle.persistence.ejbqlao.util.Pair;
 import ua.gradsoft.jungle.persistence.ejbqlao.util.iso8601.DateParser;
 import ua.gradsoft.jungle.persistence.ejbqlao.util.iso8601.InvalidDateException;
 
@@ -118,6 +119,68 @@ public class ObjectParser {
        } else {
            throw new ObjectParseException("Can't transform '"+value.toString()+"' to boolean");
        }
+    }
+
+
+    public static boolean isHibernateType(List<Object> list)
+    {
+     if (list.size()==3) {
+         Object frs=list.get(0);
+         if (frs instanceof String) {
+             return frs.equals("HIBERNATE-TYPE");
+         }else{
+             return false;
+         }
+     }else{
+         return false;
+     }
+    }
+
+    public static Pair<Object,Object> getHibernateTypedParameter(List<Object> list) {
+        Object snd=list.get(1);
+        Object thr=list.add(2);
+        Object hibernateType = null;
+        Class hibernateTypeClass;
+        try {
+         hibernateTypeClass = Class.forName("org.hibernate.Type");
+        }catch(ClassNotFoundException ex){
+            throw new ObjectParseException("Can't parse HIBERBATE-TYPE",ex);
+        }
+        if (snd instanceof String) {
+            String ssnd = ((String)snd);
+            int lastDotPos = ssnd.lastIndexOf(".");
+            if (lastDotPos > 0) {
+              String className = ssnd.substring(0, lastDotPos);
+              String constantName = ssnd.substring(lastDotPos);
+              Class constantOwner;
+              try {
+                constantOwner = Class.forName(className);
+              }catch(ClassNotFoundException ex){
+                throw new ObjectParseException("Can't parse HIBERBATE-TYPE, constant class not found:"+className,ex);
+              }
+              Field f;
+              try {
+               f = constantOwner.getField(constantName);
+              }catch(NoSuchFieldException ex){
+                throw new ObjectParseException("Can't parse HIBERBATE-TYPE, field "+constantName+" in constant class "+className+" not found.",ex);
+              }
+              try {
+                hibernateType = f.get(null);
+              }catch(IllegalAccessException ex){
+                throw new ObjectParseException("Can't parse HIBERBATE-TYPE, field "+constantName+" in constant class "+className+" is not accessible.",ex);
+              }catch(NullPointerException ex){
+                throw new ObjectParseException("Can't parse HIBERBATE-TYPE, field "+constantName+" in constant class "+className+" is not static.",ex);
+              }
+              if (!hibernateTypeClass.isAssignableFrom(hibernateType.getClass())) {
+                  throw new ObjectParseException("argument of HIBERNATE-TYPE is not hibernateType, but "+hibernateType.getClass().getName());
+              }
+            }
+        }else if (hibernateTypeClass.isAssignableFrom(snd.getClass())){
+            hibernateType = snd;
+        }else{
+            throw new ObjectParseException("Can't parse HIBERNATE-TYPE, second argument "+snd.toString());
+        }
+        return new Pair<Object,Object>(hibernateType,thr);
     }
 
 }
