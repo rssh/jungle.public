@@ -437,18 +437,28 @@ public abstract class EjbQlAccessObject implements CRUDFacade
                // call setParameter via reflection
                //next code is equivalent to:
                //
-               //org.hibernate.Query hq = (org.hibernate.Query)query;
+               //org.hibernate.ejb.QueryImpl hs = (org.hibernate.ejb.QueryImpl)query;
+               //org.hibernate.Query hq = hs.getHibernateQuery();
                //Pair<org.hibernate.Type,Object> pair = ObjectParser.getHibernateTypeValue(list);
                //hq.setParameter(name,pair.frs,pair.snd);
                //
 
                Pair<Object,Object> pair = ObjectParser.getHibernateTypedParameter(list);
+               Method getHibernateQueryMethod=lazyInitHibernateEjbGetHibernateQueryMethod(query);
+               Object hq=null;
+               try {
+                 hq=getHibernateQueryMethod.invoke(query, new Object[0]);
+               }catch(IllegalAccessException ex){
+                 throw new DatabaseAccessException("Imposible: org.hibernate.ejb.HibernateQuery.getHibernateQuery is not accessible",ex);
+               }catch(InvocationTargetException ex){
+                   throw new DatabaseAccessException("Error during set of query params",ex);
+               }
                Method setParamWithType = lazyInitHibernateSetParamWithTypeMethod(query);
                Object[] params = new Object[] {
                   name, pair.getSnd(), pair.getFrs()
                };
                try {
-                 setParamWithType.invoke(query, params);
+                 setParamWithType.invoke(hq, params);
                }catch(IllegalAccessException ex){
                    throw new DatabaseAccessException("Imposible: org.hibernate.Query.setParam is not accessible",ex);
                }catch(InvocationTargetException ex){
@@ -467,6 +477,7 @@ public abstract class EjbQlAccessObject implements CRUDFacade
     int i=0;
     for(Object param: params)
     {
+
       if (param instanceof List) {
           List<Object> list = (List<Object>)param;
           st.setObject(i+1, ObjectParser.parseListAsQueryParameter(list));
@@ -836,17 +847,22 @@ public abstract class EjbQlAccessObject implements CRUDFacade
 
   private Class lazyInitHibernateQueryClass(Query query)
   {
-    if (hibernateQueryClass==null) {
+    if (hibernateEjbQueryClass==null) {
+       try {
+         hibernateEjbQueryClass = Class.forName("org.hibernate.ejb.HibernateQuery", true, query.getClass().getClassLoader());
+       } catch (ClassNotFoundException ex) {
+         throw new DatabaseAccessException("Can't find org.hibernate.ejb.HibernateQuery class during processing of hibernate-specific extension",ex);
+       }
+       if (!hibernateEjbQueryClass.isAssignableFrom(query.getClass())) {
+         throw new DatabaseAccessException("hibernate-specific extension passed to non-hibernate query:"+query.getClass());
+       }
        try {
          hibernateQueryClass = Class.forName("org.hibernate.Query", true, query.getClass().getClassLoader());
        } catch (ClassNotFoundException ex) {
-         throw new DatabaseAccessException("Can't find org.hibernate.Query class during processing of hibernate-specific exception",ex);  
+          throw new DatabaseAccessException("Can't find org.hibernate.ejb.HibernateQuery class during processing of hibernate-specific extension",ex);
        }
-       if (!hibernateQueryClass.isAssignableFrom(query.getClass())) {
-         throw new DatabaseAccessException("hibernate-specific exception passed to non-hibernate query:"+query.getClass());
-       } 
     }   
-    return hibernateQueryClass;
+    return hibernateEjbQueryClass;
   }
   
   private Method lazyInitHibernateSetParamWithTypeMethod(Query query)
@@ -871,6 +887,22 @@ public abstract class EjbQlAccessObject implements CRUDFacade
    return hibernateQuerySetParameterMethod;
   }
 
+  private Method lazyInitHibernateEjbGetHibernateQueryMethod(Query query)
+  {
+   if (hibernateEjbQueryGetHibernateQueryMethod==null) {
+     lazyInitHibernateQueryClass(query);
+     Class[] argClasses = new Class[0];
+     try {
+       hibernateEjbQueryGetHibernateQueryMethod=
+                      hibernateEjbQueryClass.getMethod("getHibernateQuery", argClasses);
+     }catch(NoSuchMethodException ex){
+         throw new DatabaseAccessException("can't find hibernate getHibernateQuery method",ex);
+     }
+   }
+   return hibernateEjbQueryGetHibernateQueryMethod;
+  }
+
+
   /**   
    * accessible only from local.
    * Must be overloaded from subclasses.
@@ -891,7 +923,9 @@ public abstract class EjbQlAccessObject implements CRUDFacade
   }
 
   private static Class hibernateQueryClass=null;
+  private static Class hibernateEjbQueryClass=null;
   private static Method  hibernateQuerySetParameterMethod=null;
+  private static Method  hibernateEjbQueryGetHibernateQueryMethod=null;
 
   private static HashMap<String,OptionParser> queryOptions=initQueryOptions();
   private static Log LOG = LogFactory.getLog(EjbQlAccessObject.class);

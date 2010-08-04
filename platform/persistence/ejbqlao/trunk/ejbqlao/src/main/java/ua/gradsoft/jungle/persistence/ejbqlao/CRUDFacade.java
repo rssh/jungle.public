@@ -56,7 +56,9 @@ public interface CRUDFacade
     * </ul>
     *        
     * @return result of query evaluation.
+    * @deprecated use version with named parameters instead
     */
+    @Deprecated()
     @Caching(cacheName="queryCache", action=CacheAction.CACHE,
              keyBuilder=AllArguments.class, 
              policyInterceptor=InterceptCachingOptions.class)

@@ -138,13 +138,13 @@ public class ObjectParser {
 
     public static Pair<Object,Object> getHibernateTypedParameter(List<Object> list) {
         Object snd=list.get(1);
-        Object thr=list.add(2);
+        Object thr=list.get(2);
         Object hibernateType = null;
         Class hibernateTypeClass;
         try {
-         hibernateTypeClass = Class.forName("org.hibernate.Type");
+         hibernateTypeClass = Class.forName("org.hibernate.type.Type");
         }catch(ClassNotFoundException ex){
-            throw new ObjectParseException("Can't parse HIBERBATE-TYPE",ex);
+            throw new ObjectParseException("Can't parse HIBERNATE-TYPE",ex);
         }
         if (snd instanceof String) {
             String ssnd = ((String)snd);
