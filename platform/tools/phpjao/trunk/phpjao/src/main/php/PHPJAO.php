@@ -630,6 +630,7 @@ class JavaListPHPJAOClassDescription extends PHPJAOClassDescription
    $this->javaClass = 'java.util.List';
    $this->phpClass = 'JavaList';
   }
+
   public function newInstance()
   {
    return new JavaList();
@@ -638,6 +639,12 @@ class JavaListPHPJAOClassDescription extends PHPJAOClassDescription
 
 class JavaList
 {
+
+  public function __construct()
+  {
+   $this->list=func_get_args();
+  }
+
   public $list;
 
   public function getPhpjaoClassDescription()
@@ -662,6 +669,12 @@ class JavaArrayListPHPJAOClassDescription extends PHPJAOClassDescription
 
 class JavaArrayList extends JavaList
 {
+
+  public function __construct()
+  {
+   $this->list=func_get_args();
+  }
+
   public function getPhpjaoClassDescription()
   {
     return self::$phpjaoClassDescription;
@@ -685,6 +698,12 @@ class JavaLinkedListPHPJAOClassDescription extends PHPJAOClassDescription
 
 class JavaLinkedList extends JavaList
 {
+
+  public function __construct()
+  {
+   $this->list=func_get_args();
+  }
+
   public function getPhpjaoClassDescription()
   {
     return self::$phpjaoClassDescription;
@@ -698,17 +717,17 @@ class ListPHPJAOHelper
   {
     if (is_array($object)) {
       $l = $object['list'];
-      return PHPJAO::toJson($o);
+      return PHPJAO::toJson($l);
     }else if (is_object($object)) {
       if ($object instanceof JavaArrayList) {
         return array( 'javaClass' => 'java.util.ArrayList',
-                      'list' => array( toJson($object->list) ));
+                      'list' => PHPJAO::toJson($object->list) );
       } else if ($object instanceof JavaLinkedList) {
         return array( 'javaClass' => 'java.util.LinkedList',
-                      'list' => array( toJson($object->list) ));
+                      'list' => PHPJAO::toJson($object->list) );
       } else if ($object instanceof JavaList) {
         return array( 'javaClass' => 'java.util.List',
-                      'list' => array( toJson($object->list) ));
+                      'list' => PHPJAO::toJson($object->list) );
       }else{
         $type = gettype($object);
         throw new PHPJAOException("can't transform object $type to List");
