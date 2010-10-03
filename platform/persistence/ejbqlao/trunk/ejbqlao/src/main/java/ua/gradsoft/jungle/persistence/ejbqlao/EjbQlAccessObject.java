@@ -405,7 +405,7 @@ public abstract class EjbQlAccessObject implements CRUDFacade
   }
 
 
-  private void applyNamedParameters(Query query, Map<String, ?> params)
+  protected void applyNamedParameters(Query query, Map<String, ?> params)
   {
     for(Map.Entry<String,?> param: params.entrySet()) {
         applyNamedParameter(query,param);
@@ -472,7 +472,7 @@ public abstract class EjbQlAccessObject implements CRUDFacade
        }               
   }
 
-  private void applyPositionalParameters(PreparedStatement st, List<Object> params) throws SQLException
+  protected void applyPositionalParameters(PreparedStatement st, List<Object> params) throws SQLException
   {
     int i=0;
     for(Object param: params)
@@ -492,7 +492,7 @@ public abstract class EjbQlAccessObject implements CRUDFacade
     }
   }
   
-  private void applyOptions(Query query, Map<String,?> options)
+  protected void applyOptions(Query query, Map<String,?> options)
   {
     for(Map.Entry<String,?> option: options.entrySet())  {
         applyOption(query,option, options);
@@ -549,7 +549,7 @@ public abstract class EjbQlAccessObject implements CRUDFacade
   }
 
 
-  private Class<?> getClassForJdbcQueryResultRow(Class<?> tClass)
+  protected Class<?> getClassForJdbcQueryResultRow(Class<?> tClass)
   {
     Class<?> resultClass;
     if (java.util.Map.class.isAssignableFrom(tClass)) {
