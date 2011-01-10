@@ -7,7 +7,7 @@ drop table if exists localization_bundle_languages;
 
 drop table if exists localization_bundles;
 
-drop table if exists localization_type;
+drop table if exists localization_types;
 
 drop table if exists languages_in_countries;
 

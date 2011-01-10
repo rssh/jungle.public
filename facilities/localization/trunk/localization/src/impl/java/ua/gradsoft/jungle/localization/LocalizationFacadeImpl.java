@@ -263,11 +263,18 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
                         for (int i = 0, j = 0; i < ids.size(); ++i) {
                             //Object id = ids.get(i);
                             Object id = it1.next();
+                            if (id instanceof Short) {
+                              // normalize type to nbe int, becouse dabases
+                              // return us int-s in this case.
+                              id = new Integer((Short)id);
+                            }
                             //List<String> row = getCachedTranslation(id, e.entityClass, language, fields);
                             //if (row == null) {
                             if (untranslatedIds.contains(i)) {
                                 st.setObject(++j, id);
                                 indexesByIds.put(id, i);
+                                //System.err.println("set params("+j+")="+id);
+                                //System.err.println("id type is "+id.getClass());
                             }
                             retval.add(new ArrayList<String>());
                         }
@@ -279,7 +286,7 @@ public class LocalizationFacadeImpl extends EjbQlAccessObject implements Localiz
                             if (rsind == null) {
                                 // we receive id in result. which was not in out in clause.
                                 // impossible.
-                                throw new IllegalStateException("impossible: id not found, which was in sql 'in' clause");
+                                throw new IllegalStateException("impossible: id not found, which was in sql 'in' clause ("+rsid.toString()+", class = "+rsid.getClass()+")");
                             }
                             List<String> retRow = retval.get(rsind);
                             for (int i = 0; i < fields.size(); ++i) {
