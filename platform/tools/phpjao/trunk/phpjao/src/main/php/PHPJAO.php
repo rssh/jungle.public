@@ -35,6 +35,8 @@ class PHPJAO
   private static $requestsIdCount = 0;
   private static $connectionTimeout = 0;
 
+  private static $defaultTimezoneIsSet = false;
+
   public static function registerType($javaName, $phpName)
   { self::$mapped[$javaName]=$phpName; }
 
@@ -255,6 +257,14 @@ class PHPJAO
   public static function createAnonimousConnection($urls)
   {
     return new PHPJaoConnection(null,null,$urls);
+  }
+
+  public static function checkDefaultTimezone()
+  {
+    if (!self::$defaultTimezoneIsSet) {
+      self::$defaultTimezoneIsSet=date_default_timezone_set(
+                                           date_default_timezone_get());
+    }
   }
 
 }
@@ -481,11 +491,15 @@ class DateTimePHPJAOHelper
    public function fromJson($array)
    {
        $unixtimestamp=$array['time']/1000;
-       // dirty hack - wait for DateTime implementation in next PHP versions
-       $str = strftime ("%Y-%m-%d %H:%M:%S", $unixtimestamp) ; 
-       $retval = new DateTime($str);
-       //$retval = new DateTime();
-       //$retval->setTimestamp($unixtimestamp);
+       if (version_compare(PHP_VERSION,'5.3.0')>=0) {
+         PHPJAO::checkDefaultTimezone();
+         $retval = new DateTime();
+         $retval->setTimestamp($unixtimestamp);
+       } else {
+         // dirty hack 
+         $str = strftime ("%Y-%m-%d %H:%M:%S", $unixtimestamp) ; 
+         $retval = new DateTime($str);
+       }
        return $retval;
    }
 
