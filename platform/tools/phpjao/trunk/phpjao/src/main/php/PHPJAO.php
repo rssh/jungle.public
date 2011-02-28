@@ -186,7 +186,7 @@ class PHPJAO
         throw new PHPJAOTransportException("curl_error_number:" . curl_errno($ch) . " curl_error:".curl_error($ch));
     }
     $result=self::fromJson(json_decode($encodedResult,true));
-    if (version_compare(PHP_VERSION,'5.3.0') == 1) {
+    if (version_compare(PHP_VERSION,'5.3.0') >= 0) {
       //will be enabled in PHP-5.3.0
       switch(json_last_error()) {
          case JSON_ERROR_DEPTH:
@@ -471,7 +471,7 @@ class DateTimePHPJAOClassDescription extends PHPJAOClassDescription
  {
    $this->javaClass='java.util.Date';
    $this->phpClass='DateTime';
-   $this->typesOfFields=array('timestamp' => 'java.lang.long');
+   $this->typesOfFields=array('time' => 'java.lang.long');
  }
  public function newInstance()
  {
