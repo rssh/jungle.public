@@ -1,4 +1,4 @@
-package ua.gradsoft.hibernateplugin.ritree;
+    package ua.gradsoft.hibernateplugin.ritree;
 
 import org.hibernate.cache.access.EntityRegionAccessStrategy;
 import org.hibernate.engine.Mapping;

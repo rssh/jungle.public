@@ -50,13 +50,13 @@
             classpathref="ivy.lib.path"/>
  </target>
 
- <target name="resolve-ivy" depends="declare-ivy">
+ <target name="resolve-ivy" depends="declare-ivy" unless="offline" >
    <ivy:configure file="ivysettings.xml" />
    <ivy:resolve />
  </target>
 
 
- <target name="retrieve-libs" depends="resolve-ivy" >
+ <target name="retrieve-libs" depends="resolve-ivy" unless="offline" >
    <ivy:retrieve  pattern="lib/[artifact]-[revision].[ext]" />
  </target>
 

@@ -15,7 +15,7 @@ public class RiIntersectPersister extends RiTreeFunPersister
                             EntityRegionAccessStrategy cacheAccessStrategy,
                             SessionFactoryImplementor factory,
                             Mapping mapping)
-   { super("ri_tree.ri_time_intervals_during_eq",persistentClass,cacheAccessStrategy,factory);
+   { super("ri_tree.ri_time_intervals_intersect",persistentClass,cacheAccessStrategy,factory);
    }
 
 

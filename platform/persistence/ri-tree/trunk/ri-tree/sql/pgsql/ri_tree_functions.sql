@@ -746,7 +746,7 @@ BEGIN
  return query (
    select i.lower, i.upper 
             from ri_tree.ri_time_intervals i,
-                 ri_tree.ri_tree_query_all_left q
+                 ri_tree.ri_tree_query_all_left(lower,upper) q
              where
                    i.node = q.node
                   and
@@ -754,7 +754,7 @@ BEGIN
     union all
    select i.lower, i.upper 
             from ri_tree.ri_time_intervals i,
-                 ri_tree.ri_tree_query_all_right q
+                 ri_tree.ri_tree_query_all_right(lower,upper) q
              where
                    i.node = q.node
                  and
