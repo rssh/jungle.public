@@ -1,6 +1,0 @@
-debug=true
-#jungle.home=/home/paull/work/Jungle/trunk/Jungle
-#repo.home=${jungle.home}/repo
-
-#offline=true
-#offline.ivy=true
