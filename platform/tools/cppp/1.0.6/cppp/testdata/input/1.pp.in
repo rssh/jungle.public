@@ -1,7 +1,0 @@
-AAA
-#if 1
-  CCC
-#else
-  EEE
-#endif
-AAA<E
