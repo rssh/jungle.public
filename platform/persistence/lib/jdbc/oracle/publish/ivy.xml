@@ -1,9 +1,0 @@
-<ivy-module version="1.4">
-    <info organisation="com.oracle" module="ojdbc6"/>
-    <publications>
-      <artifact name="ojdbc6" />
-    </publications>
-</ivy-module>
-
-
-
