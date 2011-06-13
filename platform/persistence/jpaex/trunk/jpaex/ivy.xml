@@ -65,12 +65,12 @@
                     transitive="false" conf="spring->default" >
           <artifact name="spring-oxm" type="jar" />
         </dependency>
-        <dependency org="org.hibernate" name="hibernate-core" rev="3.5.1-Final"
+        <dependency org="org.hibernate" name="hibernate-core" rev="3.6.5.Final"
                     transitive="false" conf="hibernate->default" >
           <artifact name="hibernate-core" type="jar" />
         </dependency>
         <dependency org="org.hibernate" name="hibernate-entitymanager" 
-                    rev="3.5.1-Final"  transitive="false" 
+                    rev="3.6.5.Final"  transitive="false" 
                     conf="hibernate->default" >
           <artifact name="hibernate-entitymanager" type="jar" />
         </dependency>
