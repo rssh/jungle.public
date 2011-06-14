@@ -374,7 +374,7 @@ public class RiTreeFunPersister implements EntityPersister,
     }
 
     public boolean isIdentifierAssignedByInsert() {
-        return false;
+        return true;
     }
 
     public boolean isInherited() {
@@ -465,11 +465,12 @@ public class RiTreeFunPersister implements EntityPersister,
     }
 
     public void resetIdentifier(Object entity, Serializable currentId, Object currentVersion, SessionImplementor session) {
-        getTuplizer(session).resetIdentifier(entity, currentId, currentVersion);
+        getTuplizer(session).resetIdentifier(entity, currentId, currentVersion, session);
     }
 
+    @Override
     public void setIdentifier(Object entity, Serializable id, SessionImplementor session) throws HibernateException {
-        getTuplizer(session).setIdentifier(entity, id);
+        getTuplizer(session).setIdentifier(entity, id,session);
     }
 
 
@@ -783,15 +784,13 @@ public class RiTreeFunPersister implements EntityPersister,
     public SelectFragment propertySelectFragmentFragment(String alias, String suffix, boolean allProperties) {
          SelectFragment select = new SelectFragment()
                             .setSuffix(suffix)
-                            .getUsedAliases(getIdentifiesAliases());
-         String a1 = generateTableAlias(alias,1);
-         String a2 = generateTableAlias(alias,2);
-         subAliases = new String[2];
-         subAliases(0)=a1;
-         subAliases(0)=a2;
-         select.addColumns(aliases, KEY_COLUMN_NAMES, subAliases);
+                            .setUsedAliases(getIdentifierAliases(suffix));
+         // and we have no non-used fields in this select
+         //select.addColumns(aliases, KEY_COLUMN_NAMES, getIdentifierAliases(suffix));
          return select;
     }
+
+
 
     public Type getType() {
         return entityMetamodel_.getEntityType();
@@ -826,7 +825,7 @@ public class RiTreeFunPersister implements EntityPersister,
 
     protected EntityTuplizer getTuplizer(SessionImplementor session)
     {
-        return entityMetamodel_.getTuplizer(session.getEntityMode);
+        return entityMetamodel_.getTuplizer(session.getEntityMode());
     }
 
     protected EntityTuplizer getTuplizer(EntityMode entityMode)

@@ -29,7 +29,12 @@ public class RiTreeIntervalClassMetadata implements ClassMetadata
         return entityName_;
     }
 
+    @Deprecated
     public Serializable getIdentifier(Object entity, EntityMode entityMode) throws HibernateException {
+        return ((RiFakeEntity)entity).getInterval();
+    }
+
+    public Serializable getIdentifier(Object entity, SessionImplementor session) throws HibernateException {
         return ((RiFakeEntity)entity).getInterval();
     }
 
@@ -138,8 +143,13 @@ public class RiTreeIntervalClassMetadata implements ClassMetadata
         return false;
     }
 
-    public Object instantiate(Serializable arg0, EntityMode arg1) throws HibernateException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    @Deprecated
+    public Object instantiate(Serializable id, EntityMode entityMode) throws HibernateException {
+        return entityMetamodel_.getTuplizer(entityMode).instantiate(id);
+    }
+
+    public Object instantiate(Serializable id, SessionImplementor session) throws HibernateException {
+        return entityMetamodel_.getTuplizer(session.getEntityMode()).instantiate(id,session);
     }
 
     public boolean isInherited() {
@@ -154,9 +164,18 @@ public class RiTreeIntervalClassMetadata implements ClassMetadata
         return false;
     }
 
-    public void setIdentifier(Object arg0, Serializable arg1, EntityMode arg2) throws HibernateException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    @Override
+    public void setIdentifier(Object entity, Serializable id, SessionImplementor session) throws HibernateException {
+        entityMetamodel_.getTuplizer(session.getEntityMode()).setIdentifier(entity, id,session);
     }
+
+
+    @Deprecated
+    public void setIdentifier(Object entity, Serializable id, EntityMode entityMode) throws HibernateException {
+        entityMetamodel_.getTuplizer(entityMode).setIdentifier(entity, id);
+    }
+
+
 
     public void setPropertyValue(Object arg0, String arg1, Object arg2, EntityMode arg3) throws HibernateException {
         throw new UnsupportedOperationException("Not supported yet.");
