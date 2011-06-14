@@ -46,20 +46,17 @@
     </target>
     
     <target name="clean">
-        <!--
-        <delete>
-            <fileset dir="${build.dir}" includes="**/*.class" />
-            <fileset dir="${dist.dir}" includes="**/*.ear,**/*.war,**/*.jar" />
+        <delete quiet="true">
+            <fileset dir="${build.dir}"   includes="**/*.class" />
+            <fileset dir="${dist.dir}" 
+                     includes="**/*.ear,**/*.war,**/*.jar" />
         </delete>
-        -->
-        <delete dir="${build.dir}"/>
-        <delete dir="${dist.dir}"/>
     </target>
 
     <target name="clean-all" depends="clean">
-        <delete>
-          <fileset dir="lib" includes="**/*.jar" />
-          <fileset dir="dist" includes="**/*.jar,**/*.xml, **/*.sql" />
+        <delete quiet="true" >
+          <fileset dir="lib"  includes="**/*.jar" />
+          <fileset dir="dist"  includes="**/*.jar,**/*.xml, **/*.sql" />
         </delete>
     </target>
     
