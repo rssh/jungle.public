@@ -88,7 +88,7 @@
  </target>
 
  <target name="clean-all" depends="clean">
-  <delete>
+  <delete quiet="true">
     <fileset dir="lib" includes="**/*.jar,**/*.js" />
     <fileset dir="dist" includes="**/*.jar,**/*.zip" />
   </delete>
