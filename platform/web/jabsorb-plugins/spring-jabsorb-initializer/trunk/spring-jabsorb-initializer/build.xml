@@ -50,7 +50,7 @@
  </target>
 
   <target name="clean-ivy" description="--> clean the ivy installation">
-    <delete dir="${ivy.jar.dir}"/>
+    <delete dir="${ivy.jar.dir}" quiet="true" />
   </target>
 
  <target name="init-ivy" depends="declare-ivy">
@@ -82,13 +82,13 @@
  </target>
 
  <target name="clean">
-  <delete>
+  <delete quiet="true" >
     <fileset dir="src" includes="**/*.class" />
   </delete>
  </target>
 
  <target name="clean-all" depends="clean">
-  <delete>
+  <delete quiet="true" >
     <fileset dir="lib" includes="**/*.jar,**/*.js" />
     <fileset dir="dist" includes="**/*.jar,**/*.zip" />
   </delete>
