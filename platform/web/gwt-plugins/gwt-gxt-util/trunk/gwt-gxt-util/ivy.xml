@@ -37,7 +37,7 @@
       <artifact name="gxt.resources" type="zip" />
     </dependency>
     <dependency org="ua.gradsoft" name="jungle.auth-api" 
-                rev="[1.2.0,)" conf="default->gwt-export" >
+                rev="[${global.version}-1.2.0,)" conf="default->gwt-export" >
       <artifact name="jungle.auth.api.gwt" type="jar" />
     </dependency>
  </dependencies>
