@@ -46,7 +46,7 @@
     </dependency>
    <dependency org="ua.gradsoft" 
                name="jungle.persistence.jpaex"
-               rev="[2.0.0,3.0.0)"
+               rev="[${global.version}-2.0.0,3.0.0)"
                conf="default->api;hibernate->hibernate">
        <artifact name="jungle.persistence.jpaex-api" type="jar" />
        <artifact name="jungle.persistence.jpaex-hibernate" type="jar" />
