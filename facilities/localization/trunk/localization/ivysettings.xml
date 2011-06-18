@@ -76,6 +76,11 @@
                buildDirectory="${platform.public.home}/persistence/cluster-keys/trunk/cluster-keys"
                publishTarget="publish.local"
              />
+             <dependencyBuild
+               organization="ua.gradsoft" name="jungle.persistence.jpaex"
+               buildDirectory="${platform.public.home}/persistence/jpaex/trunk/jpaex"
+               publishTarget="publish.local"
+             />
            </build>
 
            <url name="read.datacenter.gradsoft.ua" namespace="gradsoft">
