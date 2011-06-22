@@ -91,7 +91,7 @@
     </dependency>
 
     <dependency org="ua.gradsoft" name="jungle.persistence.jpaex" 
-      rev="[1.2.4,2.0.0)" conf="test->hibernate" >
+      rev="[1.2.4,3.0.0)" conf="test->hibernate" >
        <artifact name="jungle.persistence.jpaex-api" type="jar" />
        <artifact name="jungle.persistence.jpaex-hibernate" type="jar" />
     </dependency>
