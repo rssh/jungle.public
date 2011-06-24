@@ -97,6 +97,10 @@
                buildDirectory="${platform.home}/persistence/cluster-keys/trunk/cluster-keys"
                publishTarget="publish.local"
              />
+             <dependencyBuild   
+               organization="ua.gradsoft" name="jungle.tools.phpjao"
+               buildDirectory="${platform.home}/tools/phpjao/trunk/phpjao"
+             />
            </build>
            <url name="read.datacenter.gradsoft.ua" namespace="gradsoft">
              <ivy pattern="http://datacenter.gradsoft.ua/public.repository/[organization]/[module]/ivys/ivy-[revision].xml" />
