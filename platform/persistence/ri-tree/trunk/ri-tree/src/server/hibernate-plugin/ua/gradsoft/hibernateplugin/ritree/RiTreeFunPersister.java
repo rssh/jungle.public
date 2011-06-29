@@ -6,8 +6,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Comparator;
 import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
 import org.hibernate.AssertionFailure;
 import org.hibernate.EntityMode;
+import org.hibernate.LockOptions;
 import org.hibernate.FetchMode;
 import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
@@ -29,6 +32,7 @@ import org.hibernate.persister.entity.Loadable;
 import org.hibernate.persister.entity.NamedQueryLoader;
 import org.hibernate.persister.entity.OuterJoinLoadable;
 import org.hibernate.persister.entity.Queryable;
+import org.hibernate.persister.entity.DiscriminatorMetadata;
 import org.hibernate.sql.Alias;
 import org.hibernate.sql.SelectFragment;
 import org.hibernate.tuple.StandardProperty;
@@ -45,6 +49,8 @@ import org.hibernate.util.StringHelper;
  */
 public class RiTreeFunPersister implements EntityPersister,
                                  OuterJoinLoadable, Queryable
+                                /*extends AbstractEntityPersister */
+             
 {
 
     RiTreeFunPersister(String funName, PersistentClass persistentClass,
@@ -147,7 +153,12 @@ public class RiTreeFunPersister implements EntityPersister,
         return factory_;
     }
 
+    @Deprecated
     public Serializable getIdentifier(Object arg0, EntityMode arg1) throws HibernateException {
+        return ((RiTreeInterval)arg0).getPk();
+    }
+
+    public Serializable getIdentifier(Object arg0, SessionImplementor arg1) throws HibernateException {
         return ((RiTreeInterval)arg0).getPk();
     }
 
@@ -344,6 +355,12 @@ public class RiTreeFunPersister implements EntityPersister,
         throw new AssertionFailure("FunObjects does not have inserts");
     }
 
+   
+    public Object instantiate(Serializable id, SessionImplementor session) throws HibernateException {
+        return getTuplizer(session).instantiate(id,session);
+    }
+  
+    @Deprecated
     public Object instantiate(Serializable id, EntityMode entityMode) throws HibernateException {
         return getTuplizer(entityMode).instantiate(id);
     }
@@ -357,7 +374,7 @@ public class RiTreeFunPersister implements EntityPersister,
     }
 
     public boolean isIdentifierAssignedByInsert() {
-        return false;
+        return true;
     }
 
     public boolean isInherited() {
@@ -403,6 +420,7 @@ public class RiTreeFunPersister implements EntityPersister,
         return false;
     }
 
+    @Deprecated
     public Object load(Serializable id, Object optionalObject, LockMode lockModel, SessionImplementor session) throws HibernateException {
         if (queryLoader_==null) {
             queryLoader_ = new NamedQueryLoader(persistentClass_.getLoaderName(),this);
@@ -410,9 +428,24 @@ public class RiTreeFunPersister implements EntityPersister,
         return queryLoader_.load(id, optionalObject, session);
     }
 
+   public Object load(Serializable id, Object optionalObject, LockOptions lockOptions, SessionImplementor session) throws HibernateException {
+        if (queryLoader_==null) {
+            queryLoader_ = new NamedQueryLoader(persistentClass_.getLoaderName(),this);
+        }
+        return queryLoader_.load(id, optionalObject, session, lockOptions);
+    }
+
+
+
+
     public void lock(Serializable id, Object version, Object object, LockMode lockMode, SessionImplementor session) throws HibernateException {
        /* do nothing: we have no locks */
     }
+
+    public void lock(Serializable id, Object version, Object object, LockOptions lockOptions, SessionImplementor session) throws HibernateException {
+       /* do nothing: we have no locks */
+    }
+
 
     public void postInstantiate() throws MappingException {
     
@@ -426,10 +459,22 @@ public class RiTreeFunPersister implements EntityPersister,
       
     }
 
+    @Deprecated
     public void resetIdentifier(Object entity, Serializable currentId, Object currentVersion, EntityMode entityMode) {
         getTuplizer(entityMode).resetIdentifier(entity, currentId, currentVersion);
     }
 
+    public void resetIdentifier(Object entity, Serializable currentId, Object currentVersion, SessionImplementor session) {
+        getTuplizer(session).resetIdentifier(entity, currentId, currentVersion, session);
+    }
+
+    @Override
+    public void setIdentifier(Object entity, Serializable id, SessionImplementor session) throws HibernateException {
+        getTuplizer(session).setIdentifier(entity, id,session);
+    }
+
+
+    @Deprecated
     public void setIdentifier(Object entity, Serializable id, EntityMode entityMode) throws HibernateException {
         getTuplizer(entityMode).setIdentifier(entity, id);
     }
@@ -609,7 +654,11 @@ public class RiTreeFunPersister implements EntityPersister,
     }
 
     public Type getDiscriminatorType() {
-        return null;
+        if (persistentClass_.getDiscriminator()==null) {
+           return null;
+        } else {
+           return persistentClass_.getDiscriminator().getType();
+        }
     }
 
     public String[] getIdentifierAliases(String suffix)
@@ -726,10 +775,22 @@ public class RiTreeFunPersister implements EntityPersister,
     public boolean isVersionPropertyInsertable() {
         return false;
     }
+  
 
-    public String propertySelectFragment(String alias, String suffix, boolean arg2) {
-            return "";
+    public String propertySelectFragment(String alias, String suffix, boolean allProperties) {
+         return propertySelectFragmentFragment(alias, suffix, allProperties).toFragmentString();
     }
+
+    public SelectFragment propertySelectFragmentFragment(String alias, String suffix, boolean allProperties) {
+         SelectFragment select = new SelectFragment()
+                            .setSuffix(suffix)
+                            .setUsedAliases(getIdentifierAliases(suffix));
+         // and we have no non-used fields in this select
+         //select.addColumns(aliases, KEY_COLUMN_NAMES, getIdentifierAliases(suffix));
+         return select;
+    }
+
+
 
     public Type getType() {
         return entityMetamodel_.getEntityType();
@@ -752,7 +813,20 @@ public class RiTreeFunPersister implements EntityPersister,
         return classMetadata_.getPropertyType(propertyName);
     }
 
-  
+    public void registerAffectingFetchProfile(String fetchProfileName) {
+                affectingFetchProfileNames.add( fetchProfileName );
+    }
+
+    public DiscriminatorMetadata getTypeDiscriminatorMetadata() 
+    {
+       return null;
+    }
+
+
+    protected EntityTuplizer getTuplizer(SessionImplementor session)
+    {
+        return entityMetamodel_.getTuplizer(session.getEntityMode());
+    }
 
     protected EntityTuplizer getTuplizer(EntityMode entityMode)
     {
@@ -769,6 +843,9 @@ public class RiTreeFunPersister implements EntityPersister,
    // private final BasicEntityPropertyMapping propertyMapping_;
    // private final String[]  keyColumnNames_;
     private final String    fakeTableName_;
+
+    private final Set affectingFetchProfileNames = new HashSet();
+
 
     static final String[] KEY_COLUMN_NAMES =  { "lower", "upper" };
     static final String[] INTERVAL_BEGIN_COLUMN_NAMES =  { "lower" };

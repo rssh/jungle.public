@@ -40,38 +40,34 @@
     </dependency>
     <dependency org="ua.gradsoft" 
                name="jungle.persistence.ejbqlao"
-               rev="[2.3.0,)"
+               rev="[${global.version}-2.3.0,${global.version}-3.0.0)"
                conf="default->std">
        <artifact name="jungle.persistence.ejbqlao" type="jar" />
     </dependency>
     <dependency org="ua.gradsoft" 
                name="jungle.persistence.cluster_keys"
-               rev="[1.0.3,)"
+               rev="[${global.version}-1.0.3,${global.version}-3.0.0)"
                conf="default->api;gwt-export->api;api->api;hsql->hsql;pgsql->pgsql">
     </dependency>
     <dependency org="ua.gradsoft" 
                name="jungle.persistence.jpaex"
-               rev="[2.0.0,3.0.0)"
+               rev="[${global.version}-2.0.0,${global.version}-3.0.0)"
                conf="default->api">
        <artifact name="jungle.persistence.jpaex-api" type="jar" />
     </dependency>
     <dependency org="ua.gradsoft" 
                name="jungle.persistence.jdbcex"
-               rev="[1.0.2,)"
+               rev="[${global.version}-1.0.2,)"
                conf="default->api">
        <artifact name="jungle.persistence.jdbcex-api" type="jar" />
     </dependency>
 
-    <dependency org="org.hibernate" name="hibernate-core" rev="3.3.1.GA"
+    <dependency org="org.hibernate" name="hibernate-core" rev="3.6.5.Final"
                transitive="true" conf="test->default" >
        <artifact name="hibernate-core" type="jar" />
     </dependency>
-    <dependency org="org.hibernate" name="hibernate-annotations" rev="3.4.0.GA"
-               transitive="true" conf="test->default" >
-       <artifact name="hibernate-annotations" type="jar" />
-    </dependency>
     <dependency org="org.hibernate" name="hibernate-entitymanager" 
-                 rev="3.3.2.GA" transitive="true" conf="test->default" >
+                 rev="3.6.5.Final" transitive="true" conf="test->default" >
        <artifact name="hibernate-entitymanager" type="jar" />
     </dependency>
 
@@ -81,28 +77,27 @@
     </dependency>
 
     <!-- slf4j used by hibernate -->
-    <dependency org="org.slf4j" name="slf4j-api" rev="1.5.2" 
+    <dependency org="org.slf4j" name="slf4j-api" rev="1.6.1" 
                conf="test->default" >
        <artifact name="slf4j-api" type="jar" />
     </dependency>
-    <dependency org="org.slf4j" name="slf4j-jdk14" rev="1.5.2" 
+    <dependency org="org.slf4j" name="slf4j-jdk14" rev="1.6.1" 
                 conf="test->default" >
        <artifact name="slf4j-jdk14" type="jar" />
     </dependency>
 
     <dependency org="ua.gradsoft" name="jungle.persistence.jpaex" 
-      rev="[1.2.4,3.0.0)" conf="test->hibernate" >
+      rev="[${global.version}-1.2.4,${global.version}-3.0.0)" 
+      conf="test->hibernate" >
        <artifact name="jungle.persistence.jpaex-api" type="jar" />
        <artifact name="jungle.persistence.jpaex-hibernate" type="jar" />
     </dependency>
 
     <dependency org="ua.gradsoft" name="jungle.auth-api"
                conf="*->api"
-               rev="[1.1.0,)" >
+               rev="[${global.version}-1.1.0,)" >
       <artifact name="jungle.auth.api" type="jar" />
     </dependency>
-
-
 
     <dependency org="org.junit" name="junit" rev="[4.4,)"
                  conf="test->default" >

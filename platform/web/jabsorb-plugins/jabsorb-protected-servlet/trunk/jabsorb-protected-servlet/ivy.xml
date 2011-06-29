@@ -17,7 +17,7 @@
                     transitive="false" >
         </dependency>
         <dependency org="ua.gradsoft" name="jungle.auth-api" 
-                    rev="[1.2.0,)" conf="default->api;test->test" >
+                    rev="[${global.version}-1.2.0,${global.version}-2.0.0)" conf="default->api;test->test" >
            <artifact name="jungle.auth.api" type="jar" />
            <artifact name="jungle.auth.api-dummyimpl" type="jar" />
         </dependency>
@@ -49,23 +49,24 @@
            <artifact name="xercesImpl" type="jar" />
         </dependency>
 
-      <dependency org="org.springframework" name="spring" rev="[2.5.6,)"
+      <dependency org="org.springframework" name="spring-core" 
+                   rev="[3.0.5.RELEASE,)"
                   conf="test->default" >
-          <artifact name="spring" type="jar" />
+          <artifact name="spring-core" type="jar" />
       </dependency>
 
      <dependency org="ua.gradsoft" name="spring.jabsorb.initializer" 
-                 rev="[1.1.0,)"
+                 rev="[${global.version}-1.1.0,${global.version}-2.0.0)"
                  conf="test->default" >
           <artifact name="spring.jabsorb.initializer" type="jar" />
      </dependency>
 
      <!--  used by jabsorb -->
-     <dependency org="org.slf4j" name="slf4j-jdk14" rev="1.5.6" 
+     <dependency org="org.slf4j" name="slf4j-jdk14" rev="1.6.1" 
                  conf="test->default" >
         <artifact name="slf4j-jdk14" type="jar" />
      </dependency>
-     <dependency org="org.slf4j" name="slf4j-jdk14" rev="1.5.6" 
+     <dependency org="org.slf4j" name="slf4j-jdk14" rev="1.6.1" 
                  conf="test->default" >
         <artifact name="slf4j-jdk14" type="jar" />
      </dependency>
@@ -82,11 +83,11 @@
          <artifact name="commons-httpclient" type="jar" />
      </dependency>
 
-     <dependency org="org.junit" name="junit" rev="4.4" 
+     <dependency org="org.junit" name="junit" rev="4.5" 
               conf="test->default"/>
 
      <dependency org="ua.gradsoft" name="jabsorb.bigdecimal.serializer" 
-                 rev="[1.1.0,)" conf="test->default" transitive="false" >
+                 rev="[${global.version}-1.1.0,)" conf="test->default" transitive="false" >
          <artifact name="jabsorb.bigdecimal.serializer" type="jar" />
      </dependency>
 

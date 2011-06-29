@@ -70,7 +70,8 @@
            <ibiblio name="java.net" root="http://download.java.net/maven/1/"
                     namespace="java.net" 
                    pattern="[organization]/jars/[module]-[revision].[ext]" />
-           <ibiblio name="jboss" root="http://repository.jboss.org/maven2/" 
+           <ibiblio name="jboss" 
+               root="https://repository.jboss.org/nexus/content/groups/public" 
                     m2compatible="true" namespace="maven2" />
            <filesystem name="local.jungle.repo">
             <ivy pattern="${ivy.build.resolver.dir}/[organisation]/[module]/ivys/ivy-[revision].xml"/>

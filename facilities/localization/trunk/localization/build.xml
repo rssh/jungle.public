@@ -4,7 +4,10 @@
   xmlns:phpjao="antlib:ua.gradsoft.phpjao"
  >
     <property file="build.properties" />
+    <property file="${jungle.public.home}/build.properties" />
     <property file="build.local.properties" />
+
+    <property name="version" value="${global.version}-${local.version}" />
 
     <import file="build-ivy.xml" />
     
@@ -39,18 +42,14 @@
     </target>
     
     <target name="clean">
-        <!--
-        <delete>
+        <delete quiet="true" >
             <fileset dir="${build.dir}" includes="**/*.class" />
             <fileset dir="${dist.dir}" includes="**/*.ear,**/*.war,**/*.jar" />
         </delete>
-        -->
-        <delete dir="${build.dir}"/>
-        <delete dir="${dist.dir}"/>
     </target>
 
     <target name="clean-all">
-     <delete>
+     <delete quiet="true" >
       <fileset dir="lib" includes="**/*.jar" />
       <fileset dir="dist" includes="**/*.xml,**/*.jar,**/*.sql,**/*.part,**/*.zip" />
      </delete>

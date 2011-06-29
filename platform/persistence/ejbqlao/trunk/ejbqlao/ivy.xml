@@ -39,20 +39,20 @@
           <artifact name="javaee-api" type="jar" />
         </dependency>
         <dependency org="ua.gradsoft" name="jungle.caching" 
-                    rev="[1.0.2,)"
+                    rev="[${global.version}-1.0.2,)"
                     conf="*->default" >
          <artifact name="jungle.caching" type="jar" />
         </dependency>
         <dependency org="ua.gradsoft" name="jungle.persistence.jpaex"
-                    conf="*->api" rev="[2.1.0,3.0.0)" >
+                    conf="*->api" rev="[${global.version}-2.1.0,)" >
          <artifact name="jungle.persistence.jpaex-api" type="jar" />
         </dependency>
         <dependency org="ua.gradsoft" name="jungle.persistence.cluster_keys"
-                    conf="std->api" rev="[1.0.7,)" >
+                    conf="std->api" rev="[${global.version}-1.0.7,)" >
          <artifact name="jungle.persistence.cluster_keys" type="jar" />
         </dependency>
         <dependency org="ua.gradsoft" name="jungle.tools.phpjao"
-                  conf="php-export->default" rev="[1.2.0,)" >
+                  conf="php-export->default" rev="[${global.version}-1.2.0,)" >
            <artifact name="jungle.tools.phpjao" type="jar" />
         </dependency>
     </dependencies>

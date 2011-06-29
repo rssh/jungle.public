@@ -6,6 +6,9 @@
 <!-- properties -->
 
 <property file="build.properties" />
+<property file="${jungle.public.home}/build.properties" />
+<property name="version" value="${global.version}-${local.version}" />
+
 <import file="build-ivy.xml" />
 
 <condition property="ivy.int.home" value="${ivy.home}" else="${user.home}/.ivy">

@@ -5,6 +5,11 @@
   xmlns:phpjao="antlib:ua.gradsoft.phpjao" 
  >
     <property file="build.properties" />
+    <property file="${jungle.public.home}/build.properties" />
+
+    <property name="version" value="${global.version}-${local.version}" />
+    <echo message="version is ${version}" />
+
     <import file="build-ivy.xml" />
     
 <!-- directories -->    
