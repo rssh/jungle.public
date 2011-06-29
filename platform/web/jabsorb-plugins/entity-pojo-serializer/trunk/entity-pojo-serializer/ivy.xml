@@ -23,7 +23,7 @@
          <artifact name="javaee-api" type="jar" />
         </dependency>
         <dependency org="ua.gradsoft" name="jungle.persistence.jpaex" 
-                    rev="[2.1.0,)"  conf="default->api" >
+                    rev="[${global.version}-2.1.0,${global.version}-3.0.0)"  conf="default->api" >
           <artifact name="jungle.persistence.jpaex-api" type="jar" />
         </dependency>
 
