@@ -10,7 +10,7 @@
       <artifact name="ivy.build.plugin-src" type="tar.gz" />
     </publications>
     <dependencies>
-         <dependency org="org.junit" name="junit" rev="3.8" 
+         <dependency org="org.junit" name="junit" rev="4.5" 
          conf="test->default">
           <artifact name="junit" type="jar" />
          </dependency>

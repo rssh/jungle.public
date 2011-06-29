@@ -265,6 +265,11 @@ public class BuildResolver extends AbstractResolver
       buildDescription.addEntry(entry);  
     }
     
+    public void  addConfiguredRootBuildDirectory(RootBuildDirectoryEntry entry)
+    {
+      buildDescription.addRootBuildDirectoryEntry(entry);  
+    }
+
     public boolean isVerbose()
     { return verbose; }
     
