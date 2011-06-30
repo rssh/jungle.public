@@ -42,19 +42,15 @@
     </target>
     
     <target name="clean">
-        <!--
-        <delete>
+        <delete failonerror="false">
             <fileset dir="${build.dir}" includes="**/*.class" />
-            <fileset dir="${dist.dir}" includes="**/*.ear,**/*.war,**/*.jar" />
+            <fileset dir="${dist.dir}" includes="**/*.ear,**/*.war,**/*.jar.**/*.txt" />
         </delete>
-        -->
-        <delete dir="${build.dir}"/>
-        <delete dir="${dist.dir}"/>
     </target>
 
     <target name="clean-all">
      <delete failonerror="false">
-      <fileset dir="lib" includes="**/*.jar" />
+      <fileset dir="lib" includes="**/*.jar,**/*.txt" />
       <fileset dir="dist" includes="**/*.xml,**/*.jar,**/*.sql,**/*.part" />
      </delete>
      <delete dir="docs/javadoc" />
