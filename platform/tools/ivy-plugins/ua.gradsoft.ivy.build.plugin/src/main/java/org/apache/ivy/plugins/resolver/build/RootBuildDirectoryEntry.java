@@ -43,8 +43,14 @@ public class RootBuildDirectoryEntry {
      { this.checkSubdirs=checkSubdirs; }
 
 
+    public String processBuildDirPattern(String organization, String name)
+    {
+      return buildDirPattern.replace("[organization]",organization)
+                            .replace("[name]",name);
+    }
+
     private String path;
-    private String buildDirPattern;
+    private String buildDirPattern = "[organization].[name]";
     private String publishTarget = "publish";
     private String antFile = "build.xml";
     private boolean checkSubdirs = true;
