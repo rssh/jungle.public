@@ -1,0 +1,19 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" 
+          module="dependency.javaee-api" />
+    <configurations>
+      <conf name="default"  />
+    </configurations>
+    <dependencies>
+      <dependency org="org.apache.openejb" 
+                name="javaee-api"
+                rev="${origin.version}" 
+                transitive="false"
+       >
+         <artifact name="javaee-api" type="jar" />
+       </dependency>
+    </dependencies>
+</ivy-module>
+
+
+

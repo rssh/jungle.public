@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="ua.gradsoft.dependency.javaee-api" 
+         default="publish.local" basedir="."
+  xmlns:ivy="antlib:fr.jayasoft.ivy.ant"
+ >
+
+  <property file="build.properties" />
+  <property file="${jungle.public.home}/build.properties" />
+
+  <import file="build-ivy.xml" />
+
+
+
+   <target name="publish" depends="resolve-ivy">
+     <ivy:install organisation="org.apache.openejb" module="javaee-api"
+                  revision="${origin.version}" 
+                  overwrite="true"
+                  from="external.chain"
+                  to="datacenter.gradsoft.ua"
+                  />
+    </target>
+
+   <target name="check-javaee-api-jar-exists" >
+    <available property="javaee-api-jar-exists" 
+      file="${repo.home}/org.apache.openejb/javaee-api/jars/javaee-api-${origin.version}.jar"
+    />
+   </target>
+   
+
+   <target name="publish.local" 
+           depends="resolve-ivy,check-javaee-api-jar-exists"
+           unless="javaee-api-jar-exists">
+     <ivy:install organisation="org.apache.openejb" 
+                  module="javaee-api"
+                  revision="${origin.version}" 
+                  from="external.chain"
+                  to="jungle.repo"
+                  />
+   </target>
+
+
+</project>
