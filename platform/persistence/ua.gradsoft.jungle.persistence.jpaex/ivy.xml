@@ -30,50 +30,44 @@
                 conf="jtads" />
     </publications>
     <dependencies>
-        <dependency org="org.apache.openejb" 
-               name="javaee-api"
-               rev="[5.0-1,)" 
+        <dependency org="ua.gradsoft" 
+               name="dependency.javaee-api"
+               rev="${global.version}" 
                conf="build->default"
-               transitive="false"
+               transitive="true"
                >
-          <artifact name="javaee-api" type="jar" />
+          <artifact name="dependency.javaee-api" type="txt" />
         </dependency>
-        <dependency org="org.apache" name="commons-logging" rev="[1.1.1,)" 
-                    transitive="false" conf="hibernate,jtads->default" >
-          <artifact name="commons-logging" type="jar" />
+        <dependency org="ua.gradsoft" 
+               name="dependency.commons-logging"
+               rev="${global.version}" 
+               conf="build->default"
+               transitive="true"
+               >
+          <artifact name="dependency.commons-logging" type="txt" />
         </dependency>
+
         <dependency org="ua.gradsoft" name="jungle.persistence.jdbcex" 
                     rev="[${global.version}-1.0.4,)" conf="api->api" >
           <artifact name="jungle.persistence.jdbcex-api" type="jar" />
         </dependency>
-        <dependency org="org.junit" name="junit" rev="[4.4,)" 
+
+        <dependency org="ua.gradsoft" name="dependency.junit" 
+                    rev="${global.version}" 
                     conf="test->default" >
-          <artifact name="junit" type="jar" />
+          <artifact name="dependency.junit" type="txt" />
         </dependency>
-        <dependency org="org.springframework" name="spring-jdbc" 
-                    rev="[3.0.2.RELEASE,)"
-                    transitive="false" conf="spring->default" >
-          <artifact name="spring-jdbc" type="jar" />
-        </dependency>
-        <dependency org="org.springframework" name="spring-orm" 
-                    rev="[3.0.2.RELEASE,)"
+
+        <dependency org="ua.gradsoft" name="dependency.spring" 
+                    rev="${global.version}"
                     transitive="true" conf="spring->default" >
-          <artifact name="spring-orm" type="jar" />
         </dependency>
-        <dependency org="org.springframework" name="spring-oxm" 
-                    rev="[3.0.2.RELEASE,)"
-                    transitive="false" conf="spring->default" >
-          <artifact name="spring-oxm" type="jar" />
+
+        <dependency org="ua.gradsoft" name="dependency.hibernate" 
+                    rev="${global.version}"
+                    transitive="true" conf="hibernate->default" >
         </dependency>
-        <dependency org="org.hibernate" name="hibernate-core" rev="3.6.5.Final"
-                    transitive="false" conf="hibernate->default" >
-          <artifact name="hibernate-core" type="jar" />
-        </dependency>
-        <dependency org="org.hibernate" name="hibernate-entitymanager" 
-                    rev="3.6.5.Final"  transitive="false" 
-                    conf="hibernate->default" >
-          <artifact name="hibernate-entitymanager" type="jar" />
-        </dependency>
+
     </dependencies>
 </ivy-module>
 
