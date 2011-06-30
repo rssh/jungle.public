@@ -10,7 +10,7 @@
 
  <property name="version" value="${global.version}-${local.version}" />
 
- <property name="ivy.install.version" value="2.0.0" />
+ <property name="ivy.install.version" value="2.2.0" />
  <condition property="ivy.home" value="${env.IVY_HOME}" 
                                 else="${user.home}/.ivy2">
         <isset property="env.IVY_HOME" />
