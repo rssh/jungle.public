@@ -1,5 +1,5 @@
 <ivysettings>
-        <settings defaultResolver="global.chain" checkUpToDate="false" />
+        <settings defaultResolver="global.chain"  />
 
 <!-- you can override this property to use mirrors 
 	  http://mirrors.dotsrc.org/maven2
@@ -11,7 +11,7 @@
 -->
 <property name="ibiblio-maven2-root" value="http://repo1.maven.org/maven2/" override="false" />
 
-<classpath file="${ivy.lib.dir}/ivy.build.plugin.jar" />
+<classpath file="${ivy.jar.dir}/ivy.build.plugin.jar" />
 <typedef name="build" 
          classname="org.apache.ivy.plugins.resolver.build.BuildResolver" />
 
@@ -80,14 +80,16 @@
              <resolver ref="jungle.repo" />
              <dependencyBuild   
                organization="ua.gradsoft" name="jungle.persistence.jdbcex"
-               buildDirectory="${platform.home}/persistence/jdbcex"
+               buildDirectory="${platform.home}/persistence/ua.gradsoft.jungle.persistence.jdbcex"
                publishTarget="publish.local"
              />
              <dependencyBuild   
                organization="ua.gradsoft" name="jungle.persistence.jpaex"
-               buildDirectory="${platform.home}/persistence/jpaex"
+               buildDirectory="${platform.home}/persistence/ua.gradsoft.jungle.persistence.jpaex"
                publishTarget="publish.local"
              />
+             <rootBuildDirectory path="${jungle.public.home}"
+                                 publishTarget="publish.local" />
            </build>
            <url name="read.datacenter.gradsoft.ua" namespace="gradsoft">
              <ivy pattern="http://datacenter.gradsoft.ua/public.repository/[organization]/[module]/ivys/ivy-[revision].xml" />
