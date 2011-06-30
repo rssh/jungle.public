@@ -6,6 +6,10 @@
 
 
   <property file="build.properties" />
+  <property file="${jungle.public.home}/build.properties" />
+
+  <property name="version" value="${global.version}-${local.version}" />
+
   <property name="base.dir" value="." />
   <property name="origin.dir" value="${base.dir}/origin" />
   <property name="dist.dir" value="${base.dir}/dist" />
