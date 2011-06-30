@@ -2,7 +2,7 @@
         <settings defaultResolver="build.local" checkUpToDate="false" />
 
     <classpath  
-       file="${ivy.settings.dir}/../../target/ivy.build.plugin-${version}.jar" />
+      file="${ivy.settings.dir}/../../../target/ivy.build.plugin-${version}.jar" />
     <typedef name="build" 
           classname="org.apache.ivy.plugins.resolver.build.BuildResolver" />
 

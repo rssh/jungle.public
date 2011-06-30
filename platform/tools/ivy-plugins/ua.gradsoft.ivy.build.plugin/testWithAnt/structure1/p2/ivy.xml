@@ -8,7 +8,7 @@
       <artifact name="p2" type="jar" />
     </publications>
     <dependencies>
-      <dependency org="ua.gradsoft" name="p1" rev="1.0" >
+      <dependency org="ua.gradsoft" name="p1" rev="2.0.0" >
        <artifact name="p1" type="jar" />
       </dependency>
     </dependencies>
