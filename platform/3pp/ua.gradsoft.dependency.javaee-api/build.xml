@@ -6,6 +6,7 @@
 
   <property file="build.properties" />
   <property file="${jungle.public.home}/build.properties" />
+  <property name="version" value="${global.version}" />
 
   <import file="build-ivy.xml" />
 
@@ -18,24 +19,35 @@
                   from="external.chain"
                   to="datacenter.gradsoft.ua"
                   />
+     <ivy:publish resolver="datacenter.gradsoft.ua" pubrevision="${version}"
+                  overwrite="false"
+                  replacedynamicrev="false">
+             <artifacts pattern="[artifact].[ext]" />
+     </ivy:publish>
     </target>
 
-   <target name="check-javaee-api-jar-exists" >
-    <available property="javaee-api-jar-exists" 
-      file="${repo.home}/org.apache.openejb/javaee-api/jars/javaee-api-${origin.version}.jar"
+   <target name="check-dependency.javaee-api-exists" >
+    <available property="dependency.javaee-api-exists" 
+      file="${repo.home}/ua.gradsoft/dependency.javaee-api/txts/dependency.javaee-api-${version}.txt"
     />
    </target>
    
 
    <target name="publish.local" 
-           depends="resolve-ivy,check-javaee-api-jar-exists"
-           unless="javaee-api-jar-exists">
+           depends="resolve-ivy,check-dependency.javaee-api-exists"
+           unless="dependency.javaee-api-exists">
      <ivy:install organisation="org.apache.openejb" 
                   module="javaee-api"
                   revision="${origin.version}" 
                   from="external.chain"
                   to="jungle.repo"
+                  overwrite="true"
                   />
+     <ivy:publish resolver="jungle.repo" pubrevision="${version}"
+                  overwrite="true"
+                  replacedynamicrev="false">
+             <artifacts pattern="dist/[artifact].[ext]" />
+     </ivy:publish>
    </target>
 
 
