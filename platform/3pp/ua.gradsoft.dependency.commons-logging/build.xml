@@ -1,40 +1,54 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<project name="commons-logging.republish" 
-         default="republish.local" basedir="."
+<project name="ua.gradsoft.dependency.commons-logging" 
+         default="publish.local" basedir="."
   xmlns:ivy="antlib:fr.jayasoft.ivy.ant"
  >
 
   <property file="build.properties" />
+  <property file="${jungle.public.home}/build.properties" />
+  <property name="version" value="${global.version}" />
 
   <import file="build-ivy.xml" />
 
-   <target name="republish" depends="resolve-ivy">
-     <ivy:install organisation="net.sf.ehcache" 
-                  module="ehcache"
-                  revision="1.6.0" 
+
+
+   <target name="publish" depends="resolve-ivy">
+     <ivy:install organisation="org.apache" module="commons-logging"
+                  revision="${origin.version}" 
                   overwrite="true"
                   from="external.chain"
                   to="datacenter.gradsoft.ua"
                   />
+     <ivy:publish resolver="datacenter.gradsoft.ua" pubrevision="${version}"
+                  overwrite="false"
+                  replacedynamicrev="false">
+             <artifacts pattern="dist/[artifact].[ext]" />
+     </ivy:publish>
     </target>
 
-   <target name="check-ehcache.jar.exists" >
-      <available property="ehcache.jar.exists"
-            file="${repo.home}/net.sf.ehcache/ehcache/jars/ehcache-1.6.0.jar"
-      />
+   <target name="check-dependency.commons-logging-exists" >
+    <available property="dependency.commons-logging-exists" 
+      file="${repo.home}/ua.gradsoft/dependency.commons-logging/txts/dependency.commons-logging-${version}.txt"
+    />
    </target>
+   
 
-   <target name="republish.local" 
-           depends="check-ehcache.jar.exists,resolve-ivy"
-           unless="ehcache.jar.exists"
-           >
-     <ivy:install organisation="net.sf.ehcache" 
-                  module="ehcache"
-                  revision="1.6.0" 
+   <target name="publish.local" 
+           depends="resolve-ivy,check-dependency.commons-logging-exists"
+           unless="dependency.commons-logging-exists">
+     <ivy:install organisation="org.apache" 
+                  module="commons-logging"
+                  revision="${origin.version}" 
                   from="external.chain"
                   to="jungle.repo"
+                  overwrite="true"
                   />
-    </target>
+     <ivy:publish resolver="jungle.repo" pubrevision="${version}"
+                  overwrite="true"
+                  replacedynamicrev="false">
+             <artifacts pattern="dist/[artifact].[ext]" />
+     </ivy:publish>
+   </target>
 
 
 </project>
