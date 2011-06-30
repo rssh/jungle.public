@@ -20,7 +20,7 @@
                   to="datacenter.gradsoft.ua"
                   />
      <ivy:publish resolver="datacenter.gradsoft.ua" pubrevision="${version}"
-                  overwrite="false"
+                  overwrite="true"
                   replacedynamicrev="false">
              <artifacts pattern="dist/[artifact].[ext]" />
      </ivy:publish>
