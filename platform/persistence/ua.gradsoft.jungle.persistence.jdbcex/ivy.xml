@@ -31,12 +31,6 @@
                 conf="all" />
     </publications>
     <dependencies>
-      <!--
-        // now - nothing.
-        <dependency org="org.apache" name="commons-logging" rev="1.1.1" 
-          <artifact name="commons-logging" type="jar" />
-        </dependency>
-      -->
     </dependencies>
 </ivy-module>
 
