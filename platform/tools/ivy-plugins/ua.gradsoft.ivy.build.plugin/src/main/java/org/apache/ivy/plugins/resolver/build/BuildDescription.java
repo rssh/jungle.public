@@ -85,6 +85,7 @@ public class BuildDescription
                                                   String organization,
                                                   String name) 
     {
+    Message.verbose("search in "+fpath.getName()+" for dir "+buildDir);
     BuildDescriptionEntry bd = findBuildDescriptionFinal(rd,fpath,buildDir,organization, name);
     if (bd!=null) {
        return bd; 
