@@ -14,16 +14,16 @@
       <artifact name="jungle.caching-doc" type="tar.gz" ext="tar.gz" />
     </publications>
     <dependencies>
-        <dependency org="org.apache" name="commons-logging" rev="[1.1.1,)" 
-         conf="*->default" transitive="false" />
-        <dependency org="net.sf.ehcache" name="ehcache" 
-            rev="[1.6.0,1.6.1)"  
-            conf="default->default" >
-           <artifact name="ehcache" type="jar" />
-           <!-- note, that ehcahce-1.6.1.pom is invalid on sf.net now -->
-        </dependency> 
-        <dependency org="org.junit" name="junit" rev="[4.4,)" 
-         conf="test->default"/>
+        <dependency org="ua.gradsoft" name="dependency.commons-logging" 
+                   rev="${global.version}" 
+                   transitive="true" />
+        <dependency org="ua.gradsoft" name="dependency.ehcache" 
+                   rev="${global.version}" 
+                   transitive="true" />
+        <dependency org="ua.gradsoft" name="dependency.junit"  
+                   rev="${global.version}" 
+                   transitive="true" 
+                   conf="test->default"/>
     </dependencies>
 </ivy-module>
 

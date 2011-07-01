@@ -53,7 +53,7 @@
  </target>
 
  <target name="retrieve-libs" depends="init-ivy" unless="offline">
-  <ivy:retrieve pattern="lib/[artifact]-[revision].[ext]" conf="default" />
+  <ivy:retrieve pattern="lib/[artifact](-[classifier])-[revision].[ext]" conf="default" />
   <ivy:artifactproperty name="[module].version" conf="default"
                         value="[revision]" />
  </target>
