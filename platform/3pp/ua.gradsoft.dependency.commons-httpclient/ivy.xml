@@ -1,0 +1,17 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" 
+          module="dependency.commons-httpclient" />
+    <publications>
+      <artifact name="dependency.commons-httpclient" type="txt" />
+    </publications>
+    <dependencies>
+      <dependency org="org.apache" name="commons-httpclient" 
+                  rev="${origin.version}" 
+                  >
+                 <artifact name="commons-httpclient" type="jar" />
+      </dependency>
+    </dependencies>
+</ivy-module>
+
+
+
