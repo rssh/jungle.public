@@ -11,7 +11,7 @@
 -->
 <property name="ibiblio-maven2-root" value="http://repo1.maven.org/maven2/" override="false" />
 
-<classpath file="${ivy.lib.dir}/ivy.build.plugin.jar" />
+<classpath file="${ivy.jar.dir}/ivy.build.plugin.jar" />
 <typedef name="build" classname="org.apache.ivy.plugins.resolver.build.BuildResolver" />
 
 
@@ -77,30 +77,8 @@
            <build name="build.local"   
                   buildResolverDir="${ivy.build.resolver.dir}" >
              <resolver ref="jungle.repo" />
-             <dependencyBuild   
-               organization="ua.gradsoft" name="jungle.caching"
-               buildDirectory="${platform.home}/caching/encache-wrapper/trunk/encache-wrapper"
-               publishTarget="publish.local"
-             />
-             <dependencyBuild   
-               organization="ua.gradsoft" name="jungle.persistence.jpaex"
-               buildDirectory="${platform.home}/persistence/jpaex/trunk/jpaex"
-               publishTarget="publish.local"
-             />
-             <dependencyBuild   
-               organization="ua.gradsoft" name="jungle.persistence.jdbcex"
-               buildDirectory="${platform.home}/persistence/jdbcex/trunk/jdbcex"
-               publishTarget="publish.local"
-             />
-             <dependencyBuild   
-               organization="ua.gradsoft" name="jungle.persistence.cluster_keys"
-               buildDirectory="${platform.home}/persistence/cluster-keys/trunk/cluster-keys"
-               publishTarget="publish.local"
-             />
-             <dependencyBuild   
-               organization="ua.gradsoft" name="jungle.tools.phpjao"
-               buildDirectory="${platform.home}/tools/phpjao/trunk/phpjao"
-             />
+             <rootBuildDirectory path="${jungle.public.home}"
+                                 publishTarget="publish.local" />
            </build>
            <url name="read.datacenter.gradsoft.ua" namespace="gradsoft">
              <ivy pattern="http://datacenter.gradsoft.ua/public.repository/[organization]/[module]/ivys/ivy-[revision].xml" />

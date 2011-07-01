@@ -11,7 +11,6 @@
 
  <property name="version" value="${global.version}-${local.version}" />
 
- <property name="ivy.install.version" value="2.0.0" />
  <condition property="ivy.home" value="${env.IVY_HOME}" 
                                 else="${user.home}/.ivy2" >
         <isset property="env.IVY_HOME" />
@@ -69,19 +68,6 @@
  <target name="retrieve-test-libs" depends="declare-ivy" unless="offline" >
   <ivy:retrieve pattern="lib/[artifact]-[revision].[ext]" 
                 conf="test" />
- </target>
-
- <target name="retrieve-odt2html" depends="declare-ivy"  >
-  <ivy:retrieve pattern="lib/[artifact]-[revision].[ext]" 
-                conf="doc" />
- </target>
-
- <target name="declare-odt2html" depends="retrieve-odt2html">
-  <taskdef name="odt2html" classname="ua.gradsoft.odt2html.Odt2HtmlAntTask">
-     <classpath>
-         <pathelement location="lib/odt2html-1.1.jar"/>
-     </classpath>
-  </taskdef>
  </target>
 
 

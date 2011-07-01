@@ -24,35 +24,31 @@
              conf="php-export" />
     </publications>
     <dependencies>
-        <dependency org="org.apache" name="commons-logging" rev="[1.1.1,)" 
-         conf="*->default" transitive="false" />
-        <dependency org="org.junit" name="junit" rev="4.4" 
+        <dependency org="ua.gradsoft" name="dependency.commons-logging" 
+            rev="${global.version}" 
+            transitive="true" />
+        <dependency org="ua.gradsoft" name="dependency.junit" 
+            rev="${global.version}" 
          conf="test->default"/>
-        <dependency org="ua.gradsoft" name="odt2html" rev="1.1" 
-         conf="doc->default" >
-         <artifact name="odt2html" type="jar"
-           url="http://odt2html.gradsoft.ua/files/odt2html-1.1.jar"
-         />
-        </dependency>
-        <dependency org="org.apache.openejb" name="javaee-api" rev="[5.0-1,)" 
+        <dependency org="ua.gradsoft" name="dependency.javaee-api" 
+                    rev="${global.version}" 
                     conf="build->default" >
-          <artifact name="javaee-api" type="jar" />
         </dependency>
         <dependency org="ua.gradsoft" name="jungle.caching" 
-                    rev="[${global.version}-1.0.2,)"
+                    rev="[${global.version}-1.0.2,${global.version}-2.0.0)"
                     conf="*->default" >
          <artifact name="jungle.caching" type="jar" />
         </dependency>
         <dependency org="ua.gradsoft" name="jungle.persistence.jpaex"
-                    conf="*->api" rev="[${global.version}-2.1.0,)" >
+                    conf="*->api" rev="[${global.version}-2.1.0,${global.version}-3.0.0)" >
          <artifact name="jungle.persistence.jpaex-api" type="jar" />
         </dependency>
         <dependency org="ua.gradsoft" name="jungle.persistence.cluster_keys"
-                    conf="std->api" rev="[${global.version}-1.0.7,)" >
+                    conf="std->api" rev="[${global.version}-1.0.7,${global.version}-3.0.0)" >
          <artifact name="jungle.persistence.cluster_keys" type="jar" />
         </dependency>
         <dependency org="ua.gradsoft" name="jungle.tools.phpjao"
-                  conf="php-export->default" rev="[${global.version}-1.2.0,)" >
+                  conf="php-export->default" rev="[${global.version}-1.2.0,${global.version}-3.0.0)" >
            <artifact name="jungle.tools.phpjao" type="jar" />
         </dependency>
     </dependencies>
