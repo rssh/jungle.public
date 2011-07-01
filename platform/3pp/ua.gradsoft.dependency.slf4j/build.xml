@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<project name="ua.gradsoft.dependency.slf4j-jdk14" 
+<project name="ua.gradsoft.dependency.slf4j" 
          default="publish.local" basedir="."
   xmlns:ivy="antlib:fr.jayasoft.ivy.ant"
  >
@@ -12,7 +12,19 @@
 
 
    <target name="publish" depends="resolve-ivy">
+     <ivy:install organisation="org.slf4j" module="slf4j-api"
+                  revision="${origin.version}" 
+                  overwrite="true"
+                  from="external.chain"
+                  to="datacenter.gradsoft.ua"
+                  />
      <ivy:install organisation="org.slf4j" module="slf4j-jdk14"
+                  revision="${origin.version}" 
+                  overwrite="true"
+                  from="external.chain"
+                  to="datacenter.gradsoft.ua"
+                  />
+     <ivy:install organisation="org.slf4j" module="slf4j-log4j12"
                   revision="${origin.version}" 
                   overwrite="true"
                   from="external.chain"
@@ -27,7 +39,7 @@
 
    <target name="check-dependency-exists" >
     <available property="dependency-exists" 
-      file="${repo.home}/ua.gradsoft/dependency.slf4j-jdk14j/txts/dependency.slf4j-jdk14j-${version}.txt"
+      file="${repo.home}/ua.gradsoft/dependency.slf4j/txts/dependency.slf4j-${version}.txt"
     />
    </target>
    
@@ -35,7 +47,19 @@
    <target name="publish.local" 
            depends="resolve-ivy,check-dependency-exists"
            unless="dependency-exists">
+     <ivy:install organisation="org.slf4j" module="slf4j-api"
+                  revision="${origin.version}" 
+                  overwrite="true"
+                  from="external.chain"
+                  to="jungle.repo"
+                  />
      <ivy:install organisation="org.slf4j" module="slf4j-jdk14"
+                  revision="${origin.version}" 
+                  overwrite="true"
+                  from="external.chain"
+                  to="jungle.repo"
+                  />
+     <ivy:install organisation="org.slf4j" module="slf4j-log4j12"
                   revision="${origin.version}" 
                   overwrite="true"
                   from="external.chain"
