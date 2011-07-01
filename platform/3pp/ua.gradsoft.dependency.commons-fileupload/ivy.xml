@@ -1,0 +1,17 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" 
+          module="dependency.commons-fileupload" />
+    <publications>
+      <artifact name="dependency.commons-fileupload" type="txt" />
+    </publications>
+    <dependencies>
+      <dependency org="org.apache" name="commons-fileupload" 
+                  rev="${origin.version}" 
+                  transitive="false" >
+                 <artifact name="commons-fileupload" type="jar" />
+      </dependency>
+    </dependencies>
+</ivy-module>
+
+
+
