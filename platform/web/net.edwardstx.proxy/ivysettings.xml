@@ -2,6 +2,8 @@
  <settings defaultResolver="global.chain" checkUpToDate="false" />
  <!--<properties file="build.properties" />-->
  <property name="ibiblio-maven2-root" value="http://repo1.maven.org/maven2/" />
+  <classpath file="${ivy.jar.dir}/ivy.build.plugin.jar" />
+   <typedef name="build" classname="org.apache.ivy.plugins.resolver.build.BuildResolver" />
  <namespaces>
   <namespace name="maven2" >  
   <rule> <!-- for junit -->
@@ -37,7 +39,19 @@
            namespace="java.net" 
            pattern="[organization]/jars/[module]-[revision].[ext]"
            />
+  <filesystem name="jungle.repo">
+   <ivy pattern="${repo.home}/[organisation]/[module]/ivys/ivy-[revision].xml"/>
+   <artifact pattern="${repo.home}/[organisation]/[module]/[type]s/[artifact]-[revision].[ext]"/>
+  </filesystem>
+  <build name="build.local" 
+         buildResolverDir="${ivy.build.resolver.dir}" >
+        <resolver ref="jungle.repo" />
+        <rootBuildDirectory path="${jungle.public.home}"
+                            publishTarget="publish.local" />
+  </build>
   <chain name="global.chain" >
+   <resolver ref="jungle.repo" />
+   <resolver ref="build.local" />
    <resolver ref="ibiblio" />
    <resolver ref="java.net" />
   </chain>

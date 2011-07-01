@@ -6,10 +6,9 @@
 <!-- proeprties -->
 
 <property file="build.properties" />
+<property file="${jungle.public.home}/build.properties" />
 
-<property name="ivy.install.version" value="2.0.0-beta2" />
-
-<condition property="ivy.int.home" value="${ivy.home}" else="${user.home}/.ivy">
+<condition property="ivy.int.home" value="${ivy.home}" else="${user.home}/.ivy2">
   <isset property="ivy.home" />
 </condition>
 
@@ -45,7 +44,26 @@
 
  <target name="retrieve-libs" depends="resolve-ivy" >
    <ivy:retrieve conf="war" 
-                 pattern="lib/[artifact]-[revision].[ext]" />
+                 pattern="lib/[artifact](-[classifier])-[revision].[ext]" />
  </target>
+
+ <target name="publish" depends="distributive" >
+     <ivy:publish resolver="write.datacenter.gradsoft.ua" pubrevision="${version}" 
+                  overwrite="true" 
+                  replacedynamicrev="false"
+     >
+      <artifacts pattern="target/[artifact]-[revision].[ext]" />
+     </ivy:publish>
+ </target>
+
+ <target name="publish.local" depends="distributive" >
+     <ivy:publish resolver="jungle.repo" pubrevision="${version}" 
+                  overwrite="true" 
+                  replacedynamicrev="false"
+      >
+          <artifacts pattern="target/[artifact]-[revision].[ext]" />
+      </ivy:publish>
+ </target>
+
 
 </project>
