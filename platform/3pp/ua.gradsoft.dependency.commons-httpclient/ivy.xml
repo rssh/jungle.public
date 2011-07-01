@@ -7,6 +7,7 @@
     <dependencies>
       <dependency org="org.apache" name="commons-httpclient" 
                   rev="${origin.version}" 
+                  transitive="false"
                   >
                  <artifact name="commons-httpclient" type="jar" />
       </dependency>
