@@ -1,5 +1,5 @@
 <ivysettings>
-        <settings defaultResolver="global.chain" checkUpToDate="false" />
+        <settings defaultResolver="global.chain"  />
 
 <!-- you can override this property to use mirrors 
 	  http://mirrors.dotsrc.org/maven2
@@ -10,6 +10,9 @@
 	  http://www.ibiblio.net/pub/packages/maven2
 -->
 <property name="ibiblio-maven2-root" value="http://repo1.maven.org/maven2/" override="false" />
+
+<classpath file="${ivy.jar.dir}/ivy.build.plugin.jar" />
+<typedef name="build" classname="org.apache.ivy.plugins.resolver.build.BuildResolver" />
 
 
 <namespaces>
@@ -67,7 +70,7 @@
            <ibiblio name="java.net" root="http://download.java.net/maven/1/"
                     namespace="java.net" 
                    pattern="[organization]/jars/[module]-[revision].[ext]" />
-           <filesystem name="local.repo">
+           <filesystem name="local.jungle.repo">
             <ivy pattern="${ivy.build.resolver.dir}/[organisation]/[module]/ivys/ivy-[revision].xml"/>
                <artifact pattern="${ivy.build.resolver.dir}/[organisation]/[module]/[type]s/[artifact]-[revision].[ext]"/>
            </filesystem>
@@ -80,20 +83,26 @@
               <ivy pattern="http://datacenter.gradsoft.ua/public.repository/[organization]/[module]/ivys/ivy-[revision].xml" />
               <artifact pattern="http://datacenter.gradsoft.ua/public.repository/[organization]/[module]/[type]s/[artifact]-[revision].[ext]" />
            </url>
-
+           <build name="build.local"   
+                 buildResolverDir="${ivy.build.resolver.dir}" >
+                 <resolver ref="local.jungle.repo" />
+                 <rootBuildDirectory path="${jungle.public.home}"
+                 publishTarget="publish.local" />
+           </build>
            <chain name="external.chain" returnFirst="true" >
                   <resolver ref="ibiblio" /> 
                   <resolver ref="java.net" /> 
             </chain>
                 <chain name="global.chain" returnFirst="true">
-                  <resolver ref="local.repo" />
+                  <resolver ref="local.jungle.repo" />
+                  <resolver ref="build.local" />
                   <resolver ref="read.datacenter.gradsoft.ua" />
                   <resolver ref="external.chain" />
                 </chain>
         </resolvers>
         <modules>
           <module organisation="ua.gradsoft" name="jungle.persistency.ritree" 
-                  resolver="local.repo" />
+                  resolver="local.jungle.repo" />
         </modules>
 </ivysettings>
 
