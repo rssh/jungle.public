@@ -2,7 +2,7 @@
     <info organisation="ua.gradsoft" 
           module="dependency.jdbc-postgresql" />
     <publications>
-      <artifact name="dependency.jdbc-postgresql" type="txt" />
+      <artifact name="dependency.jdbc-postgresql" type="txt"  />
     </publications>
     <dependencies>
        <dependency org="org.postgresql" name="jdbc4" 
