@@ -4,8 +4,10 @@
  >
 
   <property file="build.properties" />
+  <property file="${jungle.public.home}/build.properties" />
   <property file="build.local.properties" />
 
+  <property name="version" value="${global.version}-${local.version}" />
 
   <import file="build-ivy.xml" />
 
@@ -113,13 +115,13 @@
 
 
   <target name="clean">
-    <delete>
+    <delete quiet="true" >
       <fileset dir="bin" includes="**/*.class"/>
     </delete>
   </target>
 
   <target name="clean-all" depends="clean">
-    <delete>
+    <delete quiet="true" >
      <fileset dir="dist" includes="**/*.xml,**/*.jar,**/*.zip" />
      <fileset dir="lib" includes="**/*.xml,**/*.jar,**/*.zip" />
     </delete>

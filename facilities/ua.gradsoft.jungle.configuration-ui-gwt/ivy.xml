@@ -20,40 +20,29 @@
   <artifact name="jungle.configuration-ui-gwt-docs" type="zip" conf="docs" />
  </publications>
  <dependencies>
-    <dependency org="com.googlecode" 
-               name="gwt-math"
-               rev="[2.0.3p2,)" 
-               conf="default->default"
-               >
-       <artifact name="gwt-math" type="jar" />
-       <artifact name="gwt-math-server" type="jar" />
-    </dependency>
     <dependency org="com.extjs" name="gxt.repackaged" 
-                rev="[2.1.1,)" conf="default" >
+                rev="[${global.version}-2.1.1,${global.version}-3.0.0)" conf="default" >
       <artifact name="gxt" type="jar" />
       <artifact name="gxt.resources" type="zip" />
     </dependency>
-  <!--
     <dependency org="ua.gradsoft" 
                name="jungle.persistence.cluster_keys"
-               rev="[1.0b,)"
+               rev="[${global.version}-1.0,${global.version}-2.0)"
                conf="default->api">
     </dependency>
-  -->
-    <dependency org="org.apache.openejb" 
-               name="javaee-api"
-               rev="[5.0-1,)" 
-               conf="compile"
+    <dependency org="ua.gradsoft" 
+               name="dependency.javaee-api"
+               rev="${global.version}" 
+               conf="compile->default"
                >
-       <artifact name="javaee-api" type="jar" />
     </dependency>
     <dependency org="ua.gradsoft" name="jungle.configuration" 
-                rev="[1.1.1,)"
+                rev="[${global.version}-1.1.1,${global.version}-2.0.0)"
                 conf="default->gwt-export" >
       <artifact name="jungle.configuration.gwt" type="jar" />
     </dependency>
     <dependency org="ua.gradsoft" name="jungle.gwt.util" 
-                rev="[1.1.0,)"
+                rev="[${global.version}-1.5.2,${global.version}-2.0.0)"
                 conf="default->default" >
       <artifact name="jungle.gwt.util" type="jar" />
     </dependency>
