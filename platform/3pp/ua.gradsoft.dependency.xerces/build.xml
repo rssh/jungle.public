@@ -27,7 +27,7 @@
 
    <target name="check-dependency-exists" >
     <available property="dependency-exists" 
-      file="${repo.home}/ua.gradsoft/dependency.xerces/txts/dependency.junit-${version}.txt"
+      file="${repo.home}/ua.gradsoft/dependency.xerces/txts/dependency.xerces-${version}.txt"
     />
    </target>
    
