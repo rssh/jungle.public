@@ -4,9 +4,11 @@
  >
 
  <property file="build.properties" />
+ <property file="${jungle.public.home}/build.properties" />
  <property file="build.local.properties" />
 
- <property name="ivy.install.version" value="2.0.0" />
+ <property name="version" value="${global.version}-${local.version}" />
+
  <condition property="ivy.home" value="${env.IVY_HOME}" else="${user.home}/.ivy2" >
         <isset property="env.IVY_HOME" />
  </condition>
@@ -97,16 +99,16 @@
 
  <target name="distributives" depends="build">
   <copy file="origin.sources/jabsorb-1.3.1/build/jabsorb-1.3.1.jar" 
-       tofile="artifacts/jabsorb-${patch.version}.jar" />
+       tofile="artifacts/jabsorb-${version}.jar" />
   <copy file="origin.sources/jabsorb-1.3.1/webapps/jsonrpc/jsonrpc.js" 
-      tofile="artifacts/jsonrpc-${patch.version}.js" />
+      tofile="artifacts/jsonrpc-${version}.js" />
   <copy file="origin.sources/jabsorb-1.3.1/webapps/jsonrpc/jsonrpc-min.js" 
-      tofile="artifacts/jsonrpc-min-${patch.version}.js" />
+      tofile="artifacts/jsonrpc-min-${version}.js" />
  </target>
 
    <target name="publish" depends="distributives">
      <ivy:publish resolver="datacenter.gradsoft.ua" 
-                  pubrevision="${patch.version}" 
+                  pubrevision="${version}" 
                   overwrite="true" 
                   >
        <artifacts pattern="artifacts/[artifact]-[revision].[ext]" />
@@ -114,7 +116,7 @@
     </target>
 
    <target name="publish.local" depends="distributives">
-     <ivy:publish resolver="jungle.repo" pubrevision="${patch.version}" 
+     <ivy:publish resolver="jungle.repo" pubrevision="${version}" 
                   overwrite="true" 
                   >
        <artifacts pattern="artifacts/[artifact]-[revision].[ext]" />
