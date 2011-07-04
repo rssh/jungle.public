@@ -1,5 +1,5 @@
 <ivysettings>
-    <settings defaultResolver="global.chain" checkUpToDate="false" />
+    <settings defaultResolver="global.chain"  />
 
 <!-- you can override this property to use mirrors 
 	  http://mirrors.dotsrc.org/maven2
@@ -11,7 +11,7 @@
 -->
 <property name="ibiblio-maven2-root" value="http://repo1.maven.org/maven2/" override="false" />
 
-<classpath file="${ivy.lib.dir}/ivy.build.plugin-1.0.jar" />
+<classpath file="${ivy.jar.dir}/ivy.build.plugin.jar" />
 <typedef name="build" 
          classname="org.apache.ivy.plugins.resolver.build.BuildResolver" />
 
@@ -31,8 +31,8 @@
                        buildResolverDir="${ivy.build.resolver.dir}" >
                   <resolver ref="jungle.repo" />
                   <dependencyBuild
-                     organization="org.jabsorb" name="jabsorb"
-                     buildDirectory="${jungle.home}/platform/web/3pp/jabsorb/trunk/jabsorb"
+                     organization="org.jabsorb" name="jabsorb.patched"
+                     buildDirectory="${jungle.public.home}/platform/3pp/org.jabsorb.jabsorb.patched"
                      publishTarget="publish.local"
                   />
                 </build>
