@@ -12,8 +12,8 @@
       <artifact name="jungle.jsonservlet-src" type="zip" conf="src" />
     </publications>
     <dependencies>
-        <dependency org="org.jabsorb" name="jabsorb" 
-                    rev="[${jabsorb.version},)"
+        <dependency org="org.jabsorb" name="jabsorb.patched" 
+                    rev="[${global.version}-${jabsorb.version},)"
                     transitive="false" >
         </dependency>
         <dependency org="ua.gradsoft" name="jungle.auth-api" 
@@ -22,68 +22,50 @@
            <artifact name="jungle.auth.api-dummyimpl" type="jar" />
         </dependency>
 
-        <dependency org="org.apache.openejb" name="javaee-api" rev="[5.0-1,)" 
+        <dependency org="ua.gradsoft" name="dependency.javaee-api" 
+                    rev="${global.version}" 
                     conf="build->default" >
-           <artifact name="javaee-api" type="jar" />
         </dependency>
 
-       <dependency org="org.eclipse.jetty" name="jetty-rewrite"
-                   conf="test->default"  rev="[7,)" >
-           <artifact name="jetty-rewrite" type="jar" />
-        </dependency>
-       <dependency org="org.eclipse.jetty" name="jetty-webapp"
-                   conf="test->default"  rev="[7,)" >
-           <artifact name="jetty-webapp" type="jar" />
-        </dependency>
-       <dependency org="org.eclipse.jetty" name="jetty-server"
-                   conf="test->default"  rev="[7,)" >
-           <artifact name="jetty-server" type="jar" />
-        </dependency>
-       <dependency org="org.eclipse.jetty" name="jetty-websocket"
-                   conf="test->default"  rev="[7,)" >
-           <artifact name="jetty-websocket" type="jar" />
+       <dependency org="ua.gradsoft" name="dependency.jetty"
+                   conf="test->default"  
+                   rev="${global.version}" >
         </dependency>
 
-       <dependency org="xerces" name="xercesImpl"
-                   conf="test->default"  rev="[2.8,)" >
-           <artifact name="xercesImpl" type="jar" />
+       <dependency org="ua.gradsoft" name="dependency.xerces"
+                   conf="test->default"  rev="${global.version}" >
         </dependency>
 
-      <dependency org="org.springframework" name="spring-core" 
-                   rev="[3.0.5.RELEASE,)"
+      <dependency org="ua.gradsoft" name="dependency.spring" 
+                   rev="${global.version}"
                   conf="test->default" >
-          <artifact name="spring-core" type="jar" />
       </dependency>
 
      <dependency org="ua.gradsoft" name="spring.jabsorb.initializer" 
-                 rev="[${global.version}-1.1.0,${global.version}-2.0.0)"
+                 rev="[${global.version}-1.2.1,${global.version}-2.0.0)"
                  conf="test->default" >
           <artifact name="spring.jabsorb.initializer" type="jar" />
      </dependency>
 
      <!--  used by jabsorb -->
-     <dependency org="org.slf4j" name="slf4j-jdk14" rev="1.6.1" 
-                 conf="test->default" >
-        <artifact name="slf4j-jdk14" type="jar" />
-     </dependency>
-     <dependency org="org.slf4j" name="slf4j-jdk14" rev="1.6.1" 
-                 conf="test->default" >
-        <artifact name="slf4j-jdk14" type="jar" />
+     <dependency org="ua.gradsoft" name="dependency.slf4j" 
+                  rev="${global.version}" 
+                 conf="test->jdk14;test->api" >
      </dependency>
 
      <!-- php for php tests -->
      <dependency org="ua.gradsoft" name="jungle.tools.phpjao" 
-                 rev="[1.1.0,)" 
+                 rev="[${global.version}-1.1.0,)" 
                  conf="test->default" transitive="false" >
          <artifact name="PHPJAO" type="php" />
      </dependency>
 
-     <dependency org="org.apache" name="commons-httpclient" 
-                 rev="3.1" conf="test->default"  >
-         <artifact name="commons-httpclient" type="jar" />
+     <dependency org="ua.gradsoft" name="dependency.commons-httpclient" 
+                 rev="${global.version}" conf="test->default"  >
      </dependency>
 
-     <dependency org="org.junit" name="junit" rev="4.5" 
+     <dependency org="ua.gradsoft" name="dependency.junit" 
+                 rev="${global.version}" 
               conf="test->default"/>
 
      <dependency org="ua.gradsoft" name="jabsorb.bigdecimal.serializer" 
