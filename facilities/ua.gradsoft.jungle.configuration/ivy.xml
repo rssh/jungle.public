@@ -27,27 +27,26 @@
   <artifact name="jungle.configuration-src" type="zip" conf="source" />
  </publications>
  <dependencies>
-    <dependency org="org.apache.openejb" 
-               name="javaee-api"
-               rev="5.0-1" 
-               conf="compile"
+    <dependency org="ua.gradsoft" 
+               name="dependency.javaee-api"
+               rev="${global.version}" 
+               conf="compile->default"
                >
-       <artifact name="javaee-api" type="jar" />
     </dependency>
     <dependency org="ua.gradsoft" 
                name="jungle.persistence.ejbqlao"
-               rev="[2.0,)"
+               rev="[${global.version}-2.0,${global.version}-3.0.0)"
                conf="default->std">
        <artifact name="jungle.persistence.ejbqlao" type="jar" />
     </dependency>
     <dependency org="ua.gradsoft" 
                name="jungle.persistence.cluster_keys"
-               rev="[1.0,)"
+               rev="[${global.version}-1.0,${global.version}-3.0.0)"
                conf="default->api;gwt-export->api;api->api;hsql->hsql;pgsql->pgsql">
     </dependency>
     <dependency org="ua.gradsoft" 
                 name="jungle.auth-api"
-                rev="[0.9.4,)"
+                rev="[${global.version}-0.9.4,${global.version}-3.0.0)"
                 conf="default->api;gwt-export->gwt-export">
     </dependency>
  </dependencies>
