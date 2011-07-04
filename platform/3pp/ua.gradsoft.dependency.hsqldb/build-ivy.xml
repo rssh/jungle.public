@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!-- build file for dependency-manager part -->
-<project name="jungle.localization-ivy" 
+<project name="internal-build-ivy" 
         default="retrieve-libs" basedir="."
         xmlns:ivy='antlib:fr.jayasoft.ivy.ant'
 >
@@ -9,9 +9,7 @@
 
 <property file="build.properties" />
 <property file="${jungle.public.home}/build.properties" />
-<property file="build.local.properties" />
 
-<property name="version" value="${global.version}-${local.version}" />
 
 <condition property="ivy.int.home" value="${ivy.home}" else="${user.home}/.ivy2">
   <isset property="ivy.home" />
@@ -55,7 +53,7 @@
  
  <target name="download-jsch" unless="without.jsch.download" 
                               depends="download-ivy" >
-   <get src="http://datacenter.gradsoft.ua/public.repository/net.sf.jsch/jsch/jars/jsch-0.1.41.jar"
+   <get src="http://prdownloads.sourceforge.net/jsch/jsch-0.1.41.jar?download"
         dest="${ivy.jar.dir}/jsch.jar" usetimestamp="true"/>
  </target>
 
@@ -85,8 +83,8 @@
  </target>
 
 
- <target name="retrieve-libs" depends="resolve-ivy" >
-   <ivy:retrieve  pattern="lib/[artifact]-[revision].[ext]" />
+ <target name="retrieve-origin" depends="resolve-ivy" >
+   <ivy:retrieve  pattern="origin/[artifact]-[revision].[ext]" />
  </target>
 
 </project>
