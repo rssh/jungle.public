@@ -27,12 +27,12 @@
     </dependency>
    -->
     <dependency org="com.google.gwt" name="gwt.repackaged" 
-                rev="[2.0.3,)" 
+                rev="[${global.version}-2.0.3,)" 
                 conf="default->server" transitive="false" >
       <artifact name="gwt-user" type="jar" />
     </dependency>
     <dependency org="com.extjs" name="gxt.repackaged" 
-                rev="[2.1.1,)" conf="default" >
+                rev="[${global.version}-2.1.1,)" conf="default" >
       <artifact name="gxt" type="jar" />
       <artifact name="gxt.resources" type="zip" />
     </dependency>

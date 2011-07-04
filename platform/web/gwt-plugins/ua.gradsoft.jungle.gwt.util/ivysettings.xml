@@ -1,5 +1,5 @@
 <ivysettings>
-        <settings defaultResolver="global.chain" checkUpToDate="false" />
+        <settings defaultResolver="global.chain" />
 
 <!-- you can override this property to use mirrors 
 	  http://mirrors.dotsrc.org/maven2
@@ -11,7 +11,7 @@
 -->
 <property name="ibiblio-maven2-root" value="http://repo1.maven.org/maven2/" override="false" />
 
- <classpath file="${ivy.lib.dir}/ivy.build.plugin.jar" />
+ <classpath file="${ivy.jar.dir}/ivy.build.plugin.jar" />
  <typedef name="build" classname="org.apache.ivy.plugins.resolver.build.BuildResolver" />
 
 
@@ -77,41 +77,8 @@
            <build name="build.local" 
                   buildResolverDir="${ivy.build.resolver.dir}" >
              <resolver ref="jungle.repo" />
-             <dependencyBuild
-               organization="ua.gradsoft" name="jungle.persistence.ejbqlao"
-               buildDirectory="${platform.public.home}/persistence/ejbqlao/trunk/ejbqlao"
-               publishTarget="publish.local"
-             />
-             <dependencyBuild
-               organization="ua.gradsoft" name="jungle.persistence.cluster_keys"
-               buildDirectory="${platform.public.home}/persistence/cluster_keys/trunk/cluster_keys"
-               publishTarget="publish.local"
-             />
-             <dependencyBuild
-               organization="ua.gradsoft" name="jungle.gwt.gwtservlet"
-               buildDirectory="${platform.public.home}/web/gwt-plugins/gwt-servlet/trunk/gwt-servlet"
-               publishTarget="publish.local"
-             />
-             <dependencyBuild
-               organization="ua.gradsoft" name="gxt.repackaged"
-               buildDirectory="${platform.public.home}/web/3pp/gwt-plugins/gxt/trunk/gxt"
-               publishTarget="publish.local"
-             />
-             <dependencyBuild
-               organization="com.google.gwt" name="gwt.repackaged"
-               buildDirectory="${platform.public.home}/3pp/gwt/trunk/gwt"
-               publishTarget="publish.local"
-             />
-             <dependencyBuild
-               organization="com.googlecode" name="gwt-math"
-               buildDirectory="${platform.public.home}/web/3pp/gwt-plugins/gwt-math"
-               publishTarget="publish.local"
-             />
-             <dependencyBuild
-               organization="com.extjs" name="gxt.repackaged"
-               buildDirectory="${platform.public.home}/web/3pp/gwt-plugins/gxt/trunk/gxt"
-               publishTarget="publish.local"
-             />
+             <rootBuildDirectory path="${jungle.public.home}"
+                                 publishTarget="publish.local" />
            </build>
 
            <url name="read.datacenter.gradsoft.ua" namespace="gradsoft">
