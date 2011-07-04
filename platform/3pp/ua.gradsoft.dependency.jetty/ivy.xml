@@ -14,11 +14,11 @@
            <artifact name="jetty-webapp" type="jar" />
       </dependency>
       <dependency org="org.eclipse.jetty" name="jetty-server"
-                  conf="test->default"  rev="${origin.version}" >
+                   rev="${origin.version}" >
            <artifact name="jetty-server" type="jar" />
       </dependency>
       <dependency org="org.eclipse.jetty" name="jetty-websocket"
-                  conf="test->default"  rev="${origin.version}" >
+                   rev="${origin.version}" >
            <artifact name="jetty-websocket" type="jar" />
        </dependency>
     </dependencies>
