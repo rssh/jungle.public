@@ -11,7 +11,7 @@
 -->
 <property name="ibiblio-maven2-root" value="http://repo1.maven.org/maven2/" override="false" />
 
- <classpath file="${ivy.lib.dir}/ivy.build.plugin-1.0.jar" />
+ <classpath file="${ivy.jar.dir}/ivy.build.plugin.jar" />
  <typedef name="build" classname="org.apache.ivy.plugins.resolver.build.BuildResolver" />
 
 
@@ -77,11 +77,8 @@
            <build name="build.local" 
                   buildResolverDir="${ivy.build.resolver.dir}" >
              <resolver ref="jungle.repo" />
-             <dependencyBuild
-               organization="ua.gradsoft" name="jungle.persistence.ejbqlao"
-               buildDirectory="${platform.public.home}/persistence/ejbqlao"
-               publishTarget="publish.local"
-             />
+             <rootBuildDirectory path="${jungle.public.home}"
+                                 publishTarget="publish.local" />
            </build>
 
            <url name="read.datacenter.gradsoft.ua" namespace="gradsoft">

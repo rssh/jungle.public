@@ -23,11 +23,10 @@
   <artifact name="jungle.appregistry-src" type="zip" conf="source" />
  </publications>
  <dependencies>
-    <dependency org="org.apache.openejb" 
-               name="javaee-api"
-               rev="[5.0-1,)" 
+    <dependency org="ua.gradsoft" 
+               name="dependency.javaee-api"
+               rev="${global.version}" 
                >
-       <artifact name="javaee-api" type="jar" />
     </dependency>
  </dependencies>
 </ivy-module>
