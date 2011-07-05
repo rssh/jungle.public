@@ -86,7 +86,7 @@
 
 
  <target name="retrieve-libs" depends="resolve-ivy" >
-   <ivy:retrieve  pattern="lib/[artifact]-[revision].[ext]" />
+   <ivy:retrieve  pattern="lib/[artifact](-[classifier])-[revision].[ext]" />
  </target>
 
 </project>
