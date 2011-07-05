@@ -5,7 +5,10 @@
 >
 
     <property file="build.properties" />
+    <property file="${jungle.public.home}/build.properties" />
     <property file="build.local.properties" />
+
+    <property name="version" value="${global.version}-${local.version}" />
 
     <import file="build-ivy.xml" />
 
@@ -22,7 +25,7 @@
 
     <path id="compile.path">
      <path refid="core.path" />
-     <pathelement location="${compile.lib.dir}/javaee-api-5.0-1.jar"/>
+     <pathelement location="${compile.lib.dir}/javaee-api-*.jar"/>
     </path>
 
 
@@ -64,12 +67,14 @@
     </target>
 
     <target name="build" depends="retrieve-libs, retrieve-compile-libs, pre-build" >
+    <!-- have no own sources
       <javac  srcdir="src" includes="**/*.java" deprecation="on"
               debug="on" 
               destdir="classes"
               >
         <classpath refid="compile.path" />
       </javac>  
+     -->
     </target>
   
     <target name="build-gwt" depends="retrieve-libs, retrieve-compile-libs" >
@@ -83,6 +88,8 @@
     </target>
 
     <target name="gwt-run">
+      <echo message="running in no-server mode" />
+      <echo message="i.e. you must deploy you application in tomcat before run" />
       <ant dir="gwt-ui" antfile="ui.ant.xml" target="run.hosted.shell" />
     </target>
 
@@ -137,7 +144,7 @@
 <!--
             <fileset  dir="${resources-web.dir}" />
             <fileset  dir="${platform-web-resources.dir}" />
-            <fileset  dir="web.groovy" />
+           <fileset  dir="web.groovy" />
 -->
             <fileset  dir="gwt-ui/www/ua.gradsoft.jungle.testapp.GwtUI/" />
 
@@ -151,8 +158,6 @@
     <target name="deploy" depends="retrieve-tomcat-libs,check-tomcat-home"
                           if="tomcat.home.is.set">
       <echo message="tomcat.home is set to ${tomcat.home}" />
-      <copy file="lib.common.tomcat/spring-tomcat-weaver-2.5.6.jar" 
-            todir="${tomcat.home}/lib" />
       <copy file="${war.dir}/jungle.tomcat.sh-test.war" 
             todir="${tomcat.home}/webapps" 
             overwrite="true" />
