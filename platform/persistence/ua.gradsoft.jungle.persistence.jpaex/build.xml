@@ -60,7 +60,7 @@
  </target>
 
  <target name="retrieve-libs" depends="init-ivy" unless="offline">
-  <ivy:retrieve pattern="lib/[artifact]-[revision].[ext]" />
+  <ivy:retrieve pattern="lib/[artifact](-[classifier])-[revision].[ext]" />
  </target>
 
  <path id="std.build.path">
