@@ -23,6 +23,11 @@
                    >
           <artifact name="hibernate-validator" type="jar" />
        </dependency>
+       <dependency org="org.hibernate" name="hibernate-ehcache" 
+                   rev="${origin.version}" 
+                  >
+          <artifact name="hibernate-ehcache" type="jar" />
+       </dependency>
     </dependencies>
 </ivy-module>
 
