@@ -42,9 +42,9 @@ public class ClusterKeys
       }catch(UnknownHostException ex){
           throw new IllegalStateException("Can't resolve localhost",ex);
       }
-      if (myAddr.isLoopbackAddress()) {
-          throw new IllegalStateException("getLocalHost returns loopback address, check network initialization");
-      }
+//      if (myAddr.isLoopbackAddress()) {
+//          throw new IllegalStateException("getLocalHost returns loopback address, check network initialization");
+//      }
       byte[] bytes = myAddr.getAddress();
       if (bytes.length!=4) {
           throw new IllegalStateException("IP address must be 4 bytes");
