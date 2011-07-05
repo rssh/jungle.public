@@ -1,0 +1,71 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" 
+          module="dependency.spring" />
+    <publications>
+      <artifact name="dependency.spring" type="txt" />
+    </publications>
+    <dependencies>
+       <dependency org="org.springframework" name="spring-orm" 
+                   rev="${origin.version}"
+                    transitive="false"
+                    >
+           <artifact name="spring-orm" type="jar" />
+       </dependency>
+       <dependency org="org.springframework" name="spring-oxm" 
+                    rev="${origin.version}"
+                    transitive="false"
+                     >
+            <artifact name="spring-oxm" type="jar" />
+       </dependency>
+       <dependency org="org.springframework" name="spring-core" 
+                    rev="${origin.version}"
+                    transitive="true"
+                     >
+            <artifact name="spring-core" type="jar" />
+       </dependency>
+       <dependency org="org.springframework" name="spring-web" 
+                    rev="${origin.version}"
+                    transitive="false"
+                     >
+            <artifact name="spring-web" type="jar" />
+       </dependency>
+       <dependency org="org.springframework" name="spring-context" 
+                    rev="${origin.version}"
+                    transitive="false"
+                     >
+       </dependency>
+       <dependency org="org.springframework" name="spring-beans" 
+                    rev="${origin.version}"
+                    transitive="false"
+                     >
+       </dependency>
+       <dependency org="org.springframework" name="spring-tx" 
+                    rev="${origin.version}"
+                    transitive="false"
+                     >
+       </dependency>
+       <dependency org="org.springframework" name="spring-jdbc" 
+                    rev="${origin.version}"
+                    transitive="false"
+                     >
+       </dependency>
+       <dependency org="org.springframework" name="spring-asm" 
+                    rev="${origin.version}"
+                    transitive="true"
+                     >
+       </dependency>
+       <dependency org="org.springframework" name="spring-aop" 
+                    rev="${origin.version}"
+                    transitive="true"
+                     >
+       </dependency>
+       <dependency org="org.springframework" name="spring-expression" 
+                    rev="${origin.version}"
+                    transitive="true"
+                     >
+       </dependency>
+    </dependencies>
+</ivy-module>
+
+
+

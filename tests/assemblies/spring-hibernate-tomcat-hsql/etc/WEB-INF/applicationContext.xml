@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans  
+        xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:aop="http://www.springframework.org/schema/aop"
+        xmlns:tx="http://www.springframework.org/schema/tx"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans
+              http://www.springframework.org/schema/beans/spring-beans.xsd
+              http://www.springframework.org/schema/tx
+              http://www.springframework.org/schema/tx/spring-tx.xsd
+              http://www.springframework.org/schema/aop
+              http://www.springframework.org/schema/aop/spring-aop.xsd
+              http://www.springframework.org/schema/context
+              http://www.springframework.org/schema/context/spring-context.xsd"
+        >
+
+    <!-- the CRUD entry points for references and deposits  -->
+
+    <bean id="ConfigurationFacade"
+          class="ua.gradsoft.jungle.configuration.ConfigurationFacadeImpl" 
+          >
+    </bean>
+    <bean id="AppregistryFacade"
+           class="ua.gradsoft.jungle.appregistry.AppRegistryFacadeBean" 
+          >
+    </bean>
+    <bean id="CachingWrapper"
+           class="ua.gradsoft.caching.CachingWrapper" 
+           destroy-method="shutdown"
+          >
+    </bean>
+    <bean id="DummyAuthApiProvider"
+           class="ua.gradsoft.jungle.auth.dummy.DummyAuthServerApiProvider" 
+          >
+    </bean>
+
+     <bean id="persistenceUnitManager" 
+        class="org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager">
+           <property name="persistenceXmlLocations">
+           <list>
+             <value>classpath:/META-INF/persistence.xml</value>
+           </list>
+           </property>
+           <property name="defaultDataSource" ref="DataSource"/>
+     </bean>            
+
+
+    <!-- JPA persistence unit -->
+    <bean id="entityManagerFactory" 
+            class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="persistenceUnitManager" ref="persistenceUnitManager" />
+        <property name="persistenceUnitName" value="PU" />
+        <property name="dataSource" ref="DataSource" />
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" >
+                <property name="databasePlatform"
+                        value="org.hibernate.dialect.HSQLDialect" />
+            </bean>
+        </property>
+        <property name="loadTimeWeaver">
+            <bean class="org.springframework.instrument.classloading.ReflectiveLoadTimeWeaver" />
+        </property>
+    </bean>
+
+   <bean id="sessionFactory" 
+           class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+    <property name="dataSource" ref="DataSource" />
+   </bean>
+
+
+    <!-- transaction management -->
+    <bean id="transactionManager"
+           class="org.springframework.orm.jpa.JpaTransactionManager" >
+        <property name="entityManagerFactory" ref="entityManagerFactory" />
+    </bean>
+    <tx:annotation-driven />
+
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+      <tx:attributes>
+       <tx:method name="get*" read-only="true" />
+       <tx:method name="*" />
+      </tx:attributes>
+    </tx:advice>
+
+    <aop:config>
+     <aop:pointcut id="ConfigurationFacadeOperation"
+        expression="execution(* 
+               ua.gradsoft.jungle.configuration.ConfigurationFacadeImpl.*(..))" 
+       />
+     <aop:advisor advice-ref="txAdvice" 
+                  pointcut-ref="ConfigurationFacadeOperation"
+      />
+    </aop:config>
+
+    <!-- postprocessing -->
+    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+    <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+    <!-- datasource -->
+    <bean id="DataSource" 
+          class="org.apache.commons.dbcp.BasicDataSource"
+           destroy-method="close">
+        <property name="driverClassName" value="org.hsqldb.jdbcDriver" />
+        <property name="url" value="jdbc:hsqldb:file:/home/rssh/work/ua.gradsoft.jungle.public/tests/assemblies/spring-hibernate-tomcat-hsql/db/hdb.db;shutdown=true" />
+        <property name="username" value="sa" />
+        <property name="password" value="" />
+    </bean>
+    
+
+    <!-- 
+        custom ORM
+    -->
+    <context:annotation-config/>
+
+    <!--
+      JNDI-spring integration
+    -->
+    <bean id="jndi" 
+          class="org.apache.xbean.spring.jndi.SpringInitialContextFactory"
+          factory-method="makeInitialContext"
+          scope="singleton" >
+        <property name="entries">
+            <map>
+                <entry key="AppregistryFacade" 
+                        value-ref="AppregistryFacade" />
+                <entry key="ConfigurationFacade" 
+                        value-ref="ConfigurationFacade" />
+                <entry key="DummyAuthApiProvider" 
+                        value-ref="DummyAuthApiProvider" />
+            </map>
+        </property>
+    </bean>
+
+    <!-- printService for debug -->
+    <!--
+    <bean id="PrintService" class="ua.gradsoft.ifs.test.PrintService" />
+    -->
+
+    <!-- JSON/RPC integration -->
+    <bean id="JSONRPC" 
+        class="ua.gradsoft.jungle.spring.JSONRPCGlobalBridgeAccessBean" >
+        <property name="registeredObjects">
+             <map>
+                <entry key="AppregistryFacade" 
+                       value-ref="AppregistryFacade" />
+                <entry key="ConfigurationFacade" 
+                       value-ref="ConfigurationFacade" />
+             </map>
+        </property>
+        <property name="customSerializerClasses">
+             <list>
+               <value>org.jabsorb.serializer.impl.ClassSerializer</value>
+               <value>org.jabsorb.serializer.impl.BigDecimalSerializer</value>
+               <value>org.jabsorb.serializer.impl.JPAEntitySerializer</value>
+             </list>
+        </property>
+    </bean>
+   
+    <!-- JpaEx integration -->
+    <!-- create and configure SpringJpaEx bean -->
+    <bean id="SpringJpaEx" 
+          class="ua.gradsoft.jungle.persistence.jpaex.SpringJpaEx"
+          init-method="registerInstance" >
+      <property name="jpaDialect">
+        <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" /> 
+      </property> 
+    </bean>
+
+    
+</beans>

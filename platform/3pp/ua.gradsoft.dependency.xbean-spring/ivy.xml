@@ -1,0 +1,17 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" 
+          module="dependency.xbean-spring" />
+    <publications>
+      <artifact name="dependency.xbean-spring" type="txt" />
+    </publications>
+    <dependencies>
+      <dependency org="org.apache.xbean" name="xbean-spring" 
+                  rev="${origin.version}" 
+                  transitive="false" >
+                 <artifact name="xbean-spring" type="jar" />
+      </dependency>
+    </dependencies>
+</ivy-module>
+
+
+

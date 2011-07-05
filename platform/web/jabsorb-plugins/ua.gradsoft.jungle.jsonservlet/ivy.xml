@@ -1,0 +1,82 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" module="jungle.jsonservlet"/>
+    <configurations>
+      <conf name="default" description="standard build" />
+      <conf name="src" description="standard build with sources" />
+      <conf name="build" description="with libraries, required for build" />
+      <conf name="test" description="with test infrastructure" 
+                        extends="default" />
+    </configurations>
+    <publications>
+      <artifact name="jungle.jsonservlet" type="jar" />
+      <artifact name="jungle.jsonservlet-src" type="zip" conf="src" />
+    </publications>
+    <dependencies>
+        <dependency org="org.jabsorb" name="jabsorb.patched" 
+                    rev="[${global.version}-${jabsorb.version},)"
+                    transitive="false" >
+        </dependency>
+        <dependency org="ua.gradsoft" name="jungle.auth-api" 
+                    rev="[${global.version}-1.2.0,${global.version}-2.0.0)" conf="default->api;test->test" >
+           <artifact name="jungle.auth.api" type="jar" />
+           <artifact name="jungle.auth.api-dummyimpl" type="jar" />
+        </dependency>
+
+        <dependency org="ua.gradsoft" name="dependency.javaee-api" 
+                    rev="${global.version}" 
+                    conf="build->default" >
+        </dependency>
+
+       <dependency org="ua.gradsoft" name="dependency.jetty"
+                   conf="test->default"  
+                   rev="${global.version}" >
+        </dependency>
+
+       <dependency org="ua.gradsoft" name="dependency.xerces"
+                   conf="test->default"  rev="${global.version}" >
+        </dependency>
+
+      <dependency org="ua.gradsoft" name="dependency.spring" 
+                   rev="${global.version}"
+                  conf="test->default" >
+      </dependency>
+
+     <dependency org="ua.gradsoft" name="spring.jabsorb.initializer" 
+                 rev="[${global.version}-1.2.1,${global.version}-2.0.0)"
+                 conf="test->default" >
+          <artifact name="spring.jabsorb.initializer" type="jar" />
+     </dependency>
+
+     <!--  used by jabsorb -->
+     <dependency org="ua.gradsoft" name="dependency.slf4j" 
+                  rev="${global.version}" 
+                 conf="test->jdk14;test->api" >
+     </dependency>
+
+     <!-- php for php tests -->
+     <dependency org="ua.gradsoft" name="jungle.tools.phpjao" 
+                 rev="[${global.version}-1.1.0,)" 
+                 conf="test->default" transitive="false" >
+         <artifact name="PHPJAO" type="php" />
+     </dependency>
+
+     <dependency org="ua.gradsoft" name="dependency.commons-httpclient" 
+                 rev="${global.version}" conf="test->default"  >
+     </dependency>
+
+     <dependency org="ua.gradsoft" name="dependency.junit" 
+                 rev="${global.version}" 
+              conf="test->default"/>
+
+     <dependency org="ua.gradsoft" name="jabsorb.bigdecimal.serializer" 
+                 rev="[${global.version}-1.1.0,)" conf="test->default" transitive="false" >
+         <artifact name="jabsorb.bigdecimal.serializer" type="jar" />
+     </dependency>
+
+
+  </dependencies>
+</ivy-module>
+       
+
+
+

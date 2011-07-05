@@ -1,0 +1,28 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" 
+          module="dependency.jetty" />
+    <publications>
+      <artifact name="dependency.jetty" type="txt" />
+    </publications>
+    <dependencies>
+      <dependency org="org.eclipse.jetty" name="jetty-rewrite"
+                  rev="${origin.version}" >
+          <artifact name="jetty-rewrite" type="jar" />
+      </dependency>
+      <dependency org="org.eclipse.jetty" name="jetty-webapp"
+                   rev="${origin.version}" >
+           <artifact name="jetty-webapp" type="jar" />
+      </dependency>
+      <dependency org="org.eclipse.jetty" name="jetty-server"
+                   rev="${origin.version}" >
+           <artifact name="jetty-server" type="jar" />
+      </dependency>
+      <dependency org="org.eclipse.jetty" name="jetty-websocket"
+                   rev="${origin.version}" >
+           <artifact name="jetty-websocket" type="jar" />
+       </dependency>
+    </dependencies>
+</ivy-module>
+
+
+

@@ -1,0 +1,17 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" 
+          module="dependency.xerces" />
+    <publications>
+      <artifact name="dependency.xerces" type="txt" />
+    </publications>
+    <dependencies>
+      <dependency org="xerces" name="xercesImpl" 
+                  rev="${origin.version}" 
+                  transitive="false" >
+                 <artifact name="xercesImpl" type="jar" />
+      </dependency>
+    </dependencies>
+</ivy-module>
+
+
+

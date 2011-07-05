@@ -1,0 +1,52 @@
+<ivy-module version="1.4">
+ <info organisation="ua.gradsoft" module="jungle.configuration-ui-gwt" />
+ <configurations>
+  <conf name="default" description="default build of module" />
+  <conf name="testui" description="ui build with testdata" />
+  <conf name="docs" description="docs" />
+  <conf name="source" description="sources" />
+  <conf name="compile" 
+        description="compiling module with compile dependencies" />
+ </configurations>
+ <publications>
+  <artifact name="jungle.configuration-ui-gwt-export" 
+            type="jar" conf="default" />
+  <!--
+   <artifact name="jungle.configuration-ui-gwt-web" 
+            type="zip" conf="testui" />
+    // now not needed
+  -->
+  <artifact name="jungle.configuration-ui-gwt-src" type="zip" conf="source" />
+  <artifact name="jungle.configuration-ui-gwt-docs" type="zip" conf="docs" />
+ </publications>
+ <dependencies>
+    <dependency org="com.extjs" name="gxt.repackaged" 
+                rev="[${global.version}-2.1.1,${global.version}-3.0.0)" conf="default" >
+      <artifact name="gxt" type="jar" />
+      <artifact name="gxt.resources" type="zip" />
+    </dependency>
+    <dependency org="ua.gradsoft" 
+               name="jungle.persistence.cluster_keys"
+               rev="[${global.version}-1.0,${global.version}-2.0)"
+               conf="default->api">
+    </dependency>
+    <dependency org="ua.gradsoft" 
+               name="dependency.javaee-api"
+               rev="${global.version}" 
+               conf="compile->default"
+               >
+    </dependency>
+    <dependency org="ua.gradsoft" name="jungle.configuration" 
+                rev="[${global.version}-1.1.1,${global.version}-2.0.0)"
+                conf="default->gwt-export" >
+      <artifact name="jungle.configuration.gwt" type="jar" />
+    </dependency>
+    <dependency org="ua.gradsoft" name="jungle.gwt.util" 
+                rev="[${global.version}-1.5.2,${global.version}-2.0.0)"
+                conf="default->default" >
+      <artifact name="jungle.gwt.util" type="jar" />
+    </dependency>
+
+
+ </dependencies>
+</ivy-module>

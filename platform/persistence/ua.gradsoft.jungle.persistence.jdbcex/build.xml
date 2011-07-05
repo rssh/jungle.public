@@ -1,0 +1,265 @@
+<?xml version="1.0"?>
+<!-- build file for Jungle/cppp project -->
+<project name="jungle.persistence.jdbcex" default="build" basedir="."
+    xmlns:ivy="antlib:fr.jayasoft.ivy.ant"
+ >
+
+ <property file="build.properties" />
+ <property file="${jungle.home}/build.properties" />
+ <property file="build.local.properties" />
+
+ <property name="version" value="${global.version}-${local.version}" />
+
+ <condition property="ivy.home" value="${env.IVY_HOME}" 
+                                else="${user.home}/.ivy2" >
+        <isset property="env.IVY_HOME" />
+ </condition>
+ <!--<property name="ivy.home" value="${user.home}/.ivy" />-->
+ <property name="ivy.jar.dir" value="${ivy.home}/jars" />
+ <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
+ <property name="jsch.jar.file" value="${ivy.jar.dir}/jsch.jar" />
+
+ <condition property="without.downloads">
+  <or>
+   <and>
+    <available file="${ivy.jar.dir}/ivy.jar" />
+    <available file="${ivy.jar.dir}/jsch.jar" />
+    <available file="${ivy.jar.dir}/ivy.build.plugin.jar" />
+   </and>
+   <isset property="offline" />
+  </or>
+ </condition>
+	
+ <target name="download-ivy" unless="without.downloads">
+    <mkdir dir="${ivy.jar.dir}"/>
+    <!-- download Ivy from web site so that it can be used even without any special installation -->
+    <get src="http://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar"
+         dest="${ivy.jar.file}" usetimestamp="true"/>
+    <get src="http://prdownloads.sourceforge.net/jsch/jsch-0.1.37.jar?download"
+         dest="${jsch.jar.file}" usetimestamp="true"/>
+    <get src="http://datacenter.gradsoft.ua/public.repository/ua.gradsoft/ivy.build.plugin/jars/ivy.build.plugin-${ivy.build.plugin.version}.jar"
+        dest="${ivy.jar.dir}/ivy.build.plugin.jar" usetimestamp="true"/>
+ </target>
+	
+ <target name="declare-ivy" depends="download-ivy" >
+   <path id="ivy.lib.path">
+      <fileset dir="${ivy.jar.dir}" includes="*.jar"/>
+   </path>
+   <taskdef resource="fr/jayasoft/ivy/ant/antlib.xml"
+            uri="antlib:fr.jayasoft.ivy.ant" 
+            classpathref="ivy.lib.path"/>
+ </target>
+
+
+  <target name="clean-ivy" description="--> clean the ivy installation">
+    <delete dir="${ivy.jar.dir}"/>
+  </target>
+
+ <target name="init-ivy" depends="declare-ivy" unless="offline">
+  <ivy:resolve />
+ </target>
+
+ <target name="retrieve-libs" depends="init-ivy" unless="offline">
+  <ivy:retrieve pattern="lib/[artifact]-[revision].[ext]" />
+ </target>
+
+ <path id="std.build.path">
+   <pathelement location="lib/commons-logging-1.1.1.jar" />
+ </path>
+
+ <target name="build-api" depends="retrieve-libs">
+  <javac srcdir="src/api" includes="**/*.java" deprecation="on" 
+         debug="${debug}" >
+    <classpath  refid="std.build.path" />
+  </javac>
+  <jar basedir="src/api" includes="**/*.class" 
+       destfile="target/jungle.persistence.jdbcex-api-${version}.jar" 
+       index="true">
+  <include name="build"/>
+  <manifest>
+   <attribute name="Build-By" value="${user-name}"/>
+  </manifest>
+  </jar>
+ </target>
+
+ <target name="build-pgsql" depends="build-api">
+  <javac srcdir="src/pgsql" includes="**/*.java" deprecation="on" 
+         debug="${debug}" >
+    <classpath>
+     <path id="std.build.path" />
+     <pathelement location="src/api" />
+    </classpath>
+  </javac>
+  <jar basedir="src/pgsql" includes="**/*.class" 
+       destfile="target/jungle.persistence.jdbcex-pgsql-${version}.jar" 
+       index="true">
+  <include name="build"/>
+  <manifest>
+   <attribute name="Build-By" value="${user-name}"/>
+  </manifest>
+  </jar>
+ </target>
+
+ <target name="build-oracle" depends="build-api">
+  <javac srcdir="src/oracle" includes="**/*.java" deprecation="on" 
+         debug="${debug}" >
+    <classpath>
+     <path refid="std.build.path" />
+     <pathelement location="src/api" />
+    </classpath>
+  </javac>
+  <jar basedir="src/oracle" includes="**/*.class" 
+       destfile="target/jungle.persistence.jdbcex-oracle-${version}.jar" 
+       index="true">
+  <include name="build"/>
+  <manifest>
+   <attribute name="Build-By" value="${user-name}"/>
+  </manifest>
+  </jar>
+ </target>
+
+ <target name="build-hsql" depends="build-api">
+  <javac srcdir="src/hsql" includes="**/*.java" deprecation="on" 
+         debug="${debug}" >
+    <classpath>
+     <path refid="std.build.path" />
+     <pathelement location="src/api" />
+    </classpath>
+  </javac>
+  <jar basedir="src/hsql" includes="**/*.class" 
+       destfile="target/jungle.persistence.jdbcex-hsql-${version}.jar" 
+       index="true">
+  <include name="build"/>
+  <manifest>
+   <attribute name="Build-By" value="${user-name}"/>
+  </manifest>
+  </jar>
+ </target>
+
+ <target name="build-all" depends="build-pgsql,build-oracle,build-hsql">
+  <jar destfile="target/jungle.persistence.jdbcex-all-${version}.jar" 
+       index="true">
+   <fileset dir="src/api" includes="**/*.class" />
+   <fileset dir="src/pgsql" includes="**/*.class" />
+   <fileset dir="src/hsql" includes="**/*.class" />
+   <fileset dir="src/oracle" includes="**/*.class" />
+  <include name="build"/>
+  <manifest>
+   <attribute name="Build-By" value="${user-name}"/>
+  </manifest>
+  </jar>
+ </target>
+
+ <target name="build" depends="build-api,
+                               build-pgsql,
+                               build-oracle,
+                               build-hsql,
+                               build-all" />
+
+ <target name="clean">
+  <delete>
+    <fileset dir="src" includes="**/*.class" />
+  </delete>
+ </target>
+
+ <target name="clean-all" depends="declare-ivy,clean" >
+   <delete>
+    <fileset dir="lib" includes="*.jar" />
+    <fileset dir="target" includes="*.jar" />
+    <fileset dir="target" includes="*.xml" />
+   </delete>
+   <delete dir="docs/api" />
+   <!--
+   <ivy:cleancache />
+   -->
+ </target>
+
+ <target name="api-docs" depends="retrieve-libs" >
+  <javadoc destdir="docs/api" >
+   <packageset dir="src/api" />
+   <packageset dir="src/pgsql" />
+   <packageset dir="src/hsql" />
+   <packageset dir="src/oracle" />
+   <classpath>
+    <fileset dir="lib" includes="**/*.jar" />
+   </classpath>
+  </javadoc>
+ </target>
+
+ 
+ <target name="docs" depends="api-docs">
+ </target>
+
+ <target name="source-distributive" depends="build,docs">
+  <mkdir dir="target/jungle.persistence.jdbcex-src-${version}" />
+  <copy todir="target/jungle.persistence.jdbcex-src-${version}" >
+   <fileset dir=".">
+    <include name="**/*.xml" />
+    <include name="**/*.java" />
+    <include name="**/*.properties" />
+    <include name="src/*" />
+    <exclude name="lib/*" />
+    <include name="docs/**/*" />
+    <exclude name="target/*.jar" />
+    <exclude name="target/*.tar.gz" />
+    <exclude name="target/cluster_keys*.*" />
+    <include name="target/README" />
+    <exclude name="nbproject/private/*" />
+    <exclude name="**/*.class" />
+   </fileset>
+  </copy>
+  <tar basedir="target" 
+       destfile="target/jungle.persistence.jdbcex-src-${version}.tar"
+       defaultexcludes="yes"
+       includes="jungle.persistence.jdbcex-src-${version}/**/*" />
+  <gzip src="target/jungle.persistence.jdbcex-src-${version}.tar"
+     destfile="target/jungle.persistence.jdbcex-src-${version}.tar.gz"
+  />
+  <delete file="target/jungle.persistence.jdbcex-src-${version}.tar" />
+  <delete dir="target/jungle.persistence.jdbcex-src-${version}" />
+ </target>
+
+ <target name="doc-distributive" depends="docs">
+  <mkdir dir="target/jungle.persistence.jdbcex-docs-${version}" />
+  <copy todir="target/jungle.persistence.jdbcex-docs-${version}" >
+   <fileset dir=".">
+    <include name="docs/**/*" />
+   </fileset>
+  </copy>
+  <tar basedir="target" 
+       destfile="target/jungle.persistence.jdbcex-docs-${version}.tar"
+       defaultexcludes="yes"
+       includes="jungle.persistence.jdbcex-docs-${version}/**/*" />
+  <gzip src="target/jungle.persistence.jdbcex-docs-${version}.tar"
+        destfile="target/jungle.persistence.jdbcex-docs-${version}.tar.gz"
+  />
+  <delete file="target/jungle.persistence.jdbcex-docs-${version}.tar" />
+  <delete dir="target/jungle.persistence.jdbcex-docs-${version}" />
+ </target>
+
+  <target name="distributives" 
+          depends="build, source-distributive,doc-distributive" />
+                  
+
+   <target name="publish" depends="distributives">
+     <ivy:publish resolver="write.datacenter.gradsoft.ua" 
+                  pubrevision="${version}" 
+                  overwrite="true" 
+                  replacedynamicrev="false"
+                  >
+       <artifacts pattern="target/[artifact]-[revision].[ext]" />
+     </ivy:publish>
+    </target>
+
+   <target name="publish.local" depends="distributives">
+     <ivy:publish resolver="local.jungle.repo" 
+                  pubrevision="${version}" 
+                  overwrite="true" 
+                  replacedynamicrev="false"
+                  >
+       <artifacts pattern="target/[artifact]-[revision].[ext]" />
+     </ivy:publish>
+    </target>
+
+
+</project>

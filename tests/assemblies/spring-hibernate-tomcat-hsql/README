@@ -1,0 +1,7 @@
+
+
+1.  db must be readable/writable by tomcat 
+2.  hsqldb must be in tomcat libs
+3.  before start, run
+   ant create-db
+   ant init-db

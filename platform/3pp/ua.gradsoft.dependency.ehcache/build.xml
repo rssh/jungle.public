@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="ua.gradsoft.dependency.ehcache" 
+         default="publish.local" basedir="."
+  xmlns:ivy="antlib:fr.jayasoft.ivy.ant"
+ >
+
+  <property file="build.properties" />
+  <property file="${jungle.public.home}/build.properties" />
+  <property name="version" value="${global.version}" />
+
+  <import file="build-ivy.xml" />
+
+
+
+  <target name="publish" depends="resolve-ivy,clean">
+     <ivy:install organisation="net.sf.ehcache" module="ehcache-core"
+                  revision="${origin.version}" 
+                  overwrite="true"
+                  from="external.chain"
+                  to="datacenter.gradsoft.ua"
+                  />
+     <ivy:publish resolver="datacenter.gradsoft.ua" pubrevision="${version}"
+                  overwrite="false"
+                  replacedynamicrev="false">
+             <artifacts pattern="dist/[artifact].[ext]" />
+     </ivy:publish>
+    </target>
+
+   <target name="check-dependency-exists" >
+    <available property="dependency-exists" 
+      file="${repo.home}/ua.gradsoft/dependency.ehcache/txts/dependency.ehcache-${version}.txt"
+    />
+   </target>
+   
+   <target name="clean">
+     <delete quiet="true" file="dist/ivy.xml" />
+   </target>
+
+
+   <target name="publish.local" 
+           depends="resolve-ivy,check-dependency-exists,clean"
+           unless="dependency-exists">
+     <ivy:install organisation="net.sf.ehcache" module="ehcache-core"
+                  revision="${origin.version}" 
+                  overwrite="true"
+                  from="external.chain"
+                  to="jungle.repo"
+                  />
+     <ivy:publish resolver="jungle.repo" pubrevision="${version}"
+                  overwrite="true"
+                  replacedynamicrev="false">
+             <artifacts pattern="dist/[artifact].[ext]" />
+     </ivy:publish>
+   </target>
+
+
+</project>

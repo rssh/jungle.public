@@ -14,12 +14,12 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.extjs.gxt.ui.client.util.TextMetrics;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import java.util.HashMap;
 import java.util.Map;
 import ua.gradsoft.jungle.gwt.util.client.GwtApplication;
 import ua.gradsoft.jungle.gwt.util.client.GwtApplicationComponent;
-import ua.gradsoft.jungle.gwt.util.client.GwtUtils;
 
 /**
  *Login form
@@ -33,16 +33,15 @@ public class LoginService extends GwtApplicationComponent
 
 
    @Override
-   public void onRegistered(GwtApplication application)
+   public void onRegistered()
    {
-     application_=application;
 
      Window loginWindow = createLoginWindow();
      MenuItem menuItem = new MenuItem("Login");
      menuItem.setData("window", loginWindow);
-     menuItem.addSelectionListener(application.getDesktopMeSelectionListener());
+     menuItem.addSelectionListener(application_.getDesktopMeSelectionListener());
      menuItem.setItemId("id-login");
-     application.getDesktop().getStartMenu().add(menuItem);    
+     application_.getDesktop().getStartMenu().add(menuItem);    
 
    }
 
@@ -52,7 +51,7 @@ public class LoginService extends GwtApplicationComponent
 
       panel.setHeading("Login");
       panel.setFrame(true);
-      panel.setWidth(30*GwtUtils.getCurrentResolution().getXWidth());
+      panel.setWidth(30*TextMetrics.get().getWidth("x"));
 
       final TextField<String> username = new TextField<String>();
       username.setFieldLabel("Username");
@@ -176,7 +175,6 @@ public class LoginService extends GwtApplicationComponent
    private String login_;
    private String password_;
    private String sessionTicket_;
-   private GwtApplication application_;
    private Window  topLoginFormWindow_;
   
 
