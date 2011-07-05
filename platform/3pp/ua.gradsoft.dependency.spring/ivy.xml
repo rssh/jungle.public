@@ -23,6 +23,12 @@
                      >
             <artifact name="spring-core" type="jar" />
        </dependency>
+       <dependency org="org.springframework" name="spring-web" 
+                    rev="${origin.version}"
+                    transitive="false"
+                     >
+            <artifact name="spring-web" type="jar" />
+       </dependency>
     </dependencies>
 </ivy-module>
 
