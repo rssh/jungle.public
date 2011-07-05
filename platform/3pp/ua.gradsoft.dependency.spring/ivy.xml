@@ -59,6 +59,11 @@
                     transitive="true"
                      >
        </dependency>
+       <dependency org="org.springframework" name="spring-expression" 
+                    rev="${origin.version}"
+                    transitive="true"
+                     >
+       </dependency>
     </dependencies>
 </ivy-module>
 
