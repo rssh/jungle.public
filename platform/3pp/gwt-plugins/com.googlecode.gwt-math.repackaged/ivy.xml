@@ -1,5 +1,5 @@
 <ivy-module version="1.4">
- <info organisation="com.googlecode" module="gwt-math" />
+ <info organisation="com.googlecode" module="gwt-math.repackaged" />
  <configurations>
   <conf name="default" description="default" />
   <conf name="origin" description="origin" />

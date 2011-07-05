@@ -19,13 +19,11 @@
   </publications>
 
   <dependencies>
-   <!--
-    <dependency org="com.googlecode" name="gwt-math"
-                rev="[2.0.3p2,)" 
+    <dependency org="com.googlecode" name="gwt-math.repackaged"
+                rev="[${global.version}-2.0.3p2,${global.version}-3.0.0)" 
                 conf="default->default" transitive="false" >
       <artifact name="gwt-math" type="jar" />
     </dependency>
-   -->
     <dependency org="com.google.gwt" name="gwt.repackaged" 
                 rev="[${global.version}-2.0.3,)" 
                 conf="default->server" transitive="false" >
