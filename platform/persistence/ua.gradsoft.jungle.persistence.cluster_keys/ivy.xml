@@ -38,12 +38,12 @@
     </publications>
     <dependencies>
         <dependency org="ua.gradsoft" name="jungle.persistence.jdbcex" 
-                    rev="[${global.version}-1.0.1,)" 
+                    rev="[${global.version}-1.0.1,${global.version}-3.0.0)" 
                     conf="api->api" >
           <artifact name="jungle.persistence.jdbcex-api" type="jar" />
         </dependency>
         <dependency org="ua.gradsoft" name="jungle.persistence.jpaex" 
-                    rev="[${global.version}-1.2.0,)" 
+                    rev="[${global.version}-1.2.0,${global.version}-3.0.0)" 
                     conf="api->api;build->build" >
           <artifact name="jungle.persistence.jpaex-api" type="jar" />
         </dependency>
