@@ -271,7 +271,7 @@ class PHPJAO
 
 class PHPJaoConnection
 {
- public function __construct($theLogin, $thePassword, $theUrls)
+ public function __construct($theLogin, $thePassword, $theUrls, $md5_auth = null)
  {
    $this->login=$theLogin;
    $this->password=$thePassword;
@@ -284,6 +284,7 @@ class PHPJaoConnection
    $this->currentIndex=rand()%count($this->urls);
    $this->currentUrl=$this->urls[$this->currentIndex];
    $this->curlHandle=null;
+   $this->usemd5 = $md5_auth;
  }
 
  public function __destruct()
@@ -351,6 +352,23 @@ class PHPJaoConnection
    }
  }
 
+ public function checkUserPermission($permission){
+  if (is_null($this->curlHandle)) {
+     $this->curlHandle=PHPJAO::initCurlHandle($this->currentUrl);
+   }
+   $method='checkUserPermission';
+   $params = array(
+       $this->sessionTicket,
+       $permission,
+       array('javaClass' => 'java.util.TreeMap',
+       'map' => array('a'=>'1'))
+   );  
+   
+       return PHPJAO::callOperation($this->curlHandle,
+                                                    'auth',$method,$params);
+ }
+
+
  public function login()
  {
    if (is_null($this->curlHandle)) {
@@ -367,6 +385,10 @@ class PHPJaoConnection
        )      
      )
    );
+   if ($this->usemd5){
+    $params[1]['map']['crypt_pair'] = $this->usemd5;
+   }
+
    $this->sessionTicket = PHPJAO::callOperation($this->curlHandle,
                                                     'auth',$method,$params);
  }
@@ -394,6 +416,7 @@ class PHPJaoConnection
  private $curlHandle;
  private $currentUrl;
  private $currentIndex;
+ private $usemd5;
 }
 
 class PHPJaoRemoteProxy
@@ -724,6 +747,7 @@ class JavaLinkedList extends JavaList
   }
   static $phpjaoClassDescription;
 }
+
 
 class ListPHPJAOHelper
 {
