@@ -10,8 +10,12 @@
 
   <import file="build-ivy.xml" />
 
+  <target name="clean">
+     <delete quiet="true" file="dist/ivy.xml" />
+   </target>
 
-   <target name="publish" depends="resolve-ivy">
+
+   <target name="publish" depends="resolve-ivy,clean">
      <ivy:install organisation="org.hsqldb" module="hsqldb"
                   revision="${origin.version}" 
                   overwrite="true"
@@ -33,7 +37,7 @@
    
 
    <target name="publish.local" 
-           depends="resolve-ivy,check-dependency-exists"
+           depends="resolve-ivy,check-dependency-exists,clean"
            unless="dependency-exists">
      <ivy:install organisation="org.hsqldb" module="hsqldb"
                   revision="${origin.version}" 

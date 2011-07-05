@@ -10,8 +10,12 @@
 
   <import file="build-ivy.xml" />
 
+   <target name="clean">
+        <delete quiet="true" file="dist/ivy.xml" />
+    </target>
 
-   <target name="publish" depends="resolve-ivy">
+
+   <target name="publish" depends="resolve-ivy,clean">
      <ivy:install organisation="org.springframework" module="spring-jdbc"
                   revision="${origin.version}" 
                   overwrite="true"
@@ -72,6 +76,12 @@
                   from="external.chain"
                   to="datacenter.gradsoft.ua"
                   />
+     <ivy:install organisation="org.springframework" module="spring-web"
+                  revision="${origin.version}" 
+                  overwrite="true"
+                  from="external.chain"
+                  to="datacenter.gradsoft.ua"
+                  />
      <ivy:publish resolver="datacenter.gradsoft.ua" pubrevision="${version}"
                   overwrite="false"
                   replacedynamicrev="false">
@@ -87,7 +97,7 @@
    
 
    <target name="publish.local" 
-           depends="resolve-ivy,check-dependency-exists"
+           depends="resolve-ivy,check-dependency-exists,clean"
            unless="dependency-exists">
      <ivy:install organisation="org.springframework" module="spring-jdbc"
                   revision="${origin.version}" 
@@ -144,6 +154,12 @@
                   to="jungle.repo"
                   />
      <ivy:install organisation="org.springframework" module="spring-tx"
+                  revision="${origin.version}" 
+                  overwrite="true"
+                  from="external.chain"
+                  to="jungle.repo"
+                  />
+     <ivy:install organisation="org.springframework" module="spring-web"
                   revision="${origin.version}" 
                   overwrite="true"
                   from="external.chain"
