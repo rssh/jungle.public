@@ -7,13 +7,13 @@
     <dependencies>
        <dependency org="org.hibernate" name="hibernate-core" 
                    rev="${origin.version}"
-                    transitive="false"
+                    transitive="true"
                    >
           <artifact name="hibernate-core" type="jar" />
        </dependency>
        <dependency org="org.hibernate" name="hibernate-entitymanager" 
                     rev="${origin.version}"
-                    transitive="false"
+                    transitive="true"
                    >
           <artifact name="hibernate-entitymanager" type="jar" />
        </dependency>

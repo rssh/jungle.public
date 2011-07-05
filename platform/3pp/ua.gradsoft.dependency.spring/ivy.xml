@@ -29,6 +29,36 @@
                      >
             <artifact name="spring-web" type="jar" />
        </dependency>
+       <dependency org="org.springframework" name="spring-context" 
+                    rev="${origin.version}"
+                    transitive="false"
+                     >
+       </dependency>
+       <dependency org="org.springframework" name="spring-beans" 
+                    rev="${origin.version}"
+                    transitive="false"
+                     >
+       </dependency>
+       <dependency org="org.springframework" name="spring-tx" 
+                    rev="${origin.version}"
+                    transitive="false"
+                     >
+       </dependency>
+       <dependency org="org.springframework" name="spring-jdbc" 
+                    rev="${origin.version}"
+                    transitive="false"
+                     >
+       </dependency>
+       <dependency org="org.springframework" name="spring-asm" 
+                    rev="${origin.version}"
+                    transitive="true"
+                     >
+       </dependency>
+       <dependency org="org.springframework" name="spring-aop" 
+                    rev="${origin.version}"
+                    transitive="true"
+                     >
+       </dependency>
     </dependencies>
 </ivy-module>
 
