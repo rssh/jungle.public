@@ -1,0 +1,19 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" 
+          module="dependency.gwt-log" />
+    <publications>
+      <artifact name="dependency.gwt-log" type="txt" />
+    </publications>
+    <dependencies>
+      <dependency org="com.allen_sauer" 
+                  name="gwt-log"
+                  rev="${origin.version}" 
+                 >
+        <artifact name="gwt-log" type="jar" 
+                  url="http://gwt-log.googlecode.com/files/gwt-log-${origin.version}.jar" />
+        </dependency>
+    </dependencies>
+</ivy-module>
+
+
+
