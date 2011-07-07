@@ -1,6 +1,0 @@
-<ivy-module version="1.4">
- <info organisation="com.allen_sauer" module="gwt-log" revision="3.0.0" />
- <publications>
-  <artifact name="gwt-log" type="jar" />
- </publications>
-</ivy-module>
