@@ -236,7 +236,7 @@
     </target>
 
    <target name="publish.local" depends="distributives">
-     <ivy:publish resolver="local.repo" pubrevision="${version}" 
+     <ivy:publish resolver="local.jungle.repo" pubrevision="${version}" 
                   overwrite="true" 
                   replacedynamicrev="false"
                   >
