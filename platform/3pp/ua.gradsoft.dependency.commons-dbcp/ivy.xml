@@ -1,0 +1,17 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" 
+          module="dependency.commons-dbcp" />
+    <publications>
+      <artifact name="dependency.commons-dbcp" type="txt" />
+    </publications>
+    <dependencies>
+      <dependency org="org.apache" name="commons-dbcp" 
+                  rev="${origin.version}" 
+                  >
+                 <artifact name="commons-dbcp" type="jar" />
+      </dependency>
+    </dependencies>
+</ivy-module>
+
+
+
