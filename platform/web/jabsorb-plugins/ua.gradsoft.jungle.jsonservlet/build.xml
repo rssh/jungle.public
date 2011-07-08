@@ -60,7 +60,7 @@
  </target>
 
  <target name="retrieve-libs" depends="init-ivy">
-  <ivy:retrieve pattern="lib/[artifact]-[revision].[ext]" />
+  <ivy:retrieve pattern="lib/[artifact](-[classifier])-[revision].[ext]" />
   <ivy:artifactproperty name="[module].version" 
                         value="[revision]" />
  </target>
