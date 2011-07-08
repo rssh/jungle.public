@@ -1,0 +1,22 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" 
+          module="dependency.spring-instrument-tomcat" />
+    <configurations>
+      <conf name="default" description="default" />
+      <conf name="test" description="with test" extends="default" />
+    </configurations>
+    <publications>
+      <artifact name="dependency.spring-instrument-tomcat" type="txt" />
+    </publications>
+    <dependencies>
+       <dependency org="org.springframework" name="spring-instrument-tomcat" 
+                   rev="${origin.version}"
+                    transitive="false"
+                    >
+           <artifact name="spring-instrument-tomcat" type="jar" />
+       </dependency>
+    </dependencies>
+</ivy-module>
+
+
+
