@@ -1,6 +1,10 @@
 <ivy-module version="1.4">
     <info organisation="ua.gradsoft" 
           module="dependency.spring" />
+    <configurations>
+      <conf name="default" description="default" />
+      <conf name="test" description="with test" extends="default" />
+    </configurations>
     <publications>
       <artifact name="dependency.spring" type="txt" />
     </publications>
@@ -63,6 +67,16 @@
                     rev="${origin.version}"
                     transitive="true"
                      >
+       </dependency>
+       <dependency org="org.springframework" name="spring-instrument" 
+                    rev="${origin.version}"
+                    transitive="true"
+                     >
+       </dependency>
+       <dependency org="org.springframework" name="spring-test" 
+                   rev="${origin.version}"
+                   conf="test->default"
+                   >
        </dependency>
     </dependencies>
 </ivy-module>

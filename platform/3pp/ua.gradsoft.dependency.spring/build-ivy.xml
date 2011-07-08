@@ -84,7 +84,7 @@
 
 
  <target name="retrieve-origin" depends="resolve-ivy" >
-   <ivy:retrieve  pattern="origin/[artifact]-[revision].[ext]" />
+   <ivy:retrieve  pattern="origin/[artifact](-[classifier])-[revision].[ext]" />
  </target>
 
 </project>
