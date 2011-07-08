@@ -1,0 +1,75 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" module="jungle.persistence.jpaex"/>
+       
+    <configurations>
+      <conf name="api" description="api" />
+      <conf name="docs" description="javadoc archive" />
+      <conf name="src" description="source archive" />
+      <conf name="spring" description="spring-based implementation" 
+                        extends="api" />
+      <conf name="hibernate" description="hibernate implementation" 
+                        extends="api" />
+      <conf name="jtads" description="jta with known datasource" 
+                        extends="api" />
+      <conf name="build" description="with build dependnecy" 
+                        extends="api" />
+      <conf name="test" description="with test dependnecy" 
+                        extends="build" />
+    </configurations>
+    <publications>
+      <artifact name="jungle.persistence.jpaex-api" type="jar" conf="build" />
+      <artifact name="jungle.persistence.jpaex-src" type="tar.gz" 
+                ext="tar.gz" conf="src" />
+      <artifact name="jungle.persistence.jpaex-docs" type="tar.gz" 
+                ext="tar.gz" conf="docs" />
+      <artifact name="jungle.persistence.jpaex-spring" type="jar" 
+                conf="spring" />
+      <artifact name="jungle.persistence.jpaex-hibernate" type="jar" 
+                conf="hibernate" />
+      <artifact name="jungle.persistence.jpaex-jtads" type="jar" 
+                conf="jtads" />
+    </publications>
+    <dependencies>
+        <dependency org="ua.gradsoft" 
+               name="dependency.javaee-api"
+               rev="${global.version}" 
+               conf="build->default"
+               transitive="true"
+               >
+          <artifact name="dependency.javaee-api" type="txt" />
+        </dependency>
+        <dependency org="ua.gradsoft" 
+               name="dependency.commons-logging"
+               rev="${global.version}" 
+               conf="build->default"
+               transitive="true"
+               >
+          <artifact name="dependency.commons-logging" type="txt" />
+        </dependency>
+
+        <dependency org="ua.gradsoft" name="jungle.persistence.jdbcex" 
+                    rev="[${global.version}-1.0.4,)" conf="api->api" >
+          <artifact name="jungle.persistence.jdbcex-api" type="jar" />
+        </dependency>
+
+        <dependency org="ua.gradsoft" name="dependency.junit" 
+                    rev="${global.version}" 
+                    conf="test->default" >
+          <artifact name="dependency.junit" type="txt" />
+        </dependency>
+
+        <dependency org="ua.gradsoft" name="dependency.spring" 
+                    rev="${global.version}"
+                    transitive="true" conf="spring->default" >
+        </dependency>
+
+        <dependency org="ua.gradsoft" name="dependency.hibernate" 
+                    rev="${global.version}"
+                    transitive="true" conf="hibernate->default" >
+        </dependency>
+
+    </dependencies>
+</ivy-module>
+
+
+

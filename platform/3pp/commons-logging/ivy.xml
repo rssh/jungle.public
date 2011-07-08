@@ -1,9 +1,0 @@
-<ivy-module version="1.4">
-    <info organisation="ua.gradsoft" 
-          module="commons-logging.republish" />
-    <dependencies>
-    </dependencies>
-</ivy-module>
-
-
-

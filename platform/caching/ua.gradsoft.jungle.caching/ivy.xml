@@ -1,0 +1,31 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" module="jungle.caching"/>
+       
+    <configurations>
+      <conf name="default" description="standard build" />
+      <conf name="test" description="test version with junit test" 
+                        extends="default" />
+      <conf name="doc" description="with tool for building documentations" 
+                        extends="default" />
+    </configurations>
+    <publications>
+      <artifact name="jungle.caching" type="jar" />
+      <artifact name="jungle.caching-src" type="tar.gz" ext="tar.gz" />
+      <artifact name="jungle.caching-doc" type="tar.gz" ext="tar.gz" />
+    </publications>
+    <dependencies>
+        <dependency org="ua.gradsoft" name="dependency.commons-logging" 
+                   rev="${global.version}" 
+                   transitive="true" />
+        <dependency org="ua.gradsoft" name="dependency.ehcache" 
+                   rev="${global.version}" 
+                   transitive="true" />
+        <dependency org="ua.gradsoft" name="dependency.junit"  
+                   rev="${global.version}" 
+                   transitive="true" 
+                   conf="test->default"/>
+    </dependencies>
+</ivy-module>
+
+
+

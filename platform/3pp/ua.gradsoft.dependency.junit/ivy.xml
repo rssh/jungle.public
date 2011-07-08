@@ -1,0 +1,17 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" 
+          module="dependency.junit" />
+    <publications>
+      <artifact name="dependency.junit" type="txt" />
+    </publications>
+    <dependencies>
+      <dependency org="org.junit" name="junit" 
+                  rev="${origin.version}" 
+                  transitive="false" >
+                 <artifact name="junit" type="jar" />
+      </dependency>
+    </dependencies>
+</ivy-module>
+
+
+

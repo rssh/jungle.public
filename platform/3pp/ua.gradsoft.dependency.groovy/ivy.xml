@@ -1,0 +1,17 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" 
+          module="dependency.groovy" />
+    <publications>
+      <artifact name="dependency.groovy" type="txt" />
+    </publications>
+    <dependencies>
+      <dependency org="org.codehaus.groovy" name="groovy-all" 
+                  rev="${origin.version}" 
+                  >
+                 <artifact name="groovy-all" type="jar" />
+      </dependency>
+    </dependencies>
+</ivy-module>
+
+
+

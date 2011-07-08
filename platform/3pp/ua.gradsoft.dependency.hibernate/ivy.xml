@@ -1,0 +1,35 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" 
+          module="dependency.hibernate" />
+    <publications>
+      <artifact name="dependency.hibernate" type="txt" />
+    </publications>
+    <dependencies>
+       <dependency org="org.hibernate" name="hibernate-core" 
+                   rev="${origin.version}"
+                    transitive="true"
+                   >
+             <artifact name="hibernate-core" type="jar" />
+       </dependency>
+       <dependency org="org.hibernate" name="hibernate-entitymanager" 
+                    rev="${origin.version}"
+                    transitive="true"
+                   >
+             <artifact name="hibernate-entitymanager" type="jar" />
+       </dependency>
+       <dependency org="org.hibernate" name="hibernate-validator" 
+                    rev="4.2.0.Final"
+                    transitive="false"
+                   >
+          <artifact name="hibernate-validator" type="jar" />
+       </dependency>
+       <dependency org="org.hibernate" name="hibernate-ehcache" 
+                   rev="${origin.version}" 
+                  >
+          <artifact name="hibernate-ehcache" type="jar" />
+       </dependency>
+    </dependencies>
+</ivy-module>
+
+
+

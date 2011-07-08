@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="net.sf.beanlib.repackaged" default="repackage" basedir="."
+  xmlns:ivy="antlib:fr.jayasoft.ivy.ant"
+ >
+
+  <property file="build.properties" />
+  <property file="${jungle.public.home}/build.properties" />
+  <property name="version" value="${global.version}-${local.version}" />
+
+  <import file="build-ivy.xml" />
+
+
+  <target name="untar" depends="retrieve-origin" 
+          description="untar origin files">
+    <gunzip src="origin/beanlib-${origin.version}.tar.gz" />
+    <untar src="origin/beanlib-${origin.version}.tar" 
+           dest="origin" />
+    <delete file="origin/beanlib-${origin.version}.tar" />
+  </target>
+
+
+  <target name="patch" depends="untar" 
+              description="apply patches">
+   <!--
+    We have not patches (yet ?)
+    <patch patchfile="patches/patch.1" strip="0" /> 
+   -->
+  </target>
+
+  <target name="package" depends="patch" 
+              description="do packaging and cleanup">
+    <copy file="origin/beanlib-${origin.version}/beanlib-${origin.version}.jar" 
+          tofile="dist/beanlib-${version}.jar" />
+    <copy file="origin/beanlib-${origin.version}/beanlib-hibernate-${origin.version}.jar" 
+          tofile="dist/beanlib-hibernate-${version}.jar" />
+    <copy file="origin/beanlib-${origin.version}/beanlib-joda-${origin.version}.jar" 
+          tofile="dist/beanlib-joda-${version}.jar" />
+  </target>
+
+  <target name="repackage" depends="package" />
+
+  <target name="clean">
+    <!-- Delete the bin directory tree -->
+    <delete dir="origin/beanlib-${origin.version}" />
+  </target>
+
+   <target name="clean-all" depends="clean">
+      <delete file="origin/beanlib-${origin.version}.tar.gz" />
+      <delete>
+       <fileset dir="dist" includes="*.*" />
+      </delete>
+   </target>
+  
+  
+   <target name="publish" depends="repackage">
+     <ivy:publish resolver="datacenter.gradsoft.ua" pubrevision="${version}" 
+                  overwrite="true" 
+                  >
+       <artifacts pattern="dist/[artifact]-[revision].[ext]" />
+     </ivy:publish>
+    </target>
+
+   <target name="publish.local" depends="repackage">
+     <ivy:publish resolver="jungle.repo" pubrevision="${version}" 
+                  overwrite="true" 
+                  >
+       <artifacts pattern="dist/[artifact]-[revision].[ext]" />
+     </ivy:publish>
+    </target>
+
+
+</project>

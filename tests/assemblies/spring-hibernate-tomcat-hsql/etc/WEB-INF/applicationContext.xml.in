@@ -151,11 +151,7 @@
              <list>
                <value>org.jabsorb.serializer.impl.ClassSerializer</value>
                <value>org.jabsorb.serializer.impl.BigDecimalSerializer</value>
-             </list>
-        </property>
-        <property name="marshallClassHintTranslatorClasses">
-             <list>
-               <value>org.jabsorb.serializer.impl.JPAClassHintTranslator</value>
+               <value>org.jabsorb.serializer.impl.JPAEntitySerializer</value>
              </list>
         </property>
     </bean>

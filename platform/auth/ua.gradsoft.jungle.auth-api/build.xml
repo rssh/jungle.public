@@ -1,0 +1,191 @@
+<?xml version="1.0"?>
+<project name="jungle.auth-api" default="build" basedir="."
+  xmlns:ivy="antlib:fr.jayasoft.ivy.ant"
+  xmlns:phpjao="antlib:ua.gradsoft.phpjao"
+ >
+    <property file="build.properties" />
+    <property file="${jungle.public.home}/build.properties" />
+    <property file="build.local.properties" />
+
+    <property name="version"  value="${global.version}-${local.version}" />
+
+    <import file="build-ivy.xml" />
+    
+<!-- directories -->    
+    <property name="src.dir" value="."/>
+    <property name="build.dir" value="build"/>
+    <property name="dist.dir" value="dist"/>
+    <property name="lib.dir" value="lib"/>
+    <property name="etc.dir" value="etc"/>
+
+    <property name="src-api.dir" value="src/api"/>
+    <property name="src-gwt.dir" value="src/gwt"/>
+    <property name="src-dummy.dir" value="src/dummy"/>
+    
+    <property name="build-api.dir" value="${build.dir}/api"/>
+    <property name="build-gwt.dir" value="${build.dir}/gwt"/>
+    <property name="build-dummy.dir" value="${build.dir}/dummy"/>
+    
+    <path id="core.classpath">
+       <fileset dir="${lib.dir}" includes="*.jar" />
+    </path>
+
+
+    <!-- targets -->
+    <target name="prepare">
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="${build-api.dir}"/>
+        <mkdir dir="${build-gwt.dir}"/>
+        <mkdir dir="${build-dummy.dir}"/>
+        
+        <mkdir dir="${dist.dir}"/>
+    </target>
+    
+    <target name="clean">
+        <delete failonerror="false">
+            <fileset dir="${build.dir}" includes="**/*.class" />
+            <fileset dir="${dist.dir}" includes="**/*.ear,**/*.war,**/*.jar.**/*.txt" />
+        </delete>
+    </target>
+
+    <target name="clean-all">
+     <delete failonerror="false">
+      <fileset dir="lib" includes="**/*.jar,**/*.txt" />
+      <fileset dir="dist" includes="**/*.xml,**/*.jar,**/*.sql,**/*.part" />
+     </delete>
+     <delete dir="docs/javadoc" />
+    </target>
+
+    
+    <target name="build" depends="build-api,build-gwt,build-dummyimpl" >
+    </target>
+    
+    <target name="build-api" depends="retrieve-libs,prepare" >
+        <javac destdir="${build-api.dir}" 
+                srcdir="${src-api.dir}" 
+                includes="**/*.java" 
+                deprecation="on" 
+                debug="${debug}" >
+            <!--<compilerarg  line="-Xlint:unchecked" />-->
+            <classpath>
+              <path refid="core.classpath"/>
+            </classpath>
+        </javac>
+        <jar destfile="${dist.dir}/jungle.auth.api-${version}.jar"
+                basedir="${build-api.dir}" 
+                includes="**/*.class,**/*.dtd,META-INF/**/*" 
+                index="true">
+            <include name="build"/>
+            <manifest>
+                <attribute name="Build-By" value="${user-name}"/>
+            </manifest>
+        </jar>
+    </target>
+
+   <target name="build-gwt" depends="build-api" >
+    <javac destdir="${build-gwt.dir}"
+           srcdir="${src-gwt.dir}" 
+           includes="**/*.java" 
+           deprecation="on" 
+           debug="${debug}" >
+      <classpath>
+         <path refid="core.classpath"/>
+         <pathelement location="${build-api.dir}" />
+      </classpath>
+    </javac>
+    <jar destfile="${dist.dir}/jungle.auth.api.gwt-${version}.jar" 
+         index="true"
+    >
+      <fileset dir="${build-api.dir}" includes="**/*.class" />
+      <fileset dir="${src-api.dir}" includes="**/client/**/*.java" />
+      <fileset dir="${build-gwt.dir}" includes="**/client/**/*.class" />
+      <fileset dir="${src-gwt.dir}" includes="**/client/**/*.java" />
+      <fileset dir="etc/gwt" includes="**/*.xml" />
+    </jar>
+   </target>
+
+   <target name="build-dummyimpl" depends="build-api">
+        <javac destdir="${build-dummy.dir}" 
+                srcdir="${src-dummy.dir}" 
+                includes="**/*.java" 
+                deprecation="on" 
+                debug="${debug}" >
+            <classpath>
+              <path refid="core.classpath"/>
+              <pathelement 
+                 location="${dist.dir}/jungle.auth.api-${version}.jar" />
+            </classpath>
+        </javac>
+        <jar destfile="${dist.dir}/jungle.auth.api-dummyimpl-${version}.jar" 
+             basedir="${build-dummy.dir}" 
+             includes="**/*.class"
+        />
+   </target>
+
+   <target name="publish" depends="distributives">
+     <ivy:publish resolver="datacenter.gradsoft.ua" pubrevision="${version}" 
+                  overwrite="true" 
+                  replacedynamicrev="false"
+                  >
+       <artifacts pattern="dist/[artifact]-[revision].[ext]" />
+     </ivy:publish>
+    </target>
+
+   <target name="publish.local" depends="distributives">
+     <ivy:publish resolver="jungle.repo" pubrevision="${version}" 
+                  overwrite="true" 
+                  replacedynamicrev="false"
+                  >
+       <artifacts pattern="dist/[artifact]-[revision].[ext]" />
+     </ivy:publish>
+    </target>
+
+    <target name="distributives" depends="build,docs,source-distributive" />
+
+    <target name="docs" depends="javadoc" />
+
+    <target name="javadoc" >
+     <javadoc destdir="docs/javadoc" >
+       <sourcefiles>
+        <fileset dir="src/api">
+          <include name="**/*.java" />
+        </fileset>
+        <fileset dir="src/gwt">
+          <include name="**/*.java" />
+        </fileset>
+       </sourcefiles>
+       <classpath>
+        <path refid="core.classpath"/>
+        <pathelement location="${build-api.dir}" />
+       </classpath>
+     </javadoc>
+     <zip destfile="dist/jungle.auth.api-docs-${version}.zip" 
+          basedir="docs/javadoc"
+     />
+    </target>
+
+    <target name="source-distributive" depends="build">
+      <mkdir dir="dist/jungle.auth.api-src-${version}" />
+      <copy todir="dist/jungle.auth.api-src-${version}" >
+      <fileset dir=".">
+        <include name="**/*.xml" />
+        <include name="**/*.java" />
+        <include name="**/*.properties" />
+        <include name="src/*" />
+        <include name="lib/*" />
+        <include name="docs/**/*" />
+        <exclude name="dist/*.*" />
+        <exclude name="dist/**/*.*" />
+        <exclude name="nbproject/private/*" />
+        <exclude name="**/*.class" />
+      </fileset>
+     </copy>
+     <zip destfile="dist/jungle.auth.api-src-${version}.zip" >
+       <zipfileset dir="dist/jungle.auth.api-src-${version}" 
+                   prefix="jungle.auth.api-src-${version}" />
+     </zip>
+     <delete dir="dist/jungle.auth.api-src-${version}" />
+    </target>
+
+    
+</project>

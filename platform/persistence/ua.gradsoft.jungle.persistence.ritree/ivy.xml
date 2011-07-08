@@ -1,0 +1,73 @@
+<ivy-module version="1.4">
+ <info organisation="ua.gradsoft" module="jungle.persistence.ritree" />
+ <configurations>
+  <conf name="default" description="POJO classes and helper libraries" />
+  <conf name="withlibs" description="with ejb api" extends="default" />
+  <conf name="gwt-export" description="with gwt export" extends="default" />
+  <conf name="php-export" description="with php export" extends="default" />
+  <conf name="hibernate" description="with hibernate extension" extends="default" />
+  <conf name="pgsql" description="with pgsql scripts" extends="default" />
+  <conf name="test-hibernate" 
+        description="testing hibernate extension" 
+        extends="default" />
+  <conf name="src"  description="with source distributive" />
+  <conf name="docs"  description="with docs" />
+ </configurations>
+ <publications>
+  <artifact name="jungle.persistence.ritree" type="jar" conf="default" />
+  <artifact name="jungle.persistence.ritree-gwt" type="jar" conf="gwt-export" />
+  <artifact name="jungle.persistence.ritree" type="php" conf="php-export" />
+  <artifact name="jungle.persistence.ritree-hibernate" 
+                                             type="jar" conf="hibernate" />
+  <artifact name="jungle.persistence.ritree.persistence.xml" 
+                                             type="part" conf="hibernate" />
+  <artifact name="create_ritree_pgsql" 
+                                             type="sql" conf="pgsql" />
+  <artifact name="ritree_functions_pgsql" 
+                                             type="sql" conf="pgsql" />
+  <artifact name="drop_ritree_pgsql" 
+                                             type="sql" conf="pgsql" />
+  <artifact name="jungle.persistence.ritree-src" 
+                                             type="tar.gz" conf="src" />
+  <artifact name="jungle.persistence.ritree-docs" 
+                                             type="tar.gz" conf="docs" />
+ </publications>
+ <dependencies>
+    <dependency org="ua.gradsoft" 
+               name="dependency.javaee-api"
+               rev="${global.version}" 
+               conf="withlibs->default"
+               transitive="true"
+               >
+       <artifact name="dependency.javaee-api" type="txt" />
+    </dependency>
+    <dependency org="ua.gradsoft" name="jungle.tools.phpjao" 
+                rev="[${global.version}-1.0.0,${global.version}-2.0.0)" conf="php-export->default" >
+       <artifact name="jungle.tools.phpjao" type="jar" />
+    </dependency>
+   <dependency org="ua.gradsoft" 
+               name="jungle.persistence.jpaex"
+               rev="[${global.version}-2.0.0,${global.version}-3.0.0)"
+               conf="default->api;hibernate->hibernate">
+       <artifact name="jungle.persistence.jpaex-api" type="jar" />
+       <artifact name="jungle.persistence.jpaex-hibernate" type="jar" />
+    </dependency>
+    <dependency org="ua.gradsoft" name="dependency.hibernate" 
+                rev="${global.version}"
+                transitive="true" conf="hibernate->default" >
+    </dependency>
+   <dependency org="ua.gradsoft" name="dependency.jdbc-postgresql" 
+               rev="${global.version}" 
+               transitive="true"
+               conf="hibernate->*">
+   </dependency>
+   <dependency org="ua.gradsoft" name="dependency.slf4j" 
+               rev="${global.version}" 
+               transitive="true"
+               conf="test-hibernate->jdk14" >
+   </dependency>
+   <dependency org="ua.gradsoft" name="dependency.junit" 
+               rev="${global.version}" 
+               conf="test-hibernate->default"/>
+ </dependencies>
+</ivy-module>

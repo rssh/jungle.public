@@ -1,0 +1,28 @@
+<ivy-module version="1.4">
+    <info organisation="net.edwardstx" module="proxy"/>
+    <configurations>
+      <conf name="war" description="build war" />
+    </configurations>
+    <publications>
+      <artifact name="ajaxproxy" type="war" />
+    </publications>
+    <dependencies>
+        <dependency org="ua.gradsoft" name="dependency.commons-httpclient" 
+                    rev="${global.version}" 
+                    conf="war->default"/>
+        <dependency org="ua.gradsoft" name="dependency.commons-logging" 
+                    rev="${global.version}" 
+                    conf="war->default" />
+        <dependency org="ua.gradsoft" name="dependency.commons-codec" 
+                    rev="${global.version}" 
+                    conf="war->default" />
+        <dependency org="ua.gradsoft" name="dependency.commons-fileupload" 
+                    rev="${global.version}" 
+                    conf="war->default" />
+        <dependency org="ua.gradsoft" name="dependency.commons-io" 
+                    rev="${global.version}" />
+        <dependency org="ua.gradsoft" name="dependency.javaee-api" 
+                    rev="${global.version}"
+        />
+    </dependencies>
+</ivy-module>

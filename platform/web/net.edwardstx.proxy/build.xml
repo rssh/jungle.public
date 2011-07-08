@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<project name="net.edwardstx.proxy" default="build" basedir="." >
+
+<!-- proeprties -->
+
+<property file="build.properties" />
+<property file="${jungle.public.home}/build.properties" />
+
+<property name="version" value="${global.version}-${local.version}" />
+
+<import file="build-ivy.xml" />
+
+<condition property="ivy.int.home" value="${ivy.home}" else="${user.home}/.ivy2">
+  <isset property="ivy.home" />
+</condition>
+<!--<property name="ivy.lib.dir" value="${ivy.int.home}/cache" />  -->
+  
+<!-- targets -->
+
+ <target name="clean">
+  <delete>
+   <fileset dir="src"   includes="**/*.class" />
+  </delete>
+ </target>
+
+ <target name="clean-all" depends="clean">
+  <delete>
+   <fileset dir="lib"   includes="**/*.jar" />
+   <fileset dir="lib"   includes="**/*.txt" />
+  </delete>
+ </target>
+
+
+ <path id="compile.path">
+   <fileset dir="lib">
+    <include name="*.jar" />
+   </fileset>
+ </path>
+
+ <target name="build" depends="retrieve-libs">
+  <javac srcdir="src" includes="**/*.java" deprecation="on" debug="${debug}" >
+    <classpath refid="compile.path" />
+  </javac>
+  <war destfile="target/ajaxproxy-${version}.war" webxml="WEB-INF/web.xml">
+   <lib dir="lib" includes="*.jar" excludes="javaee-api-*.jar" />
+   <classes dir="src" includes="**/*.class" />
+  </war>
+ </target>
+
+ <target name="distributive" depends="build" />
+
+
+</project>

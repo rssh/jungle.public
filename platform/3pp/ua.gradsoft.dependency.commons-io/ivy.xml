@@ -1,0 +1,17 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" 
+          module="dependency.commons-io" />
+    <publications>
+      <artifact name="dependency.commons-io" type="txt" />
+    </publications>
+    <dependencies>
+      <dependency org="org.apache" name="commons-io" 
+                  rev="${origin.version}" 
+                  transitive="false" >
+                 <artifact name="commons-io" type="jar" />
+      </dependency>
+    </dependencies>
+</ivy-module>
+
+
+

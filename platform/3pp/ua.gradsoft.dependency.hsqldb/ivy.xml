@@ -1,0 +1,17 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" 
+          module="dependency.hsqldb" />
+    <publications>
+      <artifact name="dependency.hsqldb" type="txt" />
+    </publications>
+    <dependencies>
+      <dependency org="org.hsqldb" name="hsqldb" 
+                  rev="${origin.version}" 
+                   >
+         <artifact name="hsqldb" type="jar" />
+      </dependency>
+    </dependencies>
+</ivy-module>
+
+
+

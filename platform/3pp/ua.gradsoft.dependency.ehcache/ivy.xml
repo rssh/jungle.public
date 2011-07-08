@@ -1,0 +1,35 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" 
+          module="dependency.ehcache" />
+    <publications>
+      <artifact name="dependency.ehcache" type="txt"  />
+    </publications>
+    <dependencies>
+       <dependency org="net.sf.ehcache" name="ehcache" 
+                   rev="2.4.2"  
+                   conf="default->default" 
+                   transitive="false"
+                   >
+        </dependency>
+        <dependency org="net.sf.ehcache" name="ehcache-core" 
+                   rev="2.4.2"  
+                   conf="default->default" 
+                  >
+             <artifact name="ehcache-core" type="jar" />
+        </dependency>
+        <!--
+        <dependency org="net.sf.ehcache" name="ehcache-terracotta" 
+                   rev="2.1.1"  
+                  >
+             <artifact name="ehcache-terracota" type="jar" />
+        </dependency>
+        -->
+        <dependency org="org.slf4j" name="slf4j-api" rev="1.6.1" 
+              transitive="false" >
+             <artifact name="slf4j-api" type="jar" />
+        </dependency>
+    </dependencies>
+</ivy-module>
+
+
+

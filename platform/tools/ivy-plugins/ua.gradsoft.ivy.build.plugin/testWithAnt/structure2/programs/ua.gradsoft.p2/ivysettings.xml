@@ -1,0 +1,24 @@
+<ivysettings>
+        <settings defaultResolver="build.local" checkUpToDate="false" />
+
+    <classpath  
+      file="${ivy.settings.dir}/../../../../target/ivy.build.plugin-${plugin.version}.jar" />
+    <typedef name="build" 
+          classname="org.apache.ivy.plugins.resolver.build.BuildResolver" />
+
+
+        <resolvers>
+           <filesystem name="local">
+            <ivy pattern="${ivy.build.resolver.dir}/[organisation]/[module]/ivys/ivy-[revision].xml"/>
+               <artifact pattern="${ivy.build.resolver.dir}/[organisation]/[module]/[type]s/[artifact]-[revision].[ext]"/>
+           </filesystem>
+           <build name="build.local" 
+                  buildResolverDir="${ivy.build.resolver.dir}" >
+             <resolver ref="local" />
+             <rootBuildDirectory path="${basedir}/../../"
+                                 publishTarget="publish.local" />
+           </build>
+        </resolvers>
+
+</ivysettings>
+

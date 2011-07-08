@@ -1,0 +1,26 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" 
+          module="dependency.javaee-api" />
+    <configurations>
+      <conf name="default"  />
+    </configurations>
+    <!-- virual module functionality is broken in ivy,
+         when module is called from dependencies.
+         So, use dummy target
+     -->
+    <publications>
+       <artifact name="dependency.javaee-api" type="txt" />
+    </publications>
+    <dependencies>
+      <dependency org="org.apache.openejb" 
+                name="javaee-api"
+                rev="${origin.version}" 
+                transitive="false"
+       >
+         <artifact name="javaee-api" type="jar" />
+       </dependency>
+    </dependencies>
+</ivy-module>
+
+
+
