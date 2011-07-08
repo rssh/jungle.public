@@ -10,6 +10,8 @@
 <property file="build.properties" />
 <property file="${jungle.public.home}/build.properties" />
 <property file="build.local.properties" />
+<property name="version" value="${global.version}-${local.version}" />
+
 
 <condition property="ivy.int.home" value="${ivy.home}" else="${user.home}/.ivy2">
   <isset property="ivy.home" />
