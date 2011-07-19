@@ -8,7 +8,7 @@
       <dependency org="org.apache.xbean" name="xbean-spring" 
                   rev="${origin.version}" 
                   transitive="false" >
-                 <artifact name="xbean-spring" type="jar" />
+                 <artifact name="xbean-spring" type="bundle" ext="jar" />
       </dependency>
     </dependencies>
 </ivy-module>

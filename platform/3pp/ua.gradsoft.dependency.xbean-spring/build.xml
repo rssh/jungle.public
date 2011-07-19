@@ -30,6 +30,7 @@
     </target>
 
    <target name="check-dependency-exists" >
+    <!-- not used -->
     <available property="dependency-exists" 
       file="${repo.home}/ua.gradsoft/dependency.xbean-spring/txts/dependency.xbean-spring-${version}.txt"
     />
@@ -38,7 +39,7 @@
 
    <target name="publish.local" 
            depends="resolve-ivy,check-dependency-exists,clean"
-           unless="dependency-exists">
+           >
      <ivy:install organisation="org.apache.xbean" module="xbean-spring"
                   revision="${origin.version}" 
                   from="external.chain"
