@@ -528,6 +528,8 @@ class DateTimePHPJAOHelper
 
 }
 
+PHPJAO::registerType('java.sql.Date', new DateTimePHPJAOClassDescription());
+PHPJAO::registerType('java.sql.Timestamp', new DateTimePHPJAOClassDescription());
 PHPJAO::registerType('java.util.Date', new DateTimePHPJAOClassDescription());
 PHPJAO::registerCustomType('DateTime', new DateTimePHPJAOHelper());
 
