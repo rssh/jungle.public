@@ -65,8 +65,25 @@ public class QLGeneratorUtils {
 
     public static String generateEjbQl(List<String> selects,
                                        List<String> fromParts,
+                                       List<String> whereParts)
+    {
+       return generateEjbQl(selects,fromParts,whereParts,null,true);
+    }
+
+
+    public static String generateEjbQl(List<String> selects,
+                                       List<String> fromParts,
                                        List<String> whereParts,
                                        List<String> orderByParts)
+    {
+        return generateEjbQl(selects,fromParts,whereParts,orderByParts,true);
+    }
+
+    public static String generateEjbQl(List<String> selects,
+                                       List<String> fromParts,
+                                       List<String> whereParts,
+                                       List<String> orderByParts,
+                                       boolean      orderByDirection)
     {
       StringBuilder sb = new StringBuilder();
       sb.append("select ");
@@ -80,6 +97,11 @@ public class QLGeneratorUtils {
       if (orderByParts!=null && !orderByParts.isEmpty()) {
           sb.append(" order by ");
           implode(sb, orderByParts, ", ");
+          if (orderByDirection) {
+              sb.append(" asc");
+          } else {
+              sb.append(" desc");
+          }
       }
       return sb.toString();
     }
