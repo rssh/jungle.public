@@ -83,10 +83,23 @@ public class QLGeneratorUtils {
                                        List<String> fromParts,
                                        List<String> whereParts,
                                        List<String> orderByParts,
+                                       boolean      orderByDirection) {
+        return generateEjbQl(selects,false,fromParts, whereParts, orderByParts, orderByDirection);
+    }
+
+
+    public static String generateEjbQl(List<String> selects,
+                                       boolean      distinct,
+                                       List<String> fromParts,
+                                       List<String> whereParts,
+                                       List<String> orderByParts,
                                        boolean      orderByDirection)
     {
       StringBuilder sb = new StringBuilder();
       sb.append("select ");
+      if (distinct) {
+          sb.append(" distinct ");
+      }
       implode(sb, selects, ", ");
       sb.append(" from ");
       implode(sb, fromParts, ", ");
