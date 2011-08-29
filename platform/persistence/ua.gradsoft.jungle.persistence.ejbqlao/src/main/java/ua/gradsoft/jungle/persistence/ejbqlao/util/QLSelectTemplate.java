@@ -3,6 +3,9 @@ package ua.gradsoft.jungle.persistence.ejbqlao.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import ua.gradsoft.jungle.persistence.ejbqlao.QueryWithParams;
 
 /**
  *Template for Select ejbql query
@@ -18,11 +21,11 @@ public class QLSelectTemplate {
         this.distinct = distinct;
     }
 
-    public List<Pair<String, String>> getFromParts() {
+    public List<QLFrom> getFromParts() {
         return fromParts;
     }
 
-    public void setFromParts(List<Pair<String, String>> fromParts) {
+    public void setFromParts(List<QLFrom> fromParts) {
         this.fromParts = fromParts;
     }
 
@@ -55,31 +58,35 @@ public class QLSelectTemplate {
         this.selectPart = selectPart;
     }
 
-    public List<String> getWhereParts() {
+    public List<QLCondition> getWhereParts() {
         return whereParts;
     }
 
-    public void setWhereParts(List<String> whereParts) {
+    public void setWhereParts(List<QLCondition> whereParts) {
         this.whereParts = whereParts;
     }
 
 
-    String generateQuery()
+    public String generateQuery()
     {
         List<String> sfrParts = new ArrayList<String>();
-        for(Pair<String,String> p:fromParts) {
-            sfrParts.add(p.getFrs()+" "+p.getSnd());
-        }
-        return QLGeneratorUtils.generateEjbQl(selectPart, distinct, sfrParts, whereParts, orderByParts, orderByDirection);
+        return QLGeneratorUtils.generateEjbQlStructured(selectPart, distinct, fromParts, whereParts, orderByParts, orderByDirection);
     }
 
 
+    public QueryWithParams  createQueryWithParams()
+    {
+      return new QueryWithParams(generateQuery(),params,options);
+    }
 
-    private List<String> selectPart = new ArrayList<String>();
-    private boolean      distinct = false;
-    private List<Pair<String,String>> fromParts = new ArrayList<Pair<String,String>>();;
-    private List<String>  whereParts = new ArrayList<String>() ;
-    private List<String>  orderByParts = new ArrayList<String>();
-    private boolean       orderByDirection = true;
+
+    private List<String>       selectPart = new ArrayList<String>();
+    private boolean            distinct = false;
+    private List<QLFrom>       fromParts = new ArrayList<QLFrom>();;
+    private List<QLCondition>  whereParts = new ArrayList<QLCondition>() ;
+    private List<String>       orderByParts = new ArrayList<String>();
+    private boolean            orderByDirection = true;
+    private Map<String,Object> params = new TreeMap<String,Object>();
+    private Map<String,Object> options = new TreeMap<String,Object>();
 
 }

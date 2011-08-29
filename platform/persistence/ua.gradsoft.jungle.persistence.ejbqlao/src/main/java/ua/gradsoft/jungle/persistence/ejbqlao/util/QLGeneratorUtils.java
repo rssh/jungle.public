@@ -119,4 +119,55 @@ public class QLGeneratorUtils {
       return sb.toString();
     }
 
+    /**
+     * generate with help of strucutred elelements
+     * @param selects
+     * @param distinct
+     * @param fromParts
+     * @param whereParts
+     * @param orderByParts
+     * @param orderByDirection
+     * @return
+     */
+    public static String generateEjbQlStructured(List<String> selects,
+                                       boolean      distinct,
+                                       List<QLFrom> fromParts,
+                                       List<QLCondition> whereParts,
+                                       List<String> orderByParts,
+                                       boolean      orderByDirection)
+    {
+      StringBuilder sb = new StringBuilder();
+      sb.append("select ");
+      if (distinct) {
+          sb.append(" distinct ");
+      }
+      implode(sb, selects, ", ");
+      sb.append(" from ");
+      boolean isFirst=false;
+      for(QLFrom f: fromParts) {
+         if (!isFirst) {
+             sb.append(", ");
+         } else {
+             isFirst=false;
+         }
+         f.outql(sb);
+      }
+      if (whereParts!=null && !whereParts.isEmpty()) {
+          sb.append(" where ");
+          isFirst=false;
+          QLBuilder.createAndCondition(whereParts).outql(sb);
+      }
+      if (orderByParts!=null && !orderByParts.isEmpty()) {
+          sb.append(" order by ");
+          implode(sb, orderByParts, ", ");
+          if (orderByDirection) {
+              sb.append(" asc");
+          } else {
+              sb.append(" desc");
+          }
+      }
+      return sb.toString();
+    }
+
+
 }

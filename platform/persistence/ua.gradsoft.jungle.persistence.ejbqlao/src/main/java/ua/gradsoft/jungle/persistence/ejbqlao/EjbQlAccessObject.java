@@ -28,6 +28,8 @@ import org.apache.commons.logging.LogFactory;
 import ua.gradsoft.jungle.persistence.cluster_keys.ClusterKeys;
 import ua.gradsoft.jungle.persistence.cluster_keys.SequenceKey;
 import ua.gradsoft.jungle.persistence.ejbqlao.util.Pair;
+import ua.gradsoft.jungle.persistence.ejbqlao.util.QLBuilder;
+import ua.gradsoft.jungle.persistence.ejbqlao.util.QLSelectTemplate;
 import ua.gradsoft.jungle.persistence.jpaex.JdbcConnectionWrapper;
 import ua.gradsoft.jungle.persistence.jpaex.JpaEx;
 
@@ -185,8 +187,30 @@ public abstract class EjbQlAccessObject implements CRUDFacade
   @Override
   public <T,C> List<T>  queryByCriteria(Class<T> tClass, C criteria, Map<String,Object> options)
   {
-      CriteriaHelper criteriaHelper = createHelperObjectWithClassSuffix(criteria, "CriteriaHelper", CriteriaHelper.class);
-      QueryWithParams qp = criteriaHelper.getSelectQueryWithParams(criteria);
+      //CriteriaHelper criteriaHelper = createHelperObjectWithClassSuffix(criteria, "CriteriaHelper", CriteriaHelper.class);
+      QueryWithParams qp = null;
+      Class<?> qlCriteriaHelperClass = findHelperClassWithSuffix(criteria.getClass(), "QLCriteriaHelper");
+      if (qlCriteriaHelperClass!=null) {
+          QLCriteriaHelper qlHelper = createHelperObjectWithClass(qlCriteriaHelperClass, QLCriteriaHelper.class);
+          QLSelectTemplate tmpl = QLBuilder.createSelectTemplate();
+          qlHelper.setEntityManager(getEntityManager());
+          qlHelper.fillSelectTemplate(criteria, tmpl, SelectKind.LIST, false);
+          qp = tmpl.createQueryWithParams();
+      } else {
+          Class<?> criteriaHelperClass = findHelperClassWithSuffix(criteria.getClass(), "CriteriaHelper");
+          if (criteriaHelperClass!=null) {
+            CriteriaHelper criteriaHelper = createHelperObjectWithClass(criteriaHelperClass, CriteriaHelper.class);
+            qp = criteriaHelper.getSelectQueryWithParams(criteria);
+          } else {
+            //TODO: implement after changing dependency from JPA to 2.0
+            //Class<?> jpaCriteriaHelperClass = findHelperClassWithSuffix(criteria.getClass(), "JPACriteriaHelper");
+            //if (jpaCriteriaHelperClass!=null) {
+            //   JPACriteriaHelper jpaHelper = createHelperObjectWithClass(qlCriteriaHelperClass, JPACriteriaHelper.class);
+            //
+            //}
+            throw new IllegalArgumentException("Invalid criteria or command: can't find  helper for class "+criteria.getClass().getName());
+          }
+      }
       String query = qp.getQuery();
       Map<String,Object> namedParameters = qp.getNamedParameters();
       Map<String,Object> noptions = qp.getOptions();
@@ -197,8 +221,23 @@ public abstract class EjbQlAccessObject implements CRUDFacade
   @Override
   public <T extends Number,C>  T queryCountByCriteria(Class<T> tClass, C criteria)
   {
-      CriteriaHelper criteriaHelper = createHelperObjectWithClassSuffix(criteria, "CriteriaHelper", CriteriaHelper.class);
-      QueryWithParams qp = criteriaHelper.getCountQueryWithParams(criteria);
+      QueryWithParams qp=null;
+      Class<?> qlCriteriaHelperClass = findHelperClassWithSuffix(criteria.getClass(), "QLCriteriaHelper");
+      if (qlCriteriaHelperClass!=null) {
+          QLCriteriaHelper qlHelper = createHelperObjectWithClass(qlCriteriaHelperClass, QLCriteriaHelper.class);
+          QLSelectTemplate tmpl = QLBuilder.createSelectTemplate();
+          qlHelper.setEntityManager(getEntityManager());
+          qlHelper.fillSelectTemplate(criteria,tmpl,SelectKind.COUNT,true);
+          qp = tmpl.createQueryWithParams();
+      }else{
+          Class<?> criteriaHelperClass = findHelperClassWithSuffix(criteria.getClass(), "CriteriaHelper");
+          if (criteriaHelperClass!=null) {
+             CriteriaHelper criteriaHelper = createHelperObjectWithClass(criteriaHelperClass, CriteriaHelper.class);
+             qp = criteriaHelper.getCountQueryWithParams(criteria);
+          } else {
+             throw new IllegalArgumentException("Invalid criteria or command: can't find  helper for class "+criteria.getClass().getName());
+          }
+      }
       String query = qp.getQuery();
       Map<String,Object> namedParameters = qp.getNamedParameters();
       Map<String,Object> noptions = qp.getOptions();
@@ -791,12 +830,18 @@ public abstract class EjbQlAccessObject implements CRUDFacade
       return a;  
   }
 
-  private <C, CH> CH createHelperObjectWithClassSuffix(C x, String suffix, Class<CH> helperInterface )
+
+  private <C, CH> CH createHelperObjectWithClassSuffix(C x,  String suffix, Class<CH> helperInterface)
   {
-      Class helperClass = findHelperClassWithSuffix(x.getClass(),suffix);
-      if (helperClass == null) {
-          throw new IllegalArgumentException("Invalid criteria or command: can't find  helper for class "+x.getClass().getName()+" with suffix "+suffix);
-      }
+    Class helperClass = findHelperClassWithSuffix(x.getClass(),suffix);
+    if (helperClass == null) {
+        throw new IllegalArgumentException("Invalid criteria or command: can't find  helper for class "+x.getClass().getName()+" with suffix "+suffix);
+    }
+    return createHelperObjectWithClass(helperClass, helperInterface);
+  }
+
+  private <CH> CH createHelperObjectWithClass(Class<?> helperClass, Class<CH> helperInterface )
+  {
       Object o = null;
       try {
         o = helperClass.newInstance();
@@ -812,7 +857,7 @@ public abstract class EjbQlAccessObject implements CRUDFacade
   }
 
 
-  private Class findHelperClassWithSuffix(Class criteriaClass, String suffix)
+  private Class<?> findHelperClassWithSuffix(Class criteriaClass, String suffix)
   {
     if (criteriaClass==null ||
         criteriaClass.equals(Object.class) ||
