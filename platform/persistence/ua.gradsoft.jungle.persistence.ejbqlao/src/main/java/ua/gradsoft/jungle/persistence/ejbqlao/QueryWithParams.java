@@ -1,5 +1,6 @@
 package ua.gradsoft.jungle.persistence.ejbqlao;
 
+import java.io.PrintStream;
 import java.util.Map;
 
 /**
@@ -44,6 +45,23 @@ public class QueryWithParams {
 
     public void setOptions(Map<String,Object> options)
     { options_=options; }
+
+    public void print(PrintStream out) 
+    {
+       out.print("QueryWithParams[\n");
+       out.println("query:"+query_);
+       out.print("params:");
+       for(Map.Entry<String,Object> e: namedParameters_.entrySet()) {
+           out.print("("+e.getKey()+","+e.getValue()+")");
+       }
+       out.println();
+       out.print("options:");
+       for(Map.Entry<String,Object> e: options_.entrySet()) {
+           out.print("("+e.getKey()+","+e.getValue()+")");
+       }
+       out.println("]");
+    }
+    
 
     private String query_;   
     private Map<String,Object> namedParameters_;

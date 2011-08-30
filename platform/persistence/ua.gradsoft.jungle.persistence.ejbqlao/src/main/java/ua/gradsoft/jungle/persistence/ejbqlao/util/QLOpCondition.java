@@ -12,7 +12,8 @@ public abstract class QLOpCondition extends QLCondition
     
     public abstract String op();
     
-    public abstract String emptyValue();
+    public String emptyValue()
+    { return "(1=1)"; }
 
 
     public QLOpCondition(List<QLCondition> components) {
