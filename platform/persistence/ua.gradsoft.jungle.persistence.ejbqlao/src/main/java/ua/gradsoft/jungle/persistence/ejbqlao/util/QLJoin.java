@@ -21,6 +21,13 @@ public class QLJoin extends QLFrom
     }
 
     @Override
+    public boolean isJoinPart() {
+        return parent.isJoinPart();
+    }
+
+
+
+    @Override
     public String getAlias() {
         return alias;
     }
@@ -45,4 +52,5 @@ public class QLJoin extends QLFrom
     private String     parentComponent;
     private String     alias;
     private QLCondition  withCondition;
+
 }

@@ -16,8 +16,13 @@ public abstract class QLFrom extends QLComponent
      * @return
      */
     public abstract String getAlias();
-    
-    
+
+    /**
+     * true, if this is unfinished join part, which
+     * require predesc
+     */
+    public abstract boolean isJoinPart();
+
     /**
      * create join
      */

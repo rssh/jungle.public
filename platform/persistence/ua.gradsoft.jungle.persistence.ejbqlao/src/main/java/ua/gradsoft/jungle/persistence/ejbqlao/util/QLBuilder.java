@@ -1,6 +1,7 @@
 
 package ua.gradsoft.jungle.persistence.ejbqlao.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,10 +25,27 @@ public class QLBuilder {
         return new QLRawCondition(s);
     }
 
-    public static QLCondition createAndCondition(List<QLCondition> args)
+    public static QLAndCondition createAndCondition(List<QLCondition> args)
     {
         return new QLAndCondition(args);
     }
+
+    public static QLAndCondition createAndCondition()
+    {
+        return new QLAndCondition(new ArrayList<QLCondition>());
+    }
+
+    public static QLOrCondition createOrCondition(List<QLCondition> args)
+    {
+        return new QLOrCondition(args);
+    }
+
+    public static QLOrCondition createOrCondition()
+    {
+        return new QLOrCondition(new ArrayList<QLCondition>());
+    }
+
+
 
     public static QLSelectTemplate createSelectTemplate()
     {

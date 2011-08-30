@@ -4,14 +4,13 @@ package ua.gradsoft.jungle.persistence.ejbqlao.util;
 import java.util.List;
 
 /**
- *Condition which
+ *
  * @author rssh
  */
-public class QLAndCondition extends QLOpCondition
-{
+public class QLOrCondition extends QLOpCondition {
 
 
-    public QLAndCondition(List<QLCondition> components) {
+    public QLOrCondition(List<QLCondition> components) {
         super(components);
     }
 
@@ -19,15 +18,14 @@ public class QLAndCondition extends QLOpCondition
 
     @Override
     public String op() {
-        return "and";
+        return "or";
     }
 
 
     @Override
     public String emptyValue() {
-        return "1=1";
+        return "1=0";
     }
-
 
 
 

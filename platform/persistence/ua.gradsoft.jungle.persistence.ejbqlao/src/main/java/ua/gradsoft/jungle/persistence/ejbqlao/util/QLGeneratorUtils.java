@@ -19,15 +19,17 @@ public class QLGeneratorUtils {
     public static void implode(StringBuilder sb, Collection<String> parts, String sep)
     {
       boolean isFirst=true;  
-      for(String part :parts) {
+      for(Object part :parts) {
           if (!isFirst) {
               sb.append(sep);
           }else{
               isFirst=false;
           }
-          sb.append(part);
+          sb.append(part.toString());
       }  
     }
+
+
 
     public static String implode(Collection<String> parts, String sep)
     {
@@ -143,10 +145,14 @@ public class QLGeneratorUtils {
       }
       implode(sb, selects, ", ");
       sb.append(" from ");
-      boolean isFirst=false;
+      boolean isFirst=true;
       for(QLFrom f: fromParts) {
          if (!isFirst) {
-             sb.append(", ");
+             if (!f.isJoinPart()) {
+               sb.append(", ");
+             } else {
+               sb.append(" ");
+             }
          } else {
              isFirst=false;
          }

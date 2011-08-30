@@ -2,14 +2,15 @@
 package ua.gradsoft.jungle.persistence.ejbqlao.util;
 
 /**
- *Root clause of from.
+ *From componend, described by raw string.
+ *  Value of raw string is what we will see in ejb/ql, alias is not used for generation.
  * @author rssh
  */
-public class QLRoot extends QLFrom
+public class QLRawFrom extends QLFrom
 {
 
-    public QLRoot(String entityClassName, String alias) {
-        this.entityClassName = entityClassName;
+    public QLRawFrom(String value, String alias) {
+        this.value = value;
         this.alias = alias;
     }
 
@@ -27,12 +28,11 @@ public class QLRoot extends QLFrom
 
     @Override
     public void outql(StringBuilder sb) {
-        sb.append(entityClassName);
-        sb.append(" ");
-        sb.append(alias);
+        sb.append(value);
     }
 
 
-    private String entityClassName;
+
+    private String value;
     private String alias;
 }

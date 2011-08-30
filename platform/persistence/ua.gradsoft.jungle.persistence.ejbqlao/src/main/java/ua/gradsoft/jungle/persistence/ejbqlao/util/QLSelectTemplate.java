@@ -29,6 +29,49 @@ public class QLSelectTemplate {
         this.fromParts = fromParts;
     }
 
+    public void addRoot(QLRoot qlRoot)
+    {
+       fromParts.add(qlRoot);
+    }
+
+    public void addRoot(String className, String alias)
+    {
+       fromParts.add(new QLRoot(className, alias));
+    }
+
+    public void addFrom(String className, String alias)
+    {
+       fromParts.add(new QLRoot(className, alias));
+    }
+
+
+    public void addRoot(Class rootClass, String alias)
+    {
+       addRoot(rootClass.getSimpleName(),alias);
+    }
+
+    public void addFrom(Class rootClass, String alias)
+    {
+       addRoot(rootClass,alias);
+    }
+
+
+    public void addFrom(QLFrom from)
+    {
+        fromParts.add(from);
+    }
+
+    public void addFrom(QLJoinType jt, String component, String alias)
+    {
+        fromParts.add(new QLJoinPart(jt,component,alias));
+    }
+
+    public void addFrom(QLJoinType jt, String component, String alias, QLCondition with)
+    {
+        fromParts.add(new QLJoinPart(jt,component,alias,with));
+    }
+
+
     public boolean isOrderByDirection() {
         return orderByDirection;
     }
@@ -45,16 +88,21 @@ public class QLSelectTemplate {
         this.orderByParts = orderByParts;
     }
 
-    public List<String> getSelectPart() {
+    public void addOrderBy(String orderBy)
+    {
+        orderByParts.add(orderBy);
+    }
+
+    public List<String> getSelectParts() {
         return selectPart;
     }
 
-    public void  addSelectField(String field)
+    public void  addSelect(String field)
     {
         selectPart.add(field);
     }
 
-    public void setSelectPart(List<String> selectPart) {
+    public void setSelectParts(List<String> selectPart) {
         this.selectPart = selectPart;
     }
 
@@ -65,6 +113,33 @@ public class QLSelectTemplate {
     public void setWhereParts(List<QLCondition> whereParts) {
         this.whereParts = whereParts;
     }
+
+    public void addWhere(QLCondition condition)
+    {
+        whereParts.add(condition);
+    }
+
+    public void addWhere(String scondition)
+    {
+        whereParts.add(new QLRawCondition(scondition));
+    }
+
+    public Map<String, Object> getOptions() {
+        return options;
+    }
+
+    public void setOptions(Map<String, Object> options) {
+        this.options = options;
+    }
+
+    public Map<String, Object> getParams() {
+        return params;
+    }
+
+    public void setParams(Map<String, Object> params) {
+        this.params = params;
+    }
+
 
 
     public String generateQuery()
@@ -78,6 +153,8 @@ public class QLSelectTemplate {
     {
       return new QueryWithParams(generateQuery(),params,options);
     }
+
+
 
 
     private List<String>       selectPart = new ArrayList<String>();
