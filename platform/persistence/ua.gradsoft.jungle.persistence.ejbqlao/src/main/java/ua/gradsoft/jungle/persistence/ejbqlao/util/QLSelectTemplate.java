@@ -155,6 +155,42 @@ public class QLSelectTemplate {
     }
 
 
+    /**
+     * column index data is temporary storage for information, which we can collect
+     * during quiery building.
+     * You can look on it as on simple hashtable, attached to select template. 
+     */
+    public void putColumnIndexData(String aspect, int columnIndex, Object value)
+    {
+       Map<Integer,Object> aspectData = columnIndexDataStorage.get(aspect);
+       if (aspectData==null) {
+           aspectData = new TreeMap<Integer,Object>();
+           columnIndexDataStorage.put(aspect, aspectData);
+       }
+       aspectData.put(columnIndex, value);
+    }
+
+    public Object getColumnIndexData(String aspect, int columnIndex)
+    {
+       Map<Integer,Object> aspectData = columnIndexDataStorage.get(aspect);
+       if (aspectData==null) {
+           return null;
+       }else{
+           return aspectData.get(columnIndex);
+       }
+    }
+
+    public Map<Integer,Object> getColumnIndexData(String aspect)
+    {
+       return columnIndexDataStorage.get(aspect);
+    }
+
+
+    public void clearColumnIndexData()
+    {
+        columnIndexDataStorage.clear();
+    }
+
 
 
     private List<String>       selectPart = new ArrayList<String>();
@@ -165,5 +201,7 @@ public class QLSelectTemplate {
     private boolean            orderByDirection = true;
     private Map<String,Object> params = new TreeMap<String,Object>();
     private Map<String,Object> options = new TreeMap<String,Object>();
+
+    private Map<String,Map<Integer,Object>>  columnIndexDataStorage = new TreeMap<String,Map<Integer,Object>>();
 
 }

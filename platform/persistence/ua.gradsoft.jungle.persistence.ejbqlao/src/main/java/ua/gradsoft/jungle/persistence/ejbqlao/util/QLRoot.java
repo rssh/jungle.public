@@ -23,6 +23,14 @@ public class QLRoot extends QLFrom
         return false;
     }
 
+    public boolean isFetchAllProperties() {
+        return fetchAllProperties;
+    }
+
+    public void setFetchAllProperties(boolean fetchAllProperties) {
+        this.fetchAllProperties = fetchAllProperties;
+    }
+
 
 
     @Override
@@ -30,9 +38,13 @@ public class QLRoot extends QLFrom
         sb.append(entityClassName);
         sb.append(" ");
         sb.append(alias);
+        if (fetchAllProperties) {
+            sb.append(" fetch all properties");
+        }
     }
 
 
     private String entityClassName;
     private String alias;
+    private boolean fetchAllProperties = false;
 }
