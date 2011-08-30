@@ -4,6 +4,8 @@ package ua.gradsoft.jungle.persistence.ejbqlao;
 /**
  *Criteria helper -- how we can generate queries for criterias.
  * @author rssh
+ * @see QLCriteriaHelper
+ * @see JPACriteriaHelper
  */
 public interface CriteriaHelper<T> {
 
