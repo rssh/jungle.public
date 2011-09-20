@@ -605,8 +605,10 @@ public abstract class EjbQlAccessObject implements CRUDFacade
       }
     }else if(tClass.isAssignableFrom(java.lang.Object.class)){
       resultClass=java.util.ArrayList.class;
-    }else{
-      throw new IllegalArgumentException("unknown result class for jdbc native query");
+    }else if(tClass.isAssignableFrom(java.lang.Object[].class)){
+       resultClass=Object[].class;
+    } else {
+      throw new IllegalArgumentException("unknown result class for jdbc native query:"+tClass.getName());
     }
     return resultClass;
   }
@@ -644,6 +646,14 @@ public abstract class EjbQlAccessObject implements CRUDFacade
       }catch(IllegalAccessException ex){
          throw new IllegalArgumentException("Can't create oject of type "+rClass.getName(),ex);
       }
+    }else if (tClass!=null && Object[].class.isAssignableFrom(tClass) || Object[].class.isAssignableFrom(rClass)) {
+       while(rs.next()) {
+           Object[] row = new Object[rs.getMetaData().getColumnCount()];
+           for(int i=1; i<=rs.getMetaData().getColumnCount();++i){
+                row[i-1]=rs.getObject(i);
+           }
+           retval.add((T)row);
+       }
     }else{
         //may be in future create pluggable custom transformers.
         throw new IllegalArgumentException("Can't cast resultset to "+tClass.getName());
