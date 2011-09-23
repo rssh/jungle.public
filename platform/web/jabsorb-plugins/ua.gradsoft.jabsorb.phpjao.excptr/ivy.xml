@@ -13,7 +13,10 @@
                     transitive="false" >
         </dependency>
         <dependency org="ua.gradsoft" name="dependency.slf4j" 
-                    rev="${global.version}" transitive="true" />
+                    rev="[${global.version},)"
+                    conf="default->api"
+                    >
+        </dependency>
     </dependencies>
 </ivy-module>
 

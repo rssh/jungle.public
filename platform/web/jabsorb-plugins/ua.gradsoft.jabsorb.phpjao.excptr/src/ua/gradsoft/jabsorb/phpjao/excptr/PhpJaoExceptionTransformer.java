@@ -4,7 +4,6 @@ import java.io.CharArrayWriter;
 import java.io.PrintWriter;
 
 import org.jabsorb.serializer.MarshallException;
-import org.jabsorb.serializer.Serializer;
 import org.jabsorb.serializer.SerializerState;
 import org.jabsorb.JSONRPCResult;
 import org.jabsorb.JSONRPCBridge;
@@ -39,6 +38,16 @@ public class PhpJaoExceptionTransformer implements ExceptionTransformer
     try {
       SerializerState state = new SerializerState();
       o=bridge.getSerializer().marshall(state,null,t,"exception");
+      if (o instanceof JSONObject) {
+         try {
+          ((JSONObject)o).put("jabsorb_code",JSONRPCResult.CODE_REMOTE_EXCEPTION);
+          CharArrayWriter caw = new CharArrayWriter();
+          t.printStackTrace(new PrintWriter(caw));
+          ((JSONObject)o).put("trace",caw.toString());
+         }catch(JSONException ex){
+             /*impossibe */
+         }
+      }
     } catch (MarshallException ex) {
       log.info("exception during marshall exception ",ex);
     }
@@ -49,11 +58,11 @@ public class PhpJaoExceptionTransformer implements ExceptionTransformer
           retval.put("className",t.getClass().getName());
           retval.put("code", JSONRPCResult.CODE_REMOTE_EXCEPTION);
           if (t.getMessage()!=null) {
-            retval.put("message",t.getMessage());
+            retval.put("msg",t.getMessage());
           }
           CharArrayWriter caw = new CharArrayWriter();
           t.printStackTrace(new PrintWriter(caw));
-          retval.put("stackTrace",caw.toString());
+          retval.put("trace",caw.toString());
         } catch (JSONException ex) {
            log.info("exception for getting properties",ex);
         }
