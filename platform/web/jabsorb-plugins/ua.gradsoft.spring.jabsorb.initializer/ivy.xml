@@ -12,6 +12,11 @@
         <dependency org="org.jabsorb" name="jabsorb.patched" rev="[${global.version}-${jabsorb.version},)"
                     transitive="false" >
         </dependency>
+        <dependency org="ua.gradsoft" name="jabsorb.phpjao.excptr" 
+                    rev="[${global.version}-1.0.0,${global.version}-2.0.0)"
+                    transitive="false" >
+             <artifact name="jabsorb.phpjao.excptr" type="jar" />
+        </dependency>
     </dependencies>
 </ivy-module>
 
