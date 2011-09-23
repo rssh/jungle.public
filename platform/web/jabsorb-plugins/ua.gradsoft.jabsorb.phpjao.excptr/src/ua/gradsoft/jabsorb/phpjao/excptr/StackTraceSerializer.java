@@ -19,8 +19,7 @@ public class StackTraceSerializer implements Serializer
 {
 
     public boolean canSerialize(Class type, Class jsonType) {
-        return (type.isAssignableFrom(StackTraceElement[].class))
-                 && jsonType==null || jsonType==JSONObject.class;
+        return type.equals(StackTraceElement[].class);
     }
 
     public Class[] getJSONClasses() {
