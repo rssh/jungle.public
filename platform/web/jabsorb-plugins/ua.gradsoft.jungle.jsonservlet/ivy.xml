@@ -64,15 +64,23 @@
                  rev="${global.version}" conf="test->default"  >
      </dependency>
 
+     <dependency org="ua.gradsoft" name="dependency.commons-codec" 
+                 rev="${global.version}" conf="test->default"  >
+     </dependency>
+
      <dependency org="ua.gradsoft" name="dependency.junit" 
                  rev="${global.version}" 
               conf="test->default"/>
 
      <dependency org="ua.gradsoft" name="jabsorb.bigdecimal.serializer" 
-                 rev="[${global.version}-1.1.0,)" conf="test->default" transitive="false" >
+                 rev="[${global.version}-1.1.0,${global.version}-2.0.0)" conf="test->default" transitive="false" >
          <artifact name="jabsorb.bigdecimal.serializer" type="jar" />
      </dependency>
 
+     <dependency org="ua.gradsoft" name="jabsorb.phpjao.excptr" 
+                 rev="[${global.version}-1.0.0,${global.version}-2.0.0)" conf="test->default" transitive="false" >
+         <artifact name="jabsorb.phpjao.excptr" type="jar" />
+     </dependency>
 
   </dependencies>
 </ivy-module>
