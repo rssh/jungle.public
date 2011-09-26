@@ -26,6 +26,26 @@ class PHPJAORemoteException extends PHPJAOException
 
 };
 
+class PHPJaoJavaException extends PHPJAORemoteException
+{
+   
+  public function __construct($message=null,$code=null, $classname=null, $remoteTrace==null)
+  {
+    parent::__construct($message,$code,$remoteTrace);
+    $this->javaClass = $classname;
+  }
+
+  private function getJavaClass()
+   { return $javaClass; }
+
+  private $javaClass;
+};
+
+
+class PHPJaoJavaRuntimeException extends PHPJAOJavaException
+{
+};
+
 
 class PHPJAO
 {
