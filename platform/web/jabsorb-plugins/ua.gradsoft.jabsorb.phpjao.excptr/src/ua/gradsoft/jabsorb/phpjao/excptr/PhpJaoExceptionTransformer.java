@@ -55,7 +55,7 @@ public class PhpJaoExceptionTransformer implements ExceptionTransformer
         // Than as some
         JSONObject retval = new JSONObject();
         try {
-          retval.put("className",t.getClass().getName());
+          retval.put("javaClass",t.getClass().getName());
           retval.put("code", JSONRPCResult.CODE_REMOTE_EXCEPTION);
           if (t.getMessage()!=null) {
             retval.put("msg",t.getMessage());
