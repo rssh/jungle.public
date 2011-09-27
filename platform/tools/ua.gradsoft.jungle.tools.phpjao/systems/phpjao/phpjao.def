@@ -25,7 +25,7 @@ domain(phpjao,
                              $extendsList,$implementsList,$body,$context) 
              ) -> 
               let (
-                $classDescriptionName <- concatToIdentifier($name,
+                $classDescriptionName <- concatToIdentifier(translateClassName($name),
                                                 "PHPJAOClassDescription")
               )
               SPhpPage(SHtmlBlocks([]),[
@@ -48,6 +48,10 @@ domain(phpjao,
                                   $name,
                                   $classDescriptionName
                                ),
+                               registerCustomMarshaller(
+                                  $context.getTypeModel().getErasedFullName(),
+                                  $context.getTypeModel().getErasedName(),
+                                  $context),
                                EmbeddedHtml([],[])]),
 
 
@@ -68,7 +72,14 @@ domain(phpjao,
 
        translateClassName(TypeRef($name,$ctx)) -> translateClassName($name),
 
-       translateClassName([$name]) -> $name,
+       translateClassName([$name]) -> translateClassName($name) ,
+       translateClassName(Identifier($x)) -> Identifier(translateClassName($x)),
+       translateClassName($x) 
+                           [ $x == "Exception" ] -> "JavaException"
+                           |
+                           [ $x == "RuntimeException" ] -> "JavaRuntimeException"
+                           |
+                           [ isString($x) ] -> $x,
 
        translateImplementsList([]) -> [],
        translateImplementsList([$x:$y])
@@ -81,6 +92,7 @@ domain(phpjao,
        JavaEntityMembers(ClassOrInterfaceBody($x),$ctx) -> 
                  SClassMembers(
                    append(
+                     generateClassConstructor($ctx),
                      generateDescriptionAcceptor(),
                      JavaEntityMembers($x)
                    )
@@ -187,11 +199,26 @@ domain(phpjao,
                 EndOfStatement()
               ), 
 
+      registerCustomMarshaller($fullname,$name,$context) 
+              [ isException($context.getTypeModel()) ] -> ExpressionStatement(
+                                                          ScopeResolution(Identifier("PHPJAO"),
+                                                            MethodCall(Identifier("registerCustomType"),
+                                                              SArgumentExpressionList([
+                                                                SingleStringLiteral($name),
+                                                                    ScopeResolution(Identifier("JavaException"),
+                                                                                    Variable(1,"marshallingHelper"))]))
+                                                             ),
+                                                             EndOfStatement()
+                                                         )
+                                                     !-> Invisible(HtmlBlocks(HtmlBlock(""))),
+   
+
+
 
        ClassDescriptionMembers($name,ClassOrInterfaceBody($x),$ctx) -> 
                  SClassMembers([
                    generateClassDescriptionConstructor($ctx,$x), 
-                   generateClassDescriptionInstanceConstructor($name)
+                   generateClassDescriptionInstanceConstructor($name,$ctx)
                  ]),
                                                          
        JavaEntityMembers([]) -> [],
@@ -261,6 +288,11 @@ domain(phpjao,
 
 
       append(cons($x,$y),$z) -> cons($x,append($y,$z)),
+      append([],$y) -> $y,
+      append($x,[]) -> $x,
+      append($x,$y,$z) 
+                 [ isNil($x) ] -> append($y,$z)
+                              !-> cons($x,append($y,$z)),
  
       generateFieldDescriptionPairs([]) -> [],
       generateFieldDescriptionPairs([$x:$y])  
@@ -282,19 +314,42 @@ domain(phpjao,
   
       unIdentifier(Identifier($x)) -> $x,
 
-      generateClassDescriptionInstanceConstructor($name)->
-         MemberDeclaration(
-          MemberFunctionDeclaration(
-            SMemberFunctionAttributes([public]),NIL,
-            Identifier("newInstance"),NIL,
-            SCompoundStatement([
-              ReturnStatement(AllocationExpression($name,
-                                    SArgumentExpressionList([])),
-              EndOfStatement()
-            )
-            ])
-          )
-         ),
+      generateClassConstructor($ctx)
+           [ isException($ctx.getTypeModel()) ] -> MemberDeclaration(
+             MemberFunctionDeclaration(
+                SMemberFunctionAttributes([public]),[],
+                  Identifier("__construct"),[[Variable(1,"message"),Variable(1,"code"),
+                                              Variable(1,"javaClass"),Variable(1,"trace")]],
+                    SCompoundStatement([
+                      ExpressionStatement(
+                        ScopeResolution(
+                          Identifier("parent"),
+                            MethodCall(Identifier("__construct"),SArgumentExpressionList([
+                                               Variable(1,"message"),Variable(1,"code"),
+                                               Variable(1,"javaclass"),Variable(1,"trace")
+                                               ]))
+                        ),
+                        EndOfStatement()
+                      )
+                    ])
+            ))
+                                               !-> [],
+
+      generateClassDescriptionInstanceConstructor($name,$ctx)
+         [ isException($ctx.getTypeModel()) ] -> Invisible()
+                                           !->
+                                             MemberDeclaration(
+                                               MemberFunctionDeclaration(
+                                                SMemberFunctionAttributes([public]),NIL,
+                                                  Identifier("newInstance"),NIL,
+                                                   SCompoundStatement([
+                                                     ReturnStatement(AllocationExpression($name,
+                                                                     SArgumentExpressionList([])),
+                                                                     EndOfStatement()
+                                                     )
+                                                  ])
+                                                )
+                                              ),
       
       generateDescriptionAcceptor()-> cons(
         MemberDeclaration(MemberVariablesDeclaration(
@@ -320,9 +375,9 @@ domain(phpjao,
                                                     !="java.lang.Object"] 
               ->
                  concatToIdentifier(
-                     Identifier(
+                     translateClassName(Identifier(
                       $ctx.getTypeModel().getSuperClass().getErasedName()
-                     ),
+                     )),
                      "PHPJAOClassDescription"
                  )
              !->

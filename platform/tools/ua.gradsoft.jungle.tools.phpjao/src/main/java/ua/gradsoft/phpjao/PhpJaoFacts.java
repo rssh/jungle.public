@@ -1,6 +1,9 @@
 package ua.gradsoft.phpjao;
 
-import ua.gradsoft.javachecker.models.JavaPlaceContext;
+import ua.gradsoft.javachecker.EntityNotFoundException;
+import ua.gradsoft.javachecker.models.JavaResolver;
+import ua.gradsoft.javachecker.models.JavaTypeModel;
+import ua.gradsoft.javachecker.models.JavaTypeModelHelper;
 import ua.gradsoft.javachecker.models.TermUtils;
 import ua.gradsoft.termware.DefaultFacts;
 import ua.gradsoft.termware.Term;
@@ -62,6 +65,10 @@ public class PhpJaoFacts extends DefaultFacts
       return true;
     }
 
+    public Boolean isException(JavaTypeModel m) throws TermWareException, EntityNotFoundException
+    {
+        return JavaTypeModelHelper.subtypeOrSame(m, JavaResolver.resolveTypeModelByFullClassName("java.lang.Exception"));
+    }
 
     private Facade facade_;
 

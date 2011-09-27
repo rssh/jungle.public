@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!-- build file for IFS deposits ORM -->
-<project name="phpjao.t5" default="build" basedir="."
+<project name="phpjao.t6" default="build" basedir="."
   xmlns:phpjao="antlib:ua.gradsoft.phpjao"
  >
 
@@ -17,7 +17,7 @@
 
 
    <target name="declare-phpjao"  >
-    <path id="phpjao.lib.path">
+     <path id="phpjao.lib.path">
     <pathelement location="../../target/jungle.tools.phpjao-${global.version}-${local.version}.jar" />
     <pathelement location="../../lib/TermWare-${termware.version}.jar" />
     <pathelement location="../../lib/TermWarePhp-${termwarephp.version}.jar" />
@@ -53,9 +53,8 @@
     <target name="generate-php" depends="declare-phpjao" >
         <phpjao:generate  outputFile="${basedir}/php/generated.php" >
           <includedirs dir="${basedir}/jsrc" />
-          <!-- not needed: enums are mapped as strings -->
-          <!--<class name="ua.gradsoft.t5.T5Enum" />-->
-          <class name="ua.gradsoft.t5.T5Dao" />
+          <class name="ua.gradsoft.t6.MyException" />
+          <class name="ua.gradsoft.t6.SimpleData" />
         </phpjao:generate>
     </target>
 
