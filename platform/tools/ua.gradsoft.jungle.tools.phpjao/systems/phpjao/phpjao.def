@@ -91,11 +91,11 @@ domain(phpjao,
 
        JavaEntityMembers(ClassOrInterfaceBody($x),$ctx) -> 
                  SClassMembers(
-                   append(
-                     generateClassConstructor($ctx),
-                     generateDescriptionAcceptor(),
-                     JavaEntityMembers($x)
-                   )
+                  append( 
+                   generateClassConstructor($ctx),
+                   generateDescriptionAcceptor(),
+                   JavaEntityMembers($x)
+                  )
                  ),
                                                          
        JavaEntityMembers([]) -> [],
@@ -288,8 +288,8 @@ domain(phpjao,
 
 
       append(cons($x,$y),$z) -> cons($x,append($y,$z)),
-      append([],$y) -> $y,
-      append($x,[]) -> $x,
+      append($x,[]) -> [$x],
+      append([],$x) -> $x,
       append($x,$y,$z) 
                  [ isNil($x) ] -> append($y,$z)
                               !-> cons($x,append($y,$z)),

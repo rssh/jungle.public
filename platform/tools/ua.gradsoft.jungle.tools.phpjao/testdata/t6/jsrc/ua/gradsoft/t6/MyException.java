@@ -15,7 +15,14 @@ public class MyException extends RuntimeException
   public void setAdditionalInfo(String additionalInfo)
   { this.additionalInfo = additionalInfo; }
  
+  public String getInfo2()
+  { return info2; }
+
+  public void  setInfo2(String info2)
+  { this.info2 = info2; }
 
   private String additionalInfo;
+
+  private String info2;
 
 }
