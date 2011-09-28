@@ -13,7 +13,7 @@
                     transitive="false" >
         </dependency>
         <dependency org="ua.gradsoft" name="jabsorb.phpjao.excptr" 
-                    rev="[${global.version}-1.0.0,${global.version}-2.0.0)"
+                    rev="[${global.version}-1.0.1,${global.version}-2.0.0)"
                     transitive="false" >
              <artifact name="jabsorb.phpjao.excptr" type="jar" />
         </dependency>
