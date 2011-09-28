@@ -10,6 +10,11 @@ class PHPJAOTransportException extends PHPJAOException
 {
 };
 
+class PHPJAOMarshallingException extends PHPJAOException 
+{
+}
+
+
 class PHPJAOInternalException extends PHPJAOException 
 {
   public function __construct($message)
@@ -709,10 +714,10 @@ class BigDecimalPHPJAOHelper
                       'strvalue' => $object->strvalue);
        }else{
          $ocl=get_class($object);
-         throw new PHPJAOException("Invailid class for BigDecimal ${ocl}");
+         throw new PHPJAOInternalException("Invailid class for BigDecimal ${ocl}");
        }
     }else{
-       throw new PHPJAOException("Invalid BigDecimal object");
+       throw new PHPJAOInternalException("Invalid BigDecimal object");
     }
   }
   
@@ -734,7 +739,7 @@ class BigDecimalPHPJAOHelper
           echo "${key}=>${value} ";
         }
         echo ")\n";
-        throw new PHPJAOException("Invalid BigDecimal object (without strvalue field)");
+        throw new PHPJAOMarshallingException("Invalid BigDecimal object (without strvalue field)");
       }else{
         $retval=new BigDecimal($strvalue);
       }
@@ -743,7 +748,7 @@ class BigDecimalPHPJAOHelper
         $retval=$object;
       }
     }else{
-      throw new PHPJAOException("Invalid BigDecimal object");
+      throw new PHPJAOMarshallingException("Invalid BigDecimal object");
     }
     return $retval;
   }
@@ -892,12 +897,12 @@ class ListPHPJAOHelper
                       'list' => PHPJAO::toJson($object->list) );
       }else{
         $type = gettype($object);
-        throw new PHPJAOException("can't transform object $type to List");
+        throw new PHPJAOMarshallingException("can't transform object $type to List");
       }
     }else if (is_null($object)) {
       return null;
     }else{
-      throw new PHPJAOException("can't transform object to ArrayList");
+      throw new PHPJAOMarshallingException("can't transform object to ArrayList");
     }
   }
 
@@ -908,7 +913,7 @@ class ListPHPJAOHelper
       $l=$object['list'];
       return PHPJAO::fromJson($l);
     }else{
-      throw new PHPJAOException("can't transform ArrayList from JSON");
+      throw new PHPJAOMarshallingException("can't transform ArrayList from JSON");
     }
   }
 
