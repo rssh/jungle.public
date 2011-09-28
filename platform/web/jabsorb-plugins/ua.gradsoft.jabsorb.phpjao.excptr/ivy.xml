@@ -1,21 +1,21 @@
 <ivy-module version="1.4">
-    <info organisation="ua.gradsoft" module="spring.jabsorb.initializer"/>
+    <info organisation="ua.gradsoft" module="jabsorb.phpjao.excptr"/>
     <configurations>
       <conf name="default" description="standard build" />
       <conf name="src" description="standard build with sources" />
     </configurations>
     <publications>
-      <artifact name="spring.jabsorb.initializer" type="jar" />
-      <artifact name="spring.jabsorb.initializer-src" type="zip" conf="src" />
+      <artifact name="jabsorb.phpjao.excptr" type="jar" />
+      <artifact name="jabsorb.phpjao.excptr-src" type="zip" conf="src" />
     </publications>
     <dependencies>
         <dependency org="org.jabsorb" name="jabsorb.patched" rev="[${global.version}-${jabsorb.version},)"
                     transitive="false" >
         </dependency>
-        <dependency org="ua.gradsoft" name="jabsorb.phpjao.excptr" 
-                    rev="[${global.version}-1.0.1,${global.version}-2.0.0)"
-                    transitive="false" >
-             <artifact name="jabsorb.phpjao.excptr" type="jar" />
+        <dependency org="ua.gradsoft" name="dependency.slf4j" 
+                    rev="[${global.version},)"
+                    conf="default->api"
+                    >
         </dependency>
     </dependencies>
 </ivy-module>
