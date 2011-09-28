@@ -691,7 +691,7 @@ class BigDecimal extends PHPJAOPOJOBase
 
  public function getPhpjaoClassDescription()
  {
-  return phpjaoClassDescription;
+  return self::$phpjaoClassDescription;
  }
 
  static $phpjaoClassDescription;
