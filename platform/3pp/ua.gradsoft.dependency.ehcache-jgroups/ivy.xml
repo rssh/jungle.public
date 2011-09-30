@@ -1,0 +1,25 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" 
+          module="dependency.ehcache-jgroups" />
+    <publications>
+         <artifact name="dependency.ehcache-jgroups" type="txt"  />
+    </publications>
+    <dependencies>
+       <dependency org="net.sf.ehcache" name="ehcache-jgroupsreplication" 
+                   rev="1.4"  
+                   conf="default->default" 
+                   transitive="false"
+                   >
+             <artifact name="ehcache-jgroupsreplication" type="jar" />
+        </dependency>
+        <dependency org="org.jgroups" name="jgroups" 
+                   rev="2.11.0.GA"  
+                   conf="default->default" 
+                   transitive="true"
+                  >
+        </dependency>
+    </dependencies>
+</ivy-module>
+
+
+
