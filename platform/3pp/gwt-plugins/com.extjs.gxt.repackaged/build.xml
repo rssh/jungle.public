@@ -9,13 +9,10 @@
 
   <import file="build-ivy.xml" />
 
-  <target name="repackage" depends="retrieve-origin" 
-          description="repackage project">
-    <unzip src="origin/gxt-${origin.version}.zip"
-           dest="origin" />
-    <copy file="origin/gxt-${origin.version}/gxt.jar"
-           tofile="dist/gxt-${version}.jar" />
-    <zip  destfile="dist/gxt.resources-${version}.zip">
+  <target name="repackage" depends="retrieve-origin" description="repackage project">
+    <unzip src="origin/gxt-${origin.version}.zip" dest="origin" />
+    <copy file="origin/gxt-${origin.version}/gxt-${origin.version}-gwt22.jar" tofile="dist/gxt-${version}.jar" />
+    <zip destfile="dist/gxt.resources-${version}.zip">
       <fileset dir="origin/gxt-${origin.version}" includes="resources/**/*.*" />
     </zip>
     <delete dir="origin/gxt-${origin.version}" />

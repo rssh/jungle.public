@@ -1,21 +1,16 @@
 <ivy-module version="1.4">
- <info organisation="com.extjs" module="gxt.repackaged" />
- <configurations>
-  <conf name="default" description="default repackaged artifacts" />
-  <conf name="origin" description="origin artifacts" />
- </configurations>
- <publications>
-   <artifact name="gxt" type="jar" />
-   <artifact name="gxt.resources" type="zip" />
- </publications>
- <dependencies>
-    <dependency org="com.extjs" 
-               name="gxt.origin"
-               rev="2.1.1" 
-               conf="origin->*"
-               >
-       <artifact name="gxt" type="zip" 
-             url="http://www.extjs.com/deploy/gxt-2.1.1-gwt2.zip" />
-    </dependency>
- </dependencies>
+	<info organisation="com.extjs" module="gxt.repackaged" />
+	<configurations>
+		<conf name="default" description="default repackaged artifacts" />
+		<conf name="origin" description="origin artifacts" />
+	</configurations>
+	<publications>
+		<artifact name="gxt" type="jar" />
+		<artifact name="gxt.resources" type="zip" />
+	</publications>
+	<dependencies>
+		<dependency org="com.extjs" name="gxt.origin" rev="${origin.version}" conf="origin->*">
+			<artifact name="gxt" type="zip" url="http://dev.sencha.com/deploy/gxt-${origin.version}.zip" />			
+		</dependency>
+	</dependencies>
 </ivy-module>

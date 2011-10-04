@@ -14,7 +14,7 @@
                conf="origin->*"
                >
     <artifact name="gwt-maps" type="zip" 
-      url="http://gwt-google-apis.googlecode.com/files/gwt-maps-${origin.version}.zip" />
+      url="http://gwt-google-apis.googlecode.com/files/gwt-maps-${origin.version}-rc1.zip" />
    </dependency>
  </dependencies>
 </ivy-module>

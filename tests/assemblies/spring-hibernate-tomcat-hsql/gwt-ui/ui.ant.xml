@@ -24,8 +24,9 @@
              includes="javaee-api-*.jar"/>
     <fileset dir="../lib"
              includes="gxt-*.jar"/>
-    <fileset dir="../lib"
-             includes="gwt-math-*.jar"/>
+  	<!-- 
+    <fileset dir="../lib" includes="gwt-math-*.jar"/>
+	-->
     <fileset dir="../lib"
              includes="jungle.persistence.cluster_keys-*.jar"/>
     <fileset dir="../lib"

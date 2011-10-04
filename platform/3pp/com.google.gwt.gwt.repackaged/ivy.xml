@@ -1,5 +1,5 @@
 <ivy-module version="1.4">
- <!-- repakaged jars for JWT -->
+ <!-- repakaged jars for GWT -->
  <info organisation="com.google.gwt" module="gwt.repackaged" />
  <configurations>
   <conf name="client" description="repackaged client libraries" />
