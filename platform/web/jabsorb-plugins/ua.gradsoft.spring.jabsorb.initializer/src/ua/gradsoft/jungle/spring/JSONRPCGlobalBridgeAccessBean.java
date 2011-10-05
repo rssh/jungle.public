@@ -24,6 +24,7 @@ public class JSONRPCGlobalBridgeAccessBean
      }catch(Exception ex){
        throw new IllegalStateException("Exception during registering StackTraceSerializer",ex);
      }
+     bridge.setExceptionTransformer(tr);
     }
 
     public void setRegisteredObjects(Map<String, Object> registeredObjects)
