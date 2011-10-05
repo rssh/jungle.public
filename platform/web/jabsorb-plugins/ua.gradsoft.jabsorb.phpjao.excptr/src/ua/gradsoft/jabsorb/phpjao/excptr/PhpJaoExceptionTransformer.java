@@ -34,6 +34,7 @@ public class PhpJaoExceptionTransformer implements ExceptionTransformer
   public Object transform(Throwable t)
   {
     // try to serialize our exception as bean:
+    log.info("receive exception to transform:"+t.getMessage());
     Object o=null;
     try {
       SerializerState state = new SerializerState();

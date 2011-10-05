@@ -30,7 +30,7 @@ public class StackTraceSerializer implements Serializer
         return CLASSES;
     }
 
-    public Object marshall(SerializerState ss, Object o, Object o1) throws MarshallException {
+    public Object marshall(SerializerState ss, Object p, Object o) throws MarshallException {
         if (o instanceof StackTraceElement[]) {
             StackTraceElement elements[] = (StackTraceElement[])o;
             JSONObject retval = new JSONObject();
@@ -51,7 +51,7 @@ public class StackTraceSerializer implements Serializer
             }
             return retval;
         } else {
-            throw new MarshallException("must be StackTraceElement[]");
+            throw new MarshallException("must be StackTraceElement[], have "+o.getClass().getName());
         }
     }
 
