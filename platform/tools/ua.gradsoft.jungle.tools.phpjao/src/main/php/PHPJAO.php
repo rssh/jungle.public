@@ -258,25 +258,33 @@ class PHPJAO
       if (isset($result['error']))
       {
           $error = $result['error'];
-          if (isset($error['msg'])) {
+          if (is_object($error)) {
+            if ($error instanceof Exception) {
+               throw $error;
+            } else {
+               // object but not exception - impossible.
+               throw new PHPJAORemoteException(""+$error);
+            }
+          } else {
+            if (isset($error['msg'])) {
              $message = $error['msg'];
-          } else if (isset($error['message'])) {
+            } else if (isset($error['message'])) {
              $message = $error['message'];
-          } else {
+            } else {
              $message = null;
-          }
-          if (isset($error['code'])) {
+            }
+            if (isset($error['code'])) {
              $code = $error['code'];
-          } else {
+            } else {
              $code = 0;
-          }
-          if (isset($error['trace'])) {
+            }
+            if (isset($error['trace'])) {
              $trace = $error['trace'];
-          }else{
+            }else{
              $trace = null;
-          }
-          $javaClass=null;
-          if (isset($error['javaClass'])) {
+            }
+            $javaClass=null;
+            if (isset($error['javaClass'])) {
              $javaClass=$error['javaClass'];
              // check - if this class is mapped to php
              $classDescription = self::findType($javaClass);  
@@ -287,9 +295,10 @@ class PHPJAO
                  //
                  throw self::fromJson($error,$javaClass);
              }
-          } else {
+            } else {
              // look's like this exception is not coming throeught our exception transformer.
              throw new PHPJAORemoteException($message, $code, $trace);
+            }
           }
       }
       if (isset($result['result']))
@@ -545,7 +554,7 @@ interface PHPJAOCustomMarshaller
 }
 
 
-class JavaExceptionPHPJaoClassDescription extends PHPJAOClassDescription
+class JavaExceptionPHPJAOClassDescription extends PHPJAOClassDescription
 {
  public function __construct()
  {
