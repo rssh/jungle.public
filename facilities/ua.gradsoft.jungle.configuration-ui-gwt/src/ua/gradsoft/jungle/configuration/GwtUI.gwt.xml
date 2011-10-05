@@ -14,10 +14,8 @@
       <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
 
       <!-- Other module inherits                                      -->
-      <inherits name="com.googlecode.gwt.math.Math"/>
-
-      <inherits 
-       name='ua.gradsoft.jungle.configuration.JungleConfigurationService'/>
+      
+      <inherits name='ua.gradsoft.jungle.configuration.JungleConfigurationService'/>
 
       <inherits name='ua.gradsoft.jungle.gwt.util.Util'/>
       
