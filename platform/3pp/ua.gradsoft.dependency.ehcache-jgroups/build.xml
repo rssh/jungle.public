@@ -35,7 +35,7 @@
 
    <target name="check-dependency-exists" >
     <available property="dependency-exists" 
-      file="${repo.home}/ua.gradsoft/dependency.ehcache/txts/dependency.ehcache-${version}.txt"
+      file="${repo.home}/ua.gradsoft/dependency.ehcache-jgroups/txts/dependency.ehcache-${version}.txt"
     />
    </target>
    
