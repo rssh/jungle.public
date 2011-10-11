@@ -57,10 +57,10 @@
                   revision="${origin.jgroups.version}" 
                   overwrite="true"
                   from="external.chain"
-                  to="datacenter.gradsoft.ua"
+                  to="jungle.repo"
                   />
      <ivy:publish resolver="jungle.repo" pubrevision="${version}"
-                  overwrite="false"
+                  overwrite="true"
                   replacedynamicrev="false">
          <artifacts pattern="dist/[artifact].[ext]" />
      </ivy:publish>
