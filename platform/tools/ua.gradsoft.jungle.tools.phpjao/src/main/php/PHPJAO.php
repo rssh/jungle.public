@@ -49,7 +49,7 @@ class JavaException extends PHPJAORemoteException
   }
 
   private function getJavaClass()
-   { return $this->$javaClass; }
+   { return $this->javaClass; }
 
   private $javaClass;
 
@@ -372,6 +372,10 @@ class PHPJaoConnection
  public function getUrls()
  { return $this->urls; }
 
+ public function getCurrentUrl(){
+    return $this->currentUrl;
+ }
+
  /**
   * get curl handle, open connection if needed.
   **/
@@ -501,7 +505,7 @@ class PHPJaoRemoteProxy
    $this->objname=$theObjName;
  }
 
- public function  getUrl() { return $url; }
+ public function  getUrl() { return $this->connection->getCurrentUrl(); }
 
  public function __call($method, $args)
  {
@@ -521,7 +525,7 @@ class PHPJaoRemoteProxy
        }
      }
    }
-   error_log("PHPJAO: fata: all url-s for remote cal of $this->objname failed");
+   error_log("PHPJAO: fatal: all url-s for remote cal of $this->objname failed");
    throw $lastError;
  }
  
