@@ -505,7 +505,9 @@ class PHPJaoRemoteProxy
    $this->objname=$theObjName;
  }
 
- public function  getUrl() { return $this->connection->getCurrentUrl(); }
+ public function  getUrls() { return $this->connection->getUrls(); }
+
+ public function  getCurrentUrl() { return $this->connection->getCurrentUrl(); }
 
  public function __call($method, $args)
  {
