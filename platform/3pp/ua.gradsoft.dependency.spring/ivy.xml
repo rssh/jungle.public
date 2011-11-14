@@ -24,8 +24,10 @@
        <dependency org="org.springframework" name="spring-core" 
                     rev="${origin.version}"
                     transitive="true"
+                    conf="test->default;default->default"
                      >
             <artifact name="spring-core" type="jar" />
+            <exclude module="jms" />
        </dependency>
        <dependency org="org.springframework" name="spring-web" 
                     rev="${origin.version}"

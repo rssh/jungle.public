@@ -1,0 +1,16 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" 
+          module="dependency.groovypp" />
+    <publications>
+      <artifact name="dependency.groovypp" type="txt" />
+    </publications>
+    <dependencies>
+      <dependency org="org.mbte.groovypp" name="groovypp-all" 
+                  rev="${origin.version}" 
+                  >
+                 <artifact name="groovypp-all" type="jar" />
+      </dependency>
+    </dependencies>
+</ivy-module>
+
+
