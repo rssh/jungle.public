@@ -1,6 +1,12 @@
 
 package ua.gradsoft.jungle.gwt.util.client;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import ua.gradsoft.jungle.auth.client.AuthClientApiRemoteService;
+import ua.gradsoft.jungle.auth.client.AuthClientApiRemoteServiceAsync;
+
 import com.extjs.gxt.desktop.client.Desktop;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.MenuEvent;
@@ -11,13 +17,10 @@ import com.extjs.gxt.ui.client.widget.Layout;
 import com.extjs.gxt.ui.client.widget.Status;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.layout.CardLayout;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.MenuBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
-import java.util.HashMap;
-import java.util.Map;
-import ua.gradsoft.jungle.auth.client.AuthClientApiRemoteService;
-import ua.gradsoft.jungle.auth.client.AuthClientApiRemoteServiceAsync;
 
 /**
  *Incapsulate common properties of our gwt application.
@@ -257,19 +260,20 @@ public class GwtApplication {
       }
     }
     
-    private void componentToFrontOnInternalContentPanel(Component w)
-    {
-        Layout l = internalContentPanel_.getLayout();
-        if (l instanceof CardLayout) {
-            CardLayout cl = (CardLayout)l;
-            cl.setActiveItem(w);
-        }else{
-            throw new IllegalStateException("InternalContentPanel must have card layout");
-        }
-    }
+	private void componentToFrontOnInternalContentPanel(Component w) {
+		Layout l = internalContentPanel_.getLayout();
+		if (l instanceof CardLayout) {
+			CardLayout cl = (CardLayout) l;
+			cl.setActiveItem(w);
+		} else if (l instanceof FitLayout) {
+			internalContentPanel_.removeAll();
+			internalContentPanel_.add(w);
+		} else {
+			throw new IllegalStateException("InternalContentPanel must have card layout");
+		}
+	}
 
-    private HashMap<String,GwtApplicationComponent> components_ = 
-                                     new HashMap<String,GwtApplicationComponent>();
+	private HashMap<String, GwtApplicationComponent> components_ = new HashMap<String, GwtApplicationComponent>();
 
 
 

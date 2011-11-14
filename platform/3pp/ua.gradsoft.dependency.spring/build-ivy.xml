@@ -77,11 +77,17 @@
             classpathref="ivy.lib.path"/>
  </target>
 
- <target name="resolve-ivy" depends="declare-ivy">
+ <target name="configure-ivy" depends="declare-ivy">
    <ivy:configure file="ivysettings.xml" />
+ </target>
+
+ <target name="resolve-ivy" depends="configure-ivy">
    <ivy:resolve />
  </target>
 
+ <target name="resolve-test" depends="configure-ivy">
+   <ivy:resolve conf="test" />
+ </target>
 
  <target name="retrieve-origin" depends="resolve-ivy" >
    <ivy:retrieve  pattern="origin/[artifact](-[classifier])-[revision].[ext]" />

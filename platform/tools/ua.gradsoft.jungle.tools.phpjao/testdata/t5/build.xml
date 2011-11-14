@@ -5,6 +5,7 @@
  >
 
     <property file="${basedir}/../../build.properties" />
+    <property file="${basedir}/../../../../../build.properties" />
     <property file="build.properties" />
 
 <!-- directories -->    
@@ -16,8 +17,8 @@
 
 
    <target name="declare-phpjao"  >
-     <path id="phpjao.lib.path">
-    <pathelement location="../../target/jungle.tools.phpjao-${version}.jar" />
+    <path id="phpjao.lib.path">
+    <pathelement location="../../target/jungle.tools.phpjao-${global.version}-${local.version}.jar" />
     <pathelement location="../../lib/TermWare-${termware.version}.jar" />
     <pathelement location="../../lib/TermWarePhp-${termwarephp.version}.jar" />
     <pathelement location="../../lib/JavaChecker-${javachecker.version}.jar" />

@@ -10,6 +10,18 @@ class PHPJAOTransportException extends PHPJAOException
 {
 };
 
+class PHPJAOMarshallingException extends PHPJAOException 
+{
+}
+
+
+class PHPJAOInternalException extends PHPJAOException 
+{
+  public function __construct($message)
+   { parent::__construct($message); }
+}
+
+
 class PHPJAORemoteException extends PHPJAOException 
 {
 
@@ -24,6 +36,33 @@ class PHPJAORemoteException extends PHPJAOException
 
     private $remoteTrace;
 
+};
+
+
+class JavaException extends PHPJAORemoteException
+{
+   
+  public function __construct($message=null, $code=null, $classname=null, $remoteTrace=null)
+  {
+    parent::__construct($message,$code,$remoteTrace);
+    $this->javaClass = $classname;
+  }
+
+  private function getJavaClass()
+   { return $this->javaClass; }
+
+  private $javaClass;
+
+  static public $marshallingHelper;
+};
+
+
+class JavaRuntimeException extends JavaException
+{
+  public function __construct($message=null, $code=null, $classname=null, $remoteTrace=null)
+  {
+    parent::__construct($message,$code,$remoteTrace);
+  }
 };
 
 
@@ -219,22 +258,48 @@ class PHPJAO
       if (isset($result['error']))
       {
           $error = $result['error'];
-          if (isset($error['msg'])) {
+          if (is_object($error)) {
+            if ($error instanceof Exception) {
+               throw $error;
+            } else {
+               // object but not exception - impossible.
+               throw new PHPJAORemoteException(""+$error);
+            }
+          } else {
+            if (isset($error['msg'])) {
              $message = $error['msg'];
-          } else {
+            } else if (isset($error['message'])) {
+             $message = $error['message'];
+            } else {
              $message = null;
-          }
-          if (isset($error['code'])) {
+            }
+            if (isset($error['code'])) {
              $code = $error['code'];
-          } else {
+            } else {
              $code = 0;
-          }
-          if (isset($error['trace'])) {
+            }
+            if (isset($error['trace'])) {
              $trace = $error['trace'];
-          }else{
+            }else{
              $trace = null;
+            }
+            $javaClass=null;
+            if (isset($error['javaClass'])) {
+             $javaClass=$error['javaClass'];
+             // check - if this class is mapped to php
+             $classDescription = self::findType($javaClass);  
+             if ($classDescription==null) {
+                 // java exception without php mapping.
+                 throw new JavaException($message, $code, $javaClass, $trace);
+             } else {
+                 //
+                 throw self::fromJson($error,$javaClass);
+             }
+            } else {
+             // look's like this exception is not coming throeught our exception transformer.
+             throw new PHPJAORemoteException($message, $code, $trace);
+            }
           }
-          throw new PHPJAORemoteException($message, $code, $trace);
       }
       if (isset($result['result']))
       {
@@ -306,6 +371,10 @@ class PHPJaoConnection
 
  public function getUrls()
  { return $this->urls; }
+
+ public function getCurrentUrl(){
+    return $this->currentUrl;
+ }
 
  /**
   * get curl handle, open connection if needed.
@@ -436,7 +505,9 @@ class PHPJaoRemoteProxy
    $this->objname=$theObjName;
  }
 
- public function  getUrl() { return $url; }
+ public function  getUrls() { return $this->connection->getUrls(); }
+
+ public function  getCurrentUrl() { return $this->connection->getCurrentUrl(); }
 
  public function __call($method, $args)
  {
@@ -456,7 +527,7 @@ class PHPJaoRemoteProxy
        }
      }
    }
-   error_log("PHPJAO: fata: all url-s for remote cal of $this->objname failed");
+   error_log("PHPJAO: fatal: all url-s for remote cal of $this->objname failed");
    throw $lastError;
  }
  
@@ -487,6 +558,79 @@ interface PHPJAOCustomMarshaller
    public function toJson($object);
    public function fromJson($array);
 }
+
+
+class JavaExceptionPHPJAOClassDescription extends PHPJAOClassDescription
+{
+ public function __construct()
+ {
+  $this->javaClass='java.lang.Exception';
+  $this->phpClass='JavaException';
+
+  // exception fields are passed via constructor, becouse approprative fields are private.
+  // note, that we pass also full stacktrace and cause, but since it is not used in php,
+  // we does not unmarshall them.
+  $this->typesOfFields=array();
+ }
+
+  public function newInstance()
+  { throw new PHPJAOInternalException("Internal error: this method must not be called"); }
+
+}
+
+class JavaRuntimeExceptionPHPJaoClassDescription extends JavaExceptionPHPJAOClassDescription
+{
+  public function __construct() 
+  {
+   parent::__construct();
+   $this->javaClass = 'java.lang.RuntimeException';
+  }
+
+}
+
+class JavaExceptionPHPJAOHelper 
+{
+   public function toJson($object)
+   {
+     $retval=array('msg'=>$object->getMessage(),
+                   'code'=>$object->getCode(),
+                   'javaClass'=>$object->javaClass,
+                   'trace' => $object.getRemoteTrace());
+     $classDescription = PHPJAO::findType($javaClass); 
+     if ($classDescription!=null) {
+       foreach($classDescription->typesOfFields as $key => $ftype) {
+          $retval[$key]=$object->$key;
+       }
+     }
+     return $retval;
+   }
+
+   public function fromJson($object) 
+   {
+     $message = $object['msg'];
+     $code = $object['code'];
+     $trace = $object['trace'];
+     $javaClass = $object['javaClass'];
+     $classDescription = PHPJAO::findType($javaClass); 
+     $retval = null;
+     if ($classDescription!=null) {
+        $phpClass = $classDescription->phpClass;
+        $retval = new $phpClass($message,$code,$javaClass,$trace);
+        foreach($object as $key => $value) {
+          if ($key!='message' && $key!='stackTrace' && $key!='trace' && $key!='code'
+            && $key!='javaClass' ) {
+           $memberType=@$classDescription->typesOfFields[$key];
+           $retval->$key=PHPJAO::fromJson($value, $memberType);
+          }
+        }
+     } else {
+        $retval = new JavaException($message,$code,$javaClass,$trace);
+     }
+     return $retval;
+   }
+
+}
+JavaException::$marshallingHelper = new JavaExceptionPHPJAOHelper();
 
 class DateTimePHPJAOClassDescription extends PHPJAOClassDescription
 {
@@ -562,7 +706,7 @@ class BigDecimal extends PHPJAOPOJOBase
 
  public function getPhpjaoClassDescription()
  {
-  return phpjaoClassDescription;
+  return self::$phpjaoClassDescription;
  }
 
  static $phpjaoClassDescription;
@@ -585,10 +729,10 @@ class BigDecimalPHPJAOHelper
                       'strvalue' => $object->strvalue);
        }else{
          $ocl=get_class($object);
-         throw new PHPJAOException("Invailid class for BigDecimal ${ocl}");
+         throw new PHPJAOInternalException("Invailid class for BigDecimal ${ocl}");
        }
     }else{
-       throw new PHPJAOException("Invalid BigDecimal object");
+       throw new PHPJAOInternalException("Invalid BigDecimal object");
     }
   }
   
@@ -610,18 +754,16 @@ class BigDecimalPHPJAOHelper
           echo "${key}=>${value} ";
         }
         echo ")\n";
-        throw new PHPJAOException("Invalid BigDecimal object (without strvalue field)");
+        throw new PHPJAOMarshallingException("Invalid BigDecimal object (without strvalue field)");
       }else{
         $retval=new BigDecimal($strvalue);
       }
     }else if (is_object($object)) {
       if ($object instanceof BigDecimal) {
         $retval=$object;
-      }else{
-        throw new PHPJAOException("Invalid BigDecimal object:");
       }
     }else{
-      throw new PHPJAOException("Invalid BigDecimal object");
+      throw new PHPJAOMarshallingException("Invalid BigDecimal object");
     }
     return $retval;
   }
@@ -770,12 +912,12 @@ class ListPHPJAOHelper
                       'list' => PHPJAO::toJson($object->list) );
       }else{
         $type = gettype($object);
-        throw new PHPJAOException("can't transform object $type to List");
+        throw new PHPJAOMarshallingException("can't transform object $type to List");
       }
     }else if (is_null($object)) {
       return null;
     }else{
-      throw new PHPJAOException("can't transform object to ArrayList");
+      throw new PHPJAOMarshallingException("can't transform object to ArrayList");
     }
   }
 
@@ -786,7 +928,7 @@ class ListPHPJAOHelper
       $l=$object['list'];
       return PHPJAO::fromJson($l);
     }else{
-      throw new PHPJAOException("can't transform ArrayList from JSON");
+      throw new PHPJAOMarshallingException("can't transform ArrayList from JSON");
     }
   }
 

@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import org.jabsorb.JSONRPCBridge;
 import org.jabsorb.serializer.Serializer;
+import ua.gradsoft.jabsorb.phpjao.excptr.PhpJaoExceptionTransformer;
+import ua.gradsoft.jabsorb.phpjao.excptr.StackTraceSerializer;
 
 
 /**
@@ -11,6 +13,19 @@ import org.jabsorb.serializer.Serializer;
  **/
 public class JSONRPCGlobalBridgeAccessBean
 {
+
+    public JSONRPCGlobalBridgeAccessBean()
+    {
+     JSONRPCBridge bridge = JSONRPCBridge.getGlobalBridge();
+     PhpJaoExceptionTransformer tr = new PhpJaoExceptionTransformer();
+     tr.setBridge(bridge);
+     try {
+       bridge.registerSerializer(new StackTraceSerializer());
+     }catch(Exception ex){
+       throw new IllegalStateException("Exception during registering StackTraceSerializer",ex);
+     }
+     bridge.setExceptionTransformer(tr);
+    }
 
     public void setRegisteredObjects(Map<String, Object> registeredObjects)
     {

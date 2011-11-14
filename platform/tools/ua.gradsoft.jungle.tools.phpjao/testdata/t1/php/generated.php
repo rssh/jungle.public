@@ -1,7 +1,7 @@
 <?php require_once('PHPJAO.php');
 ?>
 <?php class E1PHPJAOClassDescription extends PHPJAOClassDescription{
-public function __construct(){
+public  function __construct(){
   parent::__construct();
   
   $this->javaClass = 'ua.gradsoft.t1.E1';
@@ -12,23 +12,23 @@ public function __construct(){
   
   }
  
- public function newInstance(){
+ public  function newInstance(){
   return new E1() ;
   
   }
  
  }
 class E1 extends PHPJAOPOJOBase{
-static $phpjaoClassDescription;
+static  $phpjaoClassDescription;
  
- public function getPHPJAOClassDescription(){
+ public  function getPHPJAOClassDescription(){
   return self::$phpjaoClassDescription ;
   
   }
  
- public $name;
+ public  $name;
  
- public $value;
+ public  $value;
  
  }
 E1::$phpjaoClassDescription = new E1PHPJAOClassDescription();

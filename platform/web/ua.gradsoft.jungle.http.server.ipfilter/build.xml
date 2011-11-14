@@ -67,8 +67,13 @@
 
  <target name="docs" depends="javadoc" />
  <target name="javadoc" >
-   <javadoc destdir="docs/api" >
-     <packageset dir="src" />
+   <javadoc destdir="docs/api" failonerror="false" >
+     <!--packageset dir="src" /-->
+   	 <sourcefiles>
+   	        <fileset dir="src">
+   	          <include name="**/*" />
+   	        </fileset>
+   	 </sourcefiles>
      <classpath refid="compile.path" />
    </javadoc>
  </target>
