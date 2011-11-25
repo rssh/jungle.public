@@ -145,7 +145,7 @@ public class QLSelectTemplate {
     public String generateQuery()
     {
         List<String> sfrParts = new ArrayList<String>();
-        return QLGeneratorUtils.generateEjbQlStructured(selectPart, distinct, fromParts, whereParts, orderByParts, orderByDirection);
+        return QLGeneratorUtils.generateEjbQlStructured(selectPart, distinct, fromParts, whereParts, orderByParts, orderByDirection, orderByPartsM);
     }
 
 
