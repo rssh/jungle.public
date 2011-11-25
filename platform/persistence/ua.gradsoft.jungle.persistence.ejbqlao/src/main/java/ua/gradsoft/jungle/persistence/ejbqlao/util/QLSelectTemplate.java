@@ -191,7 +191,13 @@ public class QLSelectTemplate {
         columnIndexDataStorage.clear();
     }
 
+    public Map<String,Boolean> getOrderByPartsM() {
+        return orderByPartsM;
+    }
 
+    public void setOrderByPartsM(Map<String,Boolean> orderByPartsM) {
+        this.orderByPartsM = orderByPartsM;
+    }
 
     private List<String>       selectPart = new ArrayList<String>();
     private boolean            distinct = false;
@@ -201,6 +207,7 @@ public class QLSelectTemplate {
     private boolean            orderByDirection = true;
     private Map<String,Object> params = new TreeMap<String,Object>();
     private Map<String,Object> options = new TreeMap<String,Object>();
+    private Map<String,Boolean> orderByPartsM = new TreeMap<String,Boolean>();
 
     private Map<String,Map<Integer,Object>>  columnIndexDataStorage = new TreeMap<String,Map<Integer,Object>>();
 
