@@ -72,18 +72,34 @@ public class QLSelectTemplate {
     }
 
 
+    /**
+     * use orgerByM
+     **/
+    @Deprecated 
     public boolean isOrderByDirection() {
         return orderByDirection;
     }
 
+    /**
+    * @deprecated("use setOrderByPartsM")
+    */
+    @Deprecated
     public void setOrderByDirection(boolean orderByDirection) {
         this.orderByDirection = orderByDirection;
     }
 
+   /**
+    * @deprecated "use getOrderByPartsM" 
+    */
+    @Deprecated
     public List<String> getOrderByParts() {
         return orderByParts;
     }
 
+   /**
+    * @deprecated "use setOrderByPartsM" 
+    */
+    @Deprecated
     public void setOrderByParts(List<String> orderByParts) {
         this.orderByParts = orderByParts;
     }
@@ -145,7 +161,7 @@ public class QLSelectTemplate {
     public String generateQuery()
     {
         List<String> sfrParts = new ArrayList<String>();
-        return QLGeneratorUtils.generateEjbQlStructured(selectPart, distinct, fromParts, whereParts, orderByParts, orderByDirection);
+        return QLGeneratorUtils.generateEjbQlStructured(selectPart, distinct, fromParts, whereParts, orderByParts, orderByDirection, orderByPartsM);
     }
 
 
@@ -191,6 +207,17 @@ public class QLSelectTemplate {
         columnIndexDataStorage.clear();
     }
 
+    public Map<String,Boolean> getOrderByPartsM() {
+        return orderByPartsM;
+    }
+
+    public void setOrderByPartsM(Map<String,Boolean> orderByPartsM) {
+        this.orderByPartsM = orderByPartsM;
+    }
+
+    public void addOrderBy(String field, boolean asc) {
+        orderByPartsM.put(field,asc);
+    }
 
 
     private List<String>       selectPart = new ArrayList<String>();
@@ -201,6 +228,7 @@ public class QLSelectTemplate {
     private boolean            orderByDirection = true;
     private Map<String,Object> params = new TreeMap<String,Object>();
     private Map<String,Object> options = new TreeMap<String,Object>();
+    private Map<String,Boolean> orderByPartsM = new TreeMap<String,Boolean>();
 
     private Map<String,Map<Integer,Object>>  columnIndexDataStorage = new TreeMap<String,Map<Integer,Object>>();
 
