@@ -1037,7 +1037,9 @@ class MapPHPJAOHelper
     }
   }
 
-  /* TODO: Write it (code below has never been tested)
+  /* 
+   * TODO add test,
+   */
   public static function fromJson($object)
   {
     # transform to TreeMap
@@ -1049,7 +1051,7 @@ class MapPHPJAOHelper
       throw new PHPJAOMarshallingException("can't transform TreeMap from JSON");
     } 
      
-  }*/
+  }
 
   static $instance;
 }

@@ -72,18 +72,34 @@ public class QLSelectTemplate {
     }
 
 
+    /**
+     * use orgerByM
+     **/
+    @Deprecated 
     public boolean isOrderByDirection() {
         return orderByDirection;
     }
 
+    /**
+    * @deprecated("use setOrderByPartsM")
+    */
+    @Deprecated
     public void setOrderByDirection(boolean orderByDirection) {
         this.orderByDirection = orderByDirection;
     }
 
+   /**
+    * @deprecated "use getOrderByPartsM" 
+    */
+    @Deprecated
     public List<String> getOrderByParts() {
         return orderByParts;
     }
 
+   /**
+    * @deprecated "use setOrderByPartsM" 
+    */
+    @Deprecated
     public void setOrderByParts(List<String> orderByParts) {
         this.orderByParts = orderByParts;
     }
@@ -198,6 +214,11 @@ public class QLSelectTemplate {
     public void setOrderByPartsM(Map<String,Boolean> orderByPartsM) {
         this.orderByPartsM = orderByPartsM;
     }
+
+    public void addOrderBy(String field, boolean asc) {
+        orderByPartsM.put(field,asc);
+    }
+
 
     private List<String>       selectPart = new ArrayList<String>();
     private boolean            distinct = false;
