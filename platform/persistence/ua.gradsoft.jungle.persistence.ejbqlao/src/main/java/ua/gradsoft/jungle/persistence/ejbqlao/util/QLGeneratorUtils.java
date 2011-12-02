@@ -3,8 +3,6 @@ package ua.gradsoft.jungle.persistence.ejbqlao.util;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 /**
  *Utilities, for generating ejb/ql (for using from criteria-heloers)
@@ -34,21 +32,21 @@ public class QLGeneratorUtils {
     /**
      * write order part of query to string builder
      * @param sb - StringBuilder, where output.
-     * @param parts - map of <String, Boolean> representing order by parts
+     * @param parts - List of Pair<String, Boolean> representing order by parts
      * @param sep - separator, which will be inserted between parts.
      */
-    public static void implodeOrder(StringBuilder sb, Map<String,Boolean> parts, String sep){
+    public static void implodeOrder(StringBuilder sb, List<Pair<String,Boolean>> parts, String sep){
         sb.append(" order by ");
         boolean isFirst=true;
-        for (Map.Entry<String,Boolean> entry: parts.entrySet()){
+        for (Pair<String,Boolean> entry: parts){
             if (!isFirst) {
               sb.append(sep);
             }else{
               isFirst=false;
             }
-          sb.append(entry.getKey());
+          sb.append(entry.getFrs());
           sb.append(" ");
-          if (entry.getValue()){
+          if (entry.getSnd()){
               sb.append("asc");
           }else{
               sb.append("desc");
@@ -131,7 +129,7 @@ public class QLGeneratorUtils {
                                        List<String> whereParts,
                                        List<String> orderByParts,
                                        boolean      orderByDirection,
-                                       Map<String,Boolean> orderByPartsM)
+                                       List<Pair<String,Boolean>> orderByPartsM)
     {
       StringBuilder sb = new StringBuilder();
       sb.append("select ");
@@ -189,7 +187,7 @@ public class QLGeneratorUtils {
                                        List<QLCondition> whereParts,
                                        List<String> orderByParts,
                                        boolean      orderByDirection,
-                                       Map<String,Boolean> orderByPartsM)
+                                       List<Pair<String,Boolean>> orderByPartsM)
     {
       StringBuilder sb = new StringBuilder();
       sb.append("select ");
