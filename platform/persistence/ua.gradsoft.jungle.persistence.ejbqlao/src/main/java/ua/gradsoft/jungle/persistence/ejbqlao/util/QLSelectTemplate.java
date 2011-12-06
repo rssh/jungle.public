@@ -148,6 +148,10 @@ public class QLSelectTemplate {
         this.options = options;
     }
 
+    public void addOption(String name, Object value){
+        this.options.put(name, value);
+    }
+
     public Map<String, Object> getParams() {
         return params;
     }
