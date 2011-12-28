@@ -93,6 +93,10 @@
                   rev="${global.version}"
                  conf="test->default" >
     </dependency>
+    <dependency org="ua.gradsoft" name="dependency.groovy" 
+               rev="${global.version}"
+               conf="default->default">
+    </dependency>
    
 
  </dependencies>

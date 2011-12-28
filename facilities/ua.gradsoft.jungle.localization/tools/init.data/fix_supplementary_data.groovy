@@ -261,8 +261,17 @@ class CLDRSaxHandler extends DefaultHandler
 
 }
 
-
-File cldrFile = new File("CLDR/supplementalData.xml");
+// 
+File cldrFile;
+// it's depends from where we called.
+cldrFile  = new File("CLDR/supplementalData.xml");
+if (!cldrFile.exists()) {
+  cldrFile  = new File("tools/init.data/CLDR/supplementalData.xml");
+  if (!cldrFile.exists()) {
+     System.err.println("Can't find 'supplementalData.xml', check dir");
+     throw new RuntimeException("Can't find 'supplementalData.xml', check dir");
+  }
+}
 def cldrHandler = new CLDRSaxHandler();
 cldrHandler.setXout(xout);
 cldrHandler.setCountryNames(countryNames);
