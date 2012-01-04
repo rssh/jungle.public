@@ -441,27 +441,12 @@ public class JSONSerializer implements Serializable
    * @param s A class implementing the Serializer interface (usually derived
    *          from AbstractSerializer).
    *
-   * @throws Exception If a serialiser has already been registered for a class.
    */
   public void registerSerializer(Serializer s) throws Exception
   {
-    Class classes[] = s.getSerializableClasses();
-    Serializer exists;
-    synchronized (serializerSet)
-    {
-      if (serializableMap == null)
-      {
-        serializableMap = new HashMap();
-      }
-      for (int i = 0; i < classes.length; i++)
-      {
-        exists = (Serializer) serializableMap.get(classes[i]);
-        if (exists != null && exists.getClass() != s.getClass())
-        {
-          throw new Exception("different serializer already registered for "
-              + classes[i].getName());
-        }
-      }
+   Class classes[] = s.getSerializableClasses();
+   synchronized (serializerSet)
+   {
       if (!serializerSet.contains(s))
       {
         if (log.isDebugEnabled())
@@ -471,12 +456,15 @@ public class JSONSerializer implements Serializable
         s.setOwner(this);
         serializerSet.add(s);
         serializerList.add(0, s);
+        if (serializableMap == null) {
+          serializableMap = new HashMap();
+        }
         for (int j = 0; j < classes.length; j++)
         {
           serializableMap.put(classes[j], s);
         }
       }
-    }
+   }
   }
 
   /**
