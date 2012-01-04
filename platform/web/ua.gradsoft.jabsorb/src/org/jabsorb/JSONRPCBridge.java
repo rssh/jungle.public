@@ -51,6 +51,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ua.gradsoft.jabsorb.phpjao.excptr.PhpJaoExceptionTransformer;
 
 /**
  * <p>
@@ -239,6 +240,7 @@ public class JSONRPCBridge implements Serializable
     }
   }
 
+
   /**
    * This method retrieves the global bridge singleton. <p/> It should be used
    * with care as objects should generally be registered within session specific
@@ -384,6 +386,10 @@ public class JSONRPCBridge implements Serializable
     referenceSet = new HashSet();
     callableReferenceSet = new HashSet();
     referencesEnabled = false;
+    // also set our transformer by default.
+    PhpJaoExceptionTransformer tr = new PhpJaoExceptionTransformer();
+    tr.setBridge(this);
+    setExceptionTransformer(tr);
   }
 
   /**
