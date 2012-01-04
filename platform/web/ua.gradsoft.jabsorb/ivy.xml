@@ -10,7 +10,10 @@
     </configurations>
     <publications>
       <artifact name="jabsorb" type="jar" />
+     <!--
+      now dsabled: publish only jar
       <artifact name="jabsorb-src" type="zip" conf="src" />
+     -->
     </publications>
     <dependencies>
         <dependency org="ua.gradsoft" name="dependency.slf4j" 
