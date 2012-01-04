@@ -61,6 +61,7 @@ import org.jabsorb.serializer.impl.BigDecimalSerializer;
 import org.jabsorb.serializer.impl.ClassSerializer;
 import org.jabsorb.serializer.impl.EnumSerializer;
 import org.jabsorb.serializer.impl.JPAEntitySerializer;
+import ua.gradsoft.jabsorb.phpjao.excptr.StackTraceSerializer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -422,11 +423,11 @@ public class JSONSerializer implements Serializable
     //
     registerSerializer(new RawJSONArraySerializer());
     registerSerializer(new RawJSONObjectSerializer());
+    registerSerializer(new StackTraceSerializer());
     registerSerializer(new EnumSerializer());
     registerSerializer(new JPAEntitySerializer());
     registerSerializer(new BeanSerializer());
     registerSerializer(new ClassSerializer());
-    registerSerializer(new BigDecimalSerializer());
     registerSerializer(new ArraySerializer());
     registerSerializer(new DictionarySerializer());
     registerSerializer(new MapSerializer());
@@ -435,6 +436,7 @@ public class JSONSerializer implements Serializable
     registerSerializer(new DateSerializer());
     registerSerializer(new StringSerializer());
     registerSerializer(new NumberSerializer());
+    registerSerializer(new BigDecimalSerializer());
     registerSerializer(new BooleanSerializer());
     registerSerializer(new PrimitiveSerializer());
   }
