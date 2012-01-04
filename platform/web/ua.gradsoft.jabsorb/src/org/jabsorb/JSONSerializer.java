@@ -59,6 +59,7 @@ import org.jabsorb.serializer.impl.SetSerializer;
 import org.jabsorb.serializer.impl.StringSerializer;
 import org.jabsorb.serializer.impl.BigDecimalSerializer;
 import org.jabsorb.serializer.impl.ClassSerializer;
+import org.jabsorb.serializer.impl.EnumSerializer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -417,9 +418,12 @@ public class JSONSerializer implements Serializable
     // searched in the reverse order that they were registered here (via the
     // serializerList)
     // for the first serializer that canSerialize the java class type.
-
+    //
     registerSerializer(new RawJSONArraySerializer());
     registerSerializer(new RawJSONObjectSerializer());
+    registerSerializer(new EnumSerializer());
+    registerSerializer(new ClassSerializer());
+    registerSerializer(new BigDecimalSerializer());
     registerSerializer(new BeanSerializer());
     registerSerializer(new ArraySerializer());
     registerSerializer(new DictionarySerializer());
@@ -431,8 +435,6 @@ public class JSONSerializer implements Serializable
     registerSerializer(new NumberSerializer());
     registerSerializer(new BooleanSerializer());
     registerSerializer(new PrimitiveSerializer());
-    registerSerializer(new BigDecimalSerializer());
-    registerSerializer(new ClassSerializer());
   }
 
   /**
