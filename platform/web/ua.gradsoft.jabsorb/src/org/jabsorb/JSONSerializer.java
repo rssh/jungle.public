@@ -57,6 +57,7 @@ import org.jabsorb.serializer.impl.RawJSONArraySerializer;
 import org.jabsorb.serializer.impl.RawJSONObjectSerializer;
 import org.jabsorb.serializer.impl.SetSerializer;
 import org.jabsorb.serializer.impl.StringSerializer;
+import org.jabsorb.serializer.impl.BigDecimalSerializer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -418,6 +419,7 @@ public class JSONSerializer implements Serializable
 
     registerSerializer(new RawJSONArraySerializer());
     registerSerializer(new RawJSONObjectSerializer());
+    registerSerializer(new BigDecimalSerializer());
     registerSerializer(new BeanSerializer());
     registerSerializer(new ArraySerializer());
     registerSerializer(new DictionarySerializer());
