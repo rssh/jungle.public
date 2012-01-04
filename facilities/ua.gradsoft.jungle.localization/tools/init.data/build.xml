@@ -7,14 +7,13 @@
       <property file="../../build.local.properties" />
 
       <path id="groovy.classpath">
-        <fileset dir="${groovy.home}/lib">
+        <fileset dir="../../lib">
           <include name="**/*.jar" />
         </fileset>
       </path>
    </target>
 
    <target name="init-groovy" depends="init-properties" >
-     <echo message="groovy.home=${groovy.home}" />
      <taskdef name="groovy"
          classname="org.codehaus.groovy.ant.Groovy"
          classpathref="groovy.classpath"/>

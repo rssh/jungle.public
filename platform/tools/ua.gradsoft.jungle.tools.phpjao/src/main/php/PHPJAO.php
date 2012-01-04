@@ -949,5 +949,121 @@ PHPJAO::registerCustomType('JavaList',ListPHPJAOHelper::$instance);
 PHPJAO::registerCustomType('JavaArrayList',ListPHPJAOHelper::$instance);
 PHPJAO::registerCustomType('JavaLinkedList',ListPHPJAOHelper::$instance);
 
+class JavaMapPHPJAOClassDescription extends PHPJAOClassDescription
+{
+  public function __construct()
+  {
+   $this->javaClass = 'java.util.Map';
+   $this->phpClass = 'JavaMap';
+  }
+
+  public function newInstance()
+  {
+   return new JavaMap();
+  }
+}
+
+class JavaMap
+{
+
+  public function __construct()
+  {
+   if (func_num_args()==1){
+      $this->map=func_get_arg(0);
+   }
+  }
+
+  public $map;
+
+  public function getPhpjaoClassDescription()
+  {
+    return self::$phpjaoClassDescription;
+  }
+  static $phpjaoClassDescription;
+}
+
+class JavaTreeMapPHPJAOClassDescription extends PHPJAOClassDescription
+{
+  public function __construct()
+  {
+   $this->javaClass = 'java.util.TreeMap';
+   $this->phpClass = 'JavaTreeMap';
+  }
+  public function newInstance()
+  {
+   return new JavaTreeMap();
+  }
+}
+
+class JavaTreeMap extends JavaMap
+{
+
+  public function __construct()
+  {
+   if (func_num_args()==1){
+      $this->map=func_get_arg(0);
+   }
+  }
+
+  public function getPhpjaoClassDescription()
+  {
+    return self::$phpjaoClassDescription;
+  }
+  static $phpjaoClassDescription;
+}
+
+class MapPHPJAOHelper
+{
+  public static function toJson($object)
+  {
+    if (is_array($object)) {
+      $l = $object['map'];
+      return PHPJAO::toJson($l);
+    }else if (is_object($object)) {
+      if ($object instanceof JavaTreeMap) {
+        return array( 'javaClass' => 'java.util.TreeMap',
+                      'map' => PHPJAO::toJson($object->map) );
+      } else if ($object instanceof JavaMap) {
+        return array( 'javaClass' => 'java.util.Map',
+                      'map' => PHPJAO::toJson($object->map) );
+      }else{
+        $type = gettype($object);
+        throw new PHPJAOMarshallingException("can't transform object $type to Map");
+      }
+    }else if (is_null($object)) {
+      return null;
+    }else{
+      throw new PHPJAOMarshallingException("can't transform object to TreeMap");
+    }
+  }
+
+  /* 
+   * TODO add test,
+   */
+  public static function fromJson($object)
+  {
+    # transform to TreeMap
+   
+    if (is_array($object)) {
+      $l=$object['map'];
+      return PHPJAO::fromJson($l);
+    }else{
+      throw new PHPJAOMarshallingException("can't transform TreeMap from JSON");
+    } 
+     
+  }
+
+  static $instance;
+}
+JavaMap::$phpjaoClassDescription=new JavaMapPHPJAOClassDescription();
+PHPJAO::registerType('java.util.Map',JavaMap::$phpjaoClassDescription);
+JavaTreeMap::$phpjaoClassDescription=
+                                 new JavaTreeMapPHPJAOClassDescription();
+PHPJAO::registerType('java.util.TreeMap',
+                                 JavaTreeMap::$phpjaoClassDescription);
+
+MapPHPJAOHelper::$instance = new MapPHPJAOHelper();
+PHPJAO::registerCustomType('JavaMap',MapPHPJAOHelper::$instance);
+PHPJAO::registerCustomType('JavaTreeMap',MapPHPJAOHelper::$instance);
 
 ?>

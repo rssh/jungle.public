@@ -144,7 +144,7 @@ new File("${basedir}/ISO-3166.txt").eachLine {
    }
    String countryName=countryNames[countryCode];
 
-   String sql;
+   def sql;
    if (countryName!=null) {
      countryName=countryName.replace("'","''");
      if (defaultLanguage!=null) {
@@ -159,7 +159,7 @@ new File("${basedir}/ISO-3166.txt").eachLine {
        """;
      }
 
-     xout.println(sql);
+     xout.println(sql.toString());
 
      if (alls!=null && false) {
 

@@ -18,7 +18,7 @@ public class QLGeneratorUtils {
      */
     public static void implode(StringBuilder sb, Collection<String> parts, String sep)
     {
-      boolean isFirst=true;  
+      boolean isFirst=true;
       for(Object part :parts) {
           if (!isFirst) {
               sb.append(sep);
@@ -26,9 +26,33 @@ public class QLGeneratorUtils {
               isFirst=false;
           }
           sb.append(part.toString());
-      }  
+      }
     }
 
+    /**
+     * write order part of query to string builder
+     * @param sb - StringBuilder, where output.
+     * @param parts - List of Pair<String, Boolean> representing order by parts
+     * @param sep - separator, which will be inserted between parts.
+     */
+    public static void implodeOrder(StringBuilder sb, List<Pair<String,Boolean>> parts, String sep){
+        sb.append(" order by ");
+        boolean isFirst=true;
+        for (Pair<String,Boolean> entry: parts){
+            if (!isFirst) {
+              sb.append(sep);
+            }else{
+              isFirst=false;
+            }
+          sb.append(entry.getFrs());
+          sb.append(" ");
+          if (entry.getSnd()){
+              sb.append("asc");
+          }else{
+              sb.append("desc");
+          }
+        }
+    }
 
 
     public static String implode(Collection<String> parts, String sep)
@@ -95,7 +119,17 @@ public class QLGeneratorUtils {
                                        List<String> fromParts,
                                        List<String> whereParts,
                                        List<String> orderByParts,
-                                       boolean      orderByDirection)
+                                       boolean      orderByDirection){
+        return generateEjbQl(selects,false,fromParts, whereParts, orderByParts, orderByDirection, null);
+    }
+
+    public static String generateEjbQl(List<String> selects,
+                                       boolean      distinct,
+                                       List<String> fromParts,
+                                       List<String> whereParts,
+                                       List<String> orderByParts,
+                                       boolean      orderByDirection,
+                                       List<Pair<String,Boolean>> orderByPartsM)
     {
       StringBuilder sb = new StringBuilder();
       sb.append("select ");
@@ -117,9 +151,24 @@ public class QLGeneratorUtils {
           } else {
               sb.append(" desc");
           }
+      } else if (orderByPartsM!=null && !orderByPartsM.isEmpty()) {
+          implodeOrder(sb, orderByPartsM, ", ");
       }
       return sb.toString();
     }
+
+
+
+    public static String generateEjbQlStructured(List<String> selects,
+                                       boolean      distinct,
+                                       List<QLFrom> fromParts,
+                                       List<QLCondition> whereParts,
+                                       List<String> orderByParts,
+                                       boolean      orderByDirection)
+    {
+        return generateEjbQlStructured(selects,false,fromParts, whereParts, orderByParts, orderByDirection, null);
+    }
+
 
     /**
      * generate with help of strucutred elelements
@@ -129,6 +178,7 @@ public class QLGeneratorUtils {
      * @param whereParts
      * @param orderByParts
      * @param orderByDirection
+     * @param orderByPartsM
      * @return
      */
     public static String generateEjbQlStructured(List<String> selects,
@@ -136,7 +186,8 @@ public class QLGeneratorUtils {
                                        List<QLFrom> fromParts,
                                        List<QLCondition> whereParts,
                                        List<String> orderByParts,
-                                       boolean      orderByDirection)
+                                       boolean      orderByDirection,
+                                       List<Pair<String,Boolean>> orderByPartsM)
     {
       StringBuilder sb = new StringBuilder();
       sb.append("select ");
@@ -171,6 +222,8 @@ public class QLGeneratorUtils {
           } else {
               sb.append(" desc");
           }
+      }else if (orderByPartsM!=null && !orderByPartsM.isEmpty()) {
+          implodeOrder(sb, orderByPartsM, ", ");
       }
       return sb.toString();
     }

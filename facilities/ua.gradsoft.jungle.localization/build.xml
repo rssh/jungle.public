@@ -149,7 +149,7 @@
    </target>
     
 
-   <target name="build-init-sql" >
+   <target name="build-init-sql" depends="retrieve-libs" >
      <ant dir="tools/init.data" />
      <copy file="tools/init.data/init.sql"
           tofile="sql/pgsql/init_localization_pgsql.sql"
