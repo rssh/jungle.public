@@ -1,4 +1,0 @@
-
-
-drop table appregistry;
-

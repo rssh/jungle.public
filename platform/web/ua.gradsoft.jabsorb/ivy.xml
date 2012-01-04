@@ -1,0 +1,57 @@
+<ivy-module version="1.4">
+    <info organisation="ua.gradsoft" module="jabsorb"/>
+       
+    <configurations>
+      <conf name="default" description="standard build" />
+      <conf name="src" description="standard build with sources" />
+      <conf name="compile" description="for dependencies neede for compile" />
+      <conf name="test" description="build with test infrastructure" 
+            extends="default" />
+    </configurations>
+    <publications>
+      <artifact name="jabsorb" type="jar" />
+     <!--
+      now dsabled: publish only jar
+      <artifact name="jabsorb-src" type="zip" conf="src" />
+     -->
+    </publications>
+    <dependencies>
+        <dependency org="ua.gradsoft" name="dependency.slf4j" 
+                    rev="${global.version}" 
+                    >
+        </dependency>
+        <dependency org="ua.gradsoft" name="dependency.commons-httpclient" 
+                    rev="${global.version}"
+                    conf="default"
+                    >
+        </dependency>
+        <dependency org="com.yahoo.platform.yui" name="yuicompressor"
+                    rev="2.4.6" 
+                    conf="compile->default"
+                    transitive="false"
+        />
+        <!-- rhino neede for yuicompressor must be specific version -->
+        <dependency org="rhino" name="js"
+                    rev="1.6R1" 
+                    conf="compile->default"
+        />
+        <dependency org="ua.gradsoft" name="dependency.jetty" 
+                    rev="${global.version}"
+                    conf="test->default"
+                    >
+        </dependency>
+        <dependency org="ua.gradsoft" name="dependency.junit" 
+                    rev="${global.version}"
+                    conf="test->default"
+                   >
+        </dependency>
+        <!-- for jpaentity serializer -->
+        <dependency org="ua.gradsoft" name="jungle.persistence.jpaex" 
+                    rev="[${global.version}-2.1.0,${global.version}-3.0.0)"  conf="default->api" >
+          <artifact name="jungle.persistence.jpaex-api" type="jar" />
+        </dependency>
+    </dependencies>
+</ivy-module>
+
+
+

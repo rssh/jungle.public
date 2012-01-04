@@ -9,7 +9,7 @@ import ua.gradsoft.jabsorb.phpjao.excptr.StackTraceSerializer;
 
 
 /**
- *  *Formal class for integration of JSON/RPC bridge with string bean
+ *  *Formal class for integration of JSON/RPC bridge with spring bean
  **/
 public class JSONRPCGlobalBridgeAccessBean
 {
@@ -17,6 +17,8 @@ public class JSONRPCGlobalBridgeAccessBean
     public JSONRPCGlobalBridgeAccessBean()
     {
      JSONRPCBridge bridge = JSONRPCBridge.getGlobalBridge();
+    /*
+     * now duplicated bridge constructor.
      PhpJaoExceptionTransformer tr = new PhpJaoExceptionTransformer();
      tr.setBridge(bridge);
      try {
@@ -25,6 +27,7 @@ public class JSONRPCGlobalBridgeAccessBean
        throw new IllegalStateException("Exception during registering StackTraceSerializer",ex);
      }
      bridge.setExceptionTransformer(tr);
+     */
     }
 
     public void setRegisteredObjects(Map<String, Object> registeredObjects)
