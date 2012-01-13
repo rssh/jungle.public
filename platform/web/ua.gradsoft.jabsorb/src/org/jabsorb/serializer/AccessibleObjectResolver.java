@@ -182,6 +182,7 @@ public class AccessibleObjectResolver
     }
     catch (UnmarshallException e)
     {
+      log.warn("exception during unmarshalling:"+e.getMessage(),e);
       if (cbc != null)
       {
         for (int i = 0; i < context.length; i++)
@@ -194,6 +195,8 @@ public class AccessibleObjectResolver
     }
     catch (MarshallException e)
     {
+      log.warn("exception during marshalling:"+e.getMessage(),e);
+      
       if (cbc != null)
       {
         for (int i = 0; i < context.length; i++)
@@ -202,7 +205,7 @@ public class AccessibleObjectResolver
         }
       }
       result = new JSONRPCResult(JSONRPCResult.CODE_ERR_MARSHALL, requestId, e
-          .getMessage());
+          .getMessage()  );
     }
     catch (Throwable e)
     {

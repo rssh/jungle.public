@@ -425,8 +425,8 @@ public class JSONSerializer implements Serializable
     registerSerializer(new RawJSONObjectSerializer());
     registerSerializer(new StackTraceSerializer());
     registerSerializer(new EnumSerializer());
-    registerSerializer(new JPAEntitySerializer());
     registerSerializer(new BeanSerializer());
+    registerSerializer(new JPAEntitySerializer());
     registerSerializer(new ClassSerializer());
     registerSerializer(new ArraySerializer());
     registerSerializer(new DictionarySerializer());
