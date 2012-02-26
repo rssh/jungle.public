@@ -255,6 +255,9 @@ class PHPJAO
           $resultId = $result['id'];
           # TODO: check that ID the same.
       }
+      if (!isset($result['result']) && !isset($result['error'])){
+          $result = null;
+      }	
       if (isset($result['error']))
       {
           $error = $result['error'];
