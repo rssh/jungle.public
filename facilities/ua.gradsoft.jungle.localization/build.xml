@@ -50,7 +50,7 @@
 
     <target name="clean-all">
      <delete quiet="true" >
-      <fileset dir="lib" includes="**/*.jar" />
+      <fileset dir="lib" includes="**/*.jar,**/*.txt" />
       <fileset dir="dist" includes="**/*.xml,**/*.jar,**/*.sql,**/*.part,**/*.zip" />
      </delete>
     </target>
