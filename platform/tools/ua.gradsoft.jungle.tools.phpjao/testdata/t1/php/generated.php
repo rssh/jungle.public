@@ -8,7 +8,7 @@ public  function __construct(){
   
   $this->phpClass = 'E1';
   
-  $this->typesOfFields = array('name' => 'java.lang.String', 'value' => 'java.lang.String');
+  $this->typesOfFields = array('name' => 'java.lang.String', 'value' => 'java.lang.String', 'truth' => 'java.lang.Boolean');
   
   }
  
@@ -29,6 +29,8 @@ static  $phpjaoClassDescription;
  public  $name;
  
  public  $value;
+ 
+ public  $truth;
  
  }
 E1::$phpjaoClassDescription = new E1PHPJAOClassDescription();
