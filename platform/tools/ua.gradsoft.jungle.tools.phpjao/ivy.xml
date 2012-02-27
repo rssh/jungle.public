@@ -29,7 +29,7 @@
           <artifact name="JavaChecker" type="jar" />
           <artifact name="JavaChecker2Annotations" type="jar" />
          </dependency>
-         <dependency org="org.apache.ant" name="ant" rev="1.7.1" 
+         <dependency org="org.apache.ant" name="ant" rev="1.8.2" 
                      conf="compile->default">
           <artifact name="ant" type="jar" />
          </dependency>
