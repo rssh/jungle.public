@@ -424,7 +424,6 @@ public class JSONSerializer implements Serializable
     registerSerializer(new RawJSONArraySerializer());
     registerSerializer(new RawJSONObjectSerializer());
     registerSerializer(new StackTraceSerializer());
-    registerSerializer(new EnumSerializer());
     registerSerializer(new BeanSerializer());
     registerSerializer(new JPAEntitySerializer());
     registerSerializer(new ClassSerializer());
@@ -439,6 +438,7 @@ public class JSONSerializer implements Serializable
     registerSerializer(new BigDecimalSerializer());
     registerSerializer(new BooleanSerializer());
     registerSerializer(new PrimitiveSerializer());
+    registerSerializer(new EnumSerializer());
   }
 
   /**
