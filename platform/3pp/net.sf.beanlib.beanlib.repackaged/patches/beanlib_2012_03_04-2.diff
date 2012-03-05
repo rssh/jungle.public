@@ -1,0 +1,19 @@
+--- beanlib/build-cobertura.xml	2011-12-22 16:17:30.000000000 +0200
++++ beanlib.patched/build-cobertura.xml	2012-03-05 08:50:10.857792095 +0200
+@@ -3,7 +3,6 @@
+ <property name="instrumented.dir" value="target/instrumented" />
+ <property name="coveragereport.dir" value="target/coverage-report" />
+ 
+-<taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
+ 
+ <path id="cobertura.classpath">
+     <fileset dir="${cobertura.dir}">
+@@ -16,6 +15,8 @@
+     <pathelement location="../beanlib/lib/log4j-1.2.14.jar"/>
+ </path>
+ 
++<taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
++
+ <target depends="build" name="instrument">
+ 	<cobertura-instrument datafile="../cobertura.ser" todir="${instrumented.dir}">
+ 	    <ignore regex="org.apache.log4j.*" />

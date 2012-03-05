@@ -1,0 +1,12 @@
+diff -udr beanlib-trunk/beanlib/src/net/sf/beanlib/provider/replicator/ReplicatorTemplate.java beanlib-trunk.patched/beanlib/src/net/sf/beanlib/provider/replicator/ReplicatorTemplate.java
+--- beanlib/src/net/sf/beanlib/provider/replicator/ReplicatorTemplate.java	2012-03-04 15:41:07.908019055 +0200
++++ beanlib.patched/src/net/sf/beanlib/provider/replicator/ReplicatorTemplate.java	2012-03-04 19:12:54.658560740 +0200
+@@ -114,7 +114,7 @@
+             
+         }
+         // Immutable e.g. String, Enum, primitvies, BigDecimal, etc.
+-        if (immutable(toClass))
++        if (immutable(toClass) || immutable(unenhanced.getClass()))
+             return beanTransformer.getImmutableReplicatable()
+                                   .replicateImmutable(unenhanced, toClass);
+         // Collection
