@@ -248,6 +248,12 @@
     <echo message="Done with clean!" />
   </target>
 
+  <target name="clean-all" depends="clean">
+    <delete>
+     <fileset dir="lib" includes="**/*.jar,**/*.txt" />
+    </delete>
+  </target>
+
   <!-- targets to make building of release distribution files easier -->
 
   <!-- like clean, but only deletes files not essential for a release bundle -->

@@ -5,6 +5,29 @@
       <artifact name="dependency.jetty" type="txt" />
     </publications>
     <dependencies>
+  <!--
+      <dependency org="org.eclipse.jetty.aggregate" name="jetty-all"
+                  rev="${origin.version}" >
+          <artifact name="jetty-all" type="jar" />
+      </dependency>
+
+
+
+
+
+      <dependency org="org.eclipse.jetty.orbit" name="javax.annotation"
+                  rev="1.1.0.v201108011116" >
+          <artifact name="javax.annotation" type="jar" />
+      </dependency>
+      <dependency org="org.eclipse.jetty.orbit" name="org.objectweb.asm"
+                  rev="3.1.0.v200803061910" >
+          <artifact name="org.objectweb.asm" type="jar" />
+      </dependency>
+      <dependency org="org.eclipse.jetty.orbit" name="javax.security.auth.message"
+                  rev="1.0.0.v201108011116" >
+          <artifact name="javax.security.auth.message" type="jar" />
+      </dependency>
+  -->
       <dependency org="org.eclipse.jetty" name="jetty-rewrite"
                   rev="${origin.version}" >
           <artifact name="jetty-rewrite" type="jar" />
@@ -21,8 +44,60 @@
                    rev="${origin.version}" >
            <artifact name="jetty-websocket" type="jar" />
        </dependency>
+      <dependency org="org.eclipse.jetty" name="jetty-plus"
+                   rev="${origin.version}" >
+           <artifact name="jetty-plus" type="jar" />
+       </dependency>
+      <dependency org="org.eclipse.jetty" name="jetty-jsp"
+                   rev="${origin.version}" >
+           <artifact name="jetty-jsp" type="jar" />
+       </dependency>
+      <dependency org="org.eclipse.jetty.orbit" name="javax.servlet"
+                  rev="3.0.0.v201112011016" >
+          <artifact name="javax.servlet" type="jar" />
+      </dependency>
+      <dependency org="org.eclipse.jetty.orbit" name="javax.transaction"
+                  rev="1.1.1.v201105210645" >
+          <artifact name="javax.transaction" type="jar" />
+      </dependency>
+      <dependency org="org.eclipse.jetty.orbit" name="javax.mail.glassfish"
+                  rev="1.4.1.v201005082020" >
+          <artifact name="javax.mail.glassfish" type="jar" />
+      </dependency>
+      <dependency org="org.eclipse.jetty.orbit" name="javax.activation"
+                  rev="1.1.0.v201105071233" >
+          <artifact name="javax.activation" type="jar" />
+      </dependency>
+      <dependency org="org.eclipse.jetty.orbit" name="javax.servlet.jsp"
+                  rev="2.2.0.v201112011158" >
+          <artifact name="javax.servlet.jsp" type="jar" />
+      </dependency>
+      <dependency org="org.eclipse.jetty.orbit" name="org.apache.jasper.glassfish"
+                  rev="2.2.2.v201112011158" >
+          <artifact name="org.apache.jasper.glassfish" type="jar" />
+      </dependency>
+      <dependency org="org.eclipse.jetty.orbit" name="javax.servlet.jsp.jstl"
+                  rev="1.2.0.v201105211821" >
+          <artifact name="javax.servlet.jsp.jstl" type="jar" />
+      </dependency>
+      <dependency org="org.eclipse.jetty.orbit" name="org.apache.taglibs.standard.glassfish"
+                  rev="1.2.0.v201112081803" >
+          <artifact name="org.apache.taglibs.standard.glassfish" type="jar" />
+      </dependency>
+      <dependency org="org.eclipse.jetty.orbit" name="javax.el"
+                  rev="2.2.0.v201108011116" >
+          <artifact name="javax.el" type="jar" />
+      </dependency>
+      <dependency org="org.eclipse.jetty.orbit" name="com.sun.el"
+                  rev="2.2.0.v201108011116" >
+          <artifact name="com.sun.el" type="jar" />
+      </dependency>
+      <dependency org="org.eclipse.jetty.orbit" name="org.eclipse.jdt.core"
+                  rev="3.7.1" >
+          <artifact name="org.eclipse.jdt.core" type="jar" />
+      </dependency>
+
     </dependencies>
 </ivy-module>
-
 
 

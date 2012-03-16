@@ -18,11 +18,22 @@
     <dependencies>
         <dependency org="ua.gradsoft" name="dependency.slf4j" 
                     rev="${global.version}" 
+                    conf="default->api;test->jdk14"
                     >
         </dependency>
         <dependency org="ua.gradsoft" name="dependency.commons-httpclient" 
                     rev="${global.version}"
                     conf="default"
+                    >
+        </dependency>
+        <dependency org="ua.gradsoft" name="dependency.commons-logging" 
+                    rev="${global.version}"
+                    conf="test->default"
+                    >
+        </dependency>
+        <dependency org="ua.gradsoft" name="dependency.commons-codec" 
+                    rev="${global.version}"
+                    conf="test->default"
                     >
         </dependency>
         <dependency org="com.yahoo.platform.yui" name="yuicompressor"
