@@ -1,26 +1,33 @@
 package org.jabsorb.test;
 
-public class BeanWithBoolean
+import java.io.Serializable;
+
+public class BeanWithBoolean implements Serializable
 {
 
-  Boolean getBxObj() { return bxObj; }
-  void    setBxObj(Boolean v)
+  public Boolean getBxObj() { return bxObj; }
+  public void    setBxObj(Boolean v)
      { bxObj = v; }
 
-  boolean getBxVal() { return bxVal; }
-  void    setBxVal(boolean v)
+  public Boolean getBxObj2() { return bxObj2; }
+  public void    setBxObj2(Boolean v)
+     { bxObj2 = v; }
+
+  public boolean getBxVal() { return bxVal; }
+  public void    setBxVal(boolean v)
     { bxVal = v; }
 
-  Integer getIxObj() { return ixObj; }
-  void    setIxObj(Integer v)
+  public Integer getIxObj() { return ixObj; }
+  public void    setIxObj(Integer v)
     { ixObj = v; }
 
 
-  int     getIxVal() { return ixVal; }
-  void    setIxVal(int v)
+  public int     getIxVal() { return ixVal; }
+  public void    setIxVal(int v)
     { ixVal = v; }
 
   private Boolean bxObj;
+  private Boolean bxObj2;
   private boolean bxVal;
 
   private Integer ixObj;

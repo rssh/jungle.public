@@ -82,7 +82,7 @@ public class JPAEntitySerializer extends BeanSerializer
       if (!_initialized) {
         synchronized(this) {
          try {
-          Class.forName("javax.persistency.Entity");
+          Class.forName("javax.persistence.Entity");
          } catch (ClassNotFoundException ex) {
           _enabled=false;
          }

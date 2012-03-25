@@ -174,6 +174,9 @@ public class Test implements Serializable, ITest
     return o;
   }
   
+  public Boolean echoBooleanObject(Boolean b)
+  { return b; }
+
   public String echoOverloadedObject(Number i)
   {
     return "number method";
@@ -642,6 +645,11 @@ private static CallableRefTest callableRef = new CallableRefTest();
       }
     }
     return numTrue;
+  }
+
+  public Boolean funBeanWithBoolean(BeanWithBoolean x)
+  {
+    return x.getBxObj() && x.getBxObj2();
   }
 
 }

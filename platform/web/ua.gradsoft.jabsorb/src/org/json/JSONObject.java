@@ -1151,10 +1151,21 @@ public class JSONObject {
                 if (sb.length() > 1) {
                     sb.append(',');
                 }
-                Object o = keys.next();
-                sb.append(quote(o.toString()));
+                Object k = keys.next();
+                sb.append(quote(k.toString()));
                 sb.append(':');
-                sb.append(valueToString(this.myHashMap.get(o)));
+                Object v = this.myHashMap.get(k);
+                if (v == this) {
+                  sb.append("@0");
+                } else {
+                  try {
+                    sb.append(valueToString(v));
+                  } catch(StackOverflowError ex){
+                    //log.debug("stack overflow, sb="+sb.toString());
+                    System.err.println("stack overflow, sb="+sb.toString());
+                    return super.toString();
+                  }
+                }
             }
             sb.append('}');
             return sb.toString();
@@ -1163,6 +1174,9 @@ public class JSONObject {
         }
     }
 
+    public String _toString() {
+      return super.toString();
+    }
 
     /**
      * Make a prettyprinted JSON text of this JSONObject.

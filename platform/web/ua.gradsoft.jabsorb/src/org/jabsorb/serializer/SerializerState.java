@@ -177,7 +177,10 @@ public class SerializerState
     {
       p.setRef(ref);
       currentLocation.add(ref);
+    } else {
+      throw new RuntimeException("ref==null, obj="+obj);
     }
+    
   }
 
   /**
@@ -202,6 +205,10 @@ public class SerializerState
     {
       // this should normally never happen- it's a sanity check.
       throw new UnmarshallException("source object must be already registered as a ProcessedObject " + source);
+    }
+    if (target == null)
+    {
+      throw new UnmarshallException("target objecy may not be null ");
     }
     p.setSerialized(target);
   }

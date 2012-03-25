@@ -1,4 +1,7 @@
 /*
+ * Copyright 2012  GradSoft Ltd 
+ * (part of jungle.public)
+ *
  * jabsorb - a Java to JavaScript Advanced Object Request Broker
  * http://www.jabsorb.org
  *
@@ -652,7 +655,9 @@ public class JSONSerializer implements Serializable
     {
       // get original serialized version
       // to recreate circular reference / duplicate object on the java side
-      return p.getSerialized();
+      if (p.getSerialized()!=null) {
+         return p.getSerialized();
+      }
     }
 
     // If we have a JSON object class hint that is a sub class of the
@@ -687,7 +692,9 @@ public class JSONSerializer implements Serializable
     Serializer s = getSerializer(clazz, jsonClass);
     if (s != null)
     {
-      return s.unmarshall(state, clazz, json);
+      Object r = s.unmarshall(state,clazz,json);
+      p.setSerialized(r);
+      return r;
     }
     
     // As a last resort, we check if the object is in fact an instance of the

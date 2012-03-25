@@ -27,6 +27,7 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.jabsorb.test.BeanA;
 import org.jabsorb.test.ITest;
+import org.jabsorb.test.BeanWithBoolean;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -154,6 +155,8 @@ public class ClientTestCase extends ServerTestBase
     assertEquals(floato, test.echoFloatObject(floato));
     Double doublo = new Double(3.1415926F);
     assertEquals(doublo, test.echoDoubleObject(doublo));
+    Boolean booleano = new Boolean(true);
+    assertEquals(booleano, test.echoBooleanObject(booleano));
 
     {
       //Circ refs test
@@ -186,6 +189,14 @@ public class ClientTestCase extends ServerTestBase
       {
         this.fail("problem with json manipulation");
       }
+    }
+    {
+      BeanWithBoolean b = new BeanWithBoolean();
+      b.setBxObj(true);
+      b.setBxObj2(true);
+      b.setBxVal(true);
+      Boolean b1 = test.funBeanWithBoolean(b);
+      assertTrue(b1);
     }
   }
 
