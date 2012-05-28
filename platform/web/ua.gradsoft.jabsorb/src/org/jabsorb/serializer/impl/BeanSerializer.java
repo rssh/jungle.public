@@ -116,7 +116,7 @@ public class BeanSerializer extends AbstractSerializer
    */
   public static BeanData analyzeBean(Class clazz) throws IntrospectionException
   {
-    log.info("analyzing " + clazz.getName());
+    log.info("analyzing [1]" + clazz.getName());
     BeanData bd = new BeanData();
     bd.beanInfo = Introspector.getBeanInfo(clazz, Object.class);
     PropertyDescriptor props[] = bd.beanInfo.getPropertyDescriptors();
@@ -128,6 +128,9 @@ public class BeanSerializer extends AbstractSerializer
       if(props[i].getName().equals("declaringClass"))
       {
         continue;
+      }
+      if (log.isDebugEnabled()) {
+        log.debug("debug: found property:"+props[i].getName());
       }
       if (props[i].getWriteMethod() != null)
       {

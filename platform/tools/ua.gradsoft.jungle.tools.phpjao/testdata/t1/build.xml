@@ -54,4 +54,13 @@
         </phpjao:generate>
     </target>
 
+   <target name="test-generated" depends="generate-php">
+      <exec executable="php" output="phpoutput.log" >
+         <arg value="-c" />
+         <arg value="php.ini" />
+         <arg value="php/test.php" />
+      </exec>
+    </target>
+
+
 </project>

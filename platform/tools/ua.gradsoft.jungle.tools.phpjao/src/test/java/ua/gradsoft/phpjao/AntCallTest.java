@@ -22,7 +22,8 @@ public class AntCallTest {
     @Test
     public void testT1() throws Exception
     {
-        doAntCall("testdata/t1","generate-php");
+        doAntCall("testdata/t1","test-generated");
+        Assert.assertTrue(checkOutputFile("testdata/t1/phpoutput.log"));
     }
 
     @Test

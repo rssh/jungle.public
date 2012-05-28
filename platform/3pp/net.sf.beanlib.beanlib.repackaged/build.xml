@@ -18,19 +18,43 @@
     <delete file="origin/beanlib-${origin.version}.tar" />
   </target>
 
-
-  <target name="patch" depends="untar" 
-              description="apply patches">
-   <!--
-    We have not patches (yet ?)
-    <patch patchfile="patches/patch.1" strip="0" /> 
-   -->
+  <target name="origin-sources" depends="untar" 
+          description="unzip origin sources">
+    <unzip src="origin/beanlib-${origin.version}/beanlib-${origin.version}-sources.jar" 
+           dest="origin-sources/beanlib"
+    />
+    <unzip src="origin/beanlib-${origin.version}/beanlib-joda-${origin.version}-sources.jar" 
+           dest="origin-sources/beanlib-joda"
+    />
   </target>
 
-  <target name="package" depends="patch" 
+
+  <target name="patch" depends="origin-sources" 
+              description="apply patches">
+    <patch dir="origin-sources"
+           patchfile="patches/beanlib_2012_03_04-1.diff" strip="0" /> 
+    <patch dir="origin-sources"
+           patchfile="patches/beanlib_2012_03_04-2.diff" strip="0" /> 
+    <patch dir="origin-sources"
+           patchfile="patches/beanlib_2012_03_05-3.diff" strip="0" /> 
+  </target>
+
+  <target name="build-patched" depends="patch" >
+     <ant dir="origin-sources/beanlib" />
+     <jar destfile="dist/beanlib-${version}.jar" 
+          basedir="origin-sources/beanlib/target/classes" 
+          excludes="**/*Test.class"
+      />
+  </target>
+
+
+  <target name="package" depends="build-patched" 
               description="do packaging and cleanup">
+   <!--
+      now build in build-patched.
     <copy file="origin/beanlib-${origin.version}/beanlib-${origin.version}.jar" 
           tofile="dist/beanlib-${version}.jar" />
+   -->
     <copy file="origin/beanlib-${origin.version}/beanlib-hibernate-${origin.version}.jar" 
           tofile="dist/beanlib-hibernate-${version}.jar" />
     <copy file="origin/beanlib-${origin.version}/beanlib-joda-${origin.version}.jar" 
@@ -42,6 +66,8 @@
   <target name="clean">
     <!-- Delete the bin directory tree -->
     <delete dir="origin/beanlib-${origin.version}" />
+    <delete dir="origin-sources/beanlib" />
+    <delete dir="origin-sources/beanlib-joda" />
   </target>
 
    <target name="clean-all" depends="clean">

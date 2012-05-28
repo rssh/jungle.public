@@ -183,6 +183,8 @@ public interface ITest
 
   JSONObject echoRawJSON(JSONObject rawObject);
 
+  Boolean echoBooleanObject(Boolean b);
+
   int[] anArray();
 
   ArrayList anArrayList();
@@ -210,4 +212,8 @@ public interface ITest
   ArrayList aWaggleArrayList(int numWaggles);
 
   String wigOrWag(ArrayList al);
+
+  Boolean funBeanWithBoolean(BeanWithBoolean x);
+
+
 }

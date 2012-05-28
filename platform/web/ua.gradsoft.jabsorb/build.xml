@@ -100,7 +100,7 @@
 	
   <!-- this target does not currently work on JDK 1.4 right now due to maven dependancy/repository issues -->
   <target name="compile.test" depends="test.init, dist, init" description="Compiles the testing classes">
-    <javac debug="true" source="1.4" srcdir="${test.src}" destdir="${test.classes}">
+    <javac debug="true"  srcdir="${test.src}" destdir="${test.classes}">
       <classpath>
         <path refid="jarClasspath" />
         <path refid="test-classpath" />
@@ -111,21 +111,28 @@
   <target name="test.junit" depends="compile, compile.test">
   	<property name="test.reports" value="${build}/testreports"/>
   	<mkdir dir="${test.reports}"/>
-  	<junit printsummary="withOutAndErr" showoutput="true" haltonfailure="yes">
+  	<junit printsummary="withOutAndErr" showoutput="true" haltonfailure="yes"
+               fork="true"
+              >
+                <jvmarg value="-Djava.util.logging.config.file=testlogging.properties"/>
   		<classpath >
   			<path refid="default-classpath"/>
   			<pathelement location="${build.classes}"/>
   			<pathelement location="${test.classes}"/>
 		  	<path refid="test-classpath" />
- 			</classpath>
+ 		</classpath>
   		<formatter type="plain"/>
   		<batchtest fork="yes" todir="${test.reports}">
 			<fileset dir="${test.classes}">
 				<include name="**/*TestCase.class"/>
+				<include name="**/*TestSerializer.class"/>
 				<exclude name="**/*Suite.class"/>
 			</fileset>
   		</batchtest>
   	</junit>
+  </target>
+
+  <target name="test" depends="test.junit">
   </target>
 
   <target name="test.dist" depends="compile.test,dist,init" description="Creates a war with the test files">
@@ -246,6 +253,12 @@
     </delete>
     
     <echo message="Done with clean!" />
+  </target>
+
+  <target name="clean-all" depends="clean">
+    <delete>
+     <fileset dir="lib" includes="**/*.jar,**/*.txt" />
+    </delete>
   </target>
 
   <!-- targets to make building of release distribution files easier -->

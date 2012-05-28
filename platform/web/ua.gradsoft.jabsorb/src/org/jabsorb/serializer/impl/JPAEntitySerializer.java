@@ -24,9 +24,13 @@ public class JPAEntitySerializer extends BeanSerializer
 
     @Override
     public boolean canSerialize(Class clazz, Class jsonClazz) {
-        return super.canSerialize(clazz, jsonClazz) 
-                && getHashedPojoClass(clazz)!=null
-                && !Number.class.isAssignableFrom(clazz);
+        if (lazyInit()) {
+          return super.canSerialize(clazz, jsonClazz) 
+                 && getHashedPojoClass(clazz)!=null
+                 && !Number.class.isAssignableFrom(clazz);
+        } else {
+          return false;
+        }
     }
 
     @Override
@@ -73,9 +77,26 @@ public class JPAEntitySerializer extends BeanSerializer
         return super.unmarshall(state, clazz, o);
     }
 
+    private boolean lazyInit()
+    {
+      if (!_initialized) {
+        synchronized(this) {
+         try {
+          Class.forName("javax.persistence.Entity");
+         } catch (ClassNotFoundException ex) {
+          _enabled=false;
+         }
+         _initialized=true;
+        }
+      } 
+      return _enabled;
+    }
 
   private Class getHashedPojoClass(Class clazz)
   {
+    if (!lazyInit()) {
+      return null;
+    }
     Class rClazz = _hash.get(clazz);
     if (rClazz==null) {
         rClazz = JpaHelper.findSameOrSuperJpaEntity(clazz);
@@ -97,7 +118,8 @@ public class JPAEntitySerializer extends BeanSerializer
   }
 
 
-
+  private boolean   _initialized = false;
+  private boolean   _enabled = true;
   private static WeakHashMap<Class,Class> _hash = new WeakHashMap<Class,Class>();
 
 

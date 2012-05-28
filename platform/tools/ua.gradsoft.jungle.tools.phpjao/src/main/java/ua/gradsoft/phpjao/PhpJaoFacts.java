@@ -27,7 +27,16 @@ public class PhpJaoFacts extends DefaultFacts
 
     public boolean isGetterString(String name)
     {
-      return name.startsWith("get");
+      return (name.startsWith("get") && 
+              name.length() > 3 && 
+              Character.isUpperCase(name.charAt(3))
+             )
+            ||
+             (name.startsWith("is") && 
+              name.length() > 2 && 
+              Character.isUpperCase(name.charAt(2))
+             )
+            ;
     }
 
     public boolean getNameFromGetterString(TransformationContext ctx, String s, Term x) throws TermWareException
@@ -42,6 +51,13 @@ public class PhpJaoFacts extends DefaultFacts
             String withoutGetX = withoutGet.substring(1);
             char ch = Character.toLowerCase(withoutGet.charAt(0));
             retval = ""+ch+withoutGetX;
+          }
+      } else if (s.startsWith("is")) {
+          String withoutIs = s.substring(2);
+          if (s.length()>2) {
+            String withoutIsX = withoutIs.substring(1);
+            char ch = Character.toLowerCase(withoutIs.charAt(0));
+            retval = ""+ch+withoutIsX;
           }
       }
       ctx.getCurrentSubstitution().put(x, TermUtils.createString(retval));
