@@ -102,7 +102,9 @@
     <target name="docs" depends="javadoc" />
 
     <target name="javadoc" >
-     <javadoc destdir="docs/javadoc" >
+     <echo message="javadoc disabled (bug in gwt which prevent javadoc generation)" />
+     <!--
+     <javadoc destdir="docs/javadoc" failonerror="false" >
        <sourcefiles>
         <fileset dir="src">
           <include name="**/*.java" />
@@ -116,6 +118,7 @@
      <zip destfile="dist/jungle.gwt.util-docs-${version}.zip" 
           basedir="docs/javadoc"
      />
+     -->
     </target>
 
     <target name="source-distributive" depends="build">

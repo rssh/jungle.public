@@ -12,8 +12,10 @@
   <publications>
     <artifact name="jungle.gwt.util" 
               type="jar" conf="default" />
+   <!--
     <artifact name="jungle.gwt.util-docs" 
               type="zip" conf="docs" />
+   -->
     <artifact name="jungle.gwt.util-src" 
               type="zip" conf="source" />
   </publications>
