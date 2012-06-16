@@ -99,6 +99,7 @@
 
  <target name="build-std" depends="retrieve-build-libs">
   <javac srcdir="src/main/java" includes="**/*.java" deprecation="on" 
+         target="${javac.target}"
          debug="${debug}" >
     <classpath  refid="std.build.path" />
   </javac>
@@ -183,6 +184,7 @@
 
  <target name="build-tests" depends="build,retrieve-test-libs">
   <javac srcdir="src/test/java" includes="**/*.java" deprecation="on" 
+         target="${javac.target}"
          debug="${debug}" >
     <classpath refid="test.std.build.path" />
   </javac>

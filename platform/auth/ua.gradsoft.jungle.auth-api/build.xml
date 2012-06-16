@@ -65,6 +65,7 @@
                 srcdir="${src-api.dir}" 
                 includes="**/*.java" 
                 deprecation="on" 
+                target="${javac.target}"
                 debug="${debug}" >
             <!--<compilerarg  line="-Xlint:unchecked" />-->
             <classpath>
@@ -87,6 +88,7 @@
            srcdir="${src-gwt.dir}" 
            includes="**/*.java" 
            deprecation="on" 
+           target="${javac.target}"
            debug="${debug}" >
       <classpath>
          <path refid="core.classpath"/>
@@ -109,6 +111,7 @@
                 srcdir="${src-dummy.dir}" 
                 includes="**/*.java" 
                 deprecation="on" 
+                target="${javac.target}"
                 debug="${debug}" >
             <classpath>
               <path refid="core.classpath"/>
