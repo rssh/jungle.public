@@ -53,6 +53,7 @@
         <javac destdir="${build.dir}" 
                 srcdir="${src.dir}" 
                 includes="**/*.java" 
+                target="${javac.target}"
                 deprecation="on" 
                 debug="${debug}" >
             <!--<compilerarg  line="-Xlint:unchecked" />-->
