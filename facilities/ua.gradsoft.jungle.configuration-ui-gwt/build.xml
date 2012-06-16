@@ -29,7 +29,9 @@
   <target name="compile" description="Compile src to bin" 
                          depends="retrieve-libs">
     <mkdir dir="bin"/>
-    <javac srcdir="src:test-client:test-server" destdir="bin" includes="**" debug="on" debuglevel="lines,vars,source" >
+    <javac srcdir="src:test-client:test-server" destdir="bin" includes="**" debug="on" debuglevel="lines,vars,source" 
+                target="${javac.target}"
+    >
       <classpath refid="project.class.path"/>
     </javac>
   </target>

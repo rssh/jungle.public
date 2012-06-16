@@ -62,6 +62,7 @@
 
  <target name="build" depends="retrieve-libs">
   <javac srcdir="src" includes="**/*.java" deprecation="on" 
+         target="${javac.target}"
          debug="${debug}" >
     <classpath  refid="build.path" />
   </javac>

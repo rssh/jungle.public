@@ -6,6 +6,7 @@
 
  <property file="build.properties" />
  <property file="build.local.properties" />
+ <property name="javac.target" value="1.4" />
 
  <condition property="ivy.home" value="${env.IVY_HOME}">
         <isset property="env.IVY_HOME" />

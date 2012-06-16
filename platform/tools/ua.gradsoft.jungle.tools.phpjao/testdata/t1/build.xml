@@ -38,6 +38,7 @@
         <javac  srcdir="jsrc" 
                 includes="**/*.java" 
                 deprecation="on" 
+         target="${javac.target}"
                 debug="${debug}" >
             <!--<compilerarg  line="-Xlint:unchecked" />-->
             <classpath>

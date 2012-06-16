@@ -78,6 +78,7 @@
         <javac destdir="${build-api.dir}" 
                 srcdir="${src-api.dir}" 
                 includes="**/*.java" 
+                target="${javac.target}"
                 deprecation="on" 
                 debug="${debug}" >
             <!--<compilerarg  line="-Xlint:unchecked" />-->
@@ -100,6 +101,7 @@
         <javac destdir="${build-impl.dir}" 
                 srcdir="${src-impl.dir}" 
                 includes="**/*.java" 
+                target="${javac.target}"
                 deprecation="on" 
                 debug="${debug}" >
             <!--<compilerarg  line="-Xlint:unchecked" />-->
@@ -134,6 +136,7 @@
              srcdir="${src-test.dir}" 
              includes="**/*.java" 
              deprecation="on"
+                target="${javac.target}"
              debug="${debug}"
       >
           <classpath>

@@ -70,6 +70,8 @@
     <!-- have no own sources
       <javac  srcdir="src" includes="**/*.java" deprecation="on"
               debug="on" 
+              target="${javac.target}"
+                target="${javac.target}"
               destdir="classes"
               >
         <classpath refid="compile.path" />

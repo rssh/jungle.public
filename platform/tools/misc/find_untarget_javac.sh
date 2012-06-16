@@ -17,8 +17,8 @@ XJAVAC_TARGET=`grep -l javac.target $XJAVAC | sort -i | tee t.javac_target`
 if [ "$XJAVAC_TARGET" = "" ]
 then
  echo "all files need to be updated"
- echo $XJAVAC
 else
+ echo "result:"
  comm -2 -3 t.javac  t.javac_target 
 fi
 
