@@ -224,7 +224,8 @@ class PHPJAO
     if (curl_errno($ch)) {
         throw new PHPJAOTransportException("curl_error_number:" . curl_errno($ch) . " curl_error:".curl_error($ch));
     }
-    $result=self::fromJson(json_decode($encodedResult,true));
+    $decodedResult = json_decode($encodedResult,true);
+    $result=self::fromJson($decodedResult);
     if (version_compare(PHP_VERSION,'5.3.0') >= 0) {
       //will be enabled in PHP-5.3.0
       switch(json_last_error()) {
