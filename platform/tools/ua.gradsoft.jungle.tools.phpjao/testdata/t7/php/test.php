@@ -5,7 +5,7 @@
 
  $x->published = true;
 
- if ($result->published) {
+ if ($x->published) {
    echo 'OK';
  } else {
    echo 'ERROR';
