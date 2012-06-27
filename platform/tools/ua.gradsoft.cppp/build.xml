@@ -76,7 +76,6 @@
  <target name="build-cpppexpr-parser">
   <java classpath="${javacc.int.home}/javacc-${javacc.version}.jar"
         classname="org.javacc.parser.Main"
-         target="${javac.target}"
         fork="true"
         dir="src/ua/gradsoft/cppp/parse"
         >    
