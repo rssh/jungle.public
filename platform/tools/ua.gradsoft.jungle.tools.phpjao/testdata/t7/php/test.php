@@ -5,7 +5,9 @@
 
  $x->published = true;
 
- if ($x->published) {
+ $typesOfFields = NAnswer::$phpjaoClassDescription->typesOfFields;
+
+ if ($x->published && count($typesOfFields) > 0) {
    echo 'OK';
  } else {
    echo 'ERROR';

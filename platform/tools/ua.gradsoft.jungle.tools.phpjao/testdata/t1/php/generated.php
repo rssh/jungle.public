@@ -8,7 +8,7 @@ public  function __construct(){
   
   $this->phpClass = 'E1';
   
-  $this->typesOfFields = array();
+  $this->typesOfFields = array('name' => 'java.lang.String', 'value' => 'java.lang.String', 'truth' => 'java.lang.Boolean');
   
   }
  

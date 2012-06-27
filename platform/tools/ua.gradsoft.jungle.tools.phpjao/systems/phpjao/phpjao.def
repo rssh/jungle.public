@@ -283,10 +283,10 @@ domain(phpjao,
                     Identifier("typesOfFields")         
                    ),
                    "+",
-                   SArray(generateFieldDescriptionPairs($members))
+                   SArray(generateAllFieldDescriptionPairs($members))
                   )
              !->
-                   SArray(generateFieldDescriptionPairs($members)),
+                   SArray(generateAllFieldDescriptionPairs($members)),
 
 
       append(cons($x,$y),$z) -> cons($x,append($y,$z)),
@@ -296,14 +296,17 @@ domain(phpjao,
                  [ isNil($x) ] -> append($y,$z)
                               !-> cons($x,append($y,$z)),
  
-      generateFieldDescriptionPairs([]) -> [],
-      generateFieldDescriptionPairs([$x:$y])  
-          [isPropertyEntityMember($x)] -> cons(
+      generateAllFieldDescriptionPairs($members) [ newSet($set) ] ->
+                                 generateFieldDescriptionPairs($members,$set),
+
+      generateFieldDescriptionPairs([],$set) -> [],
+      generateFieldDescriptionPairs([$x:$y],$set)  
+          [isPropertyEntityMember($x,$set)] -> cons(
                           generateFieldDescriptionPair($x),
-                          generateFieldDescriptionPairs($y)
+                          generateFieldDescriptionPairs($y,$set)
                                                ) 
                                  !->
-                          generateFieldDescriptionPairs($y),
+                          generateFieldDescriptionPairs($y,$set),
       
       generateFieldDescriptionPair(  
         MethodModel($modifiers,$typeParameters,TypeRef($typeName,$resultType),
