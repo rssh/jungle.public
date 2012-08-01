@@ -1,5 +1,7 @@
 /*
  * jabsorb - a Java to JavaScript Advanced Object Request Broker
+ * Copyright 2012 GradSoft Ltd
+ *
  * http://www.jabsorb.org
  *
  * Copyright 2007-2008 The jabsorb team
@@ -108,4 +110,30 @@ public class TestSerializer extends TestCase
         unmarshalled, "waggle");
     assertEquals(json1.toString(), json2.toString());
   }
+
+  public void testWithBoolean() throws Exception
+  {
+    BeanWithBoolean b = new BeanWithBoolean();
+    b.setBxObj(true);
+    b.setBxVal(true);
+    b.setIxObj(1);
+    b.setIxVal(1);
+    JSONObject json1 = (JSONObject) ser.marshall(marshallerState, null, b, "testBeanWithBoolean");
+    BeanWithBoolean b1 = (BeanWithBoolean) ser.unmarshall(unmarshallerState, BeanWithBoolean.class, json1);
+    assertEquals(b.getBxObj(),b1.getBxObj()); 
+    assertEquals(b.getBxVal(),b1.getBxVal()); 
+    assertEquals(b.getIxObj(),b1.getIxObj()); 
+    assertEquals(b.getIxVal(),b1.getIxVal()); 
+    BeanWithBoolean b2 = (BeanWithBoolean) ser.unmarshall(unmarshallerState, Object.class, json1);
+    assertEquals(b.getBxObj(),b2.getBxObj()); 
+  }
+
+  public void testBooleanUnmarshall1() throws Exception
+  {
+    Object o = ser.unmarshall(unmarshallerState, Object.class, true);
+    assertTrue(o!=null);
+    assertTrue(o instanceof Boolean);
+  }
+
+
 }

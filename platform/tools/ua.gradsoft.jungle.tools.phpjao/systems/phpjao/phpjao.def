@@ -89,39 +89,40 @@ domain(phpjao,
 
        erasedInPhp($x) -> true,
 
-       JavaEntityMembers(ClassOrInterfaceBody($x),$ctx) -> 
+       JavaEntityMembers(ClassOrInterfaceBody($x),$ctx) [ newSet($set) ] -> 
                  SClassMembers(
                   append( 
                    generateClassConstructor($ctx),
                    generateDescriptionAcceptor(),
-                   JavaEntityMembers($x)
+                   JavaEntityMembers($x, $set)
                   )
                  ),
                                                          
-       JavaEntityMembers([]) -> [],
-       JavaEntityMembers([$x:$y]) 
-          [isPropertyEntityMember($x)] -> cons(translateEntityMember($x),
-                                               JavaEntityMembers($y))
+       JavaEntityMembers([],$set) -> [],
+       JavaEntityMembers([$x:$y],$set) 
+          [isPropertyEntityMember($x, $set)] -> cons(translateEntityMember($x),
+                                               JavaEntityMembers($y,$set)) 
          |
           [isPrimitiveConstantMember($x)] 
                                   -> 
                                      cons(translatePrimitiveConstant($x),
-                                          JavaEntityMembers($y))
+                                          JavaEntityMembers($y,$set))
                                  !->
-                                          JavaEntityMembers($y),
+                                          JavaEntityMembers($y,$set),
 
       
       isPropertyEntityMember(
         MethodModel($modifiers,$typeParameters,$resultType,
                     $name,$formalParameters,$throws,
-                    $block,$context)) 
-            ->  isGetterName($name) && notTransient($modifiers) ,
+                    $block,$context), $set) 
+            ->  isGetterNewName($name,$set) && notTransient($modifiers),
 
-      isPropertyEntityMember($x) -> false,
+      isPropertyEntityMember($x, $set) -> false,
 
-      isGetterName(Identifier($x)) -> isGetterName($x),
-      isGetterName($x) [ isString($x) && isGetterString($x) ] -> true
-                      !-> false,
+      isGetterNewName(Identifier($x),$set) -> isGetterNewName($x,$set),
+      isGetterNewName($x,$set) [ isString($x) && isNewGetterString($x,$set) 
+                               ] -> true  
+                                !-> false,
        
       notTransient(Modifiers($iv,$annotations)) -> notTransient($annotations),
 
@@ -151,7 +152,8 @@ domain(phpjao,
         [ $model.isConstant() 
           && 
            ($mt.isPrimitiveType() 
-            || $mt.getFullName().equals("java.lang.String"))
+            || $mt.getFullName().equals("java.lang.String")
+           )
         ]  -> true
           !-> false,
 
@@ -281,10 +283,10 @@ domain(phpjao,
                     Identifier("typesOfFields")         
                    ),
                    "+",
-                   SArray(generateFieldDescriptionPairs($members))
+                   SArray(generateAllFieldDescriptionPairs($members))
                   )
              !->
-                   SArray(generateFieldDescriptionPairs($members)),
+                   SArray(generateAllFieldDescriptionPairs($members)),
 
 
       append(cons($x,$y),$z) -> cons($x,append($y,$z)),
@@ -294,14 +296,17 @@ domain(phpjao,
                  [ isNil($x) ] -> append($y,$z)
                               !-> cons($x,append($y,$z)),
  
-      generateFieldDescriptionPairs([]) -> [],
-      generateFieldDescriptionPairs([$x:$y])  
-          [isPropertyEntityMember($x)] -> cons(
+      generateAllFieldDescriptionPairs($members) [ newSet($set) ] ->
+                                 generateFieldDescriptionPairs($members,$set),
+
+      generateFieldDescriptionPairs([],$set) -> [],
+      generateFieldDescriptionPairs([$x:$y],$set)  
+          [isPropertyEntityMember($x,$set)] -> cons(
                           generateFieldDescriptionPair($x),
-                          generateFieldDescriptionPairs($y)
+                          generateFieldDescriptionPairs($y,$set)
                                                ) 
                                  !->
-                          generateFieldDescriptionPairs($y),
+                          generateFieldDescriptionPairs($y,$set),
       
       generateFieldDescriptionPair(  
         MethodModel($modifiers,$typeParameters,TypeRef($typeName,$resultType),

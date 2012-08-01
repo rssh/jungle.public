@@ -87,7 +87,9 @@
  </target>
 
  <target name="build" depends="build-cppp,retrieve-compile">
-  <javac srcdir="src" includes="**/*.java" deprecation="on" debug="${debug}" >
+  <javac srcdir="src" includes="**/*.java" deprecation="on" debug="${debug}" 
+         target="${javac.target}"
+   >
     <classpath>
      <pathelement location="lib/TermWare-2.3.1.jar" />
     </classpath>
@@ -122,7 +124,9 @@
  </target>
 
  <target name="build-tests" depends="build,retrieve-test-libs">
-  <javac srcdir="test" includes="**/*.java" deprecation="on" >
+  <javac srcdir="test" includes="**/*.java" deprecation="on" 
+         target="${javac.target}"
+  >
     <classpath>
      <pathelement location="lib/TermWare-2.3.1.jar" />
      <pathelement location="lib/jungle.cppp-${version}.jar" />

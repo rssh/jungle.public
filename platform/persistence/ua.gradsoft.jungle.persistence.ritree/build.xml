@@ -78,6 +78,7 @@
                 srcdir="${src-common.dir}" 
                 includes="**/*.java" 
                 deprecation="on" 
+                target="${javac.target}"
                 debug="${debug}" >
             <!--<compilerarg  line="-Xlint:unchecked" />-->
             <classpath>
@@ -100,6 +101,7 @@
                 srcdir="${src-server-hibernate.dir}" 
                 includes="**/*.java" 
                 deprecation="on" 
+                target="${javac.target}"
                 debug="${debug}" >
             <!--<compilerarg  line="-Xlint:unchecked" />-->
             <classpath>
@@ -124,6 +126,7 @@
                 srcdir="${src-test-hibernate.dir}" 
                 includes="**/*.java" 
                 deprecation="on" 
+                target="${javac.target}"
                 debug="${debug}" >
             <!--<compilerarg  line="-Xlint:unchecked" />-->
             <classpath>

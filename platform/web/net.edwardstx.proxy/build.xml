@@ -38,7 +38,9 @@
  </path>
 
  <target name="build" depends="retrieve-libs">
-  <javac srcdir="src" includes="**/*.java" deprecation="on" debug="${debug}" >
+  <javac srcdir="src" includes="**/*.java" deprecation="on" debug="${debug}" 
+         target="${javac.target}"
+    >
     <classpath refid="compile.path" />
   </javac>
   <war destfile="target/ajaxproxy-${version}.war" webxml="WEB-INF/web.xml">

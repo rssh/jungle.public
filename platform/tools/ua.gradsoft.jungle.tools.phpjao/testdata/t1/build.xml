@@ -38,6 +38,7 @@
         <javac  srcdir="jsrc" 
                 includes="**/*.java" 
                 deprecation="on" 
+         target="${javac.target}"
                 debug="${debug}" >
             <!--<compilerarg  line="-Xlint:unchecked" />-->
             <classpath>
@@ -53,5 +54,14 @@
           <class name="ua.gradsoft.t1.E1" />
         </phpjao:generate>
     </target>
+
+   <target name="test-generated" depends="generate-php">
+      <exec executable="php" output="phpoutput.log" >
+         <arg value="-c" />
+         <arg value="php.ini" />
+         <arg value="php/test.php" />
+      </exec>
+    </target>
+
 
 </project>

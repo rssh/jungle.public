@@ -10,7 +10,7 @@
                     transitive="false"
                    >
       <artifact name="postgresql-jdbc4" type="jar" 
-        url="http://jdbc.postgresql.org/download/postgresql-8.4-701.jdbc4.jar"
+        url="http://jdbc.postgresql.org/download/postgresql-9.1-901.jdbc4.jar"
       />
        </dependency>
     </dependencies>

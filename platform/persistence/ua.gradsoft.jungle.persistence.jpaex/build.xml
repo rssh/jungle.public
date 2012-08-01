@@ -95,6 +95,7 @@
 
  <target name="build-api" depends="retrieve-libs">
   <javac srcdir="src/api" includes="**/*.java" deprecation="on" 
+         target="${javac.target}"
          debug="${debug}" >
     <classpath  refid="std.build.path" />
   </javac>
@@ -110,6 +111,7 @@
 
  <target name="build-spring" depends="retrieve-libs">
   <javac srcdir="src/spring" includes="**/*.java" deprecation="on" 
+         target="${javac.target}"
          debug="${debug}" >
     <classpath  refid="spring.build.path" />
   </javac>
@@ -125,6 +127,7 @@
 
  <target name="build-hibernate" depends="retrieve-libs">
   <javac srcdir="src/hibernate" includes="**/*.java" deprecation="on" 
+         target="${javac.target}"
          debug="${debug}" >
     <classpath  refid="hibernate.build.path" />
   </javac>
@@ -140,6 +143,7 @@
 
  <target name="build-jtads" depends="retrieve-libs">
   <javac srcdir="src/jtads" includes="**/*.java" deprecation="on" 
+         target="${javac.target}"
          debug="${debug}" >
     <classpath  refid="jtads.build.path" />
   </javac>
@@ -155,6 +159,7 @@
 
  <target name="build-test" depends="build-api">
   <javac srcdir="src/test/generic" includes="**/*.java" deprecation="on" 
+         target="${javac.target}"
          debug="${debug}" >
     <classpath  refid="test.generic.build.path" />
   </javac>

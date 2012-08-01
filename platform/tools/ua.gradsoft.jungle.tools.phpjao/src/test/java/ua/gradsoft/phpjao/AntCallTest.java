@@ -22,7 +22,8 @@ public class AntCallTest {
     @Test
     public void testT1() throws Exception
     {
-        doAntCall("testdata/t1","generate-php");
+        doAntCall("testdata/t1","test-generated");
+        Assert.assertTrue(checkOutputFile("testdata/t1/phpoutput.log"));
     }
 
     @Test
@@ -51,7 +52,7 @@ public class AntCallTest {
     public void testT5() throws Exception
     {
        doAntCall("testdata/t5","test-generated");
-       Assert.assertTrue(checkOutputFile("testdata/t4/phpoutput.log"));
+       Assert.assertTrue(checkOutputFile("testdata/t5/phpoutput.log"));
     }
 
     @Test
@@ -60,6 +61,12 @@ public class AntCallTest {
        
     }
 
+    @Test
+    public void testT7() throws Exception
+    {
+       doAntCall("testdata/t7","test-generated");
+       Assert.assertTrue(checkOutputFile("testdata/t7/phpoutput.log"));
+    }
 
     private boolean checkOutputFile(String fname) throws Exception
     {

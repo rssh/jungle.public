@@ -1,5 +1,8 @@
 package ua.gradsoft.phpjao;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import ua.gradsoft.javachecker.EntityNotFoundException;
 import ua.gradsoft.javachecker.models.JavaResolver;
 import ua.gradsoft.javachecker.models.JavaTypeModel;
@@ -25,9 +28,29 @@ public class PhpJaoFacts extends DefaultFacts
     }
 
 
-    public boolean isGetterString(String name)
+    public boolean isNewGetterString(String name, Set<String> oldNames)
     {
-      return name.startsWith("get");
+      String vName = null;
+      if (name.startsWith("get") && 
+          name.length() > 3 && 
+          Character.isUpperCase(name.charAt(3))
+         ) {
+         vName = name.substring(3);
+      } else if (name.startsWith("is") && 
+                 name.length() > 2 && 
+                 Character.isUpperCase(name.charAt(2))
+                ) {
+         vName = name.substring(2);
+      }
+      if (vName == null) {
+         return false;
+      } 
+      if (oldNames.contains(vName)) {
+         return false;
+      } else {
+         oldNames.add(vName);
+         return true;
+      }
     }
 
     public boolean getNameFromGetterString(TransformationContext ctx, String s, Term x) throws TermWareException
@@ -42,6 +65,13 @@ public class PhpJaoFacts extends DefaultFacts
             String withoutGetX = withoutGet.substring(1);
             char ch = Character.toLowerCase(withoutGet.charAt(0));
             retval = ""+ch+withoutGetX;
+          }
+      } else if (s.startsWith("is")) {
+          String withoutIs = s.substring(2);
+          if (s.length()>2) {
+            String withoutIsX = withoutIs.substring(1);
+            char ch = Character.toLowerCase(withoutIs.charAt(0));
+            retval = ""+ch+withoutIsX;
           }
       }
       ctx.getCurrentSubstitution().put(x, TermUtils.createString(retval));
@@ -69,6 +99,18 @@ public class PhpJaoFacts extends DefaultFacts
     {
         return JavaTypeModelHelper.subtypeOrSame(m, JavaResolver.resolveTypeModelByFullClassName("java.lang.Exception"));
     }
+
+    // create new set and bind one to x
+    public boolean newSet(TransformationContext ctx, Term x) throws TermWareException
+    {
+      if (!x.isX()) {
+          throw new AssertException("parameter for newSet must be X");
+      }
+      Term retval = TermUtils.createJTerm(new HashSet<String>());
+      ctx.getCurrentSubstitution().put(x, retval);
+      return true;
+    }
+  
 
     private Facade facade_;
 

@@ -69,6 +69,7 @@
 
  <target name="build-api" depends="retrieve-libs">
   <javac srcdir="src/api" includes="**/*.java" deprecation="on" 
+                target="${javac.target}"
          debug="${debug}" >
     <classpath  refid="std.build.path" />
   </javac>
@@ -84,6 +85,7 @@
 
  <target name="build-pgsql" depends="build-api">
   <javac srcdir="src/pgsql" includes="**/*.java" deprecation="on" 
+                target="${javac.target}"
          debug="${debug}" >
     <classpath>
      <path id="std.build.path" />
