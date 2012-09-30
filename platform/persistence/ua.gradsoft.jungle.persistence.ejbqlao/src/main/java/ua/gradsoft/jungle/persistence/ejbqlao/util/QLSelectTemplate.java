@@ -165,7 +165,7 @@ public class QLSelectTemplate {
     public String generateQuery()
     {
         List<String> sfrParts = new ArrayList<String>();
-        return QLGeneratorUtils.generateEjbQlStructured(selectPart, distinct, fromParts, whereParts, orderByParts, orderByDirection, orderByPartsM);
+        return QLGeneratorUtils.generateEjbQlStructured(selectPart, distinct, fromParts, whereParts, groupByParts, orderByParts, orderByDirection, orderByPartsM);
     }
 
 
@@ -223,11 +223,15 @@ public class QLSelectTemplate {
         orderByPartsM.add(new Pair(field, asc));
     }
 
+    public void addGroupBy(String field) {
+        groupByParts.add(field);
+    }
 
     private List<String>       selectPart = new ArrayList<String>();
     private boolean            distinct = false;
     private List<QLFrom>       fromParts = new ArrayList<QLFrom>();;
     private List<QLCondition>  whereParts = new ArrayList<QLCondition>() ;
+    private List<String>       groupByParts = new ArrayList<String>();
     private List<String>       orderByParts = new ArrayList<String>();
     private boolean            orderByDirection = true;
     private Map<String,Object> params = new TreeMap<String,Object>();

@@ -9,6 +9,12 @@ package ua.gradsoft.jungle.persistence.ejbqlao.util;
 public class QLRawFrom extends QLFrom
 {
 
+    public QLRawFrom(String value) {
+        this.value = value;
+        this.alias = value;
+    }
+
+
     public QLRawFrom(String value, String alias) {
         this.value = value;
         this.alias = alias;

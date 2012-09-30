@@ -189,6 +189,31 @@ public class QLGeneratorUtils {
                                        boolean      orderByDirection,
                                        List<Pair<String,Boolean>> orderByPartsM)
     {
+        return generateEjbQlStructured(selects,distinct,fromParts, whereParts, null, orderByParts, orderByDirection, orderByPartsM);
+    }
+
+
+    /**
+     * generate with help of strucutred elelements
+     * @param selects
+     * @param distinct
+     * @param fromParts
+     * @param whereParts
+     * @param groupByParts - list of group by fields.
+     * @param orderByParts
+     * @param orderByDirection
+     * @param orderByPartsM
+     * @return
+     */
+    public static String generateEjbQlStructured(List<String> selects,
+                                       boolean      distinct,
+                                       List<QLFrom> fromParts,
+                                       List<QLCondition> whereParts,
+                                       List<String> groupByParts,
+                                       List<String> orderByParts,
+                                       boolean      orderByDirection,
+                                       List<Pair<String,Boolean>> orderByPartsM)
+    {
       StringBuilder sb = new StringBuilder();
       sb.append("select ");
       if (distinct) {
@@ -213,6 +238,10 @@ public class QLGeneratorUtils {
           sb.append(" where ");
           isFirst=false;
           QLBuilder.createAndCondition(whereParts).outql(sb);
+      }
+      if (groupByParts!=null && !groupByParts.isEmpty()) {
+          sb.append(" group by ");
+          implode(sb, groupByParts, ", ");
       }
       if (orderByParts!=null && !orderByParts.isEmpty()) {
           sb.append(" order by ");
