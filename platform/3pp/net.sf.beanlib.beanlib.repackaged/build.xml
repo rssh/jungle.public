@@ -35,8 +35,14 @@
            patchfile="patches/beanlib_2012_03_04-1.diff" strip="0" /> 
     <patch dir="origin-sources"
            patchfile="patches/beanlib_2012_03_04-2.diff" strip="0" /> 
+    <!--
     <patch dir="origin-sources"
            patchfile="patches/beanlib_2012_03_05-3.diff" strip="0" /> 
+    -->
+    <patch dir="origin-sources"
+           patchfile="patches/beanlib_2013_11_18-4.diff" strip="0" /> 
+    <patch dir="origin-sources"
+           patchfile="patches/beanlib_2013_11_18-5.diff" strip="0" /> 
   </target>
 
   <target name="build-patched" depends="patch" >

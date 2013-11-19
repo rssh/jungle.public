@@ -1,0 +1,80 @@
+--- beanlib/build-user.xml	2013-11-19 13:58:38.000000000 +0200
++++ beanlib/build-user.xml.p	2013-11-19 14:11:56.000000000 +0200
+@@ -1,5 +1,4 @@
+ 
+-&cobertura;
+ 
+ <tstamp/>
+ <property name="beanlib-test.location" value="."/>
+@@ -27,14 +26,17 @@
+ </target>
+ 
+ <target depends="init" name="build">
++    <!--
+     <ant antfile="${beanlib.location}/build.xml" target="build" 
+          dir="${beanlib.location}"
+          inheritAll="false"/>
++    -->
+     <echo message="${ant.project.name}: ${ant.file}"/>
+     <javac destdir="target/classes"
+            debug="true"
+     >
+         <src path="src"/>
++        <src path="${beanlib-joda.location}/src"/>
+     <!--
+         <src path="dl"/>
+     -->
+@@ -42,20 +44,15 @@
+     </javac>
+ </target>
+ 
+-<target depends="instrument" name="test">
++<target name="test">
+     <junit fork="yes" printsummary="withOutAndErr" haltonfailure="yes">
+         <!-- Specify the name of the coverage data file to use. -->        
+-        <sysproperty key="net.sourceforge.cobertura.datafile" file="../cobertura.ser" />
+-
+         <formatter type="plain"/>
+         <formatter type="xml"/>
+-        <!-- Instrumented dir for code coverage. -->
+         <classpath>
+-            <pathelement location="${beanlib.location}/target/instrumented"/>
+-            <pathelement location="${beanlib-joda.location}/target/instrumented"/>
+-            <pathelement location="${instrumented.dir}" />
++            <pathelement location="${beanlib.location}/target/classes"/>
++            <pathelement location="${beanlib-joda.location}/target/classes"/>
+             <path refid="project.classpath"/>
+-            <path refid="cobertura.classpath" />
+         </classpath>
+         <batchtest todir="target/test-reports">
+           <fileset dir="src">
+@@ -65,23 +62,6 @@
+     </junit>
+ </target>
+ 
+-<target depends="test" name="report">
+-    <delete dir="${coveragereport.dir}" />
+-    <cobertura-report format="html" 
+-                      datafile="../cobertura.ser"
+-                      destdir="${coveragereport.dir}" 
+-    >
+-        <fileset dir="${beanlib.location}/src">
+-            <include name="**/*.java" />
+-        </fileset>
+-        <fileset dir="${beanlib-joda.location}/src">
+-            <include name="**/*.java" />
+-        </fileset>
+-        <fileset dir="src">
+-            <include name="**/*.java" />
+-        </fileset>
+-     </cobertura-report>
+-</target>
+ 
+   <target name="jar-qtest" depends="jar-qtest-src">
+     <jar destfile="${dist.jar.file}"
+@@ -99,4 +79,4 @@
+     </jar>
+   </target>
+ 
+-<target name="full" depends="clean,build,instrument,test,report" />
++<target name="full" depends="clean,build,test" />
